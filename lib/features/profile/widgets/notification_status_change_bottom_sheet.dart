@@ -5,7 +5,7 @@ import 'package:sixam_mart_delivery/common/widgets/custom_button_widget.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_snackbar_widget.dart';
 import 'package:sixam_mart_delivery/features/auth/controllers/auth_controller.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/images.dart';
+import 'package:sixam_mart_delivery/util/manager_assets.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
 
 class NotificationStatusChangeBottomSheet extends StatelessWidget {
@@ -36,7 +36,7 @@ class NotificationStatusChangeBottomSheet extends StatelessWidget {
             const SizedBox(height: 35),
 
             Image.asset(
-              Images.cautionDialogIcon, height: 60, width: 60,
+              ManagerAssets.cautionDialogIcon, height: 60, width: 60,
             ),
             const SizedBox(height: 35),
 

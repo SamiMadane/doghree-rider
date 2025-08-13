@@ -1,11 +1,11 @@
 import 'package:sixam_mart_delivery/features/language/domain/models/language_model.dart';
-import 'package:sixam_mart_delivery/util/images.dart';
+import 'package:sixam_mart_delivery/util/manager_assets.dart';
 
 class AppConstants {
   static const String appName = '6amMart Delivery';
   static const double appVersion = 3.3; ///Flutter sdk 3.32.8
 
-  static const String baseUrl = 'https://6ammart-admin.6amtech.com';
+  static const String baseUrl = 'https://www.wefrh.com';
 
   static const String configUri = '/api/v1/config';
   static const String forgetPasswordUri = '/api/v1/auth/delivery-man/forgot-password';
@@ -98,9 +98,9 @@ class AppConstants {
   static const String vendor = 'vendor';
 
   static List<LanguageModel> languages = [
-    LanguageModel(imageUrl: Images.english, languageName: 'English', countryCode: 'US', languageCode: 'en'),
-    LanguageModel(imageUrl: Images.arabic, languageName: 'Arabic', countryCode: 'SA', languageCode: 'ar'),
-    LanguageModel(imageUrl: Images.spanish, languageName: 'Spanish', countryCode: 'ES', languageCode: 'es'),
-    LanguageModel(imageUrl: Images.bangla, languageName: 'Bengali', countryCode: 'BN', languageCode: 'bn'),
+    LanguageModel(imageUrl: ManagerAssets.english, languageName: 'English', countryCode: 'US', languageCode: 'en'),
+    LanguageModel(imageUrl: ManagerAssets.arabic, languageName: 'Arabic', countryCode: 'SA', languageCode: 'ar'),
+    LanguageModel(imageUrl: ManagerAssets.spanish, languageName: 'Spanish', countryCode: 'ES', languageCode: 'es'),
+    LanguageModel(imageUrl: ManagerAssets.bengali, languageName: 'Bengali', countryCode: 'BN', languageCode: 'bn'),
   ];
 }

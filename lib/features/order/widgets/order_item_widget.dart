@@ -1,4 +1,4 @@
-import 'package:sixam_mart_delivery/features/splash/controllers/splash_controller.dart';
+import 'package:sixam_mart_delivery/features/navigation_handler/controllers/navigation_handler_controller.dart';
 import 'package:sixam_mart_delivery/features/order/domain/models/order_details_model.dart';
 import 'package:sixam_mart_delivery/features/order/domain/models/order_model.dart';
 import 'package:sixam_mart_delivery/helper/price_converter_helper.dart';
@@ -95,15 +95,15 @@ class OrderItemWidget extends StatelessWidget {
                 ),
               )) : const Expanded(child: SizedBox()),
 
-              ((Get.find<SplashController>().getModule(order.moduleType).unit! && orderDetails.itemDetails!.unitType != null)
-              || (Get.find<SplashController>().configModel!.toggleVegNonVeg! && Get.find<SplashController>().getModule(order.moduleType).vegNonVeg!)) ? Container(
+              ((Get.find<NavigationHandlerController>().getModule(order.moduleType).unit! && orderDetails.itemDetails!.unitType != null)
+              || (Get.find<NavigationHandlerController>().configModel!.toggleVegNonVeg! && Get.find<NavigationHandlerController>().getModule(order.moduleType).vegNonVeg!)) ? Container(
                 padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeExtraSmall, horizontal: Dimensions.paddingSizeSmall),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
                   color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
                 ),
                 child: Text(
-                  Get.find<SplashController>().getModule(order.moduleType).unit! ? orderDetails.itemDetails!.unitType ?? ''
+                  Get.find<NavigationHandlerController>().getModule(order.moduleType).unit! ? orderDetails.itemDetails!.unitType ?? ''
                       : orderDetails.itemDetails!.veg == 0 ? 'non_veg'.tr : 'veg'.tr,
                   style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeExtraSmall, color: Theme.of(context).primaryColor),
                 ),
@@ -115,7 +115,7 @@ class OrderItemWidget extends StatelessWidget {
         ),
       ]),
 
-      (Get.find<SplashController>().getModule(order.moduleType).addOn! && addOnText.isNotEmpty) ? Padding(
+      (Get.find<NavigationHandlerController>().getModule(order.moduleType).addOn! && addOnText.isNotEmpty) ? Padding(
         padding: const EdgeInsets.only(top: Dimensions.paddingSizeExtraSmall),
         child: Row(children: [
 

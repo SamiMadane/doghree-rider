@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:sixam_mart_delivery/common/models/response_model.dart';
 import 'package:sixam_mart_delivery/features/auth/controllers/auth_controller.dart';
-import 'package:sixam_mart_delivery/features/splash/controllers/splash_controller.dart';
+import 'package:sixam_mart_delivery/features/navigation_handler/controllers/navigation_handler_controller.dart';
 import 'package:sixam_mart_delivery/features/address/domain/models/record_location_body_model.dart';
 import 'package:sixam_mart_delivery/features/profile/domain/models/profile_model.dart';
 import 'package:sixam_mart_delivery/helper/route_helper.dart';
@@ -123,7 +123,7 @@ class ProfileController extends GetxController implements GetxService {
       location: address, latitude: locationResult.latitude, longitude: locationResult.longitude,
     );
 
-    if(Get.find<SplashController>().configModel!.webSocketStatus!) {
+    if(Get.find<NavigationHandlerController>().configModel!.webSocketStatus!) {
       await profileServiceInterface.recordWebSocketLocation(_recordLocation!);
     } else {
       await profileServiceInterface.recordLocation(_recordLocation!);

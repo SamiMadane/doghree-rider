@@ -9,7 +9,7 @@ import 'package:sixam_mart_delivery/features/address/domain/models/record_locati
 import 'package:sixam_mart_delivery/features/profile/domain/models/profile_model.dart';
 import 'package:sixam_mart_delivery/features/profile/domain/repositories/profile_repository_interface.dart';
 import 'package:sixam_mart_delivery/util/app_constants.dart';
-import 'package:sixam_mart_delivery/features/splash/controllers/splash_controller.dart';
+import 'package:sixam_mart_delivery/features/navigation_handler/controllers/navigation_handler_controller.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/status.dart' as status;
 
@@ -60,7 +60,7 @@ class ProfileRepository implements ProfileRepositoryInterface {
   @override
   Future<void> recordWebSocketLocation(RecordLocationBodyModel recordLocationBody) async {
     recordLocationBody.token = _getUserToken();
-    String uri = '${Get.find<SplashController>().configModel!.webSocketUri!}:${Get.find<SplashController>().configModel!.webSocketPort!}/delivery-man/live-location?appKey=${Get.find<SplashController>().configModel!.webSocketKey!}';
+    String uri = '${Get.find<NavigationHandlerController>().configModel!.webSocketUri!}:${Get.find<NavigationHandlerController>().configModel!.webSocketPort!}/delivery-man/live-location?appKey=${Get.find<NavigationHandlerController>().configModel!.webSocketKey!}';
     final wsUrl = Uri.parse(uri);
     var channel = WebSocketChannel.connect(wsUrl);
 

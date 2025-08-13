@@ -4,12 +4,12 @@ import 'package:sixam_mart_delivery/common/widgets/custom_bottom_sheet_widget.da
 import 'package:sixam_mart_delivery/features/auth/controllers/auth_controller.dart';
 import 'package:sixam_mart_delivery/features/cash_in_hand/widgets/empty_state_bottom_sheet.dart';
 import 'package:sixam_mart_delivery/features/profile/controllers/profile_controller.dart';
-import 'package:sixam_mart_delivery/features/splash/controllers/splash_controller.dart';
+import 'package:sixam_mart_delivery/features/navigation_handler/controllers/navigation_handler_controller.dart';
 import 'package:sixam_mart_delivery/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
 import 'package:sixam_mart_delivery/helper/price_converter_helper.dart';
 import 'package:sixam_mart_delivery/helper/route_helper.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/images.dart';
+import 'package:sixam_mart_delivery/util/manager_assets.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_app_bar_widget.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_button_widget.dart';
@@ -85,7 +85,7 @@ class _CashInHandScreenState extends State<CashInHandScreen> {
                           borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
                           color: const Color(0xff334257),
                           image: const DecorationImage(
-                            image: AssetImage(Images.cashInHandBg),
+                            image: AssetImage(ManagerAssets.cashInHandBg),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -96,7 +96,7 @@ class _CashInHandScreenState extends State<CashInHandScreen> {
                               child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center, children: [
                                 Row(
                                   children: [
-                                    Image.asset(Images.walletIcon, width: 40, height: 40),
+                                    Image.asset(ManagerAssets.walletIcon, width: 40, height: 40),
                                     const SizedBox(width: Dimensions.paddingSizeSmall),
                                     Text('payable_amount'.tr, style: robotoMedium.copyWith(color: Theme.of(context).cardColor)),
                                   ],
@@ -181,9 +181,9 @@ class _CashInHandScreenState extends State<CashInHandScreen> {
                                   if(profileController.profileModel!.showPayNowButton!) {
                                     showCustomBottomSheet(child: const PaymentMethodBottomSheetWidget());
                                   } else {
-                                    if(Get.find<SplashController>().configModel!.activePaymentMethodList!.isEmpty || !Get.find<SplashController>().configModel!.digitalPayment!){
-                                      showCustomBottomSheet(child: EmptyStateBottomSheet(noPaymentMethod: Get.find<SplashController>().configModel!.activePaymentMethodList!.isEmpty || !Get.find<SplashController>().configModel!.digitalPayment!));
-                                    }else if(Get.find<SplashController>().configModel!.minAmountToPayDm! > profileController.profileModel!.payableBalance!){
+                                    if(Get.find<NavigationHandlerController>().configModel!.activePaymentMethodList!.isEmpty || !Get.find<NavigationHandlerController>().configModel!.digitalPayment!){
+                                      showCustomBottomSheet(child: EmptyStateBottomSheet(noPaymentMethod: Get.find<NavigationHandlerController>().configModel!.activePaymentMethodList!.isEmpty || !Get.find<NavigationHandlerController>().configModel!.digitalPayment!));
+                                    }else if(Get.find<NavigationHandlerController>().configModel!.minAmountToPayDm! > profileController.profileModel!.payableBalance!){
                                       showCustomBottomSheet(child: const EmptyStateBottomSheet());
                                     }
                                   }

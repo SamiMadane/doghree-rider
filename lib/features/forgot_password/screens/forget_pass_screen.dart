@@ -1,10 +1,11 @@
 import 'package:country_code_picker/country_code_picker.dart';
-import 'package:sixam_mart_delivery/features/splash/controllers/splash_controller.dart';
+import 'package:sixam_mart_delivery/common/widgets/field_with_label.dart';
+import 'package:sixam_mart_delivery/features/navigation_handler/controllers/navigation_handler_controller.dart';
 import 'package:sixam_mart_delivery/features/forgot_password/controllers/forgot_password_controller.dart';
 import 'package:sixam_mart_delivery/helper/custom_validator_helper.dart';
 import 'package:sixam_mart_delivery/helper/route_helper.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/images.dart';
+import 'package:sixam_mart_delivery/util/manager_assets.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_app_bar_widget.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_button_widget.dart';
@@ -21,71 +22,83 @@ class ForgetPassScreen extends StatefulWidget {
 }
 
 class _ForgetPassScreenState extends State<ForgetPassScreen> {
+    final FocusNode _phoneFocus = FocusNode();
+
   final TextEditingController _numberController = TextEditingController();
-  String? _countryDialCode = CountryCode.fromCountryCode(Get.find<SplashController>().configModel!.country!).dialCode;
-  final String? _countryCode = CountryCode.fromCountryCode(Get.find<SplashController>().configModel!.country!).code;
+  String? _countryDialCode = CountryCode.fromCountryCode(
+          Get.find<NavigationHandlerController>().configModel!.country!)
+      .dialCode;
+  String? _countryCode = CountryCode.fromCountryCode(
+          Get.find<NavigationHandlerController>().configModel!.country!)
+      .code;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
-      appBar: CustomAppBarWidget(title: 'forgot_password'.tr),
-
+      backgroundColor: Theme.of(context).cardColor,
+      appBar: CustomAppBarWidget(
+        elevation: 0,
+      ),
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
           child: Column(children: [
-
-            Image.asset(Images.forgot, height: 220),
-
+            Image.asset(ManagerAssets.logo, width: 200),
+            SizedBox(
+              height: Dimensions.paddingSizeExtraLarge,
+            ),
+            Text('forgot_password'.tr,
+                style: robotoMedium.copyWith(
+                    fontSize: Dimensions.fontSizeExtraLarge),
+                textAlign: TextAlign.center),
+            SizedBox(
+              height: Dimensions.paddingSizeDefault,
+            ),
             Padding(
-              padding: const EdgeInsets.all(30),
-              child: Text('please_enter_mobile'.tr, style: robotoRegular, textAlign: TextAlign.center),
+              padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: Text('please_enter_mobile'.tr,
+                  style: robotoMedium.copyWith(
+                      color: Theme.of(context).disabledColor),
+                  textAlign: TextAlign.center),
             ),
-
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
-                color: Theme.of(context).cardColor,
+            SizedBox(
+              height: Dimensions.paddingSizeExtraLarge,
+            ),
+            WidgetWithLabel(
+              label: 'mobile_number'.tr,
+              textField: CustomTextFieldWidget(
+                controller: _numberController,
+                hintText: 'xxx-xxxx-xxxx',
+                labelText: 'phone_number'.tr,
+                focusNode: _phoneFocus,
+                inputType: TextInputType.phone,
+                isPhone: true,
+                isRequired: true,
+                onCountryChanged: (CountryCode countryCode) {
+                  _countryDialCode = countryCode.dialCode;
+                  _countryCode = countryCode.code;
+                },
+                countryDialCode: _countryCode ??
+                    CountryCode.fromCountryCode(
+                            Get.find<NavigationHandlerController>()
+                                .configModel!
+                                .country!)
+                        .code,
+                inputAction: TextInputAction.done,
+                onSubmit: (text) =>
+                    GetPlatform.isWeb ? _forgetPass(_countryDialCode!) : null,
               ),
-              child: Row(children: [
-
-                CountryCodePicker(
-                  onChanged: (CountryCode countryCode) {
-                    _countryDialCode = countryCode.dialCode;
-                  },
-                  initialSelection: _countryCode,
-                  favorite: [_countryDialCode!],
-                  showDropDownButton: true,
-                  padding: EdgeInsets.zero,
-                  dialogBackgroundColor: Theme.of(context).cardColor,
-                  backgroundColor: Theme.of(context).cardColor,
-                  showFlagMain: true,
-                  textStyle: robotoRegular.copyWith(
-                    fontSize: Dimensions.fontSizeLarge, color: Theme.of(context).textTheme.bodyLarge!.color,
-                  ),
-                ),
-
-                Expanded(child: CustomTextFieldWidget(
-                  controller: _numberController,
-                  inputType: TextInputType.phone,
-                  inputAction: TextInputAction.done,
-                  hintText: 'xxx-xxx-xxxxx'.tr,
-                  labelText: 'phone'.tr,
-                  onSubmit: (text) => GetPlatform.isWeb ? _forgetPass(_countryDialCode!) : null,
-                )),
-
-              ]),
             ),
-            const SizedBox(height: Dimensions.paddingSizeLarge),
-
-            GetBuilder<ForgotPasswordController>(builder: (forgotPasswordController) {
-              return !forgotPasswordController.isLoading ? CustomButtonWidget(
-                buttonText: 'next'.tr,
-                onPressed: () => _forgetPass(_countryDialCode!),
-              ) : const Center(child: CircularProgressIndicator());
+            const SizedBox(height: Dimensions.paddingSizeExtraLarge),
+            GetBuilder<ForgotPasswordController>(
+                builder: (forgotPasswordController) {
+              return !forgotPasswordController.isLoading
+                  ? CustomButtonWidget(
+                      buttonText: 'confirm'.tr,
+                      onPressed: () => _forgetPass(_countryDialCode!),
+                    )
+                  : const Center(child: CircularProgressIndicator());
             }),
-
           ]),
         ),
       ),
@@ -95,23 +108,30 @@ class _ForgetPassScreenState extends State<ForgetPassScreen> {
   void _forgetPass(String countryCode) async {
     String phone = _numberController.text.trim();
 
-    String numberWithCountryCode = countryCode+phone;
-    PhoneValid phoneValid = await CustomValidator.isPhoneValid(numberWithCountryCode);
+    String numberWithCountryCode = countryCode + phone;
+    PhoneValid phoneValid =
+        await CustomValidator.isPhoneValid(numberWithCountryCode);
     numberWithCountryCode = phoneValid.phone;
 
     if (phone.isEmpty) {
       showCustomSnackBar('enter_phone_number'.tr);
-    }else if (!phoneValid.isValid) {
+    } else if (!phoneValid.isValid) {
       showCustomSnackBar('invalid_phone_number'.tr);
-    }else {
-      Get.find<ForgotPasswordController>().forgetPassword(numberWithCountryCode).then((status) async {
+    } else {
+      Get.find<ForgotPasswordController>()
+          .forgetPassword(numberWithCountryCode)
+          .then((status) async {
         if (status.isSuccess) {
-          if(Get.find<SplashController>().configModel!.firebaseOtpVerification!) {
-            Get.find<ForgotPasswordController>().firebaseVerifyPhoneNumber(numberWithCountryCode);
+          if (Get.find<NavigationHandlerController>()
+              .configModel!
+              .firebaseOtpVerification!) {
+            Get.find<ForgotPasswordController>()
+                .firebaseVerifyPhoneNumber(numberWithCountryCode);
           } else {
-            Get.toNamed(RouteHelper.getVerificationRoute(numberWithCountryCode));
+            Get.toNamed(
+                RouteHelper.getVerificationRoute(numberWithCountryCode));
           }
-        }else {
+        } else {
           showCustomSnackBar(status.message);
         }
       });

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/images.dart';
+import 'package:sixam_mart_delivery/util/manager_assets.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
 
 class FundPaymentDialogWidget extends StatelessWidget {
@@ -20,7 +20,7 @@ class FundPaymentDialogWidget extends StatelessWidget {
           child: Column(mainAxisSize: MainAxisSize.min, children: [
             Padding(
               padding: const EdgeInsets.all(Dimensions.paddingSizeLarge),
-              child: Image.asset(Images.warning, width: 70, height: 70),
+              child: Image.asset(ManagerAssets.warning, width: 70, height: 70),
             ),
 
             Padding(

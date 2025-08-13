@@ -56,11 +56,11 @@ import 'package:sixam_mart_delivery/features/profile/domain/repositories/profile
 import 'package:sixam_mart_delivery/features/profile/domain/repositories/profile_repository_interface.dart';
 import 'package:sixam_mart_delivery/features/profile/domain/services/profile_service.dart';
 import 'package:sixam_mart_delivery/features/profile/domain/services/profile_service_interface.dart';
-import 'package:sixam_mart_delivery/features/splash/controllers/splash_controller.dart';
-import 'package:sixam_mart_delivery/features/splash/domain/repositories/splash_repository.dart';
-import 'package:sixam_mart_delivery/features/splash/domain/repositories/splash_repository_interface.dart';
-import 'package:sixam_mart_delivery/features/splash/domain/services/splash_service.dart';
-import 'package:sixam_mart_delivery/features/splash/domain/services/splash_service_interface.dart';
+import 'package:sixam_mart_delivery/features/navigation_handler/controllers/navigation_handler_controller.dart';
+import 'package:sixam_mart_delivery/features/navigation_handler/domain/repositories/navigation_handler_repository.dart';
+import 'package:sixam_mart_delivery/features/navigation_handler/domain/repositories/navigation_handler_repository_interface.dart';
+import 'package:sixam_mart_delivery/features/navigation_handler/domain/services/navigation_handler_service.dart';
+import 'package:sixam_mart_delivery/features/navigation_handler/domain/services/navigation_handler_service_interface.dart';
 import 'package:sixam_mart_delivery/util/app_constants.dart';
 import 'package:sixam_mart_delivery/features/language/domain/models/language_model.dart';
 import 'package:flutter/services.dart';
@@ -113,7 +113,7 @@ Future<Map<String, Map<String, String>>> init() async {
   LanguageRepositoryInterface languageRepositoryInterface = LanguageRepository(apiClient: Get.find(), sharedPreferences: Get.find());
   Get.lazyPut(() => languageRepositoryInterface);
 
-  SplashRepositoryInterface splashRepositoryInterface = SplashRepository(apiClient: Get.find(), sharedPreferences: Get.find());
+  NavigationHandlerRepositoryInterface splashRepositoryInterface = NavigationHandlerRepository(apiClient: Get.find(), sharedPreferences: Get.find());
   Get.lazyPut(() => splashRepositoryInterface);
 
   NotificationRepositoryInterface notificationRepositoryInterface = NotificationRepository(apiClient: Get.find(), sharedPreferences: Get.find());
@@ -150,7 +150,7 @@ Future<Map<String, Map<String, String>>> init() async {
   LanguageServiceInterface languageServiceInterface = LanguageService(languageRepositoryInterface: Get.find());
   Get.lazyPut(() => languageServiceInterface);
 
-  SplashServiceInterface splashServiceInterface = SplashService(splashRepositoryInterface: Get.find());
+  NavigationHandlerServiceInterface splashServiceInterface = NavigationHandlerService(navigationHandlerRepositoryInterface: Get.find());
   Get.lazyPut(() => splashServiceInterface);
 
   NotificationServiceInterface notificationServiceInterface = NotificationService(notificationRepositoryInterface: Get.find());
@@ -175,7 +175,7 @@ Future<Map<String, Map<String, String>>> init() async {
   Get.lazyPut(() => ForgotPasswordService(forgotPasswordRepositoryInterface: Get.find()));
   Get.lazyPut(() => ChatService(chatRepositoryInterface: Get.find()));
   Get.lazyPut(() => LanguageService(languageRepositoryInterface: Get.find()));
-  Get.lazyPut(() => SplashService(splashRepositoryInterface: Get.find()));
+  Get.lazyPut(() => NavigationHandlerService(navigationHandlerRepositoryInterface: Get.find()));
   Get.lazyPut(() => NotificationService(notificationRepositoryInterface: Get.find()));
   Get.lazyPut(() => ProfileService(profileRepositoryInterface: Get.find()));
   Get.lazyPut(() => AddressService(addressRepositoryInterface: Get.find()));
@@ -190,7 +190,7 @@ Future<Map<String, Map<String, String>>> init() async {
   Get.lazyPut(() => ForgotPasswordController(forgotPasswordServiceInterface: Get.find()));
   Get.lazyPut(() => ChatController(chatServiceInterface: Get.find()));
   Get.lazyPut(() => LocalizationController(languageServiceInterface: Get.find()));
-  Get.lazyPut(() => SplashController(splashServiceInterface: Get.find()));
+  Get.lazyPut(() => NavigationHandlerController(navigationHandlerServiceInterface: Get.find()));
   Get.lazyPut(() => NotificationController(notificationServiceInterface: Get.find()));
   Get.lazyPut(() => ProfileController(profileServiceInterface: Get.find()));
   Get.lazyPut(() => AddressController(addressServiceInterface: Get.find()));

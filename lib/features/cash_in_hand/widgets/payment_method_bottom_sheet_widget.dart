@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sixam_mart_delivery/features/profile/controllers/profile_controller.dart';
-import 'package:sixam_mart_delivery/features/splash/controllers/splash_controller.dart';
+import 'package:sixam_mart_delivery/features/navigation_handler/controllers/navigation_handler_controller.dart';
 import 'package:sixam_mart_delivery/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
@@ -65,17 +65,17 @@ class _PaymentMethodBottomSheetWidgetState extends State<PaymentMethodBottomShee
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
               child: ListView.builder(
-                itemCount: Get.find<SplashController>().configModel!.activePaymentMethodList!.length,
+                itemCount: Get.find<NavigationHandlerController>().configModel!.activePaymentMethodList!.length,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index){
 
-                  bool isSelected = cashInHandController.paymentIndex == 1 && Get.find<SplashController>().configModel!.activePaymentMethodList![index].getWay! == cashInHandController.digitalPaymentName;
+                  bool isSelected = cashInHandController.paymentIndex == 1 && Get.find<NavigationHandlerController>().configModel!.activePaymentMethodList![index].getWay! == cashInHandController.digitalPaymentName;
 
                   return InkWell(
                     onTap: (){
                       cashInHandController.setPaymentIndex(1);
-                      cashInHandController.changeDigitalPaymentName(Get.find<SplashController>().configModel!.activePaymentMethodList![index].getWay!);
+                      cashInHandController.changeDigitalPaymentName(Get.find<NavigationHandlerController>().configModel!.activePaymentMethodList![index].getWay!);
                     },
                     child: Container(
                       margin: const EdgeInsets.only(bottom: Dimensions.paddingSizeSmall),
@@ -97,14 +97,14 @@ class _PaymentMethodBottomSheetWidgetState extends State<PaymentMethodBottomShee
                         const SizedBox(width: Dimensions.paddingSizeDefault),
 
                         Text(
-                          Get.find<SplashController>().configModel!.activePaymentMethodList![index].getWayTitle!,
+                          Get.find<NavigationHandlerController>().configModel!.activePaymentMethodList![index].getWayTitle!,
                           style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeDefault),
                         ),
                         const Spacer(),
 
                         CustomImageWidget(
                           height: 20, fit: BoxFit.contain,
-                          image: '${Get.find<SplashController>().configModel!.activePaymentMethodList![index].getWayImageFullUrl}',
+                          image: '${Get.find<NavigationHandlerController>().configModel!.activePaymentMethodList![index].getWayImageFullUrl}',
                         ),
 
                       ]),

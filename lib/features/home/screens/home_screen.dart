@@ -13,7 +13,7 @@ import 'package:sixam_mart_delivery/helper/route_helper.dart';
 import 'package:sixam_mart_delivery/util/app_constants.dart';
 import 'package:sixam_mart_delivery/util/color_resources.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/images.dart';
+import 'package:sixam_mart_delivery/util/manager_assets.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_button_widget.dart';
 import 'package:sixam_mart_delivery/common/widgets/order_shimmer_widget.dart';
@@ -159,7 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
         elevation: 2,
         leading: Padding(
           padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
-          child: Image.asset(Images.logo, height: 30, width: 30),
+          child: Image.asset(ManagerAssets.logo, height: 30, width: 30),
         ),
         titleSpacing: 0,
         title: Text(AppConstants.appName, maxLines: 1, overflow: TextOverflow.ellipsis, style: robotoMedium.copyWith(
@@ -212,7 +212,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: CustomConfirmationBottomSheet(
                           title: 'go_offline'.tr,
                           description: 'are_you_sure_to_offline'.tr,
-                          image: Images.dmOfflineIcon,
+                          image: ManagerAssets.dmOfflineIcon,
                           buttonWidget: Padding(
                             padding: const EdgeInsets.only(
                               left: 40, right: 40, bottom: 20, top: 10,
@@ -330,7 +330,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Row(mainAxisAlignment: MainAxisAlignment.start, children: [
 
                           const SizedBox(width: Dimensions.paddingSizeSmall),
-                          Image.asset(Images.wallet, width: 60, height: 60),
+                          Image.asset(ManagerAssets.wallet, width: 60, height: 60),
                           const SizedBox(width: Dimensions.paddingSizeLarge),
 
                           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -539,7 +539,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: CustomConfirmationBottomSheet(
           title: 'location_access_needed'.tr,
           description: 'you_denied'.tr,
-          image: Images.locationAccessIcon,
+          image: ManagerAssets.locationAccessIcon,
           buttonWidget: Padding(
             padding: const EdgeInsets.only(bottom: 20, top: 10, left: 30, right: 30),
             child: CustomButtonWidget(
@@ -559,7 +559,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: CustomConfirmationBottomSheet(
           title: 'location_access_needed'.tr,
           description: permission == LocationPermission.whileInUse ? 'you_denied'.tr : 'you_denied_forever'.tr,
-          image: Images.locationAccessIcon,
+          image: ManagerAssets.locationAccessIcon,
           buttonWidget: Padding(
             padding: const EdgeInsets.only(bottom: 20, top: 10, left: 30, right: 30),
             child: CustomButtonWidget(

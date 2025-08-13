@@ -27,7 +27,7 @@ class ConditionCheckBoxWidget extends StatelessWidget {
         child: RichText(
           text: TextSpan(children: [
             TextSpan(
-              text: 'by_login_i_agree_with_all_the'.tr,
+              text: 'i_agree_to_the'.tr,
               style: robotoRegular.copyWith(color: fromSignUp ? Theme.of(context).textTheme.bodyMedium!.color : Theme.of(context).hintColor),
             ),
             const TextSpan(text: ' '),

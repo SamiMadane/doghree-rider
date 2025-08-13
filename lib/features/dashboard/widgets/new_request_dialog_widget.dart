@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:sixam_mart_delivery/features/order/controllers/order_controller.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/images.dart';
+import 'package:sixam_mart_delivery/util/manager_assets.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_button_widget.dart';
 import 'package:flutter/material.dart';
@@ -54,7 +54,7 @@ class _NewRequestDialogWidgetState extends State<NewRequestDialogWidget> {
         child: GetBuilder<OrderController>(builder: (orderController) {
           return Column(mainAxisSize: MainAxisSize.min, children: [
 
-            Image.asset(Images.notificationIn, height: 60, color: Theme.of(context).primaryColor),
+            Image.asset(ManagerAssets.notificationIn, height: 60, color: Theme.of(context).primaryColor),
 
             Padding(
               padding: const EdgeInsets.all(Dimensions.paddingSizeLarge),

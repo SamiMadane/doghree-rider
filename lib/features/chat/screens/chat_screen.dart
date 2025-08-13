@@ -10,7 +10,7 @@ import 'package:sixam_mart_delivery/helper/responsive_helper.dart';
 import 'package:sixam_mart_delivery/helper/route_helper.dart';
 import 'package:sixam_mart_delivery/util/app_constants.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/images.dart';
+import 'package:sixam_mart_delivery/util/manager_assets.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_image_widget.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_snackbar_widget.dart';
@@ -187,7 +187,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           },
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault),
-                            child: Image.asset(Images.image, width: 25, height: 25, color: Theme.of(context).hintColor),
+                            child: Image.asset(ManagerAssets.image, width: 25, height: 25, color: Theme.of(context).hintColor),
                           ),
                         ),
 
@@ -253,7 +253,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             child: Padding(
                               padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault),
                               child: Image.asset(
-                                Images.send, width: 25, height: 25,
+                                ManagerAssets.send, width: 25, height: 25,
                                 color: chatController.isSendButtonActive ? Theme.of(context).primaryColor : Theme.of(context).hintColor,
                               ),
                             ),

@@ -11,7 +11,7 @@ import 'package:sixam_mart_delivery/features/profile/domain/models/profile_model
 import 'package:sixam_mart_delivery/features/profile/domain/repositories/profile_repository_interface.dart';
 import 'package:geocoding/geocoding.dart' as geo_coding;
 import 'package:sixam_mart_delivery/features/profile/domain/services/profile_service_interface.dart';
-import 'package:sixam_mart_delivery/util/images.dart';
+import 'package:sixam_mart_delivery/util/manager_assets.dart';
 
 class ProfileService implements ProfileServiceInterface {
   final ProfileRepositoryInterface profileRepositoryInterface;
@@ -74,7 +74,7 @@ class ProfileService implements ProfileServiceInterface {
         child: CustomConfirmationBottomSheet(
           title: 'location_access_needed'.tr,
           description: 'you_denied'.tr,
-          image: Images.locationAccessIcon,
+          image: ManagerAssets.locationAccessIcon,
           buttonWidget: Padding(
             padding: const EdgeInsets.only(bottom: 20, top: 10, left: 30, right: 30),
             child: CustomButtonWidget(
@@ -95,7 +95,7 @@ class ProfileService implements ProfileServiceInterface {
         child: CustomConfirmationBottomSheet(
           title: 'location_access_needed'.tr,
           description: permission == LocationPermission.whileInUse ? 'you_denied'.tr : 'you_denied_forever'.tr,
-          image: Images.locationAccessIcon,
+          image: ManagerAssets.locationAccessIcon,
           buttonWidget: Padding(
             padding: const EdgeInsets.only(bottom: 20, top: 10, left: 30, right: 30),
             child: CustomButtonWidget(

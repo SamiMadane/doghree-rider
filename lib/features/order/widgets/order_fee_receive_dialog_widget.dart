@@ -1,7 +1,7 @@
 import 'package:sixam_mart_delivery/helper/price_converter_helper.dart';
 import 'package:sixam_mart_delivery/helper/route_helper.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/images.dart';
+import 'package:sixam_mart_delivery/util/manager_assets.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_button_widget.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +19,7 @@ class OrderFeeReceiveDialogWidget extends StatelessWidget {
         padding: const EdgeInsets.all(Dimensions.paddingSizeLarge),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
 
-          Image.asset(Images.money, height: 100, width: 100),
+          Image.asset(ManagerAssets.money, height: 100, width: 100),
           const SizedBox(height: Dimensions.paddingSizeLarge),
 
           Text(

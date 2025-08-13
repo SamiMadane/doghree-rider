@@ -5,7 +5,7 @@ import 'package:sixam_mart_delivery/features/auth/controllers/auth_controller.da
 import 'package:sixam_mart_delivery/features/order/controllers/order_controller.dart';
 import 'package:sixam_mart_delivery/features/profile/controllers/profile_controller.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/images.dart';
+import 'package:sixam_mart_delivery/util/manager_assets.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
 
 class CustomConfirmationBottomSheet extends StatelessWidget {
@@ -44,7 +44,7 @@ class CustomConfirmationBottomSheet extends StatelessWidget {
               const SizedBox(height: Dimensions.paddingSizeLarge),
 
               Image.asset(
-                image ?? Images.warning, height: 60, width: 60,
+                image ?? ManagerAssets.warning, height: 60, width: 60,
               ),
               const SizedBox(height: Dimensions.paddingSizeLarge),
 

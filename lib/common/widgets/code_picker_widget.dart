@@ -1,8 +1,6 @@
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/styles.dart';
 
 class CodePickerWidget extends StatefulWidget {
   final ValueChanged<CountryCode>? onChanged;
@@ -38,10 +36,6 @@ class CodePickerWidget extends StatefulWidget {
   final bool? showDropDownButton;
   final Decoration? flagDecoration;
   final List<Map<String, String>>? countryList;
-  final bool hideHeaderText;
-  final MainAxisAlignment headerAlignment;
-  final TextStyle headerTextStyle;
-  final EdgeInsets topBarPadding;
 
   const CodePickerWidget({
     this.onChanged,
@@ -77,10 +71,6 @@ class CodePickerWidget extends StatefulWidget {
     this.dialogBackgroundColor,
     this.closeIcon = const Icon(Icons.close),
     this.countryList = codes,
-    this.hideHeaderText = false,
-    this.headerAlignment = MainAxisAlignment.center,
-    this.headerTextStyle = robotoBold,
-    this.topBarPadding = const EdgeInsets.all(Dimensions.paddingSizeSmall),
     super.key,
   });
   @override
@@ -198,10 +188,6 @@ class _CodePickerWidgetState extends State<CodePickerWidget> {
                 hideSearch: widget.hideSearch!,
                 closeIcon: widget.closeIcon,
                 flagDecoration: widget.flagDecoration,
-                hideHeaderText: widget.hideHeaderText,
-                headerAlignment: widget.headerAlignment,
-                headerTextStyle: widget.headerTextStyle,
-                topBarPadding: widget.topBarPadding,
               ),
             ),
           ),
@@ -238,10 +224,6 @@ class _CodePickerWidgetState extends State<CodePickerWidget> {
             barrierColor: widget.barrierColor,
             hideSearch: widget.hideSearch!,
             closeIcon: widget.closeIcon,
-            hideHeaderText: widget.hideHeaderText,
-            headerAlignment: widget.headerAlignment,
-            headerTextStyle: widget.headerTextStyle,
-            topBarPadding: widget.topBarPadding,
           ),
         ),
       ).then((e) {

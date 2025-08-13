@@ -3,7 +3,7 @@ import 'package:sixam_mart_delivery/features/notification/controllers/notificati
 import 'package:sixam_mart_delivery/helper/date_converter_helper.dart';
 import 'package:sixam_mart_delivery/helper/route_helper.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/images.dart';
+import 'package:sixam_mart_delivery/util/manager_assets.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_app_bar_widget.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_image_widget.dart';
@@ -117,7 +117,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                               fit: BoxFit.cover,
                             ),
                           ) : const CustomAssetImageWidget(
-                            image: Images.orderIcon,
+                            image: ManagerAssets.orderIcon,
                             height: 60, width: 60,
                           ),
                           const SizedBox(width: Dimensions.paddingSizeDefault),

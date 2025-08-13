@@ -6,7 +6,7 @@ import 'package:sixam_mart_delivery/features/profile/controllers/profile_control
 import 'package:sixam_mart_delivery/features/profile/domain/models/profile_model.dart';
 import 'package:sixam_mart_delivery/helper/route_helper.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/images.dart';
+import 'package:sixam_mart_delivery/util/manager_assets.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_app_bar_widget.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_button_widget.dart';
@@ -65,7 +65,7 @@ class _NewPassScreenState extends State<NewPassScreen> {
                 child: Column(mainAxisSize: MainAxisSize.min, children: [
 
                   const CustomAssetImageWidget(
-                    image: Images.changePasswordBgImage,
+                    image: ManagerAssets.changePasswordBgImage,
                     height: 145, width: 160,
                   ),
                   const SizedBox(height: Dimensions.paddingSizeDefault),

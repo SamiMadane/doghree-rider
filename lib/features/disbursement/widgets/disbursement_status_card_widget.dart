@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sixam_mart_delivery/helper/price_converter_helper.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/images.dart';
+import 'package:sixam_mart_delivery/util/manager_assets.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
 import 'package:just_the_tooltip/just_the_tooltip.dart';
 
@@ -79,13 +79,13 @@ class DisbursementStatusCardWidget extends StatelessWidget {
                 decoration: BoxDecoration(color: isPending ? Colors.blue : isCompleted ? Colors.green : Colors.red, shape: BoxShape.circle),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(100),
-                  child: Image.asset(Images.transactionReportIcon),
+                  child: Image.asset(ManagerAssets.transactionReportIcon),
                 ),
               ),
 
               Positioned(
                 right: 10, top: 10,
-                child: Image.asset(Images.onHoldTransactionIcon, height: 15, width: 15),
+                child: Image.asset(ManagerAssets.onHoldTransactionIcon, height: 15, width: 15),
               ),
 
             ]),
