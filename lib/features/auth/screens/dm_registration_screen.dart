@@ -74,7 +74,7 @@ class _DmRegistrationScreenState extends State<DmRegistrationScreen> {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: CustomAppBarWidget(
           title: 'join_delivery_partner'.tr,
-          elevation: 0,
+       
           onBackPressed: () async {
             if (Get.find<AuthController>().dmStatus != 0.4) {
               Get.find<AuthController>().dmStatusChange(0.4);

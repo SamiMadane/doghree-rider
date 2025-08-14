@@ -13,6 +13,7 @@ class CustomAppBarWidget extends StatelessWidget
   final Function? onBackPressed;
   final Widget? actionWidget;
   final double? elevation;
+  final Widget? leadingWidget; // الخاصية الجديدة
 
   const CustomAppBarWidget({
     super.key,
@@ -21,6 +22,7 @@ class CustomAppBarWidget extends StatelessWidget
     this.onBackPressed,
     this.actionWidget,
     this.elevation,
+    this.leadingWidget,
   });
 
   @override
@@ -35,27 +37,28 @@ class CustomAppBarWidget extends StatelessWidget
             )
           : null,
       centerTitle: true,
-      leading: isBackButtonExist
-          ? IconButton(
-              icon: SvgPicture.asset(
-                ManagerAssets.arrowBackIcon,
-                color: Theme.of(context).iconTheme.color,
-              ),
-              onPressed: () {
-                if (onBackPressed != null) {
-                  onBackPressed!();
-                } else if (Get.previousRoute.isNotEmpty) {
-                  Get.back();
-                } else {
-                  Get.offAllNamed(RouteHelper.getInitialRoute());
-                }
-              },
-            )
-          : null,
+      leading: leadingWidget ??
+          (isBackButtonExist
+              ? IconButton(
+                  icon: SvgPicture.asset(
+                    ManagerAssets.arrowBackIcon,
+                    color: Theme.of(context).iconTheme.color,
+                  ),
+                  onPressed: () {
+                    if (onBackPressed != null) {
+                      onBackPressed!();
+                    } else if (Get.previousRoute.isNotEmpty) {
+                      Get.back();
+                    } else {
+                      Get.offAllNamed(RouteHelper.getInitialRoute());
+                    }
+                  },
+                )
+              : null),
       backgroundColor: Theme.of(context).cardColor,
       surfaceTintColor: Theme.of(context).cardColor,
       shadowColor: Theme.of(context).disabledColor.withAlpha(128),
-      elevation: elevation ?? 2,
+      elevation: elevation ?? 0,
       scrolledUnderElevation: 0,
       actions: [
         Padding(

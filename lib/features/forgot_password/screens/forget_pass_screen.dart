@@ -37,7 +37,7 @@ class _ForgetPassScreenState extends State<ForgetPassScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).cardColor,
       appBar: CustomAppBarWidget(
-        elevation: 0,
+     
       ),
       body: Center(
         child: SingleChildScrollView(
