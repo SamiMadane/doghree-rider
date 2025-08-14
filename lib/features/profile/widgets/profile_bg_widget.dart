@@ -1,5 +1,5 @@
 import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/images.dart';
+import 'package:sixam_mart_delivery/util/manager_assets.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -20,7 +20,7 @@ class ProfileBgWidget extends StatelessWidget {
 
         SizedBox(
           width: context.width, height: 260,
-          child: Center(child: Image.asset(Images.profileBg, height: 260, width: 1170, fit: BoxFit.fill)),
+          child: Center(child: Image.asset(ManagerAssets.profileBg, height: 260, width: 1170, fit: BoxFit.fill)),
         ),
 
         Positioned(

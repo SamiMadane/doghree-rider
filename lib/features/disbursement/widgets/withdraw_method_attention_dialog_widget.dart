@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sixam_mart_delivery/helper/route_helper.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/images.dart';
+import 'package:sixam_mart_delivery/util/manager_assets.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
 
 class WithdrawMethodAttentionDialogWidget extends StatelessWidget {
@@ -35,7 +35,7 @@ class WithdrawMethodAttentionDialogWidget extends StatelessWidget {
         ),
 
         Row(children: [
-          Image.asset(Images.attentionWarningIcon, width: 20, height: 20),
+          Image.asset(ManagerAssets.attentionWarningIcon, width: 20, height: 20),
           const SizedBox(width: Dimensions.paddingSizeSmall),
 
           Text('attention_please'.tr, style: robotoBold.copyWith(color: Colors.black)),

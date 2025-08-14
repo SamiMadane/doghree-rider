@@ -3,7 +3,7 @@ import 'package:sixam_mart_delivery/features/order/domain/models/order_model.dar
 import 'package:sixam_mart_delivery/helper/route_helper.dart';
 import 'package:sixam_mart_delivery/util/color_resources.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/images.dart';
+import 'package:sixam_mart_delivery/util/manager_assets.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_snackbar_widget.dart';
 import 'package:sixam_mart_delivery/features/order/screens/order_details_screen.dart';
@@ -81,7 +81,7 @@ class OrderWidget extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall, vertical: Dimensions.paddingSizeSmall),
             child: Column(children: [
               Row(crossAxisAlignment: CrossAxisAlignment.center, mainAxisAlignment: MainAxisAlignment.start, children: [
-                Image.asset((parcel || orderModel.orderStatus == 'picked_up') ? Images.personIcon : Images.house, width: 20, height: 20),
+                Image.asset((parcel || orderModel.orderStatus == 'picked_up') ? ManagerAssets.personIcon : ManagerAssets.house, width: 20, height: 20),
                 const SizedBox(width: Dimensions.paddingSizeExtraSmall),
 
                 Expanded(

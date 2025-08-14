@@ -4,7 +4,7 @@ import 'package:sixam_mart_delivery/features/profile/controllers/profile_control
 import 'package:sixam_mart_delivery/helper/price_converter_helper.dart';
 import 'package:sixam_mart_delivery/helper/route_helper.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/images.dart';
+import 'package:sixam_mart_delivery/util/manager_assets.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_button_widget.dart';
 import 'package:flutter/material.dart';
@@ -44,7 +44,7 @@ class CollectMoneyDeliverySheetWidget extends StatelessWidget {
             cod! ? Column(children: [
               const SizedBox(height: Dimensions.paddingSizeLarge),
 
-              Image.asset(Images.deliveredSuccess, height: 100, width: 100),
+              Image.asset(ManagerAssets.deliveredSuccess, height: 100, width: 100),
               const SizedBox(height: Dimensions.paddingSizeSmall),
 
               Text(
@@ -68,7 +68,7 @@ class CollectMoneyDeliverySheetWidget extends StatelessWidget {
             ]) : Column(children: [
               const SizedBox(height: Dimensions.paddingSizeLarge),
 
-              Image.asset(Images.deliveredSuccess, height: 100, width: 100),
+              Image.asset(ManagerAssets.deliveredSuccess, height: 100, width: 100),
               const SizedBox(height: Dimensions.paddingSizeSmall),
 
               Text(

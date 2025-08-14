@@ -1,5 +1,5 @@
 import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/images.dart';
+import 'package:sixam_mart_delivery/util/manager_assets.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 
@@ -29,7 +29,7 @@ class OrderShimmerWidget extends StatelessWidget {
         const SizedBox(height: Dimensions.paddingSizeDefault),
 
         Row(crossAxisAlignment: CrossAxisAlignment.center, mainAxisAlignment: MainAxisAlignment.start, children: [
-          Image.asset(Images.house, width: 20, height: 15, color: Theme.of(context).disabledColor),
+          Image.asset(ManagerAssets.house, width: 20, height: 15, color: Theme.of(context).disabledColor),
           const SizedBox(width: Dimensions.paddingSizeExtraSmall),
           Shimmer(child: Container(height: 15, width: 200, color: Theme.of(context).shadowColor)),
         ]),

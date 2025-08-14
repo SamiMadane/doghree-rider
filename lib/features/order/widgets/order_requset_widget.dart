@@ -2,13 +2,13 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:sixam_mart_delivery/features/order/controllers/order_controller.dart';
 import 'package:sixam_mart_delivery/features/address/controllers/address_controller.dart';
 import 'package:sixam_mart_delivery/features/profile/controllers/profile_controller.dart';
-import 'package:sixam_mart_delivery/features/splash/controllers/splash_controller.dart';
+import 'package:sixam_mart_delivery/features/navigation_handler/controllers/navigation_handler_controller.dart';
 import 'package:sixam_mart_delivery/features/order/domain/models/order_model.dart';
 import 'package:sixam_mart_delivery/helper/date_converter_helper.dart';
 import 'package:sixam_mart_delivery/helper/price_converter_helper.dart';
 import 'package:sixam_mart_delivery/helper/route_helper.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/images.dart';
+import 'package:sixam_mart_delivery/util/manager_assets.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
 import 'package:sixam_mart_delivery/common/widgets/confirmation_dialog_widget.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_button_widget.dart';
@@ -132,7 +132,7 @@ class OrderRequestWidget extends StatelessWidget {
               Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(50),
-                  child: Image.asset(Images.dmAvatar, height: 45, width: 45, fit: BoxFit.contain),
+                  child: Image.asset(ManagerAssets.dmAvatar, height: 45, width: 45, fit: BoxFit.contain),
                 ),
                 const SizedBox(width: Dimensions.paddingSizeSmall),
 
@@ -182,7 +182,7 @@ class OrderRequestWidget extends StatelessWidget {
               Expanded(
                 child: Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.start, children: [
 
-                  (Get.find<SplashController>().configModel!.showDmEarning! && Get.find<ProfileController>().profileModel != null
+                  (Get.find<NavigationHandlerController>().configModel!.showDmEarning! && Get.find<ProfileController>().profileModel != null
                       && Get.find<ProfileController>().profileModel!.earnings == 1) ? Text(
                     PriceConverterHelper.convertPrice(orderModel.originalDeliveryCharge! + orderModel.dmTips!),
                     style: robotoBold.copyWith(fontSize: Dimensions.fontSizeLarge),
@@ -207,7 +207,7 @@ class OrderRequestWidget extends StatelessWidget {
                 child: Row(children: [
                   Expanded(child: TextButton(
                     onPressed: () => Get.dialog(ConfirmationDialogWidget(
-                      icon: Images.warning, title: 'are_you_sure_to_ignore'.tr,
+                      icon: ManagerAssets.warning, title: 'are_you_sure_to_ignore'.tr,
                       description: parcel ? 'you_want_to_ignore_this_delivery'.tr : 'you_want_to_ignore_this_order'.tr,
                       onYesPressed: ()  {
                         if(Get.isSnackbarOpen){
@@ -238,7 +238,7 @@ class OrderRequestWidget extends StatelessWidget {
                     buttonText: 'accept'.tr,
                     fontSize: Dimensions.fontSizeDefault,
                     onPressed: () => Get.dialog(ConfirmationDialogWidget(
-                      icon: Images.warning, title: 'are_you_sure_to_accept'.tr,
+                      icon: ManagerAssets.warning, title: 'are_you_sure_to_accept'.tr,
                       description: parcel ? 'you_want_to_accept_this_delivery'.tr : 'you_want_to_accept_this_order'.tr,
                       onYesPressed: () {
                         orderController.acceptOrder(orderModel.id, index, orderModel).then((isSuccess) {

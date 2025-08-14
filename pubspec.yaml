@@ -48,6 +48,7 @@ dependencies:
   flutter_foreground_task: ^9.1.0
   dropdown_button2: ^2.3.9
   open_filex: ^4.7.0
+  flutter_native_splash: ^2.4.6
 
 dependency_overrides:
   collection: ^1.19.0
@@ -64,6 +65,7 @@ flutter:
   assets:
     - assets/image/
     - assets/language/
+    - assets/icon/
     - assets/notification.mp3
 
   fonts:

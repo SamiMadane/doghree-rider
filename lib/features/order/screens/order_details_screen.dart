@@ -7,7 +7,7 @@ import 'package:sixam_mart_delivery/features/language/controllers/language_contr
 import 'package:sixam_mart_delivery/features/notification/controllers/notification_controller.dart';
 import 'package:sixam_mart_delivery/features/order/controllers/order_controller.dart';
 import 'package:sixam_mart_delivery/features/profile/controllers/profile_controller.dart';
-import 'package:sixam_mart_delivery/features/splash/controllers/splash_controller.dart';
+import 'package:sixam_mart_delivery/features/navigation_handler/controllers/navigation_handler_controller.dart';
 import 'package:sixam_mart_delivery/features/notification/domain/models/notification_body_model.dart';
 import 'package:sixam_mart_delivery/features/chat/domain/models/conversation_model.dart';
 import 'package:sixam_mart_delivery/features/order/domain/models/order_details_model.dart';
@@ -17,7 +17,7 @@ import 'package:sixam_mart_delivery/helper/responsive_helper.dart';
 import 'package:sixam_mart_delivery/helper/route_helper.dart';
 import 'package:sixam_mart_delivery/util/app_constants.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/images.dart';
+import 'package:sixam_mart_delivery/util/manager_assets.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
 import 'package:sixam_mart_delivery/common/widgets/confirmation_dialog_widget.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_app_bar_widget.dart';
@@ -102,7 +102,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
   @override
   Widget build(BuildContext context) {
     bool? cancelPermission =
-        Get.find<SplashController>().configModel!.canceledByDeliveryman;
+        Get.find<NavigationHandlerController>().configModel!.canceledByDeliveryman;
     bool selfDelivery =
         Get.find<ProfileController>().profileModel!.type != 'zone_wise';
 
@@ -134,7 +134,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
             child: GetBuilder<OrderController>(builder: (orderController) {
               OrderModel? controllerOrderModel = orderController.orderModel;
 
-              bool restConfModel = Get.find<SplashController>()
+              bool restConfModel = Get.find<NavigationHandlerController>()
                       .configModel!
                       .orderConfirmationModel !=
                   'deliveryman';
@@ -150,7 +150,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                   partialPay,
                   offlinePay;
 
-              bool orderVerificationActive = Get.find<SplashController>()
+              bool orderVerificationActive = Get.find<NavigationHandlerController>()
                       .configModel
                       ?.orderDeliveryVerification ??
                   false;
@@ -244,10 +244,10 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                     controllerOrderModel.paymentMethod == 'offline_payment';
 
                 showDeliveryConfirmImage = pickedUp &&
-                    Get.find<SplashController>()
+                    Get.find<NavigationHandlerController>()
                         .configModel!
                         .dmPictureUploadStatus!;
-                bool restConfModel = Get.find<SplashController>()
+                bool restConfModel = Get.find<NavigationHandlerController>()
                         .configModel!
                         .orderConfirmationModel !=
                     'deliveryman';
@@ -660,7 +660,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                           .orderNote!.isNotEmpty)
                                   ? Dimensions.paddingSizeLarge
                                   : 0),
-                          (Get.find<SplashController>()
+                          (Get.find<NavigationHandlerController>()
                                       .getModule(
                                           controllerOrderModel.moduleType)
                                       .orderAttachment! &&
@@ -805,7 +805,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                     ])
                               : const SizedBox(),
                           SizedBox(height: !parcel ? 10 : 0),
-                          Get.find<SplashController>()
+                          Get.find<NavigationHandlerController>()
                                   .getModuleConfig(order.moduleType)
                                   .addOn!
                               ? Row(
@@ -819,7 +819,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                   ],
                                 )
                               : const SizedBox(),
-                          Get.find<SplashController>()
+                          Get.find<NavigationHandlerController>()
                                   .getModuleConfig(order.moduleType)
                                   .addOn!
                               ? Divider(
@@ -829,7 +829,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                       .withValues(alpha: 0.5),
                                 )
                               : const SizedBox(),
-                          Get.find<SplashController>()
+                          Get.find<NavigationHandlerController>()
                                   .getModuleConfig(order.moduleType)
                                   .addOn!
                               ? Row(
@@ -845,7 +845,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                 )
                               : const SizedBox(),
                           SizedBox(
-                              height: Get.find<SplashController>()
+                              height: Get.find<NavigationHandlerController>()
                                       .getModuleConfig(order.moduleType)
                                       .addOn!
                                   ? 10
@@ -935,7 +935,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                       Text(
-                                          Get.find<SplashController>()
+                                          Get.find<NavigationHandlerController>()
                                               .configModel!
                                               .additionalChargeName!,
                                           style: robotoRegular),
@@ -1362,7 +1362,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                                 onPressed: () {
                                                   Get.dialog(
                                                       ConfirmationDialogWidget(
-                                                        icon: Images.warning,
+                                                        icon: ManagerAssets.warning,
                                                         title:
                                                             'are_you_sure_to_confirm'
                                                                 .tr,
@@ -1434,7 +1434,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                                   }
                                                   Get.dialog(
                                                       ConfirmationDialogWidget(
-                                                        icon: Images.warning,
+                                                        icon: ManagerAssets.warning,
                                                         title:
                                                             'are_you_sure_to_confirm'
                                                                 .tr,

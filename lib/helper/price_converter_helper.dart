@@ -1,4 +1,4 @@
-import 'package:sixam_mart_delivery/features/splash/controllers/splash_controller.dart';
+import 'package:sixam_mart_delivery/features/navigation_handler/controllers/navigation_handler_controller.dart';
 import 'package:get/get.dart';
 
 class PriceConverterHelper {
@@ -10,8 +10,8 @@ class PriceConverterHelper {
         price = price! - ((discount / 100) * price);
       }
     }
-    return '${Get.find<SplashController>().configModel!.currencySymbol} '
-        '${price!.toStringAsFixed(asFixed ?? Get.find<SplashController>().configModel!.digitAfterDecimalPoint!)
+    return '${Get.find<NavigationHandlerController>().configModel!.currencySymbol} '
+        '${price!.toStringAsFixed(asFixed ?? Get.find<NavigationHandlerController>().configModel!.digitAfterDecimalPoint!)
         .replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}';
   }
 
@@ -35,6 +35,6 @@ class PriceConverterHelper {
   }
 
   static String percentageCalculation(String price, String discount, String discountType) {
-    return '$discount${discountType == 'percent' ? '%' : Get.find<SplashController>().configModel!.currencySymbol} OFF';
+    return '$discount${discountType == 'percent' ? '%' : Get.find<NavigationHandlerController>().configModel!.currencySymbol} OFF';
   }
 }

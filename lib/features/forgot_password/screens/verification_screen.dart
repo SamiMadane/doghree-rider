@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:sixam_mart_delivery/features/splash/controllers/splash_controller.dart';
+import 'package:sixam_mart_delivery/features/navigation_handler/controllers/navigation_handler_controller.dart';
 import 'package:sixam_mart_delivery/features/forgot_password/controllers/forgot_password_controller.dart';
 import 'package:sixam_mart_delivery/helper/route_helper.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
@@ -64,7 +64,7 @@ class VerificationScreenState extends State<VerificationScreen> {
         child: Center(child: SizedBox(width: 1170, child: GetBuilder<ForgotPasswordController>(builder: (forgotPasswordController) {
           return Column(children: [
 
-            Get.find<SplashController>().configModel!.demo! ? Text(
+            Get.find<NavigationHandlerController>().configModel!.demo! ? Text(
               'for_demo_purpose'.tr, style: robotoRegular,
             ) : RichText(text: TextSpan(children: [
               TextSpan(text: 'enter_the_verification_sent_to'.tr, style: robotoRegular.copyWith(color: Theme.of(context).disabledColor)),

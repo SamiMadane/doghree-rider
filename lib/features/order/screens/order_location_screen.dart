@@ -10,7 +10,7 @@ import 'package:sixam_mart_delivery/features/order/controllers/order_controller.
 import 'package:sixam_mart_delivery/features/order/domain/models/order_model.dart';
 import 'package:sixam_mart_delivery/features/profile/controllers/profile_controller.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/images.dart';
+import 'package:sixam_mart_delivery/util/manager_assets.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_app_bar_widget.dart';
 import 'package:sixam_mart_delivery/features/order/widgets/location_card_widget.dart';
 
@@ -70,9 +70,9 @@ class _OrderLocationScreenState extends State<OrderLocationScreen> {
 
   void setMarker(OrderModel orderModel, bool parcel) async {
     try {
-      Uint8List destinationImageData = await convertAssetToUnit8List(Images.customerMarker, width: 100);
-      Uint8List restaurantImageData = await convertAssetToUnit8List(parcel ? Images.userMarker : Images.restaurantMarker, width: parcel ? 70 : 100);
-      Uint8List deliveryBoyImageData = await convertAssetToUnit8List(Images.yourMarker, width: 100);
+      Uint8List destinationImageData = await convertAssetToUnit8List(ManagerAssets.customerMarker, width: 100);
+      Uint8List restaurantImageData = await convertAssetToUnit8List(parcel ? ManagerAssets.userMarker : ManagerAssets.restaurantMarker, width: parcel ? 70 : 100);
+      Uint8List deliveryBoyImageData = await convertAssetToUnit8List(ManagerAssets.yourMarker, width: 100);
 
       LatLngBounds? bounds;
       if (_controller != null) {

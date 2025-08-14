@@ -1,4 +1,4 @@
-import 'package:sixam_mart_delivery/features/splash/controllers/splash_controller.dart';
+import 'package:sixam_mart_delivery/features/navigation_handler/controllers/navigation_handler_controller.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -56,13 +56,13 @@ class DateConverterHelper {
   }
 
   static int timeDistanceInMin(String time) {
-    DateTime currentTime = Get.find<SplashController>().currentTime.toLocal();
+    DateTime currentTime = Get.find<NavigationHandlerController>().currentTime.toLocal();
     DateTime rangeTime = dateTimeStringToDate(time).toLocal();
     return currentTime.difference(rangeTime).inMinutes;
   }
 
   static String _timeFormatter() {
-    return Get.find<SplashController>().configModel!.timeformat == '24' ? 'HH:mm' : 'hh:mm a';
+    return Get.find<NavigationHandlerController>().configModel!.timeformat == '24' ? 'HH:mm' : 'hh:mm a';
   }
 
   static String localDateToIsoStringAMPM(DateTime dateTime) {

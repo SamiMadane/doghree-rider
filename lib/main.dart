@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:sixam_mart_delivery/features/auth/controllers/auth_controller.dart';
 import 'package:sixam_mart_delivery/features/language/controllers/language_controller.dart';
-import 'package:sixam_mart_delivery/features/splash/controllers/splash_controller.dart';
+import 'package:sixam_mart_delivery/features/navigation_handler/controllers/navigation_handler_controller.dart';
 import 'package:sixam_mart_delivery/common/controllers/theme_controller.dart';
 import 'package:sixam_mart_delivery/features/notification/domain/models/notification_body_model.dart';
 import 'package:sixam_mart_delivery/helper/notification_helper.dart';
@@ -65,7 +65,7 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key, required this.languages, this.body});
 
   void _route() {
-    Get.find<SplashController>().getConfigData().then((bool isSuccess) async {
+    Get.find<NavigationHandlerController>().getConfigData().then((bool isSuccess) async {
       if (isSuccess) {
         if (Get.find<AuthController>().isLoggedIn()) {
           Get.find<AuthController>().updateToken();
@@ -77,7 +77,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if(GetPlatform.isWeb) {
-      Get.find<SplashController>().initSharedData();
+      Get.find<NavigationHandlerController>().initSharedData();
       _route();
     }
 
@@ -91,7 +91,7 @@ class MyApp extends StatelessWidget {
 
     return GetBuilder<ThemeController>(builder: (themeController) {
       return GetBuilder<LocalizationController>(builder: (localizeController) {
-        return GetBuilder<SplashController>(builder: (splashController) {
+        return GetBuilder<NavigationHandlerController>(builder: (splashController) {
           return (GetPlatform.isWeb && splashController.configModel == null) ? const SizedBox() : GetMaterialApp(
             title: AppConstants.appName,
             debugShowCheckedModeBanner: false,
@@ -100,7 +100,7 @@ class MyApp extends StatelessWidget {
             locale: localizeController.locale,
             translations: Messages(languages: languages),
             fallbackLocale: Locale(AppConstants.languages[0].languageCode!, AppConstants.languages[0].countryCode),
-            initialRoute: RouteHelper.getSplashRoute(body),
+            initialRoute: RouteHelper.getNavigationHandlerRoute(body),
             getPages: RouteHelper.routes,
             defaultTransition: Transition.topLevel,
             transitionDuration: const Duration(milliseconds: 500),

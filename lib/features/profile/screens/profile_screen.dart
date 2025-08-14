@@ -6,12 +6,12 @@ import 'package:sixam_mart_delivery/features/language/controllers/language_contr
 import 'package:sixam_mart_delivery/features/language/widgets/language_bottom_sheet_widget.dart';
 import 'package:sixam_mart_delivery/features/profile/controllers/profile_controller.dart';
 import 'package:sixam_mart_delivery/features/profile/widgets/notification_status_change_bottom_sheet.dart';
-import 'package:sixam_mart_delivery/features/splash/controllers/splash_controller.dart';
+import 'package:sixam_mart_delivery/features/navigation_handler/controllers/navigation_handler_controller.dart';
 import 'package:sixam_mart_delivery/common/controllers/theme_controller.dart';
 import 'package:sixam_mart_delivery/helper/route_helper.dart';
 import 'package:sixam_mart_delivery/util/app_constants.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/images.dart';
+import 'package:sixam_mart_delivery/util/manager_assets.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
 import 'package:sixam_mart_delivery/common/widgets/confirmation_dialog_widget.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_image_widget.dart';
@@ -180,7 +180,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 }),
               ) : const SizedBox(),
 
-              if(Get.find<SplashController>().configModel!.disbursementType == 'automated' && profileController.profileModel!.type != 'store_wise' && profileController.profileModel!.earnings != 0)
+              if(Get.find<NavigationHandlerController>().configModel!.disbursementType == 'automated' && profileController.profileModel!.type != 'store_wise' && profileController.profileModel!.earnings != 0)
                 Column(children: [
                   Padding(
                     padding: const EdgeInsets.only(bottom: Dimensions.paddingSizeSmall),
@@ -223,7 +223,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ProfileButtonWidget(
                 icon: Icons.delete, title: 'delete_account'.tr,
                 onTap: () {
-                  Get.dialog(ConfirmationDialogWidget(icon: Images.warning, title: 'are_you_sure_to_delete_account'.tr,
+                  Get.dialog(ConfirmationDialogWidget(icon: ManagerAssets.warning, title: 'are_you_sure_to_delete_account'.tr,
                     description: 'it_will_remove_your_all_information'.tr, isLogOut: true,
                     onYesPressed: () => profileController.deleteDriver()),
                     useSafeArea: false,
@@ -234,7 +234,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
               ProfileButtonWidget(icon: Icons.logout, title: 'logout'.tr, onTap: () {
                 Get.back();
-                Get.dialog(ConfirmationDialogWidget(icon: Images.support, description: 'are_you_sure_to_logout'.tr, isLogOut: true, onYesPressed: () {
+                Get.dialog(ConfirmationDialogWidget(icon: ManagerAssets.support, description: 'are_you_sure_to_logout'.tr, isLogOut: true, onYesPressed: () {
                   Get.find<AuthController>().clearSharedData();
                   Get.find<ProfileController>().stopLocationRecord();
                   Get.offAllNamed(RouteHelper.getSignInRoute());

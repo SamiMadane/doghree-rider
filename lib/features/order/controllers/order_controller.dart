@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sixam_mart_delivery/common/models/response_model.dart';
 import 'package:sixam_mart_delivery/features/profile/controllers/profile_controller.dart';
-import 'package:sixam_mart_delivery/features/splash/controllers/splash_controller.dart';
+import 'package:sixam_mart_delivery/features/navigation_handler/controllers/navigation_handler_controller.dart';
 import 'package:sixam_mart_delivery/api/api_client.dart';
 import 'package:sixam_mart_delivery/features/order/domain/models/order_details_model.dart';
 import 'package:sixam_mart_delivery/features/order/domain/models/order_model.dart';
@@ -249,7 +249,7 @@ class OrderController extends GetxController implements GetxService {
   }
 
   void removeFromIgnoreList() {
-    List<IgnoreModel> tempList = orderServiceInterface.tempList(Get.find<SplashController>().currentTime, _ignoredRequests);
+    List<IgnoreModel> tempList = orderServiceInterface.tempList(Get.find<NavigationHandlerController>().currentTime, _ignoredRequests);
     _ignoredRequests = [];
     _ignoredRequests.addAll(tempList);
     orderServiceInterface.setIgnoreList(_ignoredRequests);
