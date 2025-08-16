@@ -13,7 +13,8 @@ class CustomAppBarWidget extends StatelessWidget
   final Function? onBackPressed;
   final Widget? actionWidget;
   final double? elevation;
-  final Widget? leadingWidget; // الخاصية الجديدة
+  final Widget? leadingWidget;
+  final bool? centerTitle;
 
   const CustomAppBarWidget({
     super.key,
@@ -23,6 +24,8 @@ class CustomAppBarWidget extends StatelessWidget
     this.actionWidget,
     this.elevation,
     this.leadingWidget,
+    this.centerTitle = true,
+
   });
 
   @override
@@ -36,25 +39,29 @@ class CustomAppBarWidget extends StatelessWidget
                   color: Theme.of(context).textTheme.bodyLarge!.color),
             )
           : null,
-      centerTitle: true,
-      leading: leadingWidget ??
-          (isBackButtonExist
-              ? IconButton(
-                  icon: SvgPicture.asset(
-                    ManagerAssets.arrowBackIcon,
-                    color: Theme.of(context).iconTheme.color,
-                  ),
-                  onPressed: () {
-                    if (onBackPressed != null) {
-                      onBackPressed!();
-                    } else if (Get.previousRoute.isNotEmpty) {
-                      Get.back();
-                    } else {
-                      Get.offAllNamed(RouteHelper.getInitialRoute());
-                    }
-                  },
-                )
-              : null),
+      centerTitle: centerTitle,
+      leadingWidth: leadingWidget != null ? 55 : null,
+      leading: Container(
+        padding: EdgeInsets.all(Dimensions.paddingSizeExtraSmall),
+        child: leadingWidget ??
+            (isBackButtonExist
+                ? IconButton(
+                    icon: SvgPicture.asset(
+                      ManagerAssets.arrowBackIcon,
+                      color: Theme.of(context).iconTheme.color,
+                    ),
+                    onPressed: () {
+                      if (onBackPressed != null) {
+                        onBackPressed!();
+                      } else if (Get.previousRoute.isNotEmpty) {
+                        Get.back();
+                      } else {
+                        Get.offAllNamed(RouteHelper.getInitialRoute());
+                      }
+                    },
+                  )
+                : null),
+      ),
       backgroundColor: Theme.of(context).cardColor,
       surfaceTintColor: Theme.of(context).cardColor,
       shadowColor: Theme.of(context).disabledColor.withAlpha(128),

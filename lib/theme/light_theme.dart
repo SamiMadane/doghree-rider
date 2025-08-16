@@ -1,22 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:sixam_mart_delivery/util/manager_colors.dart';
+import 'package:sixam_mart_delivery/util/theme_extension.dart';
 
 ThemeData light = ThemeData(
   fontFamily: 'Roboto',
-  primaryColor: const Color(0xFF2A9849),
-  secondaryHeaderColor: const Color(0xFF1ED7AA),
-  disabledColor: const Color(0xFF6c7278),
+  primaryColor: ColorsManager.primary,
+  secondaryHeaderColor: ColorsManager.secondary,
+  disabledColor: ColorsManager.disabledLight,
   brightness: Brightness.light,
-  hintColor: const Color(0xFF6c7278),
-  cardColor: Colors.white,
-  shadowColor: Colors.black.withValues(alpha: 0.03),
-  scaffoldBackgroundColor: const Color(0xFFF7F7F7),
-  textButtonTheme: TextButtonThemeData(style: TextButton.styleFrom(foregroundColor: const Color(0xFF2A9849))),
-  colorScheme: const ColorScheme.light(primary: Color(0xFF2A9849), secondary: Color(0xFF2A9849)).copyWith(error: const Color(0xFFE84D4F)),
-  popupMenuTheme: const PopupMenuThemeData(color: Colors.white, surfaceTintColor: Colors.white),
-  dialogTheme: const DialogThemeData(surfaceTintColor: Colors.white),
-  floatingActionButtonTheme: FloatingActionButtonThemeData(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(500))),
-  bottomAppBarTheme: const BottomAppBarTheme(color: Colors.white, height: 60, padding: EdgeInsets.symmetric(vertical: 5)),
-  dividerTheme: const DividerThemeData(thickness: 0.2, color: Color(0xFFC3CAD9)),
-  iconTheme: const IconThemeData(color: Color(0xFF292D32)), 
-  
+  hintColor: ColorsManager.hintLight,
+  cardColor: ColorsManager.cardLight,
+  shadowColor: ColorsManager.shadowLight,
+  scaffoldBackgroundColor: ColorsManager.scaffoldBgLight,
+  textButtonTheme: TextButtonThemeData(
+    style: TextButton.styleFrom(foregroundColor: ColorsManager.textButtonLight),
+  ),
+  colorScheme: const ColorScheme.light(
+    primary: ColorsManager.primary,
+    secondary: ColorsManager.primary,
+  ).copyWith(error: ColorsManager.error),
+  popupMenuTheme: const PopupMenuThemeData(
+    color: ColorsManager.cardLight,
+    surfaceTintColor: ColorsManager.cardLight,
+  ),
+  dialogTheme: const DialogThemeData(surfaceTintColor: ColorsManager.cardLight),
+  floatingActionButtonTheme: FloatingActionButtonThemeData(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(500)),
+    backgroundColor: ColorsManager.fabColor,
+  ),
+  bottomAppBarTheme: const BottomAppBarTheme(
+    color: ColorsManager.bottomAppBarLight,
+    height: 60,
+    padding: EdgeInsets.symmetric(vertical: 5),
+  ),
+  dividerTheme: const DividerThemeData(
+    thickness: 0.2,
+    color: ColorsManager.dividerColor,
+  ),
+  iconTheme: const IconThemeData(color: ColorsManager.iconLight),
+    extensions: <ThemeExtension<dynamic>>[
+    CustomColorsExtension(
+      strock1: ColorsManager.Strock1Light,
+      strock2: ColorsManager.Strock2Light,
+    
+    ),
+  ],
 );

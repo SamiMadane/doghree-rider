@@ -59,14 +59,25 @@ class ManagerAssets {
   static const String applicationSubmittedImage = '$imagePath/application_submitted.png';
   static const String splashLogoLightImage = '$imagePath/splash_logo_light.png';
   static const String splashLogoDarkImage = '$imagePath/splash_logo_dark.png';
+  static const String greenCardImage = '$imagePath/green_card.png';
+  static const String blueCardImage = '$imagePath/blue_card.png';
+  static const String orangeCardImage = '$imagePath/orange_card.png';
+  static const String storeImage = '$imagePath/store.png';
 
   ///Svg Images
   static const String changePasswordBgImage =
       '$imagePath/change_password_bg_image.svg';
-  static const String orderIcon = '$imagePath/order_on_the_way_icon.svg';
+  static const String orderOnTheWayIcon = '$imagePath/order_on_the_way_icon.svg';
 
   // icons
   static const String arrowBackIcon = '$iconPath/arrow_back.svg';
   static const String editIcon = '$iconPath/edit.svg';
   static const String uploadIcon = '$iconPath/upload.svg';
+  static const String homeIcon = '$iconPath/home.svg';
+  static const String userIcon = '$iconPath/user.svg';
+  static const String orderIcon = '$iconPath/order.svg';
+  static const String notificationIcon = '$iconPath/notification.svg';
+  static const String myOrderIcon = '$iconPath/my_order.svg';
+  static const String storeIcon = '$iconPath/store.svg';
+  static const String locationIcon = '$iconPath/location.svg';
 }

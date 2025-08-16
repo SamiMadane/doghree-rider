@@ -1,22 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:sixam_mart_delivery/util/manager_colors.dart';
+import 'package:sixam_mart_delivery/util/theme_extension.dart';
 
 ThemeData dark = ThemeData(
   fontFamily: 'Roboto',
-  primaryColor: const Color(0xFF54b46b),
-  secondaryHeaderColor: const Color(0xFF009f67),
-  disabledColor: const Color(0xFF6f7275),
+  primaryColor: ColorsManager.primary,
+  secondaryHeaderColor: ColorsManager.secondary,
+  disabledColor: ColorsManager.disabledDark,
   brightness: Brightness.dark,
-  hintColor: const Color(0xFFbebebe),
-  cardColor: Colors.black,
-  shadowColor: Colors.white.withValues(alpha: 0.03),
-  scaffoldBackgroundColor: const Color(0xFF161617),
-  textButtonTheme: TextButtonThemeData(style: TextButton.styleFrom(foregroundColor: const Color(0xFF54b46b))),
-  colorScheme: const ColorScheme.dark(primary: Color(0xFF54b46b), secondary: Color(0xFF54b46b)).copyWith(error: const Color(0xFFdd3135)),
-  popupMenuTheme: const PopupMenuThemeData(color: Color(0xFF29292D), surfaceTintColor: Color(0xFF29292D)),
-  dialogTheme: const DialogThemeData(surfaceTintColor: Colors.white10),
-  floatingActionButtonTheme: FloatingActionButtonThemeData(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(500))),
-  bottomAppBarTheme: const BottomAppBarTheme(color: Colors.black, height: 60, padding: EdgeInsets.symmetric(vertical: 5)),
-  dividerTheme: const DividerThemeData(thickness: 0.2, color: Color(0xFFC3CAD9)),
-  iconTheme: const IconThemeData(color: Colors.white), 
-  primaryIconTheme: const IconThemeData(color: Colors.white),
+  hintColor: ColorsManager.hintDark,
+  cardColor: ColorsManager.cardDark,
+  shadowColor: ColorsManager.shadowDark,
+  scaffoldBackgroundColor: ColorsManager.scaffoldBgDark,
+  textButtonTheme: TextButtonThemeData(
+    style: TextButton.styleFrom(foregroundColor: ColorsManager.textButtonDark),
+  ),
+  colorScheme: const ColorScheme.dark(
+    primary: ColorsManager.primary,
+    secondary: ColorsManager.primary,
+  ).copyWith(error: ColorsManager.error),
+  popupMenuTheme: const PopupMenuThemeData(
+    color: ColorsManager.cardDark,
+    surfaceTintColor: ColorsManager.cardDark,
+  ),
+  dialogTheme: const DialogThemeData(surfaceTintColor: ColorsManager.cardDark),
+  floatingActionButtonTheme: FloatingActionButtonThemeData(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(500)),
+    backgroundColor: ColorsManager.fabColor,
+  ),
+  bottomAppBarTheme: const BottomAppBarTheme(
+    color: ColorsManager.bottomAppBarDark,
+    height: 60,
+    padding: EdgeInsets.symmetric(vertical: 5),
+  ),
+  dividerTheme: const DividerThemeData(
+    thickness: 0.2,
+    color: ColorsManager.dividerColor,
+  ),
+  iconTheme: const IconThemeData(color: ColorsManager.iconDark),
+  primaryIconTheme: const IconThemeData(color: ColorsManager.iconDark),
+  extensions: <ThemeExtension<dynamic>>[
+    CustomColorsExtension(
+      strock1: ColorsManager.Strock1Dark,
+      strock2: ColorsManager.Strock2Dark,
+    
+    ),
+  ],
 );
