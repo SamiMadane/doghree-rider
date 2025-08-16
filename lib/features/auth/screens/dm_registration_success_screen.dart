@@ -18,7 +18,7 @@ class DmRegistrationSuccessScreen extends StatelessWidget {
       appBar: CustomAppBarWidget(
         title: 'join_delivery_partner'.tr,
         isBackButtonExist: false,
-        elevation: 0,
+     
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: Dimensions.paddingSizeDefault),

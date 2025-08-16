@@ -49,6 +49,8 @@ dependencies:
   dropdown_button2: ^2.3.9
   open_filex: ^4.7.0
   flutter_native_splash: ^2.4.6
+  smooth_page_indicator: ^1.2.1
+  dotted_line: ^3.2.3
 
 dependency_overrides:
   collection: ^1.19.0

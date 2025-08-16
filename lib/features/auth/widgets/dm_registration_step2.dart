@@ -7,7 +7,6 @@ import 'package:get/get.dart';
 import 'package:get/get_utils/src/platform/platform.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_asset_image_widget.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_drop_down_button.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_snackbar_widget.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_text_field_widget.dart';

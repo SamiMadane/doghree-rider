@@ -31,7 +31,7 @@
   "reset_password": "Reset Password",
   "online": "Online",
   "offline": "Offline",
-  "active_order": "Active Order",
+  "active_orders": "Active Orders",
   "order_id": "Order ID",
   "orders": "Orders",
   "view_all": "View All",
@@ -65,6 +65,7 @@
   "ratings": "Ratings",
   "my_ratings": "My Ratings",
   "reviews": "Reviews",
+  "id_label": "ID",
   "new_order_request_from_a_customer": "New Order Request From a Customer",
   "order_request": "Order Request",
   "cash": "Cash",
@@ -347,6 +348,7 @@
   "paid_via": "Paid Via",
   "no_transaction_found": "No transaction found",
   "view_details": "View Details",
+  "home": "Home",
   "deliver_to": "Deliver to",
   "view_on_map": "View on map",
   "restaurant_is": "Restaurant is",
@@ -469,5 +471,4 @@
   "application_received_message": "We received your application and we will review everything and contact you soon",
   "ex_jhon": "Ex: Jhon",
   "ex_doe": "Ex: Doe"
-
 }

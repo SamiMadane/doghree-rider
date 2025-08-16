@@ -12,25 +12,46 @@ class TitleWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
 
-      showOrderCount ? Row(children: [
-        Text(title, style: robotoMedium),
+        showOrderCount 
+            ? Row(
+                children: [
+                  Text(title, style: robotoSemiBold.copyWith(fontSize: Dimensions.fontSizeLarge)),
+                  const SizedBox(width: Dimensions.paddingSizeSmall),
+                  CircleAvatar(
+                    radius: Dimensions.radiusMedium,
+                    backgroundColor: Theme.of(context).primaryColor,
+                    child: Text(
+                      '$orderCount',
+                      style: robotoSemiBold.copyWith(
+                        fontSize: Dimensions.fontSizeSmall,
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            : Text(title, style: robotoMedium),
 
-        Text(' ($orderCount)', style: robotoRegular.copyWith(color: Theme.of(context).hintColor)),
-      ]) : Text(title, style: robotoMedium),
+        onTap != null
+            ? InkWell(
+                onTap: onTap as void Function()?,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 5, 0, 5),
+                  child: Text(
+                    'view_all'.tr,
+                    style: robotoMedium.copyWith(
+                        fontSize: Dimensions.fontSizeSmall,
+                        color: Theme.of(context).primaryColor),
+                  ),
+                ),
+              )
+            : const SizedBox(),
 
-      onTap != null ? InkWell(
-        onTap: onTap as void Function()?,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(10, 5, 0, 5),
-          child: Text(
-            'view_all'.tr,
-            style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).primaryColor),
-          ),
-        ),
-      ) : const SizedBox(),
-
-    ]);
+      ],
+    );
   }
 }

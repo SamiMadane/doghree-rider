@@ -41,7 +41,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
         }
       },
       child: Scaffold(
-        appBar: CustomAppBarWidget(
+        appBar: CustomAppBarWidget( 
           title: 'notification'.tr,
           onBackPressed: () {
             if (widget.fromNotification) {
@@ -117,7 +117,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                               fit: BoxFit.cover,
                             ),
                           ) : const CustomAssetImageWidget(
-                            image: ManagerAssets.orderIcon,
+                            image: ManagerAssets.orderOnTheWayIcon,
                             height: 60, width: 60,
                           ),
                           const SizedBox(width: Dimensions.paddingSizeDefault),
