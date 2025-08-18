@@ -34,16 +34,18 @@ ThemeData dark = ThemeData(
     padding: EdgeInsets.symmetric(vertical: 5),
   ),
   dividerTheme: const DividerThemeData(
-    thickness: 0.2,
-    color: ColorsManager.dividerColor,
+    thickness: 1,
+    color: ColorsManager.Strock2Dark,
   ),
   iconTheme: const IconThemeData(color: ColorsManager.iconDark),
   primaryIconTheme: const IconThemeData(color: ColorsManager.iconDark),
+  textTheme: const TextTheme(
+    bodyMedium: TextStyle(color: ColorsManager.TextColorDark),
+  ),
   extensions: <ThemeExtension<dynamic>>[
     CustomColorsExtension(
       strock1: ColorsManager.Strock1Dark,
       strock2: ColorsManager.Strock2Dark,
-    
     ),
   ],
 );

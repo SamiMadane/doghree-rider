@@ -32,6 +32,14 @@ class ProfileController extends GetxController implements GetxService {
   bool _backgroundNotification = true;
   bool get backgroundNotification => _backgroundNotification;
 
+Future<void> pickProfileImage() async {
+  XFile? image = await profileServiceInterface.pickImageFromGallery();
+  if(image != null) {
+    _pickedFile = image;
+    update();
+  }
+}
+
   Future<void> getProfile() async {
     ProfileModel? profileModel = await profileServiceInterface.getProfileInfo();
     if (profileModel != null) {
@@ -45,10 +53,12 @@ class ProfileController extends GetxController implements GetxService {
     update();
   }
 
-  Future<bool> updateUserInfo(ProfileModel updateUserModel, String token) async {
+  Future<bool> updateUserInfo(
+      ProfileModel updateUserModel, String token) async {
     _isLoading = true;
     update();
-    ResponseModel responseModel = await profileServiceInterface.updateProfile(updateUserModel, _pickedFile, token);
+    ResponseModel responseModel = await profileServiceInterface.updateProfile(
+        updateUserModel, _pickedFile, token);
     _isLoading = false;
     if (responseModel.isSuccess) {
       _profileModel = updateUserModel;
@@ -71,7 +81,8 @@ class ProfileController extends GetxController implements GetxService {
   }
 
   Future<bool> updateActiveStatus() async {
-    ResponseModel responseModel = await profileServiceInterface.updateActiveStatus();
+    ResponseModel responseModel =
+        await profileServiceInterface.updateActiveStatus();
     if (responseModel.isSuccess) {
       Get.back();
       _profileModel!.active = _profileModel!.active == 0 ? 1 : 0;
@@ -98,7 +109,7 @@ class ProfileController extends GetxController implements GetxService {
       Get.find<AuthController>().clearSharedData();
       stopLocationRecord();
       Get.offAllNamed(RouteHelper.getSignInRoute());
-    }else{
+    } else {
       Get.back();
       showCustomSnackBar(responseModel.message, isError: true);
     }
@@ -117,13 +128,16 @@ class ProfileController extends GetxController implements GetxService {
 
   Future<void> recordLocation() async {
     final Position locationResult = await Geolocator.getCurrentPosition();
-    String address = await profileServiceInterface.addressPlaceMark(locationResult);
+    String address =
+        await profileServiceInterface.addressPlaceMark(locationResult);
 
     _recordLocation = RecordLocationBodyModel(
-      location: address, latitude: locationResult.latitude, longitude: locationResult.longitude,
+      location: address,
+      latitude: locationResult.latitude,
+      longitude: locationResult.longitude,
     );
 
-    if(Get.find<NavigationHandlerController>().configModel!.webSocketStatus!) {
+    if (Get.find<NavigationHandlerController>().configModel!.webSocketStatus!) {
       await profileServiceInterface.recordWebSocketLocation(_recordLocation!);
     } else {
       await profileServiceInterface.recordLocation(_recordLocation!);
@@ -134,5 +148,4 @@ class ProfileController extends GetxController implements GetxService {
     _backgroundNotification = isActive;
     update();
   }
-
 }

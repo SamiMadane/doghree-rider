@@ -25,6 +25,7 @@ import 'package:sixam_mart_delivery/features/language/screens/language_screen.da
 import 'package:sixam_mart_delivery/features/notification/screens/notification_screen.dart';
 import 'package:sixam_mart_delivery/features/order/screens/order_details_screen.dart';
 import 'package:sixam_mart_delivery/features/order/screens/running_order_screen.dart';
+import 'package:sixam_mart_delivery/features/profile/screens/setting_screen.dart';
 import 'package:sixam_mart_delivery/features/profile/screens/update_profile_screen.dart';
 import 'package:sixam_mart_delivery/features/navigation_handler/screens/navigation_handler_screen.dart';
 import 'package:sixam_mart_delivery/features/update/screens/update_screen.dart';
@@ -61,6 +62,7 @@ class RouteHelper {
   static const String myEarningFilter = '/my-earning-filter';
   static const String dmRegistrationSuccess = '/dm-registration-success';
   static const String taskScreen = '/task';
+  static const String settingScreen = '/setting';
 
   static String getInitialRoute({bool? fromOrderDetails}) =>
       '$initial?from_order_details=${fromOrderDetails.toString()}';
@@ -136,6 +138,8 @@ class RouteHelper {
   static String getDmRegistrationSuccessRoute() => dmRegistrationSuccess;
 
   static String getTaskRoute() => taskScreen;
+  static String getSettingRoute() => settingScreen;
+
 
   static List<GetPage> routes = [
     GetPage(
@@ -276,5 +280,7 @@ class RouteHelper {
     GetPage(
         name: dmRegistrationSuccess,
         page: () => const DmRegistrationSuccessScreen()),
+    GetPage(name: settingScreen, page: () => const SettingScreen()),
+
   ];
 }

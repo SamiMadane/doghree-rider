@@ -40,7 +40,6 @@ class ManagerAssets {
       '$imagePath/on_hold_transaction_icon.png';
   static const String attentionWarningIcon =
       '$imagePath/attention_warning_icon.png';
-  static const String walletIcon = '$imagePath/wallet_icon.png';
   static const String cashInHandBg = '$imagePath/cash_in_hand_bg.png';
   static const String customerMarker = '$imagePath/customer_marker.png';
   static const String yourMarker = '$imagePath/your_marker.png';
@@ -70,7 +69,7 @@ class ManagerAssets {
   static const String orderOnTheWayIcon = '$imagePath/order_on_the_way_icon.svg';
 
   // icons
-  static const String arrowBackIcon = '$iconPath/arrow_back.svg';
+  static const String arrowBackIcon = '$iconPath/arrow_left.svg';
   static const String editIcon = '$iconPath/edit.svg';
   static const String uploadIcon = '$iconPath/upload.svg';
   static const String homeIcon = '$iconPath/home.svg';
@@ -80,4 +79,16 @@ class ManagerAssets {
   static const String myOrderIcon = '$iconPath/my_order.svg';
   static const String storeIcon = '$iconPath/store.svg';
   static const String locationIcon = '$iconPath/location.svg';
+  static const String arrowRightIcon = '$iconPath/arrow_right.svg';
+  static const String conversationIcon = '$iconPath/conversation.svg';
+  static const String languageIcon = '$iconPath/language.svg';
+  static const String logoutIcon = '$iconPath/logout.svg';
+  static const String privacyPolicyIcon = '$iconPath/privacy_policy.svg';
+  static const String settingIcon = '$iconPath/setting.svg';
+  static const String termsConditionsIcon = '$iconPath/terms_conditions.svg';
+  static const String walletIcon = '$iconPath/wallet.svg';
+  static const String notification2Icon = '$iconPath/notification2.svg';
+  static const String keyIcon = '$iconPath/key.svg';
+  static const String visibilityIcon = '$iconPath/visibility.svg';
+  static const String visibilityOffIcon = '$iconPath/visibility_off.svg';
 }

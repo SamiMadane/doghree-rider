@@ -4,7 +4,6 @@ class ColorsManager {
   // 🌟 Primary & Secondary Colors
   static const Color primary = Color(0xFF2A9849);
   static const Color secondary = Color(0xFF1ED7AA);
-  static const Color dividerColor= Color(0xFFC3CAD9);
 
 
   // ⚪ Neutral / Base Colors
@@ -22,6 +21,7 @@ class ColorsManager {
   static const Color hintLight = Color(0xFF6C7278);
   static const Color shadowLight = Color.fromRGBO(0, 0, 0, 0.03);
   static const Color iconLight = Color(0xFF292D32);
+  static const Color TextColorLight = Color(0xFF2B3141);
   static const Color bottomAppBarLight = Colors.white;
 
   // 🌚 Dark Theme Colors
@@ -32,6 +32,8 @@ class ColorsManager {
   static const Color Strock2Dark = Color(0xFFE5E8F4);
   static const Color hintDark = Color(0xFFBEBEBE);
   static const Color shadowDark = Color.fromRGBO(255, 255, 255, 0.03);
+  static const Color TextColorDark = Color(0xFFFFFFFF);
+
   static const Color iconDark = Colors.white;
   static const Color bottomAppBarDark = Colors.black;
 

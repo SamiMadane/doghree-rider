@@ -6,6 +6,7 @@ import 'package:sixam_mart_delivery/common/models/response_model.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_bottom_sheet_widget.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_button_widget.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_confirmation_bottom_sheet.dart';
+import 'package:sixam_mart_delivery/common/widgets/custom_snackbar_widget.dart';
 import 'package:sixam_mart_delivery/features/address/domain/models/record_location_body_model.dart';
 import 'package:sixam_mart_delivery/features/profile/domain/models/profile_model.dart';
 import 'package:sixam_mart_delivery/features/profile/domain/repositories/profile_repository_interface.dart';
@@ -114,6 +115,21 @@ class ProfileService implements ProfileServiceInterface {
     }else {
       callback();
     }
+  }
+
+    @override
+  Future<XFile?> pickImageFromGallery() async{
+    XFile? pickImage = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if(pickImage != null) {
+      pickImage.length().then((value) {
+        if (value > 2000000) {
+          showCustomSnackBar('please_upload_lower_size_file'.tr);
+        } else {
+          return pickImage;
+        }
+      });
+    }
+    return pickImage;
   }
 
 }

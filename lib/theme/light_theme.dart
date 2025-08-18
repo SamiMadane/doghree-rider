@@ -34,15 +34,17 @@ ThemeData light = ThemeData(
     padding: EdgeInsets.symmetric(vertical: 5),
   ),
   dividerTheme: const DividerThemeData(
-    thickness: 0.2,
-    color: ColorsManager.dividerColor,
+    thickness: 1,
+    color: ColorsManager.Strock2Light,
   ),
   iconTheme: const IconThemeData(color: ColorsManager.iconLight),
-    extensions: <ThemeExtension<dynamic>>[
+  textTheme: const TextTheme(
+    bodyMedium: TextStyle(color: ColorsManager.TextColorLight),
+  ),
+  extensions: <ThemeExtension<dynamic>>[
     CustomColorsExtension(
       strock1: ColorsManager.Strock1Light,
       strock2: ColorsManager.Strock2Light,
-    
     ),
   ],
 );

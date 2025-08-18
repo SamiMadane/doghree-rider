@@ -99,7 +99,7 @@ class AppConstants {
 
   static List<LanguageModel> languages = [
     LanguageModel(imageUrl: ManagerAssets.english, languageName: 'English', countryCode: 'US', languageCode: 'en'),
-    LanguageModel(imageUrl: ManagerAssets.arabic, languageName: 'Arabic', countryCode: 'SA', languageCode: 'ar'),
+    LanguageModel(imageUrl: ManagerAssets.arabic, languageName: 'العربية', countryCode: 'SA', languageCode: 'ar'),
     LanguageModel(imageUrl: ManagerAssets.spanish, languageName: 'Spanish', countryCode: 'ES', languageCode: 'es'),
     LanguageModel(imageUrl: ManagerAssets.bengali, languageName: 'Bengali', countryCode: 'BN', languageCode: 'bn'),
   ];
