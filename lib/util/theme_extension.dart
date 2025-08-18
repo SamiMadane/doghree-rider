@@ -14,8 +14,6 @@ class CustomColorsExtension extends ThemeExtension<CustomColorsExtension> {
   CustomColorsExtension copyWith({
     Color? stroke1,
     Color? stroke2,
-    Color? shadow,
-    Color? bottomAppBar,
   }) {
     return CustomColorsExtension(
       strock1: stroke1 ?? this.strock1,

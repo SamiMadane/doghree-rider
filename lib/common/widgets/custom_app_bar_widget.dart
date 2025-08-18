@@ -34,9 +34,9 @@ class CustomAppBarWidget extends StatelessWidget
       title: title != null
           ? Text(
               title!,
-              style: robotoMedium.copyWith(
-                  fontSize: Dimensions.fontSizeLarge,
-                  color: Theme.of(context).textTheme.bodyLarge!.color),
+              style: robotoSemiBold.copyWith(
+                  fontSize: Dimensions.fontSizeExtraLarge,
+                  color: Theme.of(context).textTheme.bodyMedium!.color),
             )
           : null,
       centerTitle: centerTitle,

@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/theme_extension.dart';
 
 class StepProgressBar extends StatelessWidget {
-  final double status; 
+  final double status;
   const StepProgressBar({super.key, required this.status});
 
   @override
   Widget build(BuildContext context) {
-    final customColor = Theme.of(context).extension<CustomColorsExtension>()!;
-
     return Column(
       children: [
         Container(
@@ -42,12 +39,7 @@ class StepProgressBar extends StatelessWidget {
           ),
         ),
         const SizedBox(height: Dimensions.paddingSizeSmall),
-
-        Divider(
-          height: 1, 
-          thickness: 1, 
-          color: customColor.strock2,
-        ),
+        Divider(),
       ],
     );
   }

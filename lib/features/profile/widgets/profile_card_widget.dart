@@ -1,7 +1,7 @@
+import 'package:sixam_mart_delivery/common/widgets/custom_card.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class ProfileCardWidget extends StatelessWidget {
   final String title;
@@ -10,21 +10,21 @@ class ProfileCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(child: Container(
+    return Expanded(
+        child: CustomCard(
       height: 100,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
-        color: Theme.of(context).cardColor,
-        boxShadow: [BoxShadow(color: Colors.grey[Get.isDarkMode ? 850 : 200]!, blurRadius: 5, spreadRadius: 1)],
-      ),
+     isBorder: false,
       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-        Text(data, style: robotoMedium.copyWith(
-          fontSize: Dimensions.fontSizeExtraLarge, color: Theme.of(context).primaryColor,
-        )),
+        Text(data,
+            style: robotoSemiBold.copyWith(
+              fontSize: Dimensions.fontSizeExtraLarge,
+            )),
         const SizedBox(height: Dimensions.paddingSizeSmall),
-        Text(title, style: robotoRegular.copyWith(
-          fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor,
-        )),
+        Text(title,
+            style: robotoRegular.copyWith(
+              fontSize: Dimensions.fontSizeDefault,
+              color: Theme.of(context).hintColor,
+            )),
       ]),
     ));
   }

@@ -1,8 +1,10 @@
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:sixam_mart_delivery/common/widgets/code_picker_widget.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
+import 'package:sixam_mart_delivery/util/manager_assets.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
 
 class CustomTextFieldWidget extends StatefulWidget {
@@ -94,7 +96,6 @@ class CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
               style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall))
           : const SizedBox(),
       SizedBox(height: widget.showTitle ? Dimensions.paddingSizeExtraSmall : 0),
-
       TextField(
         maxLines: widget.maxLines,
         controller: widget.controller,
@@ -147,11 +148,9 @@ class CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
                     TextSpan(
                         text: widget.labelText ?? '',
                         style: robotoRegular.copyWith(
-                            fontSize:
-                                widget.labelTextSize ?? Dimensions.fontSizeDefault,
-                            color: Theme.of(context)
-                                .hintColor
-                                .withAlpha(180))),
+                            fontSize: widget.labelTextSize ??
+                                Dimensions.fontSizeDefault,
+                            color: Theme.of(context).hintColor.withAlpha(180))),
                     if (widget.isRequired && widget.labelText != null)
                       TextSpan(
                           text: ' *',
@@ -207,10 +206,19 @@ class CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
                       : null,
           suffixIcon: widget.isPassword
               ? IconButton(
-                  icon: Icon(_obscureText
-                      ? Icons.visibility_off
-                      : Icons.visibility,
-                      color: Theme.of(context).hintColor),
+                  icon: _obscureText
+                      ? SvgPicture.asset(
+                          ManagerAssets.visibilityOffIcon, // مسار أيقونة الإخفاء
+                          width: 24,
+                          height: 24,
+                          color: Theme.of(context).hintColor,
+                        )
+                      : SvgPicture.asset(
+                          ManagerAssets.visibilityIcon, // مسار أيقونة الإظهار
+                          width: 24,
+                          height: 24,
+                          color: Theme.of(context).hintColor,
+                        ),
                   onPressed: _toggle,
                 )
               : null,
@@ -222,7 +230,6 @@ class CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
                 : null,
         onChanged: widget.onChanged as void Function(String)?,
       ),
-
       widget.divider
           ? const Padding(
               padding:

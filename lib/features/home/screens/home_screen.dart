@@ -149,12 +149,14 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: CustomAppBarWidget(
         title:
-            '${profileController.profileModel?.fName} ${profileController.profileModel?.fName}',
+            '${profileController.profileModel?.fName} ${profileController.profileModel?.lName}',
         centerTitle: false,
-        isBackButtonExist: false, // لا سهم
+        isBackButtonExist: false,
         leadingWidget: profileController.profileModel?.imageFullUrl != null
             ? ClipOval(
                 child: CustomImageWidget(
+                                    fit: BoxFit.cover,
+
                   image: profileController.profileModel!.imageFullUrl!,
                 ),
               )

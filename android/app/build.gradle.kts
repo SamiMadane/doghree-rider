@@ -37,7 +37,6 @@ android {
             storePassword = keystoreProperties["storePassword"] as String?
         }
     }
-
     defaultConfig {
         applicationId = "com.sixamtech.sixam_mart_delivery_app"
         minSdk = 23

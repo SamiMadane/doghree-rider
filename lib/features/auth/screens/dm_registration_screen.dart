@@ -133,6 +133,8 @@ class _DmRegistrationScreenState extends State<DmRegistrationScreen> {
                       top: Dimensions.paddingSizeDefault,
                       left: Dimensions.paddingSizeDefault,
                       right: Dimensions.paddingSizeDefault,
+                      bottom: Dimensions.paddingSizeExtraSmall
+
                     ),
                     decoration: BoxDecoration(
                       color: Theme.of(context).cardColor,

@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:sixam_mart_delivery/features/language/domain/models/language_model.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +21,7 @@ class LanguageCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isSelected = localizationController.selectedLanguageIndex == index;
     return InkWell(
       onTap: () {
         // تحديد اللغة وحفظها مباشرة عند الضغط
@@ -45,28 +45,48 @@ class LanguageCardWidget extends StatelessWidget {
         height: 70,
         padding: const EdgeInsets.all(Dimensions.paddingSizeLarge),
         decoration: BoxDecoration(
-          color: localizationController.selectedLanguageIndex == index
-              ? Theme.of(context).primaryColor.withOpacity(0.05)
-              : null,
           borderRadius: BorderRadius.circular(Dimensions.radiusLarge),
           border: Border.all(
-            color: localizationController.selectedLanguageIndex == index
-                ? Theme.of(context).primaryColor
-                : Theme.of(context).dividerColor.withOpacity(0.3),
+            color: isSelected
+                ? Theme.of(context).textTheme.bodyMedium!.color!
+                : Theme.of(context).dividerTheme.color!,
             width: 1,
           ),
         ),
         child: Row(children: [
+          // دائرة الاختيار
+          Container(
+            width: 20,
+            height: 20,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: Theme.of(context)
+                    .textTheme
+                    .bodyMedium!
+                    .color!, 
+                width: isSelected ? 6 : 1.5, 
+              ),
+            ),
+            child: isSelected
+                ? Center(
+                    child: Container(
+                      width: 10,
+                      height: 10,
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  )
+                : null,
+          ),
+          const SizedBox(width: Dimensions.paddingSizeLarge),
           Image.asset(languageModel.imageUrl!, width: 36, height: 36),
           const SizedBox(width: Dimensions.paddingSizeSmall),
           Text(languageModel.languageName!,
               style:
                   robotoRegular.copyWith(fontSize: Dimensions.fontSizeLarge)),
-          const Spacer(),
-          localizationController.selectedLanguageIndex == index
-              ? Icon(Icons.check_circle,
-                  color: Theme.of(context).primaryColor, size: 25)
-              : const SizedBox(),
         ]),
       ),
     );
