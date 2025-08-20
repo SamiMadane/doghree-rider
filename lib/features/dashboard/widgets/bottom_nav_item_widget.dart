@@ -31,15 +31,15 @@ class BottomNavItemWidget extends StatelessWidget {
     Widget displayedIcon = svgPath != null
         ? SvgPicture.asset(
             svgPath!,
-            height: isSelected ? 26 : 24,
-            width: isSelected ? 26 : 24,
+            height: isSelected ? 25 : 24,
+            width: isSelected ? 25 : 24,
             color: isSelected
                 ? Theme.of(context).primaryColor
                 : Theme.of(context).hintColor,
           )
         : Icon(
             iconData,
-            size: isSelected ? 26 : 24,
+            size: isSelected ? 25 : 24,
             color: isSelected
                 ? Theme.of(context).primaryColor
                 : Theme.of(context).hintColor,
@@ -49,62 +49,59 @@ class BottomNavItemWidget extends StatelessWidget {
       fit: FlexFit.tight,
       child: GestureDetector(
         onTap: onTap as void Function()?,
-        child: SizedBox(
-          height: 70,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Stack فقط حول الأيقونة
-              Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  displayedIcon,
-                  if (showBadge && pageIndex == 1)
-                    Positioned(
-                      top: -5,
-                      right: -5, // ثابت بالنسبة للأيقونة
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 4),
-                        decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius:
-                              BorderRadius.circular(Dimensions.radiusDefault),
-                        ),
-                        child: GetBuilder<OrderController>(
-                          builder: (orderController) {
-                            return Text(
-                              orderController.latestOrderList?.length
-                                      .toString() ??
-                                  '0',
-                              style: robotoRegular.copyWith(
-                                fontSize: Dimensions.fontSizeExtraSmall,
-                                color: Colors.white,
-                              ),
-                            );
-                          },
-                        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Stack فقط حول الأيقونة
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                displayedIcon,
+                if (showBadge && pageIndex == 1)
+                  Positioned(
+                    top: -5,
+                    right: -5, // ثابت بالنسبة للأيقونة
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius:
+                            BorderRadius.circular(Dimensions.radiusDefault),
+                      ),
+                      child: GetBuilder<OrderController>(
+                        builder: (orderController) {
+                          return Text(
+                            orderController.latestOrderList?.length
+                                    .toString() ??
+                                '0',
+                            style: robotoRegular.copyWith(
+                              fontSize: Dimensions.fontSizeExtraSmall,
+                              color: Colors.white,
+                            ),
+                          );
+                        },
                       ),
                     ),
-                ],
-              ),
-              if (label != null) SizedBox(height: isSelected ? 2 : 3),
-              if (label != null)
-                Flexible(
-                  child: Text(
-                    label!,
-                    style: isSelected
-                        ? robotoSemiBold.copyWith(
-                            fontSize: Dimensions.fontSizeSmall,
-                            color: Theme.of(context).primaryColor,
-                          )
-                        : robotoRegular.copyWith(
-                            fontSize: Dimensions.fontSizeExtraSmall,
-                            color: Theme.of(context).hintColor,
-                          ),
                   ),
+              ],
+            ),
+            if (label != null) SizedBox(height: isSelected ? 2 : 3),
+            if (label != null)
+              Flexible(
+                child: Text(
+                  label!,
+                  style: isSelected
+                      ? robotoSemiBold.copyWith(
+                          fontSize: Dimensions.fontSizeSmall,
+                          color: Theme.of(context).primaryColor,
+                        )
+                      : robotoRegular.copyWith(
+                          fontSize: Dimensions.fontSizeExtraSmall,
+                          color: Theme.of(context).hintColor,
+                        ),
                 ),
-            ],
-          ),
+              ),
+          ],
         ),
       ),
     );

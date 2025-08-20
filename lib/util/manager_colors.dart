@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
-class ColorsManager {
+class ManagerColors {
   // 🌟 Primary & Secondary Colors
   static const Color primary = Color(0xFF2A9849);
   static const Color secondary = Color(0xFF1ED7AA);
+  static const Color shimmer = Color(0xFFC2C2C2);
 
 
   // ⚪ Neutral / Base Colors

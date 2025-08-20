@@ -23,7 +23,7 @@ class CashInHandSection extends StatelessWidget {
         ? profileController.profileModel!.earnings == 1
             ? CustomCard(
                 margin: const EdgeInsets.only(
-                    top: Dimensions.paddingSizeExtraLarge),
+                    top: Dimensions.paddingSizeLarge),
                 height: 95,
                 width: MediaQuery.of(context).size.width,
                 fillColor: Theme.of(context).scaffoldBackgroundColor,

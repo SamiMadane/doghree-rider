@@ -4,47 +4,47 @@ import 'package:sixam_mart_delivery/util/theme_extension.dart';
 
 ThemeData light = ThemeData(
   fontFamily: 'Roboto',
-  primaryColor: ColorsManager.primary,
-  secondaryHeaderColor: ColorsManager.secondary,
-  disabledColor: ColorsManager.disabledLight,
+  primaryColor: ManagerColors.primary,
+  secondaryHeaderColor: ManagerColors.secondary,
+  disabledColor: ManagerColors.disabledLight,
   brightness: Brightness.light,
-  hintColor: ColorsManager.hintLight,
-  cardColor: ColorsManager.cardLight,
-  shadowColor: ColorsManager.shadowLight,
-  scaffoldBackgroundColor: ColorsManager.scaffoldBgLight,
+  hintColor: ManagerColors.hintLight,
+  cardColor: ManagerColors.cardLight,
+  shadowColor: ManagerColors.shadowLight,
+  scaffoldBackgroundColor: ManagerColors.scaffoldBgLight,
   textButtonTheme: TextButtonThemeData(
-    style: TextButton.styleFrom(foregroundColor: ColorsManager.textButtonLight),
+    style: TextButton.styleFrom(foregroundColor: ManagerColors.textButtonLight),
   ),
   colorScheme: const ColorScheme.light(
-    primary: ColorsManager.primary,
-    secondary: ColorsManager.primary,
-  ).copyWith(error: ColorsManager.error),
+    primary: ManagerColors.primary,
+    secondary: ManagerColors.primary,
+  ).copyWith(error: ManagerColors.error),
   popupMenuTheme: const PopupMenuThemeData(
-    color: ColorsManager.cardLight,
-    surfaceTintColor: ColorsManager.cardLight,
+    color: ManagerColors.cardLight,
+    surfaceTintColor: ManagerColors.cardLight,
   ),
-  dialogTheme: const DialogThemeData(surfaceTintColor: ColorsManager.cardLight),
+  dialogTheme: const DialogThemeData(surfaceTintColor: ManagerColors.cardLight),
   floatingActionButtonTheme: FloatingActionButtonThemeData(
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(500)),
-    backgroundColor: ColorsManager.fabColor,
+    backgroundColor: ManagerColors.fabColor,
   ),
   bottomAppBarTheme: const BottomAppBarTheme(
-    color: ColorsManager.bottomAppBarLight,
+    color: ManagerColors.bottomAppBarLight,
     height: 60,
     padding: EdgeInsets.symmetric(vertical: 5),
   ),
   dividerTheme: const DividerThemeData(
     thickness: 1,
-    color: ColorsManager.Strock2Light,
+    color: ManagerColors.Strock2Light,
   ),
-  iconTheme: const IconThemeData(color: ColorsManager.iconLight),
+  iconTheme: const IconThemeData(color: ManagerColors.iconLight),
   textTheme: const TextTheme(
-    bodyMedium: TextStyle(color: ColorsManager.TextColorLight),
+    bodyMedium: TextStyle(color: ManagerColors.TextColorLight),
   ),
   extensions: <ThemeExtension<dynamic>>[
     CustomColorsExtension(
-      strock1: ColorsManager.Strock1Light,
-      strock2: ColorsManager.Strock2Light,
+      strock1: ManagerColors.Strock1Light,
+      strock2: ManagerColors.Strock2Light,
     ),
   ],
 );

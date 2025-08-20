@@ -7,20 +7,28 @@ import 'package:sixam_mart_delivery/util/styles.dart';
 
 class ConfirmationBottomSheet extends StatelessWidget {
   final String title;
+  final String? description;
+  final String? icon;
+  final double iconSize;
   final String acceptText;
   final Color acceptColor;
   final String cancelText;
   final VoidCallback onAccept;
   final VoidCallback? onCancel;
+  final bool hasCancel;
 
   const ConfirmationBottomSheet({
     super.key,
     required this.title,
+    this.description,
+    this.icon,
+    this.iconSize = 50,
     required this.acceptText,
     required this.acceptColor,
     required this.cancelText,
     required this.onAccept,
     this.onCancel,
+    this.hasCancel = true,
   });
 
   @override
@@ -40,30 +48,43 @@ class ConfirmationBottomSheet extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const SizedBox(
-                  height: Dimensions.paddingSizeLarge + 16), // مساحة للزر
+              if (icon != null)
+                Padding(
+                  padding: const EdgeInsets.all(Dimensions.paddingSizeLarge),
+                  child: Image.asset(icon!, width: iconSize, height: iconSize),
+                ),
 
               // العنوان
               Text(
                 title,
                 textAlign: TextAlign.center,
-                style:
-                    robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge),
+                style: robotoMedium.copyWith(
+                    fontSize: Dimensions.fontSizeExtraLarge, color: Colors.red),
               ),
+              const SizedBox(height: Dimensions.paddingSizeSmall),
+
+              // الوصف
+              if (description != null)
+                Text(
+                  description!,
+                  textAlign: TextAlign.center,
+                  style:
+                      robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge),
+                ),
               const SizedBox(height: Dimensions.paddingSizeExtraLarge),
 
               // الأزرار
               Row(
                 children: [
-                  // زر الرفض
-                  Expanded(
-                    child: CustomOutlinedButton(
-                      onPressed: onCancel ?? () => Get.back(),
-                      text: cancelText,
+                  if (hasCancel)
+                    Expanded(
+                      child: CustomOutlinedButton(
+                        onPressed: onCancel ?? () => Get.back(),
+                        text: cancelText,
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: Dimensions.paddingSizeSmall),
-                  // زر القبول
+                  if (hasCancel)
+                    const SizedBox(width: Dimensions.paddingSizeSmall),
                   Expanded(
                     child: CustomButtonWidget(
                       onPressed: onAccept,
@@ -94,10 +115,9 @@ class ConfirmationBottomSheet extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: Colors.white,
-                  border:
-                      Border.all(color: Colors.black, width: 1.5), // حدود سوداء
+                  border: Border.all(color: Colors.black, width: 1.5),
                 ),
-                padding:  EdgeInsets.all(Dimensions.paddingSizeExtraSmall),
+                padding: EdgeInsets.all(Dimensions.paddingSizeExtraSmall),
                 child: const Icon(Icons.close, size: 20, color: Colors.black),
               ),
             ),

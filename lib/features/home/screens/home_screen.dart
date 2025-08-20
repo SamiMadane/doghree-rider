@@ -152,21 +152,16 @@ class _HomeScreenState extends State<HomeScreen> {
             '${profileController.profileModel?.fName} ${profileController.profileModel?.lName}',
         centerTitle: false,
         isBackButtonExist: false,
-        leadingWidget: profileController.profileModel?.imageFullUrl != null
-            ? ClipOval(
-                child: CustomImageWidget(
-                                    fit: BoxFit.cover,
-
-                  image: profileController.profileModel!.imageFullUrl!,
-                ),
-              )
-            : ClipOval(
-                child: CustomImageWidget(
-                  fit: BoxFit.cover,
-                  image:
-                      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRU1ftWhltEa8iosdj8uKtRnm5fE-Sd_oKQaA&s',
-                ),
-              ),
+        leadingWidget: Padding(
+          padding: const EdgeInsets.all(Dimensions.paddingSizeExtraSmall),
+          child: ClipOval(
+            child: CustomImageWidget(
+                
+              fit: BoxFit.cover,
+              image: profileController.profileModel!.imageFullUrl,
+            ),
+          ),
+        ),
         actionWidget: IconButton(
           icon: Stack(
             children: [
@@ -233,11 +228,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         profileController: profileController,
                         showEarnings: showTotalEarnings,
                       ),
-                    
                       ActiveOrderSection(),
-                      SizedBox(
-                        height: Dimensions.paddingSizeLarge,
-                      ),
                       ProfileOrdersSection(
                         profileController: profileController,
                       ),

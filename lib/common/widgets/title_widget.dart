@@ -8,7 +8,18 @@ class TitleWidget extends StatelessWidget {
   final Function? onTap;
   final bool showOrderCount;
   final int? orderCount;
-  const TitleWidget({super.key, required this.title, this.onTap, this.showOrderCount = false, this.orderCount});
+  final TextStyle? titleStyle;
+  final TextStyle? countStyle;
+
+  const TitleWidget({
+    super.key,
+    required this.title,
+    this.onTap,
+    this.showOrderCount = false,
+    this.orderCount,
+    this.titleStyle,
+    this.countStyle,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -19,14 +30,14 @@ class TitleWidget extends StatelessWidget {
         showOrderCount 
             ? Row(
                 children: [
-                  Text(title, style: robotoSemiBold.copyWith(fontSize: Dimensions.fontSizeLarge)),
+                  Text(title, style: titleStyle ?? robotoSemiBold.copyWith(fontSize: Dimensions.fontSizeLarge)),
                   const SizedBox(width: Dimensions.paddingSizeSmall),
                   CircleAvatar(
                     radius: Dimensions.radiusMedium,
                     backgroundColor: Theme.of(context).primaryColor,
                     child: Text(
                       '$orderCount',
-                      style: robotoSemiBold.copyWith(
+                      style: countStyle ?? robotoSemiBold.copyWith(
                         fontSize: Dimensions.fontSizeSmall,
                         color: Theme.of(context).colorScheme.onPrimary,
                       ),
@@ -34,7 +45,7 @@ class TitleWidget extends StatelessWidget {
                   ),
                 ],
               )
-            : Text(title, style: robotoMedium),
+            : Text(title, style: titleStyle ?? robotoMedium),
 
         onTap != null
             ? InkWell(

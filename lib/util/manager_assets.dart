@@ -62,6 +62,8 @@ class ManagerAssets {
   static const String blueCardImage = '$imagePath/blue_card.png';
   static const String orangeCardImage = '$imagePath/orange_card.png';
   static const String storeImage = '$imagePath/store.png';
+  static const String balanceImage =  '$imagePath/balance.png';
+  static const String balanceArabicImage =  '$imagePath/balance_ar.png';
 
   ///Svg Images
   static const String changePasswordBgImage =
