@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sixam_mart_delivery/common/widgets/confirmation_bottom_sheet.dart';
+import 'package:sixam_mart_delivery/common/widgets/custom_bottom_sheet_widget.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_card.dart';
 import 'package:sixam_mart_delivery/features/auth/controllers/auth_controller.dart';
 import 'package:sixam_mart_delivery/features/profile/controllers/profile_controller.dart';
@@ -58,8 +59,8 @@ class LegalSection extends StatelessWidget {
                 iconColor: Theme.of(context).colorScheme.error,
                 onTap: () {
                   Get.back();
-                  Get.bottomSheet(
-                    ConfirmationBottomSheet(
+                  showCustomBottomSheet(
+                    child: ConfirmationBottomSheet(
                       title: 'logout_confirmation'.tr,
                       acceptText: 'yes_logout'.tr,
                       acceptColor: Theme.of(context).colorScheme.error,
@@ -69,11 +70,9 @@ class LegalSection extends StatelessWidget {
                         Get.find<ProfileController>().stopLocationRecord();
                         Get.offAllNamed(RouteHelper.getSignInRoute());
                       },
-                      onCancel: () => Get.back(),
+                      onCancel: () =>
+                          Get.back(), // اختياري، لأنه افتراضي بيرجع للخلف
                     ),
-                    isScrollControlled: true,
-                    backgroundColor:
-                        Colors.transparent, // للتأكد أن الدائرة × تظهر بشكل جيد
                   );
                 },
               ),

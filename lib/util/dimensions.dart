@@ -5,9 +5,11 @@ class Dimensions {
   static const double fontSizeLarge = 16.0;
   static const double fontSizeExtraLarge = 18.0;
   static const double fontSizeOverLarge = 24.0;
+  static const double fs28 = 24.0;
 
   static const double paddingSizeOverSmall = 2.0;
   static const double paddingSizeExtraSmall = 5.0;
+  static const double p8 = 8.0;
   static const double paddingSizeSmall = 10.0;
   static const double paddingSizeDefault = 15.0;
   static const double paddingSizeLarge = 20.0;

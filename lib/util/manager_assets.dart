@@ -55,20 +55,24 @@ class ManagerAssets {
   static const String pictureIcon = '$imagePath/picture_icon.png';
   static const String successIcon = '$imagePath/success_icon.png';
   static const String emptyPaymentIcon = '$imagePath/empty_payment_icon.png';
-  static const String applicationSubmittedImage = '$imagePath/application_submitted.png';
+  static const String applicationSubmittedImage =
+      '$imagePath/application_submitted.png';
   static const String splashLogoLightImage = '$imagePath/splash_logo_light.png';
   static const String splashLogoDarkImage = '$imagePath/splash_logo_dark.png';
   static const String greenCardImage = '$imagePath/green_card.png';
   static const String blueCardImage = '$imagePath/blue_card.png';
   static const String orangeCardImage = '$imagePath/orange_card.png';
   static const String storeImage = '$imagePath/store.png';
-  static const String balanceImage =  '$imagePath/balance.png';
-  static const String balanceArabicImage =  '$imagePath/balance_ar.png';
+  static const String balanceImage = '$imagePath/balance.png';
+    static const String payNowImage = '$imagePath/pay_now.png';
+  static const String adjustPaymentImage = '$imagePath/adjust_payment.png';
 
   ///Svg Images
   static const String changePasswordBgImage =
       '$imagePath/change_password_bg_image.svg';
-  static const String orderOnTheWayIcon = '$imagePath/order_on_the_way_icon.svg';
+  static const String orderOnTheWayIcon =
+      '$imagePath/order_on_the_way_icon.svg';
+
 
   // icons
   static const String arrowBackIcon = '$iconPath/arrow_left.svg';

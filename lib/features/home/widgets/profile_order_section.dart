@@ -11,6 +11,8 @@ class ProfileOrdersSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final orientation = MediaQuery.of(context).orientation;
+
     return Container(
         margin: const EdgeInsets.only(top: Dimensions.paddingSizeLarge),
       child: Column(
@@ -20,17 +22,19 @@ class ProfileOrdersSection extends StatelessWidget {
             value: profileController.profileModel?.orderCount.toString(),
             imagePath: ManagerAssets.greenCardImage,
             isTopCard: true,
-            height: 150,
+            height: orientation==Orientation.landscape?300:150,
           ),
+          SizedBox(
+            height:orientation==Orientation.landscape?Dimensions.paddingSizeDefault:0),
           Row(
             children: [
               Expanded(
                 child: ProfileOrderCardWidget(
-                  title: 'this_week_orders'.tr,
+                  title: 'week_orders'.tr,
                   value: profileController.profileModel?.thisWeekOrderCount
                       .toString(),
                   imagePath: ManagerAssets.orangeCardImage,
-                  height: 150,
+            height: orientation==Orientation.landscape?250:150,
                 ),
               ),
               const SizedBox(width: Dimensions.paddingSizeDefault),
@@ -40,7 +44,7 @@ class ProfileOrdersSection extends StatelessWidget {
                   value:
                       profileController.profileModel?.todaysOrderCount.toString(),
                   imagePath: ManagerAssets.blueCardImage,
-                  height: 150, // حسب التصميم بالفوغا
+            height: orientation==Orientation.landscape?250:150,
                 ),
               ),
             ],

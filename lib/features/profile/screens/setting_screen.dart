@@ -84,13 +84,13 @@ class SettingScreen extends StatelessWidget {
               Center(
                 child: TextButton(
                   onPressed: () {
-                    Get.bottomSheet(
-                      ConfirmationBottomSheet(
+                    showCustomBottomSheet(
+                      child: ConfirmationBottomSheet(
                         icon: ManagerAssets.warning,
                         title: 'are_you_sure_to_delete_account'.tr,
                         description: 'it_will_remove_your_all_information'.tr,
-                        acceptText: 'yes'.tr,
-                        cancelText: 'no'.tr,
+                        acceptText: 'yes_delete_it'.tr,
+                        cancelText: 'no_cancel'.tr,
                         hasCancel: true,
                         onAccept: () {
                           profileController.deleteDriver();
@@ -100,8 +100,6 @@ class SettingScreen extends StatelessWidget {
                         },
                         acceptColor: Theme.of(context).colorScheme.error,
                       ),
-                      isScrollControlled: true,
-                      backgroundColor: Colors.transparent,
                     );
                   },
                   child: Text(
