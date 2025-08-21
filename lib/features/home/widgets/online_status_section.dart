@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_card.dart';
+import 'package:sixam_mart_delivery/common/widgets/custom_bottom_sheet_widget.dart';
+import 'package:sixam_mart_delivery/common/widgets/custom_confirmation_bottom_sheet.dart';
+import 'package:sixam_mart_delivery/common/widgets/custom_button_widget.dart';
 import 'package:sixam_mart_delivery/features/order/controllers/order_controller.dart';
 import 'package:sixam_mart_delivery/features/profile/controllers/profile_controller.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
 import 'package:sixam_mart_delivery/util/manager_assets.dart';
+import 'package:sixam_mart_delivery/util/manager_colors.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_bottom_sheet_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_confirmation_bottom_sheet.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_button_widget.dart';
 
 class StatusSwitchSection extends StatelessWidget {
   const StatusSwitchSection({super.key});
@@ -77,103 +79,142 @@ class StatusSwitchSection extends StatelessWidget {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final orderController = Get.find<OrderController>();
+  Widget _buildShimmer(BuildContext context) {
+    return CustomCard(
+      padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Shimmer(
+            duration: const Duration(seconds: 2),
+            color: Theme.of(context).cardColor,
+            colorOpacity: 0.3,
+            enabled: true,
+            child: Container(
+                width: 80,
+                height: 20,
+                decoration: BoxDecoration(
+                  color: ManagerColors.shimmer,
+                  borderRadius: BorderRadius.circular(8),
+                )),
+          ),
+          Shimmer(
+            duration: const Duration(seconds: 2),
+            color: Theme.of(context).cardColor,
+            colorOpacity: 0.3,
+            enabled: true,
+            child: Container(
+                width: 60,
+                height: 30,
+                decoration: BoxDecoration(
+                  color: ManagerColors.shimmer,
+                  borderRadius: BorderRadius.circular(20),
+                )),
+          ),
+        ],
+      ),
+    );
+  }
 
-    return GetBuilder<ProfileController>(builder: (profileController) {
-      if (profileController.profileModel == null ||
-          orderController.currentOrderList == null) {
-        return const SizedBox();
-      }
-
-      bool isActive = profileController.profileModel!.active == 1;
-
-      return CustomCard(
-        padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              isActive ? 'online'.tr : 'offline'.tr,
-              style: robotoSemiBold.copyWith(
-                fontSize: Dimensions.fontSizeLarge,
-              ),
-            ),
-            FlutterSwitch(
-              width: 60,
-              height: 30,
-              valueFontSize: Dimensions.fontSizeExtraSmall,
-              activeColor: Theme.of(context).primaryColor,
-              value: isActive,
-              onToggle: (bool toggle) async {
-                if (!toggle && orderController.currentOrderList!.isNotEmpty) {
+  Widget _buildStatusCard(BuildContext context, bool isActive,
+      ProfileController profileController, OrderController orderController) {
+    return CustomCard(
+      padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            isActive ? 'online'.tr : 'offline'.tr,
+            style: robotoSemiBold.copyWith(fontSize: Dimensions.fontSizeLarge),
+          ),
+          FlutterSwitch(
+            width: 60,
+            height: 30,
+            valueFontSize: Dimensions.fontSizeExtraSmall,
+            activeColor: Theme.of(context).primaryColor,
+            value: isActive,
+            onToggle: (bool toggle) async {
+              if (!toggle && orderController.currentOrderList!.isNotEmpty) {
+                showCustomBottomSheet(
+                  child: CustomConfirmationBottomSheet(
+                    title: 'you_cant_go_offline'.tr,
+                    description: 'you_can_not_go_offline_now'.tr,
+                    buttonWidget: Padding(
+                      padding: const EdgeInsets.only(bottom: 20, top: 10),
+                      child: CustomButtonWidget(
+                        width: 150,
+                        onPressed: () => Get.back(),
+                        buttonText: 'okay'.tr,
+                      ),
+                    ),
+                  ),
+                );
+              } else {
+                if (!toggle) {
                   showCustomBottomSheet(
                     child: CustomConfirmationBottomSheet(
-                      title: 'you_cant_go_offline'.tr,
-                      description: 'you_can_not_go_offline_now'.tr,
+                      title: 'go_offline'.tr,
+                      description: 'are_you_sure_to_offline'.tr,
+                      image: ManagerAssets.dmOfflineIcon,
                       buttonWidget: Padding(
-                        padding: const EdgeInsets.only(bottom: 20, top: 10),
-                        child: CustomButtonWidget(
-                          width: 150,
-                          onPressed: () => Get.back(),
-                          buttonText: 'okay'.tr,
+                        padding: const EdgeInsets.only(
+                            left: 40, right: 40, bottom: 20, top: 10),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: CustomButtonWidget(
+                                onPressed: () {
+                                  profileController.updateActiveStatus();
+                                },
+                                buttonText: 'yes_proceed'.tr,
+                              ),
+                            ),
+                            const SizedBox(
+                                width: Dimensions.paddingSizeDefault),
+                            Expanded(
+                              child: CustomButtonWidget(
+                                onPressed: () => Get.back(),
+                                buttonText: 'cancel'.tr,
+                                backgroundColor: Theme.of(context)
+                                    .disabledColor
+                                    .withOpacity(0.1),
+                                fontColor: Theme.of(context).disabledColor,
+                                isBorder: true,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
                   );
                 } else {
-                  if (!toggle) {
-                    showCustomBottomSheet(
-                      child: CustomConfirmationBottomSheet(
-                        title: 'go_offline'.tr,
-                        description: 'are_you_sure_to_offline'.tr,
-                        image: ManagerAssets.dmOfflineIcon,
-                        buttonWidget: Padding(
-                          padding: const EdgeInsets.only(
-                            left: 40,
-                            right: 40,
-                            bottom: 20,
-                            top: 10,
-                          ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: CustomButtonWidget(
-                                  onPressed: () {
-                                    profileController.updateActiveStatus();
-                                  },
-                                  buttonText: 'yes_proceed'.tr,
-                                ),
-                              ),
-                              const SizedBox(
-                                  width: Dimensions.paddingSizeDefault),
-                              Expanded(
-                                child: CustomButtonWidget(
-                                  onPressed: () => Get.back(),
-                                  buttonText: 'cancel'.tr,
-                                  backgroundColor: Theme.of(context)
-                                      .disabledColor
-                                      .withOpacity(0.1),
-                                  fontColor: Theme.of(context).disabledColor,
-                                  isBorder: true,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  } else {
-                    _checkPermission(
-                        () => profileController.updateActiveStatus());
-                  }
+                  _checkPermission(
+                      () => profileController.updateActiveStatus());
                 }
-              },
-            ),
-          ],
-        ),
-      );
-    });
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GetBuilder<ProfileController>(
+      builder: (profileController) {
+        return GetBuilder<OrderController>(
+          builder: (orderController) {
+            if (profileController.profileModel == null ||
+                orderController.currentOrderList == null) {
+              return _buildShimmer(context);
+            }
+            final isActive = profileController.profileModel!.active == 1;
+            return _buildStatusCard(
+                context, isActive, profileController, orderController);
+          },
+        );
+      },
+    );
   }
 }

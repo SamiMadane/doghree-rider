@@ -29,8 +29,8 @@ class _ActiveOrderSectionState extends State<ActiveOrderSection> {
       bool hasMoreOrder = orderController.currentOrderList != null &&
           orderController.currentOrderList!.length > 1;
 
-      return Container(
-        margin: const EdgeInsets.only(top: Dimensions.paddingSizeExtraLarge),
+      return hasActiveOrder ? Container(
+        margin: const EdgeInsets.only(top: Dimensions.paddingSizeLarge),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -86,7 +86,7 @@ class _ActiveOrderSectionState extends State<ActiveOrderSection> {
               const SizedBox(),
           ],
         ),
-      );
+      ):SizedBox();
     });
   }
 }

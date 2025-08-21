@@ -11,39 +11,46 @@ class ProfileOrdersSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        ProfileOrderCardWidget(
-          title: 'total_orders'.tr,
-          value: profileController.profileModel?.orderCount.toString(),
-          imagePath: ManagerAssets.greenCardImage,
-          isTopCard: true,
-          height: 150,
-        ),
-        Row(
-          children: [
-            Expanded(
-              child: ProfileOrderCardWidget(
-                title: 'this_week_orders'.tr,
-                value: profileController.profileModel?.thisWeekOrderCount
-                    .toString(),
-                imagePath: ManagerAssets.orangeCardImage,
-                height: 150,
+    final orientation = MediaQuery.of(context).orientation;
+
+    return Container(
+        margin: const EdgeInsets.only(top: Dimensions.paddingSizeLarge),
+      child: Column(
+        children: [
+          ProfileOrderCardWidget(
+            title: 'total_orders'.tr,
+            value: profileController.profileModel?.orderCount.toString(),
+            imagePath: ManagerAssets.greenCardImage,
+            isTopCard: true,
+            height: orientation==Orientation.landscape?300:150,
+          ),
+          SizedBox(
+            height:orientation==Orientation.landscape?Dimensions.paddingSizeDefault:0),
+          Row(
+            children: [
+              Expanded(
+                child: ProfileOrderCardWidget(
+                  title: 'week_orders'.tr,
+                  value: profileController.profileModel?.thisWeekOrderCount
+                      .toString(),
+                  imagePath: ManagerAssets.orangeCardImage,
+            height: orientation==Orientation.landscape?250:150,
+                ),
               ),
-            ),
-            const SizedBox(width: Dimensions.paddingSizeDefault),
-            Expanded(
-              child: ProfileOrderCardWidget(
-                title: 'todays_orders'.tr,
-                value:
-                    profileController.profileModel?.todaysOrderCount.toString(),
-                imagePath: ManagerAssets.blueCardImage,
-                height: 150, // حسب التصميم بالفوغا
+              const SizedBox(width: Dimensions.paddingSizeDefault),
+              Expanded(
+                child: ProfileOrderCardWidget(
+                  title: 'todays_orders'.tr,
+                  value:
+                      profileController.profileModel?.todaysOrderCount.toString(),
+                  imagePath: ManagerAssets.blueCardImage,
+            height: orientation==Orientation.landscape?250:150,
+                ),
               ),
-            ),
-          ],
-        ),
-      ],
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

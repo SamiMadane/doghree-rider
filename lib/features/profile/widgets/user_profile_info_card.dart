@@ -13,7 +13,6 @@ class UserProfileInfoCard extends StatelessWidget {
   final ProfileController profileController;
 
   const UserProfileInfoCard({super.key, required this.profileController});
-
   @override
   Widget build(BuildContext context) {
     final profile = profileController.profileModel;

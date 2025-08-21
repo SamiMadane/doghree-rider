@@ -58,15 +58,14 @@ class OrderCardWidget extends StatelessWidget {
                   ],
                 ),
               ),
-              Container(
+              CustomCard(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                decoration: BoxDecoration(
-                  color: order.paymentStatus == 'paid'
+                    fillColor: order.paymentStatus == 'paid'
                       ? Theme.of(context).primaryColor
                       : Theme.of(context).colorScheme.error,
-                  borderRadius: BorderRadius.circular(20),
-                ),
+                      borderRadius: Dimensions.radiusExtraLarge,
+               
                 child: Text(
                   order.paymentStatus == 'paid' ? 'paid'.tr : 'unpaid'.tr,
                   style: robotoBold.copyWith(

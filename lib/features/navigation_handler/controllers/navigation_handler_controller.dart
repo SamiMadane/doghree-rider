@@ -24,20 +24,20 @@ class NavigationHandlerController extends GetxController implements GetxService 
 
   DateTime get currentTime => DateTime.now();
 
-  Module getModuleConfig(String? moduleType) {
-    Module module = Module.fromJson(_data!['module_config'][moduleType]);
-    moduleType == 'food' ? module.newVariation = true : module.newVariation = false;
-    return module;
-  }
-
-  Future<bool> getConfigData() async {
+ Future<bool> getConfigData() async {
   try {
     Response response = await navigationHandlerServiceInterface.getConfigData()
-      .timeout(Duration(seconds: 10)); // تعيين مهلة 10 ثواني
-    
+      .timeout(Duration(seconds: 10));
+
     if (response.statusCode == 200) {
       _data = response.body;
       _configModel = ConfigModel.fromJson(response.body);
+
+      // طباعة البيانات بالكامل
+      print("=== Config Data Loaded ===");
+      print(_data);
+      print("==========================");
+
       update();
       return true;
     } else {
@@ -53,6 +53,17 @@ class NavigationHandlerController extends GetxController implements GetxService 
 }
 
 
+  // جلب اعدادات موديول معين من السيرفر والموديول يتم تمريره 
+  // في حال كانت ال moduleType هي food يتم اضافة خاصية newVariation
+  Module getModuleConfig(String? moduleType) {
+    Module module = Module.fromJson(_data!['module_config'][moduleType]);
+    moduleType == 'food' ? module.newVariation = true : module.newVariation = false;
+    return module;
+  }
+
+
+  // جلب اعدادات موديول معين من الذاكرة
+  // دون اي تعديل على الخاصية newVariation
   Module getModule(String? moduleType) => Module.fromJson(_data!['module_config'][moduleType]);
 
   Future<bool> initSharedData() {

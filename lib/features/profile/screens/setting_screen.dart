@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sixam_mart_delivery/common/controllers/theme_controller.dart';
-import 'package:sixam_mart_delivery/common/widgets/confirmation_dialog_widget.dart';
+import 'package:sixam_mart_delivery/common/widgets/confirmation_bottom_sheet.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_app_bar_widget.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_bottom_sheet_widget.dart';
 import 'package:sixam_mart_delivery/features/auth/controllers/auth_controller.dart';
@@ -37,7 +37,7 @@ class SettingScreen extends StatelessWidget {
           child: Column(
             children: [
               ProfileButtonWidget(
-              iconData: Icons.dark_mode,
+                iconData: Icons.dark_mode,
                 title: 'dark_mode'.tr,
                 isButtonActive: Get.isDarkMode,
                 onTap: () {
@@ -84,15 +84,22 @@ class SettingScreen extends StatelessWidget {
               Center(
                 child: TextButton(
                   onPressed: () {
-                    Get.dialog(
-                      ConfirmationDialogWidget(
+                    showCustomBottomSheet(
+                      child: ConfirmationBottomSheet(
                         icon: ManagerAssets.warning,
                         title: 'are_you_sure_to_delete_account'.tr,
                         description: 'it_will_remove_your_all_information'.tr,
-                        isLogOut: true,
-                        onYesPressed: () => profileController.deleteDriver(),
+                        acceptText: 'yes_delete_it'.tr,
+                        cancelText: 'no_cancel'.tr,
+                        hasCancel: true,
+                        onAccept: () {
+                          profileController.deleteDriver();
+                        },
+                        onCancel: () {
+                          Get.back();
+                        },
+                        acceptColor: Theme.of(context).colorScheme.error,
                       ),
-                      useSafeArea: false,
                     );
                   },
                   child: Text(

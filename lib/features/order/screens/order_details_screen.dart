@@ -1,18 +1,19 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:dotted_border/dotted_border.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:sixam_mart_delivery/features/language/controllers/language_controller.dart';
 import 'package:sixam_mart_delivery/features/notification/controllers/notification_controller.dart';
 import 'package:sixam_mart_delivery/features/order/controllers/order_controller.dart';
+import 'package:sixam_mart_delivery/features/order/widgets/order_id_section.dart';
+import 'package:sixam_mart_delivery/features/order/widgets/order_info_section.dart';
+import 'package:sixam_mart_delivery/features/order/widgets/payment_details_section.dart';
 import 'package:sixam_mart_delivery/features/profile/controllers/profile_controller.dart';
 import 'package:sixam_mart_delivery/features/navigation_handler/controllers/navigation_handler_controller.dart';
 import 'package:sixam_mart_delivery/features/notification/domain/models/notification_body_model.dart';
 import 'package:sixam_mart_delivery/features/chat/domain/models/conversation_model.dart';
 import 'package:sixam_mart_delivery/features/order/domain/models/order_details_model.dart';
 import 'package:sixam_mart_delivery/features/order/domain/models/order_model.dart';
-import 'package:sixam_mart_delivery/helper/price_converter_helper.dart';
 import 'package:sixam_mart_delivery/helper/responsive_helper.dart';
 import 'package:sixam_mart_delivery/helper/route_helper.dart';
 import 'package:sixam_mart_delivery/util/app_constants.dart';
@@ -27,9 +28,8 @@ import 'package:sixam_mart_delivery/common/widgets/custom_snackbar_widget.dart';
 import 'package:sixam_mart_delivery/features/order/widgets/camera_button_sheet_widget.dart';
 import 'package:sixam_mart_delivery/features/order/widgets/cancellation_dialogue_widget.dart';
 import 'package:sixam_mart_delivery/features/order/widgets/collect_money_delivery_sheet_widget.dart';
-import 'package:sixam_mart_delivery/features/order/widgets/order_item_widget.dart';
 import 'package:sixam_mart_delivery/features/order/widgets/verify_delivery_sheet_widget.dart';
-import 'package:sixam_mart_delivery/features/order/widgets/info_card_widget.dart';
+import 'package:sixam_mart_delivery/features/order/widgets/info_card_section.dart';
 import 'package:sixam_mart_delivery/features/order/widgets/slider_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -101,8 +101,9 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
 
   @override
   Widget build(BuildContext context) {
-    bool? cancelPermission =
-        Get.find<NavigationHandlerController>().configModel!.canceledByDeliveryman;
+    bool? cancelPermission = Get.find<NavigationHandlerController>()
+        .configModel!
+        .canceledByDeliveryman;
     bool selfDelivery =
         Get.find<ProfileController>().profileModel!.type != 'zone_wise';
 
@@ -118,9 +119,9 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
         }
       },
       child: Scaffold(
-        backgroundColor: Theme.of(context).cardColor,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: CustomAppBarWidget(
-            title: 'order_details'.tr,
+            title: '${'order'.tr} #${widget.orderId}',
             onBackPressed: () {
               if (widget.fromNotification || widget.fromLocationScreen) {
                 Get.offAllNamed(RouteHelper.getInitialRoute());
@@ -129,292 +130,174 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
               }
             }),
         body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
-            child: GetBuilder<OrderController>(builder: (orderController) {
-              OrderModel? controllerOrderModel = orderController.orderModel;
-
-              bool restConfModel = Get.find<NavigationHandlerController>()
-                      .configModel!
-                      .orderConfirmationModel !=
-                  'deliveryman';
-
-              bool? parcel,
-                  processing,
-                  accepted,
-                  confirmed,
-                  handover,
-                  pickedUp,
-                  cod,
-                  wallet,
-                  partialPay,
-                  offlinePay;
-
-              bool orderVerificationActive = Get.find<NavigationHandlerController>()
-                      .configModel
-                      ?.orderDeliveryVerification ??
-                  false;
-
-              late bool showBottomView;
-              late bool showSlider;
-              bool showDeliveryConfirmImage = false;
-
-              double? deliveryCharge = 0;
-              double itemsPrice = 0;
-              double? discount = 0;
-              double? couponDiscount = 0;
-              double? tax = 0;
-              double addOns = 0;
-              double? dmTips = 0;
-              double additionalCharge = 0;
-              double extraPackagingAmount = 0;
-              double referrerBonusAmount = 0;
-              bool? isPrescriptionOrder = false;
-              bool? taxIncluded = false;
-              bool showChatPermission = true;
-              OrderModel? order = controllerOrderModel;
-              if (order != null && orderController.orderDetailsModel != null) {
-                deliveryCharge = order.deliveryCharge;
-                dmTips = order.dmTips;
-                isPrescriptionOrder = order.prescriptionOrder;
-                discount = order.storeDiscountAmount! +
-                    order.flashAdminDiscountAmount! +
-                    order.flashStoreDiscountAmount!;
-                tax = order.totalTaxAmount;
-                taxIncluded = order.taxStatus;
-                additionalCharge = order.additionalCharge!;
-                extraPackagingAmount = order.extraPackagingAmount!;
-                referrerBonusAmount = order.referrerBonusAmount!;
-                couponDiscount = order.couponDiscountAmount;
-                if (isPrescriptionOrder!) {
-                  double orderAmount = order.orderAmount ?? 0;
-                  itemsPrice = (orderAmount + discount) -
-                      ((taxIncluded! ? 0 : tax!) +
-                          deliveryCharge! +
-                          additionalCharge) -
-                      dmTips!;
-                } else {
-                  for (OrderDetailsModel orderDetails
-                      in orderController.orderDetailsModel!) {
-                    for (AddOn addOn in orderDetails.addOns!) {
-                      addOns = addOns + (addOn.price! * addOn.quantity!);
-                    }
-                    itemsPrice = itemsPrice +
-                        (orderDetails.price! * orderDetails.quantity!);
-                  }
-                }
-
-                if (order.storeBusinessModel == 'commission') {
-                  showChatPermission = true;
-                } else if (order.storeBusinessModel == 'subscription') {
-                  showChatPermission = order.storeChatPermission == 1;
-                } else {
-                  showChatPermission = true;
-                }
-              }
-              double subTotal = itemsPrice + addOns;
-              double total = itemsPrice +
-                  addOns -
-                  discount +
-                  (taxIncluded! ? 0 : tax!) +
-                  deliveryCharge! -
-                  couponDiscount! +
-                  dmTips! +
-                  additionalCharge +
-                  extraPackagingAmount -
-                  referrerBonusAmount;
-
-              if (controllerOrderModel != null) {
-                parcel = controllerOrderModel.orderType == 'parcel';
-                processing =
-                    controllerOrderModel.orderStatus == AppConstants.processing;
-                accepted =
-                    controllerOrderModel.orderStatus == AppConstants.accepted;
-                confirmed =
-                    controllerOrderModel.orderStatus == AppConstants.confirmed;
-                handover =
-                    controllerOrderModel.orderStatus == AppConstants.handover;
-                pickedUp =
-                    controllerOrderModel.orderStatus == AppConstants.pickedUp;
-                cod = controllerOrderModel.paymentMethod == 'cash_on_delivery';
-                wallet = controllerOrderModel.paymentMethod == 'wallet';
-                partialPay =
-                    controllerOrderModel.paymentMethod == 'partial_payment';
-                offlinePay =
-                    controllerOrderModel.paymentMethod == 'offline_payment';
-
-                showDeliveryConfirmImage = pickedUp &&
-                    Get.find<NavigationHandlerController>()
-                        .configModel!
-                        .dmPictureUploadStatus!;
+          child: SizedBox.expand(
+            child: Container(
+              color: Theme.of(context).cardColor,
+              padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+              margin: const EdgeInsets.only(top: Dimensions.paddingSizeDefault),
+              child: GetBuilder<OrderController>(builder: (orderController) {
+                OrderModel? controllerOrderModel = orderController.orderModel;
+            
                 bool restConfModel = Get.find<NavigationHandlerController>()
                         .configModel!
                         .orderConfirmationModel !=
                     'deliveryman';
-                showBottomView = (parcel && accepted) ||
-                    accepted ||
-                    confirmed ||
-                    processing ||
-                    handover ||
-                    pickedUp ||
-                    (widget.isRunningOrder ?? true);
-                showSlider =
-                    (cod && accepted && !restConfModel && !selfDelivery) ||
-                        handover ||
-                        pickedUp ||
-                        (parcel && accepted);
-              }
-
-              return (orderController.orderDetailsModel != null &&
-                      controllerOrderModel != null)
-                  ? Column(children: [
-                      Expanded(
-                          child: SingleChildScrollView(
-                        physics: const BouncingScrollPhysics(),
+            
+                bool? parcel,
+                    processing,
+                    accepted,
+                    confirmed,
+                    handover,
+                    pickedUp,
+                    cod,
+                    wallet,
+                    partialPay,
+                    offlinePay;
+            
+                bool orderVerificationActive =
+                    Get.find<NavigationHandlerController>()
+                            .configModel
+                            ?.orderDeliveryVerification ??
+                        false;
+            
+                late bool showBottomView;
+                late bool showSlider;
+                bool showDeliveryConfirmImage = false;
+            
+                double? deliveryCharge = 0;
+                double itemsPrice = 0;
+                double? discount = 0;
+                double? couponDiscount = 0;
+                double? tax = 0;
+                double addOns = 0;
+                double? dmTips = 0;
+                double additionalCharge = 0;
+                double extraPackagingAmount = 0;
+                double referrerBonusAmount = 0;
+                bool? isPrescriptionOrder = false;
+                bool? taxIncluded = false;
+                bool showChatPermission = true;
+                OrderModel? order = controllerOrderModel;
+                if (order != null && orderController.orderDetailsModel != null) {
+                  deliveryCharge = order.deliveryCharge;
+                  dmTips = order.dmTips;
+                  isPrescriptionOrder = order.prescriptionOrder;
+                  discount = order.storeDiscountAmount! +
+                      order.flashAdminDiscountAmount! +
+                      order.flashStoreDiscountAmount!;
+                  tax = order.totalTaxAmount;
+                  taxIncluded = order.taxStatus;
+                  additionalCharge = order.additionalCharge!;
+                  extraPackagingAmount = order.extraPackagingAmount!;
+                  referrerBonusAmount = order.referrerBonusAmount!;
+                  couponDiscount = order.couponDiscountAmount;
+                  if (isPrescriptionOrder!) {
+                    double orderAmount = order.orderAmount ?? 0;
+                    itemsPrice = (orderAmount + discount) -
+                        ((taxIncluded! ? 0 : tax!) +
+                            deliveryCharge! +
+                            additionalCharge) -
+                        dmTips!;
+                  } else {
+                    for (OrderDetailsModel orderDetails
+                        in orderController.orderDetailsModel!) {
+                      for (AddOn addOn in orderDetails.addOns!) {
+                        addOns = addOns + (addOn.price! * addOn.quantity!);
+                      }
+                      itemsPrice = itemsPrice +
+                          (orderDetails.price! * orderDetails.quantity!);
+                    }
+                  }
+            
+                  if (order.storeBusinessModel == 'commission') {
+                    showChatPermission = true;
+                  } else if (order.storeBusinessModel == 'subscription') {
+                    showChatPermission = order.storeChatPermission == 1;
+                  } else {
+                    showChatPermission = true;
+                  }
+                }
+                double subTotal = itemsPrice + addOns;
+                double total = itemsPrice +
+                    addOns -
+                    discount +
+                    (taxIncluded! ? 0 : tax!) +
+                    deliveryCharge! -
+                    couponDiscount! +
+                    dmTips! +
+                    additionalCharge +
+                    extraPackagingAmount -
+                    referrerBonusAmount;
+            
+                if (controllerOrderModel != null) {
+                  parcel = controllerOrderModel.orderType == 'parcel';
+                  processing =
+                      controllerOrderModel.orderStatus == AppConstants.processing;
+                  accepted =
+                      controllerOrderModel.orderStatus == AppConstants.accepted;
+                  confirmed =
+                      controllerOrderModel.orderStatus == AppConstants.confirmed;
+                  handover =
+                      controllerOrderModel.orderStatus == AppConstants.handover;
+                  pickedUp =
+                      controllerOrderModel.orderStatus == AppConstants.pickedUp;
+                  cod = controllerOrderModel.paymentMethod == 'cash_on_delivery';
+                  wallet = controllerOrderModel.paymentMethod == 'wallet';
+                  partialPay =
+                      controllerOrderModel.paymentMethod == 'partial_payment';
+                  offlinePay =
+                      controllerOrderModel.paymentMethod == 'offline_payment';
+            
+                  showDeliveryConfirmImage = pickedUp &&
+                      Get.find<NavigationHandlerController>()
+                          .configModel!
+                          .dmPictureUploadStatus!;
+                  bool restConfModel = Get.find<NavigationHandlerController>()
+                          .configModel!
+                          .orderConfirmationModel !=
+                      'deliveryman';
+                  showBottomView = (parcel && accepted) ||
+                      accepted ||
+                      confirmed ||
+                      processing ||
+                      handover ||
+                      pickedUp ||
+                      (widget.isRunningOrder ?? true);
+                  showSlider =
+                      (cod && accepted && !restConfModel && !selfDelivery) ||
+                          handover ||
+                          pickedUp ||
+                          (parcel && accepted);
+                }
+            
+                return (orderController.orderDetailsModel != null &&
+                        controllerOrderModel != null)
+                    ? SingleChildScrollView(
+                        physics: BouncingScrollPhysics(),
                         child: Column(children: [
-                          Row(children: [
-                            Text(
-                                '${parcel! ? 'delivery_id'.tr : 'order_id'.tr}:',
-                                style: robotoRegular),
-                            const SizedBox(
-                                width: Dimensions.paddingSizeExtraSmall),
-                            Text(controllerOrderModel.id.toString(),
-                                style: robotoMedium),
-                            const SizedBox(
-                                width: Dimensions.paddingSizeExtraSmall),
-                            const Expanded(child: SizedBox()),
-                            Container(
-                                height: 7,
-                                width: 7,
-                                decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.green)),
-                            const SizedBox(
-                                width: Dimensions.paddingSizeExtraSmall),
-                            Text(
-                              controllerOrderModel.orderStatus!.tr,
-                              style: robotoRegular,
-                            ),
-                          ]),
-                          const SizedBox(height: Dimensions.paddingSizeLarge),
-                          Row(children: [
-                            Text('${parcel ? 'charge_payer'.tr : 'item'.tr}:',
-                                style: robotoRegular),
-                            const SizedBox(
-                                width: Dimensions.paddingSizeExtraSmall),
-                            Text(
-                              parcel
-                                  ? controllerOrderModel.chargePayer!.tr
-                                  : orderController.orderDetailsModel!.length
-                                      .toString(),
-                              style: robotoMedium.copyWith(
-                                  color: Theme.of(context).primaryColor),
-                            ),
-                            const Expanded(child: SizedBox()),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: Dimensions.paddingSizeSmall,
-                                  vertical: Dimensions.paddingSizeExtraSmall),
-                              decoration: BoxDecoration(
-                                  color: Theme.of(context)
-                                      .primaryColor
-                                      .withValues(alpha: 0.1),
-                                  borderRadius: BorderRadius.circular(5)),
-                              child: Text(
-                                cod!
-                                    ? 'cod'.tr
-                                    : wallet!
-                                        ? 'wallet'.tr
-                                        : partialPay!
-                                            ? 'partially_pay'.tr
-                                            : offlinePay!
-                                                ? 'offline_payment'.tr
-                                                : 'digitally_paid'.tr,
-                                style: robotoMedium.copyWith(
-                                    fontSize: Dimensions.fontSizeExtraSmall,
-                                    color: Theme.of(context).primaryColor),
-                              ),
-                            ),
-                          ]),
-                          orderController.orderDetailsModel!.isNotEmpty &&
-                                  orderController
-                                          .orderDetailsModel![0].itemDetails !=
-                                      null &&
-                                  orderController.orderDetailsModel![0]
-                                          .itemDetails!.moduleType ==
-                                      'food'
-                              ? Column(children: [
-                                  const Divider(
-                                      height: Dimensions.paddingSizeLarge),
-                                  Row(children: [
-                                    Text('${'cutlery'.tr}: ',
-                                        style: robotoRegular),
-                                    const Expanded(child: SizedBox()),
-                                    Text(
-                                      controllerOrderModel.cutlery!
-                                          ? 'yes'.tr
-                                          : 'no'.tr,
-                                      style: robotoRegular,
-                                    ),
-                                  ]),
-                                ])
-                              : const SizedBox(),
-                          controllerOrderModel.unavailableItemNote != null
-                              ? Column(
-                                  children: [
-                                    const Divider(
-                                        height: Dimensions.paddingSizeLarge),
-                                    Row(children: [
-                                      Text('${'unavailable_item_note'.tr}: ',
-                                          style: robotoMedium),
-                                      Text(
-                                        controllerOrderModel
-                                            .unavailableItemNote!,
-                                        style: robotoRegular,
-                                      ),
-                                    ]),
-                                  ],
-                                )
-                              : const SizedBox(),
-                          controllerOrderModel.deliveryInstruction != null
-                              ? Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                      const Divider(
-                                          height: Dimensions.paddingSizeLarge),
-                                      RichText(
-                                        textAlign: TextAlign.start,
-                                        text: TextSpan(
-                                            text:
-                                                '${'delivery_instruction'.tr}: ',
-                                            style: robotoMedium.copyWith(
-                                                color: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyMedium!
-                                                    .color),
-                                            children: <TextSpan>[
-                                              TextSpan(
-                                                  text: controllerOrderModel
-                                                      .deliveryInstruction!,
-                                                  style: robotoRegular.copyWith(
-                                                      fontSize: Dimensions
-                                                          .fontSizeSmall))
-                                            ]),
-                                      ),
-                                    ])
-                              : const SizedBox(),
+                          OrderIdSection(
+                            orderId: widget.orderId.toString(),
+                            isPaid: controllerOrderModel.paymentStatus == 'paid',
+                          ),
+                          const SizedBox(height: Dimensions.paddingSizeDefault),
+            
+                          OrderInfoSection(
+                            orderController: orderController,
+                            controllerOrderModel: controllerOrderModel,
+                            parcel: parcel!,
+                            cod: cod,
+                            wallet: wallet,
+                            partialPay: partialPay,
+                            offlinePay: offlinePay,
+                            showOrderCount: false,
+                            showPaymentType: false,
+                          ),
                           SizedBox(
-                              height:
-                                  controllerOrderModel.deliveryInstruction !=
-                                          null
-                                      ? Dimensions.paddingSizeSmall
-                                      : 0),
-                          const Divider(height: Dimensions.paddingSizeLarge),
-                          const SizedBox(height: Dimensions.paddingSizeSmall),
-                          InfoCardWidget(
-                            title: parcel
-                                ? 'sender_details'.tr
-                                : 'store_details'.tr,
+                            height: Dimensions.paddingSizeDefault,
+                          ),
+                          InfoCardSection(
+                            title:
+                                parcel ? 'sender_details'.tr : 'store_details'.tr,
                             address: parcel
                                 ? controllerOrderModel.deliveryAddress
                                 : DeliveryAddress(
@@ -434,14 +317,12 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                 ? controllerOrderModel.deliveryAddress!.latitude
                                 : controllerOrderModel.storeLat,
                             longitude: parcel
-                                ? controllerOrderModel
-                                    .deliveryAddress!.longitude
+                                ? controllerOrderModel.deliveryAddress!.longitude
                                 : controllerOrderModel.storeLng,
                             showButton: (controllerOrderModel.orderStatus !=
                                     'delivered' &&
                                 controllerOrderModel.orderStatus != 'failed' &&
-                                controllerOrderModel.orderStatus !=
-                                    'canceled' &&
+                                controllerOrderModel.orderStatus != 'canceled' &&
                                 controllerOrderModel.orderStatus != 'refunded'),
                             isStore: parcel ? false : true,
                             isChatAllow: showChatPermission,
@@ -461,11 +342,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                             )),
                             order: order!,
                           ),
-                          const SizedBox(height: Dimensions.paddingSizeLarge),
-                          InfoCardWidget(
+                          const SizedBox(height: Dimensions.paddingSizeDefault),
+                          InfoCardSection(
                             title: parcel
                                 ? 'receiver_details'.tr
-                                : 'customer_contact_details'.tr,
+                                : 'customer_details'.tr,
                             address: parcel
                                 ? controllerOrderModel.receiverDetails
                                 : controllerOrderModel.deliveryAddress,
@@ -486,18 +367,14 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                     .deliveryAddress!.contactPersonNumber,
                             latitude: parcel
                                 ? controllerOrderModel.receiverDetails!.latitude
-                                : controllerOrderModel
-                                    .deliveryAddress!.latitude,
+                                : controllerOrderModel.deliveryAddress!.latitude,
                             longitude: parcel
-                                ? controllerOrderModel
-                                    .receiverDetails!.longitude
-                                : controllerOrderModel
-                                    .deliveryAddress!.longitude,
+                                ? controllerOrderModel.receiverDetails!.longitude
+                                : controllerOrderModel.deliveryAddress!.longitude,
                             showButton: controllerOrderModel.orderStatus !=
                                     'delivered' &&
                                 controllerOrderModel.orderStatus != 'failed' &&
-                                controllerOrderModel.orderStatus !=
-                                    'canceled' &&
+                                controllerOrderModel.orderStatus != 'canceled' &&
                                 controllerOrderModel.orderStatus != 'refunded',
                             isStore: parcel ? false : true,
                             isChatAllow: showChatPermission,
@@ -517,111 +394,9 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                             )),
                             order: order,
                           ),
-                          const SizedBox(height: Dimensions.paddingSizeLarge),
-                          parcel
-                              ? Container(
-                                  padding: const EdgeInsets.all(
-                                      Dimensions.paddingSizeSmall),
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(context).cardColor,
-                                    borderRadius: BorderRadius.circular(
-                                        Dimensions.radiusSmall),
-                                    boxShadow: Get.isDarkMode
-                                        ? null
-                                        : [
-                                            BoxShadow(
-                                                color: Colors.grey[200]!,
-                                                spreadRadius: 1,
-                                                blurRadius: 5)
-                                          ],
-                                  ),
-                                  child: controllerOrderModel.parcelCategory !=
-                                          null
-                                      ? Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                              Text('parcel_category'.tr,
-                                                  style: robotoRegular),
-                                              const SizedBox(
-                                                  height: Dimensions
-                                                      .paddingSizeExtraSmall),
-                                              Row(children: [
-                                                ClipOval(
-                                                    child: CustomImageWidget(
-                                                  image:
-                                                      '${controllerOrderModel.parcelCategory!.imageFullUrl}',
-                                                  height: 35,
-                                                  width: 35,
-                                                  fit: BoxFit.cover,
-                                                )),
-                                                const SizedBox(
-                                                    width: Dimensions
-                                                        .paddingSizeSmall),
-                                                Expanded(
-                                                    child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                      Text(
-                                                        controllerOrderModel
-                                                            .parcelCategory!
-                                                            .name!,
-                                                        maxLines: 1,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        style: robotoRegular.copyWith(
-                                                            fontSize: Dimensions
-                                                                .fontSizeSmall),
-                                                      ),
-                                                      Text(
-                                                        controllerOrderModel
-                                                            .parcelCategory!
-                                                            .description!,
-                                                        maxLines: 1,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        style: robotoRegular.copyWith(
-                                                            fontSize: Dimensions
-                                                                .fontSizeSmall,
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .disabledColor),
-                                                      ),
-                                                    ])),
-                                              ]),
-                                            ])
-                                      : SizedBox(
-                                          width: context.width,
-                                          child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text('parcel_category'.tr,
-                                                    style: robotoRegular),
-                                                const SizedBox(
-                                                    height: Dimensions
-                                                        .paddingSizeExtraSmall),
-                                                Text(
-                                                    'no_parcel_category_data_found'
-                                                        .tr,
-                                                    style: robotoMedium),
-                                              ]),
-                                        ),
-                                )
-                              : ListView.builder(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount:
-                                      orderController.orderDetailsModel!.length,
-                                  itemBuilder: (context, index) {
-                                    return OrderItemWidget(
-                                        order: controllerOrderModel,
-                                        orderDetails: orderController
-                                            .orderDetailsModel![index]);
-                                  },
-                                ),
+                          const SizedBox(height: Dimensions.paddingSizeDefault),
+            
+                          // here we go
                           (controllerOrderModel.orderNote != null &&
                                   controllerOrderModel.orderNote!.isNotEmpty)
                               ? Column(
@@ -636,8 +411,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                         padding: const EdgeInsets.all(
                                             Dimensions.paddingSizeSmall),
                                         decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(5),
+                                          borderRadius: BorderRadius.circular(5),
                                           border: Border.all(
                                               width: 1,
                                               color: Theme.of(context)
@@ -646,8 +420,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                         child: Text(
                                           controllerOrderModel.orderNote!,
                                           style: robotoRegular.copyWith(
-                                              fontSize:
-                                                  Dimensions.fontSizeSmall,
+                                              fontSize: Dimensions.fontSizeSmall,
                                               color: Theme.of(context)
                                                   .disabledColor),
                                         ),
@@ -656,13 +429,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                               : const SizedBox(),
                           SizedBox(
                               height: (controllerOrderModel.orderNote != null &&
-                                      controllerOrderModel
-                                          .orderNote!.isNotEmpty)
+                                      controllerOrderModel.orderNote!.isNotEmpty)
                                   ? Dimensions.paddingSizeLarge
                                   : 0),
                           (Get.find<NavigationHandlerController>()
-                                      .getModule(
-                                          controllerOrderModel.moduleType)
+                                      .getModule(controllerOrderModel.moduleType)
                                       .orderAttachment! &&
                                   controllerOrderModel.orderAttachmentFullUrl !=
                                       null &&
@@ -756,8 +527,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                           itemBuilder:
                                               (BuildContext context, index) {
                                             return Padding(
-                                              padding: const EdgeInsets.only(
-                                                  right: 8),
+                                              padding:
+                                                  const EdgeInsets.only(right: 8),
                                               child: InkWell(
                                                 onTap: () => openDialog(
                                                     context,
@@ -768,8 +539,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                                     child: ClipRRect(
                                                   borderRadius:
                                                       BorderRadius.circular(
-                                                          Dimensions
-                                                              .radiusSmall),
+                                                          Dimensions.radiusSmall),
                                                   child: CustomImageWidget(
                                                     image: controllerOrderModel
                                                             .orderProofFullUrl![
@@ -785,427 +555,211 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                           height: Dimensions.paddingSizeLarge),
                                     ])
                               : const SizedBox(),
-                          const SizedBox(
-                              height: Dimensions.paddingSizeExtraLarge),
-                          !parcel
-                              ? Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                      Text('item_price'.tr,
-                                          style: robotoRegular),
-                                      Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Text(
-                                                PriceConverterHelper
-                                                    .convertPrice(itemsPrice),
-                                                style: robotoRegular),
-                                          ]),
-                                    ])
-                              : const SizedBox(),
-                          SizedBox(height: !parcel ? 10 : 0),
-                          Get.find<NavigationHandlerController>()
-                                  .getModuleConfig(order.moduleType)
-                                  .addOn!
-                              ? Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text('addons'.tr, style: robotoRegular),
-                                    Text(
-                                        '(+) ${PriceConverterHelper.convertPrice(addOns)}',
-                                        style: robotoRegular),
-                                  ],
-                                )
-                              : const SizedBox(),
-                          Get.find<NavigationHandlerController>()
-                                  .getModuleConfig(order.moduleType)
-                                  .addOn!
-                              ? Divider(
-                                  thickness: 1,
-                                  color: Theme.of(context)
-                                      .hintColor
-                                      .withValues(alpha: 0.5),
-                                )
-                              : const SizedBox(),
-                          Get.find<NavigationHandlerController>()
-                                  .getModuleConfig(order.moduleType)
-                                  .addOn!
-                              ? Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text('subtotal'.tr, style: robotoMedium),
-                                    Text(
-                                        PriceConverterHelper.convertPrice(
-                                            subTotal),
-                                        style: robotoMedium),
-                                  ],
-                                )
-                              : const SizedBox(),
-                          SizedBox(
-                              height: Get.find<NavigationHandlerController>()
-                                      .getModuleConfig(order.moduleType)
-                                      .addOn!
-                                  ? 10
-                                  : 0),
-                          !parcel
-                              ? Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                      Text('discount'.tr, style: robotoRegular),
-                                      Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Text(
-                                                '(-) ${PriceConverterHelper.convertPrice(discount)}',
-                                                style: robotoRegular),
-                                          ]),
-                                    ])
-                              : const SizedBox(),
-                          SizedBox(height: !parcel ? 10 : 0),
-                          couponDiscount > 0
-                              ? Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                      Text('coupon_discount'.tr,
-                                          style: robotoRegular),
-                                      Text(
-                                        '(-) ${PriceConverterHelper.convertPrice(couponDiscount)}',
-                                        style: robotoRegular,
-                                      ),
-                                    ])
-                              : const SizedBox(),
-                          SizedBox(height: couponDiscount > 0 ? 10 : 0),
-                          (referrerBonusAmount > 0)
-                              ? Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text('referral_discount'.tr,
-                                        style: robotoRegular),
-                                    Text(
-                                        '(-) ${PriceConverterHelper.convertPrice(referrerBonusAmount)}',
-                                        style: robotoRegular),
-                                  ],
-                                )
-                              : const SizedBox(),
-                          SizedBox(height: referrerBonusAmount > 0 ? 10 : 0),
-                          Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text('delivery_fee'.tr, style: robotoRegular),
-                                Text(
-                                    '(+) ${PriceConverterHelper.convertPrice(deliveryCharge)}',
-                                    style: robotoRegular),
-                              ]),
-                          const SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text('delivery_man_tips'.tr,
-                                  style: robotoRegular),
-                              Text(
-                                  '(+) ${PriceConverterHelper.convertPrice(dmTips)}',
-                                  style: robotoRegular),
-                            ],
+                          const SizedBox(height: Dimensions.paddingSizeDefault),
+            
+                          PaymentDetailsSection(
+                            parcel: parcel,
+                            itemsPrice: itemsPrice,
+                            addOns: addOns,
+                            subTotal: subTotal,
+                            discount: discount,
+                            couponDiscount: couponDiscount,
+                            referrerBonusAmount: referrerBonusAmount,
+                            deliveryCharge: deliveryCharge,
+                            dmTips: dmTips,
+                            extraPackagingAmount: extraPackagingAmount,
+                            additionalCharge: additionalCharge,
+                            tax: tax!,
+                            taxIncluded: taxIncluded,
+                            partialPay: partialPay!,
+                            total: total,
+                            restConfModel: restConfModel,
                           ),
-                          const SizedBox(height: 10),
-                          (extraPackagingAmount > 0)
-                              ? Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text('extra_packaging'.tr,
-                                        style: robotoRegular),
-                                    Text(
-                                        '(+) ${PriceConverterHelper.convertPrice(extraPackagingAmount)}',
-                                        style: robotoRegular),
-                                  ],
-                                )
-                              : const SizedBox(),
-                          SizedBox(height: extraPackagingAmount > 0 ? 10 : 0),
-                          (order.additionalCharge != null &&
-                                  order.additionalCharge! > 0)
-                              ? Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                      Text(
-                                          Get.find<NavigationHandlerController>()
-                                              .configModel!
-                                              .additionalChargeName!,
-                                          style: robotoRegular),
-                                      Text(
-                                          '(+) ${PriceConverterHelper.convertPrice(order.additionalCharge)}',
-                                          style: robotoRegular,
-                                          textDirection: TextDirection.ltr),
-                                    ])
-                              : const SizedBox(),
-                          (order.additionalCharge != null &&
-                                  order.additionalCharge! > 0)
-                              ? const SizedBox(height: 10)
-                              : const SizedBox(),
-                          (tax! == 0) || taxIncluded
-                              ? const SizedBox()
-                              : Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                      Text('vat_tax'.tr, style: robotoRegular),
-                                      Text(
-                                          '(+) ${PriceConverterHelper.convertPrice(tax)}',
-                                          style: robotoRegular),
-                                    ]),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: Dimensions.paddingSizeSmall),
-                            child: Divider(
-                                thickness: 1,
-                                color: Theme.of(context)
-                                    .hintColor
-                                    .withValues(alpha: 0.5)),
-                          ),
-                          partialPay!
-                              ? DottedBorder(
-                                  options: RoundedRectDottedBorderOptions(
-                                    color: Theme.of(context).primaryColor,
-                                    strokeWidth: 1,
-                                    strokeCap: StrokeCap.butt,
-                                    dashPattern: const [8, 5],
-                                    padding: const EdgeInsets.all(5),
-                                    radius: const Radius.circular(
-                                        Dimensions.radiusDefault),
+                          showDeliveryConfirmImage &&
+                                  controllerOrderModel.orderStatus != 'delivered'
+                              ? Container(
+                                  padding: const EdgeInsets.all(
+                                      Dimensions.paddingSizeSmall),
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context)
+                                        .primaryColor
+                                        .withValues(alpha: 0.05),
+                                    borderRadius: const BorderRadius.vertical(
+                                        top: Radius.circular(
+                                            Dimensions.radiusDefault)),
                                   ),
-                                  child: Ink(
-                                    padding: const EdgeInsets.all(
-                                        Dimensions.paddingSizeSmall),
-                                    color: !restConfModel
-                                        ? Theme.of(context)
-                                            .primaryColor
-                                            .withValues(alpha: 0.05)
-                                        : Colors.transparent,
-                                    child: Column(children: [
-                                      Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text('total_amount'.tr,
-                                                style: robotoMedium.copyWith(
-                                                  fontSize:
-                                                      Dimensions.fontSizeLarge,
-                                                  color: Theme.of(context)
-                                                      .primaryColor,
-                                                )),
-                                            Text(
-                                              PriceConverterHelper.convertPrice(
-                                                  total),
-                                              style: robotoMedium.copyWith(
-                                                  fontSize:
-                                                      Dimensions.fontSizeLarge,
-                                                  color: Theme.of(context)
-                                                      .primaryColor),
-                                            ),
-                                          ]),
-                                      const SizedBox(height: 10),
-                                      Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text('paid_by_wallet'.tr,
-                                                style: !restConfModel
-                                                    ? robotoMedium
-                                                    : robotoRegular),
-                                            Text(
-                                              PriceConverterHelper.convertPrice(
-                                                  order.payments![0].amount),
-                                              style: !restConfModel
-                                                  ? robotoMedium
-                                                  : robotoRegular,
-                                            ),
-                                          ]),
-                                      const SizedBox(height: 10),
-                                      Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                                '${order.payments?[1].paymentStatus == 'paid' ? 'paid_by'.tr : 'due_amount'.tr} (${order.payments![1].paymentMethod?.tr})',
-                                                style: !restConfModel
-                                                    ? robotoMedium
-                                                    : robotoRegular),
-                                            Text(
-                                              PriceConverterHelper.convertPrice(
-                                                  order.payments![1].amount),
-                                              style: !restConfModel
-                                                  ? robotoMedium
-                                                  : robotoRegular,
-                                            ),
-                                          ]),
-                                    ]),
-                                  ),
-                                )
-                              : const SizedBox(),
-                          SizedBox(height: partialPay ? 20 : 0),
-                          !partialPay
-                              ? Row(children: [
-                                  Text('total_amount'.tr,
-                                      style: robotoMedium.copyWith(
-                                        fontSize: Dimensions.fontSizeLarge,
-                                        color: Theme.of(context).primaryColor,
-                                      )),
-                                  taxIncluded
-                                      ? Text(' ${'vat_tax_inc'.tr}',
-                                          style: robotoMedium.copyWith(
-                                            fontSize:
-                                                Dimensions.fontSizeExtraSmall,
-                                            color:
-                                                Theme.of(context).primaryColor,
-                                          ))
-                                      : const SizedBox(),
-                                  const Expanded(child: SizedBox()),
-                                  Text(
-                                    PriceConverterHelper.convertPrice(total),
-                                    style: robotoMedium.copyWith(
-                                        fontSize: Dimensions.fontSizeLarge,
-                                        color: Theme.of(context).primaryColor),
-                                  ),
-                                ])
-                              : const SizedBox(),
-                        ]),
-                      )),
-                      showDeliveryConfirmImage &&
-                              controllerOrderModel.orderStatus != 'delivered'
-                          ? Container(
-                              padding: const EdgeInsets.all(
-                                  Dimensions.paddingSizeSmall),
-                              decoration: BoxDecoration(
-                                color: Theme.of(context)
-                                    .primaryColor
-                                    .withValues(alpha: 0.05),
-                                borderRadius: const BorderRadius.vertical(
-                                    top: Radius.circular(
-                                        Dimensions.radiusDefault)),
-                              ),
-                              child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('completed_after_delivery_picture'.tr,
-                                        style: robotoRegular),
-                                    const SizedBox(
-                                        height: Dimensions.paddingSizeSmall),
-                                    Container(
-                                      height: 80,
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical:
-                                              Dimensions.paddingSizeSmall),
-                                      child: ListView.builder(
-                                        scrollDirection: Axis.horizontal,
-                                        physics: const BouncingScrollPhysics(),
-                                        itemCount: orderController
-                                                .pickedPrescriptions.length +
-                                            1,
-                                        itemBuilder: (context, index) {
-                                          XFile? file = index ==
-                                                  orderController
-                                                      .pickedPrescriptions
-                                                      .length
-                                              ? null
-                                              : orderController
-                                                  .pickedPrescriptions[index];
-                                          if (index < 5 &&
-                                              index ==
-                                                  orderController
-                                                      .pickedPrescriptions
-                                                      .length) {
-                                            return InkWell(
-                                              onTap: () {
-                                                if (GetPlatform.isIOS) {
-                                                  Get.find<OrderController>()
-                                                      .pickPrescriptionImage(
-                                                          isRemove: false,
-                                                          isCamera: false);
-                                                } else {
-                                                  Get.bottomSheet(
-                                                      const CameraButtonSheetWidget());
-                                                }
-                                              },
-                                              child: Container(
-                                                height: 60,
-                                                width: 60,
-                                                alignment: Alignment.center,
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          Dimensions
-                                                              .radiusDefault),
-                                                  color: Theme.of(context)
-                                                      .primaryColor
-                                                      .withValues(alpha: 0.1),
-                                                ),
-                                                child: Icon(
-                                                    Icons.camera_alt_sharp,
-                                                    color: Theme.of(context)
-                                                        .primaryColor,
-                                                    size: 32),
-                                              ),
-                                            );
-                                          }
-                                          return file != null
-                                              ? Container(
-                                                  margin: const EdgeInsets.only(
-                                                      right: Dimensions
-                                                          .paddingSizeSmall),
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            Dimensions
-                                                                .radiusDefault),
-                                                  ),
-                                                  child: Stack(children: [
-                                                    ClipRRect(
-                                                      borderRadius: BorderRadius
-                                                          .circular(Dimensions
-                                                              .radiusDefault),
-                                                      child: GetPlatform.isWeb
-                                                          ? Image.network(
-                                                              file.path,
-                                                              width: 60,
-                                                              height: 60,
-                                                              fit: BoxFit.cover,
-                                                            )
-                                                          : Image.file(
-                                                              File(file.path),
-                                                              width: 60,
-                                                              height: 60,
-                                                              fit: BoxFit.cover,
-                                                            ),
+                                  child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                            'completed_after_delivery_picture'.tr,
+                                            style: robotoRegular),
+                                        const SizedBox(
+                                            height: Dimensions.paddingSizeSmall),
+                                        Container(
+                                          height: 80,
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical:
+                                                  Dimensions.paddingSizeSmall),
+                                          child: ListView.builder(
+                                            scrollDirection: Axis.horizontal,
+                                            physics:
+                                                const BouncingScrollPhysics(),
+                                            itemCount: orderController
+                                                    .pickedPrescriptions.length +
+                                                1,
+                                            itemBuilder: (context, index) {
+                                              XFile? file = index ==
+                                                      orderController
+                                                          .pickedPrescriptions
+                                                          .length
+                                                  ? null
+                                                  : orderController
+                                                      .pickedPrescriptions[index];
+                                              if (index < 5 &&
+                                                  index ==
+                                                      orderController
+                                                          .pickedPrescriptions
+                                                          .length) {
+                                                return InkWell(
+                                                  onTap: () {
+                                                    if (GetPlatform.isIOS) {
+                                                      Get.find<OrderController>()
+                                                          .pickPrescriptionImage(
+                                                              isRemove: false,
+                                                              isCamera: false);
+                                                    } else {
+                                                      Get.bottomSheet(
+                                                          const CameraButtonSheetWidget());
+                                                    }
+                                                  },
+                                                  child: Container(
+                                                    height: 60,
+                                                    width: 60,
+                                                    alignment: Alignment.center,
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              Dimensions
+                                                                  .radiusDefault),
+                                                      color: Theme.of(context)
+                                                          .primaryColor
+                                                          .withValues(alpha: 0.1),
                                                     ),
-                                                  ]),
-                                                )
-                                              : const SizedBox();
-                                        },
-                                      ),
-                                    ),
-                                  ]),
-                            )
-                          : const SizedBox(),
-                      showDeliveryConfirmImage &&
-                              controllerOrderModel.orderStatus != 'delivered' &&
-                              !parcel
-                          ? CustomButtonWidget(
-                              buttonText: 'complete_delivery'.tr,
-                              onPressed: () {
-                                if (orderVerificationActive) {
-                                  Get.find<NotificationController>()
-                                      .sendDeliveredNotification(
-                                          controllerOrderModel.id);
-
-                                  Get.bottomSheet(
-                                          VerifyDeliverySheetWidget(
+                                                    child: Icon(
+                                                        Icons.camera_alt_sharp,
+                                                        color: Theme.of(context)
+                                                            .primaryColor,
+                                                        size: 32),
+                                                  ),
+                                                );
+                                              }
+                                              return file != null
+                                                  ? Container(
+                                                      margin: const EdgeInsets
+                                                          .only(
+                                                          right: Dimensions
+                                                              .paddingSizeSmall),
+                                                      decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius
+                                                            .circular(Dimensions
+                                                                .radiusDefault),
+                                                      ),
+                                                      child: Stack(children: [
+                                                        ClipRRect(
+                                                          borderRadius: BorderRadius
+                                                              .circular(Dimensions
+                                                                  .radiusDefault),
+                                                          child: GetPlatform.isWeb
+                                                              ? Image.network(
+                                                                  file.path,
+                                                                  width: 60,
+                                                                  height: 60,
+                                                                  fit: BoxFit
+                                                                      .cover,
+                                                                )
+                                                              : Image.file(
+                                                                  File(file.path),
+                                                                  width: 60,
+                                                                  height: 60,
+                                                                  fit: BoxFit
+                                                                      .cover,
+                                                                ),
+                                                        ),
+                                                      ]),
+                                                    )
+                                                  : const SizedBox();
+                                            },
+                                          ),
+                                        ),
+                                      ]),
+                                )
+                              : const SizedBox(),
+                          showDeliveryConfirmImage &&
+                                  controllerOrderModel.orderStatus !=
+                                      'delivered' &&
+                                  !parcel
+                              ? CustomButtonWidget(
+                                  buttonText: 'complete_delivery'.tr,
+                                  onPressed: () {
+                                    if (orderVerificationActive) {
+                                      Get.find<NotificationController>()
+                                          .sendDeliveredNotification(
+                                              controllerOrderModel.id);
+            
+                                      Get.bottomSheet(
+                                              VerifyDeliverySheetWidget(
+                                                currentOrderModel:
+                                                    controllerOrderModel,
+                                                verify: orderVerificationActive,
+                                                orderAmount: partialPay!
+                                                    ? controllerOrderModel
+                                                        .payments![1].amount!
+                                                        .toDouble()
+                                                    : controllerOrderModel
+                                                        .orderAmount,
+                                                cod: cod! ||
+                                                    (partialPay &&
+                                                        controllerOrderModel
+                                                                .payments![1]
+                                                                .paymentMethod ==
+                                                            'cash_on_delivery'),
+                                              ),
+                                              isScrollControlled: true)
+                                          .then((isSuccess) {
+                                        if (isSuccess &&
+                                            (cod! ||
+                                                (partialPay! &&
+                                                    controllerOrderModel
+                                                            .payments![1]
+                                                            .paymentMethod ==
+                                                        'cash_on_delivery'))) {
+                                          Get.bottomSheet(
+                                              CollectMoneyDeliverySheetWidget(
+                                                currentOrderModel:
+                                                    controllerOrderModel,
+                                                verify: orderVerificationActive,
+                                                orderAmount: partialPay!
+                                                    ? controllerOrderModel
+                                                        .payments![1].amount!
+                                                        .toDouble()
+                                                    : controllerOrderModel
+                                                        .orderAmount,
+                                                cod: cod ||
+                                                    (partialPay &&
+                                                        controllerOrderModel
+                                                                .payments![1]
+                                                                .paymentMethod ==
+                                                            'cash_on_delivery'),
+                                              ),
+                                              isScrollControlled: true,
+                                              isDismissible: false);
+                                        }
+                                      });
+                                    } else {
+                                      Get.bottomSheet(
+                                          CollectMoneyDeliverySheetWidget(
                                             currentOrderModel:
                                                 controllerOrderModel,
                                             verify: orderVerificationActive,
@@ -1222,558 +776,528 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                                             .paymentMethod ==
                                                         'cash_on_delivery'),
                                           ),
-                                          isScrollControlled: true)
-                                      .then((isSuccess) {
-                                    if (isSuccess &&
-                                        (cod! ||
-                                            (partialPay! &&
-                                                controllerOrderModel
-                                                        .payments![1]
-                                                        .paymentMethod ==
-                                                    'cash_on_delivery'))) {
-                                      Get.bottomSheet(
-                                          CollectMoneyDeliverySheetWidget(
-                                            currentOrderModel:
-                                                controllerOrderModel,
-                                            verify: orderVerificationActive,
-                                            orderAmount: partialPay!
-                                                ? controllerOrderModel
-                                                    .payments![1].amount!
-                                                    .toDouble()
-                                                : controllerOrderModel
-                                                    .orderAmount,
-                                            cod: cod ||
-                                                (partialPay &&
-                                                    controllerOrderModel
-                                                            .payments![1]
-                                                            .paymentMethod ==
-                                                        'cash_on_delivery'),
-                                          ),
-                                          isScrollControlled: true,
-                                          isDismissible: false);
+                                          isScrollControlled: true);
                                     }
-                                  });
-                                } else {
-                                  Get.bottomSheet(
-                                      CollectMoneyDeliverySheetWidget(
-                                        currentOrderModel: controllerOrderModel,
-                                        verify: orderVerificationActive,
-                                        orderAmount: partialPay!
-                                            ? controllerOrderModel
-                                                .payments![1].amount!
-                                                .toDouble()
-                                            : controllerOrderModel.orderAmount,
-                                        cod: cod! ||
-                                            (partialPay &&
-                                                controllerOrderModel
-                                                        .payments![1]
-                                                        .paymentMethod ==
-                                                    'cash_on_delivery'),
-                                      ),
-                                      isScrollControlled: true);
-                                }
-                              },
-                            )
-                          : showBottomView
-                              ? ((accepted! &&
-                                          !parcel &&
-                                          (!cod ||
-                                              restConfModel ||
-                                              selfDelivery)) ||
-                                      processing! ||
-                                      confirmed!)
-                                  ? Container(
-                                      padding: const EdgeInsets.all(
-                                          Dimensions.paddingSizeDefault),
-                                      width: MediaQuery.of(context).size.width,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(
-                                            Dimensions.radiusSmall),
-                                        border: Border.all(
-                                            width: 1,
-                                            color: Get.isDarkMode
-                                                ? Colors.grey[700]!
-                                                : Colors.grey[200]!),
-                                      ),
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                        processing!
-                                            ? 'order_is_preparing'.tr
-                                            : 'order_waiting_for_process'.tr,
-                                        style: robotoMedium,
-                                      ),
-                                    )
-                                  : showSlider
-                                      ? ((cod &&
-                                                  accepted &&
-                                                  !restConfModel &&
-                                                  cancelPermission! &&
-                                                  !selfDelivery) ||
-                                              (parcel &&
-                                                  accepted &&
-                                                  cancelPermission!))
-                                          ? Row(children: [
-                                              Expanded(
-                                                  child: TextButton(
-                                                onPressed: () {
-                                                  orderController
-                                                      .setOrderCancelReason('');
-                                                  Get.dialog(
-                                                      CancellationDialogueWidget(
-                                                          orderId:
-                                                              widget.orderId));
-                                                },
-                                                style: TextButton.styleFrom(
-                                                  minimumSize:
-                                                      const Size(1170, 40),
-                                                  padding: EdgeInsets.zero,
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            Dimensions
-                                                                .radiusSmall),
-                                                    side: BorderSide(
-                                                        width: 1,
-                                                        color: Theme.of(context)
-                                                            .textTheme
-                                                            .bodyLarge!
-                                                            .color!),
-                                                  ),
-                                                ),
-                                                child: Text('cancel'.tr,
-                                                    textAlign: TextAlign.center,
-                                                    style:
-                                                        robotoRegular.copyWith(
-                                                      color: Theme.of(context)
-                                                          .textTheme
-                                                          .bodyLarge!
-                                                          .color,
-                                                      fontSize: Dimensions
-                                                          .fontSizeLarge,
-                                                    )),
-                                              )),
-                                              const SizedBox(
-                                                  width: Dimensions
-                                                      .paddingSizeSmall),
-                                              Expanded(
-                                                  child: CustomButtonWidget(
-                                                buttonText: 'confirm'.tr,
-                                                height: 40,
-                                                onPressed: () {
-                                                  Get.dialog(
-                                                      ConfirmationDialogWidget(
-                                                        icon: ManagerAssets.warning,
-                                                        title:
-                                                            'are_you_sure_to_confirm'
-                                                                .tr,
-                                                        description: parcel!
-                                                            ? 'you_want_to_confirm_this_delivery'
-                                                                .tr
-                                                            : 'you_want_to_confirm_this_order'
-                                                                .tr,
-                                                        onYesPressed: () {
-                                                          if ((orderVerificationActive ||
-                                                                  cod!) &&
-                                                              !parcel!) {
-                                                            orderController
-                                                                .updateOrderStatus(
-                                                              controllerOrderModel,
-                                                              parcel
-                                                                  ? AppConstants
-                                                                      .handover
-                                                                  : AppConstants
-                                                                      .confirmed,
-                                                              back: widget
-                                                                      .fromLocationScreen
-                                                                  ? false
-                                                                  : true,
-                                                              gotoDashboard:
-                                                                  widget.fromLocationScreen
-                                                                      ? true
-                                                                      : false,
-                                                            );
-                                                          } else if (parcel! &&
-                                                              cod! &&
-                                                              controllerOrderModel
-                                                                      .chargePayer !=
-                                                                  'sender') {
-                                                            orderController
-                                                                .updateOrderStatus(
-                                                                    controllerOrderModel,
-                                                                    AppConstants
-                                                                        .handover);
-                                                          } else if (parcel &&
-                                                              controllerOrderModel
-                                                                      .chargePayer ==
-                                                                  'sender' &&
-                                                              cod!) {
-                                                            orderController
-                                                                .updateOrderStatus(
-                                                                    controllerOrderModel,
-                                                                    AppConstants
-                                                                        .handover);
+                                  },
+                                )
+                              : showBottomView
+                                  ? ((accepted! &&
+                                              !parcel &&
+                                              (!cod! ||
+                                                  restConfModel ||
+                                                  selfDelivery)) ||
+                                          processing! ||
+                                          confirmed!)
+                                      ? Container(
+                                          padding: const EdgeInsets.all(
+                                              Dimensions.paddingSizeDefault),
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(
+                                                Dimensions.radiusSmall),
+                                            border: Border.all(
+                                                width: 1,
+                                                color: Get.isDarkMode
+                                                    ? Colors.grey[700]!
+                                                    : Colors.grey[200]!),
+                                          ),
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            processing!
+                                                ? 'order_is_preparing'.tr
+                                                : 'order_waiting_for_process'.tr,
+                                            style: robotoMedium,
+                                          ),
+                                        )
+                                      : showSlider
+                                          ? ((cod! &&
+                                                      accepted &&
+                                                      !restConfModel &&
+                                                      cancelPermission! &&
+                                                      !selfDelivery) ||
+                                                  (parcel &&
+                                                      accepted &&
+                                                      cancelPermission!))
+                                              ? Row(children: [
+                                                  Expanded(
+                                                      child: TextButton(
+                                                    onPressed: () {
+                                                      orderController
+                                                          .setOrderCancelReason(
+                                                              '');
+                                                      Get.dialog(
+                                                          CancellationDialogueWidget(
+                                                              orderId: widget
+                                                                  .orderId));
+                                                    },
+                                                    style: TextButton.styleFrom(
+                                                      minimumSize:
+                                                          const Size(1170, 40),
+                                                      padding: EdgeInsets.zero,
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                                Dimensions
+                                                                    .radiusSmall),
+                                                        side: BorderSide(
+                                                            width: 1,
+                                                            color:
+                                                                Theme.of(context)
+                                                                    .textTheme
+                                                                    .bodyLarge!
+                                                                    .color!),
+                                                      ),
+                                                    ),
+                                                    child: Text('cancel'.tr,
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: robotoRegular
+                                                            .copyWith(
+                                                          color: Theme.of(context)
+                                                              .textTheme
+                                                              .bodyLarge!
+                                                              .color,
+                                                          fontSize: Dimensions
+                                                              .fontSizeLarge,
+                                                        )),
+                                                  )),
+                                                  const SizedBox(
+                                                      width: Dimensions
+                                                          .paddingSizeSmall),
+                                                  Expanded(
+                                                      child: CustomButtonWidget(
+                                                    buttonText: 'confirm'.tr,
+                                                    height: 40,
+                                                    onPressed: () {
+                                                      Get.dialog(
+                                                          ConfirmationDialogWidget(
+                                                            icon: ManagerAssets
+                                                                .warning,
+                                                            title:
+                                                                'are_you_sure_to_confirm'
+                                                                    .tr,
+                                                            description: parcel!
+                                                                ? 'you_want_to_confirm_this_delivery'
+                                                                    .tr
+                                                                : 'you_want_to_confirm_this_order'
+                                                                    .tr,
+                                                            onYesPressed: () {
+                                                              if ((orderVerificationActive ||
+                                                                      cod!) &&
+                                                                  !parcel!) {
+                                                                orderController
+                                                                    .updateOrderStatus(
+                                                                  controllerOrderModel,
+                                                                  parcel
+                                                                      ? AppConstants
+                                                                          .handover
+                                                                      : AppConstants
+                                                                          .confirmed,
+                                                                  back: widget
+                                                                          .fromLocationScreen
+                                                                      ? false
+                                                                      : true,
+                                                                  gotoDashboard:
+                                                                      widget.fromLocationScreen
+                                                                          ? true
+                                                                          : false,
+                                                                );
+                                                              } else if (parcel! &&
+                                                                  cod! &&
+                                                                  controllerOrderModel
+                                                                          .chargePayer !=
+                                                                      'sender') {
+                                                                orderController
+                                                                    .updateOrderStatus(
+                                                                        controllerOrderModel,
+                                                                        AppConstants
+                                                                            .handover);
+                                                              } else if (parcel &&
+                                                                  controllerOrderModel
+                                                                          .chargePayer ==
+                                                                      'sender' &&
+                                                                  cod!) {
+                                                                orderController
+                                                                    .updateOrderStatus(
+                                                                        controllerOrderModel,
+                                                                        AppConstants
+                                                                            .handover);
+                                                              }
+                                                            },
+                                                          ),
+                                                          barrierDismissible:
+                                                              false);
+                                                    },
+                                                  )),
+                                                ])
+                                              : SliderButton(
+                                                  action: () {
+                                                    if ((cod! &&
+                                                            accepted! &&
+                                                            !restConfModel &&
+                                                            !selfDelivery) ||
+                                                        (parcel! && accepted!)) {
+                                                      if (orderController
+                                                          .isLoading) {
+                                                        orderController
+                                                            .initLoading();
+                                                      }
+                                                      Get.dialog(
+                                                          ConfirmationDialogWidget(
+                                                            icon: ManagerAssets
+                                                                .warning,
+                                                            title:
+                                                                'are_you_sure_to_confirm'
+                                                                    .tr,
+                                                            description: parcel!
+                                                                ? 'you_want_to_confirm_this_delivery'
+                                                                    .tr
+                                                                : 'you_want_to_confirm_this_order'
+                                                                    .tr,
+                                                            onYesPressed: () {
+                                                              orderController.updateOrderStatus(
+                                                                  controllerOrderModel,
+                                                                  parcel!
+                                                                      ? AppConstants
+                                                                          .handover
+                                                                      : AppConstants
+                                                                          .confirmed,
+                                                                  back: widget
+                                                                          .fromLocationScreen
+                                                                      ? false
+                                                                      : true,
+                                                                  gotoDashboard:
+                                                                      widget.fromLocationScreen
+                                                                          ? true
+                                                                          : false);
+                                                            },
+                                                          ),
+                                                          barrierDismissible:
+                                                              false);
+                                                    } else if (handover!) {
+                                                      if (parcel &&
+                                                          controllerOrderModel
+                                                                  .chargePayer ==
+                                                              'sender' &&
+                                                          cod) {
+                                                        Get.bottomSheet(
+                                                            VerifyDeliverySheetWidget(
+                                                              currentOrderModel:
+                                                                  controllerOrderModel,
+                                                              verify: false,
+                                                              isSetOtp: false,
+                                                              orderAmount:
+                                                                  controllerOrderModel
+                                                                      .orderAmount,
+                                                              cod: cod,
+                                                              isSenderPay: true,
+                                                              isParcel: parcel,
+                                                            ),
+                                                            isScrollControlled:
+                                                                true);
+                                                      } else {
+                                                        if (Get.find<
+                                                                    ProfileController>()
+                                                                .profileModel!
+                                                                .active ==
+                                                            1) {
+                                                          Get.find<
+                                                                  OrderController>()
+                                                              .updateOrderStatus(
+                                                                  controllerOrderModel,
+                                                                  AppConstants
+                                                                      .pickedUp,
+                                                                  back: widget
+                                                                          .fromLocationScreen
+                                                                      ? false
+                                                                      : true,
+                                                                  gotoDashboard:
+                                                                      widget.fromLocationScreen
+                                                                          ? true
+                                                                          : false);
+                                                        } else {
+                                                          showCustomSnackBar(
+                                                              'make_yourself_online_first'
+                                                                  .tr);
+                                                        }
+                                                      }
+                                                    } else if (parcel &&
+                                                        pickedUp!) {
+                                                      if (orderVerificationActive &&
+                                                          controllerOrderModel
+                                                                  .chargePayer !=
+                                                              'sender' &&
+                                                          cod) {
+                                                        Get.bottomSheet(
+                                                                VerifyDeliverySheetWidget(
+                                                                  currentOrderModel:
+                                                                      controllerOrderModel,
+                                                                  verify:
+                                                                      orderVerificationActive,
+                                                                  orderAmount:
+                                                                      controllerOrderModel
+                                                                          .orderAmount,
+                                                                  cod: cod,
+                                                                  isParcel:
+                                                                      parcel,
+                                                                  isSenderPay:
+                                                                      false,
+                                                                ),
+                                                                isScrollControlled:
+                                                                    true)
+                                                            .then((value) {
+                                                          if (value ==
+                                                              'show_price_view') {
+                                                            Get.bottomSheet(
+                                                                VerifyDeliverySheetWidget(
+                                                                  currentOrderModel:
+                                                                      controllerOrderModel,
+                                                                  verify: false,
+                                                                  isSetOtp: false,
+                                                                  orderAmount:
+                                                                      controllerOrderModel
+                                                                          .orderAmount,
+                                                                  cod: cod,
+                                                                  isSenderPay:
+                                                                      false,
+                                                                  isParcel:
+                                                                      parcel,
+                                                                ),
+                                                                isScrollControlled:
+                                                                    true);
                                                           }
-                                                        },
-                                                      ),
-                                                      barrierDismissible:
-                                                          false);
-                                                },
-                                              )),
-                                            ])
-                                          : SliderButton(
-                                              action: () {
-                                                if ((cod! &&
-                                                        accepted! &&
-                                                        !restConfModel &&
-                                                        !selfDelivery) ||
-                                                    (parcel! && accepted!)) {
-                                                  if (orderController
-                                                      .isLoading) {
-                                                    orderController
-                                                        .initLoading();
-                                                  }
-                                                  Get.dialog(
-                                                      ConfirmationDialogWidget(
-                                                        icon: ManagerAssets.warning,
-                                                        title:
-                                                            'are_you_sure_to_confirm'
-                                                                .tr,
-                                                        description: parcel!
-                                                            ? 'you_want_to_confirm_this_delivery'
-                                                                .tr
-                                                            : 'you_want_to_confirm_this_order'
-                                                                .tr,
-                                                        onYesPressed: () {
-                                                          orderController.updateOrderStatus(
-                                                              controllerOrderModel,
-                                                              parcel!
-                                                                  ? AppConstants
-                                                                      .handover
-                                                                  : AppConstants
-                                                                      .confirmed,
-                                                              back: widget
-                                                                      .fromLocationScreen
-                                                                  ? false
-                                                                  : true,
-                                                              gotoDashboard:
-                                                                  widget.fromLocationScreen
-                                                                      ? true
-                                                                      : false);
-                                                        },
-                                                      ),
-                                                      barrierDismissible:
-                                                          false);
-                                                } else if (handover!) {
-                                                  if (parcel &&
-                                                      controllerOrderModel
-                                                              .chargePayer ==
-                                                          'sender' &&
-                                                      cod) {
-                                                    Get.bottomSheet(
-                                                        VerifyDeliverySheetWidget(
-                                                          currentOrderModel:
-                                                              controllerOrderModel,
-                                                          verify: false,
-                                                          isSetOtp: false,
-                                                          orderAmount:
-                                                              controllerOrderModel
-                                                                  .orderAmount,
-                                                          cod: cod,
-                                                          isSenderPay: true,
-                                                          isParcel: parcel,
-                                                        ),
-                                                        isScrollControlled:
-                                                            true);
-                                                  } else {
-                                                    if (Get.find<
-                                                                ProfileController>()
-                                                            .profileModel!
-                                                            .active ==
-                                                        1) {
-                                                      Get.find<
-                                                              OrderController>()
-                                                          .updateOrderStatus(
-                                                              controllerOrderModel,
-                                                              AppConstants
-                                                                  .pickedUp,
-                                                              back: widget
-                                                                      .fromLocationScreen
-                                                                  ? false
-                                                                  : true,
-                                                              gotoDashboard:
-                                                                  widget.fromLocationScreen
-                                                                      ? true
-                                                                      : false);
-                                                    } else {
-                                                      showCustomSnackBar(
-                                                          'make_yourself_online_first'
-                                                              .tr);
+                                                        });
+                                                      } else if (orderVerificationActive &&
+                                                          controllerOrderModel
+                                                                  .chargePayer ==
+                                                              'sender' &&
+                                                          cod) {
+                                                        Get.bottomSheet(
+                                                                VerifyDeliverySheetWidget(
+                                                                  currentOrderModel:
+                                                                      controllerOrderModel,
+                                                                  verify:
+                                                                      orderVerificationActive,
+                                                                  orderAmount:
+                                                                      controllerOrderModel
+                                                                          .orderAmount,
+                                                                  cod: cod,
+                                                                  isSenderPay:
+                                                                      true,
+                                                                  isParcel:
+                                                                      parcel,
+                                                                ),
+                                                                isScrollControlled:
+                                                                    true)
+                                                            .then((value) {
+                                                          if (value ==
+                                                              'show_price_view') {
+                                                            Get.bottomSheet(
+                                                                VerifyDeliverySheetWidget(
+                                                                  currentOrderModel:
+                                                                      controllerOrderModel,
+                                                                  verify: false,
+                                                                  isSetOtp: false,
+                                                                  orderAmount:
+                                                                      controllerOrderModel
+                                                                          .orderAmount,
+                                                                  cod: cod,
+                                                                  isSenderPay:
+                                                                      true,
+                                                                  isParcel:
+                                                                      parcel,
+                                                                ),
+                                                                isScrollControlled:
+                                                                    true);
+                                                          }
+                                                        });
+                                                      } else if (orderVerificationActive) {
+                                                        Get.bottomSheet(
+                                                            VerifyDeliverySheetWidget(
+                                                              currentOrderModel:
+                                                                  controllerOrderModel,
+                                                              verify:
+                                                                  orderVerificationActive,
+                                                              orderAmount:
+                                                                  controllerOrderModel
+                                                                      .orderAmount,
+                                                              cod: cod,
+                                                            ),
+                                                            isScrollControlled:
+                                                                true);
+                                                      } else {
+                                                        Get.find<
+                                                                OrderController>()
+                                                            .updateOrderStatus(
+                                                                controllerOrderModel,
+                                                                AppConstants
+                                                                    .delivered,
+                                                                back: widget
+                                                                        .fromLocationScreen
+                                                                    ? false
+                                                                    : true,
+                                                                gotoDashboard:
+                                                                    widget.fromLocationScreen
+                                                                        ? true
+                                                                        : false);
+                                                      }
+                                                    } else if (!parcel &&
+                                                        pickedUp!) {
+                                                      if (orderVerificationActive ||
+                                                          cod) {
+                                                        Get.bottomSheet(
+                                                            VerifyDeliverySheetWidget(
+                                                              currentOrderModel:
+                                                                  controllerOrderModel,
+                                                              verify:
+                                                                  orderVerificationActive,
+                                                              orderAmount:
+                                                                  controllerOrderModel
+                                                                      .orderAmount,
+                                                              cod: cod,
+                                                            ),
+                                                            isScrollControlled:
+                                                                true);
+                                                      } else {
+                                                        Get.find<
+                                                                OrderController>()
+                                                            .updateOrderStatus(
+                                                                controllerOrderModel,
+                                                                AppConstants
+                                                                    .delivered,
+                                                                back: widget
+                                                                        .fromLocationScreen
+                                                                    ? false
+                                                                    : true,
+                                                                gotoDashboard:
+                                                                    widget.fromLocationScreen
+                                                                        ? true
+                                                                        : false);
+                                                      }
                                                     }
-                                                  }
-                                                } else if (parcel &&
-                                                    pickedUp!) {
-                                                  if (orderVerificationActive &&
-                                                      controllerOrderModel
-                                                              .chargePayer !=
-                                                          'sender' &&
-                                                      cod) {
-                                                    Get.bottomSheet(
-                                                            VerifyDeliverySheetWidget(
-                                                              currentOrderModel:
-                                                                  controllerOrderModel,
-                                                              verify:
-                                                                  orderVerificationActive,
-                                                              orderAmount:
-                                                                  controllerOrderModel
-                                                                      .orderAmount,
-                                                              cod: cod,
-                                                              isParcel: parcel,
-                                                              isSenderPay:
-                                                                  false,
-                                                            ),
-                                                            isScrollControlled:
-                                                                true)
-                                                        .then((value) {
-                                                      if (value ==
-                                                          'show_price_view') {
-                                                        Get.bottomSheet(
-                                                            VerifyDeliverySheetWidget(
-                                                              currentOrderModel:
-                                                                  controllerOrderModel,
-                                                              verify: false,
-                                                              isSetOtp: false,
-                                                              orderAmount:
-                                                                  controllerOrderModel
-                                                                      .orderAmount,
-                                                              cod: cod,
-                                                              isSenderPay:
-                                                                  false,
-                                                              isParcel: parcel,
-                                                            ),
-                                                            isScrollControlled:
-                                                                true);
-                                                      }
-                                                    });
-                                                  } else if (orderVerificationActive &&
-                                                      controllerOrderModel
-                                                              .chargePayer ==
-                                                          'sender' &&
-                                                      cod) {
-                                                    Get.bottomSheet(
-                                                            VerifyDeliverySheetWidget(
-                                                              currentOrderModel:
-                                                                  controllerOrderModel,
-                                                              verify:
-                                                                  orderVerificationActive,
-                                                              orderAmount:
-                                                                  controllerOrderModel
-                                                                      .orderAmount,
-                                                              cod: cod,
-                                                              isSenderPay: true,
-                                                              isParcel: parcel,
-                                                            ),
-                                                            isScrollControlled:
-                                                                true)
-                                                        .then((value) {
-                                                      if (value ==
-                                                          'show_price_view') {
-                                                        Get.bottomSheet(
-                                                            VerifyDeliverySheetWidget(
-                                                              currentOrderModel:
-                                                                  controllerOrderModel,
-                                                              verify: false,
-                                                              isSetOtp: false,
-                                                              orderAmount:
-                                                                  controllerOrderModel
-                                                                      .orderAmount,
-                                                              cod: cod,
-                                                              isSenderPay: true,
-                                                              isParcel: parcel,
-                                                            ),
-                                                            isScrollControlled:
-                                                                true);
-                                                      }
-                                                    });
-                                                  } else if (orderVerificationActive) {
-                                                    Get.bottomSheet(
-                                                        VerifyDeliverySheetWidget(
-                                                          currentOrderModel:
-                                                              controllerOrderModel,
-                                                          verify:
-                                                              orderVerificationActive,
-                                                          orderAmount:
-                                                              controllerOrderModel
-                                                                  .orderAmount,
-                                                          cod: cod,
-                                                        ),
-                                                        isScrollControlled:
-                                                            true);
-                                                  } else {
-                                                    Get.find<OrderController>()
-                                                        .updateOrderStatus(
-                                                            controllerOrderModel,
-                                                            AppConstants
-                                                                .delivered,
-                                                            back: widget
-                                                                    .fromLocationScreen
-                                                                ? false
-                                                                : true,
-                                                            gotoDashboard: widget
-                                                                    .fromLocationScreen
-                                                                ? true
-                                                                : false);
-                                                  }
-                                                } else if (!parcel &&
-                                                    pickedUp!) {
-                                                  if (orderVerificationActive ||
-                                                      cod) {
-                                                    Get.bottomSheet(
-                                                        VerifyDeliverySheetWidget(
-                                                          currentOrderModel:
-                                                              controllerOrderModel,
-                                                          verify:
-                                                              orderVerificationActive,
-                                                          orderAmount:
-                                                              controllerOrderModel
-                                                                  .orderAmount,
-                                                          cod: cod,
-                                                        ),
-                                                        isScrollControlled:
-                                                            true);
-                                                  } else {
-                                                    Get.find<OrderController>()
-                                                        .updateOrderStatus(
-                                                            controllerOrderModel,
-                                                            AppConstants
-                                                                .delivered,
-                                                            back: widget
-                                                                    .fromLocationScreen
-                                                                ? false
-                                                                : true,
-                                                            gotoDashboard: widget
-                                                                    .fromLocationScreen
-                                                                ? true
-                                                                : false);
-                                                  }
-                                                }
-
-                                                /*else if(pickedUp!) {
-                      if(parcel && controllerOrderModel.chargePayer != 'sender') {
-                        Get.bottomSheet(VerifyDeliverySheetWidget(
-                          currentOrderModel: controllerOrderModel, verify: orderVerificationActive,
-                          orderAmount: controllerOrderModel.orderAmount, cod: true, isParcel: parcel,
-                        ), isScrollControlled: true).then((value) {
-                          if(value == 'show_price_view') {
+            
+                                                    /*else if(pickedUp!) {
+                          if(parcel && controllerOrderModel.chargePayer != 'sender') {
                             Get.bottomSheet(VerifyDeliverySheetWidget(
-                              currentOrderModel: controllerOrderModel, verify: false, isSetOtp: false,
-                              orderAmount: controllerOrderModel.orderAmount, cod: true, isSenderPay: false, isParcel: parcel,
+                              currentOrderModel: controllerOrderModel, verify: orderVerificationActive,
+                              orderAmount: controllerOrderModel.orderAmount, cod: true, isParcel: parcel,
+                            ), isScrollControlled: true).then((value) {
+                              if(value == 'show_price_view') {
+                                Get.bottomSheet(VerifyDeliverySheetWidget(
+                                  currentOrderModel: controllerOrderModel, verify: false, isSetOtp: false,
+                                  orderAmount: controllerOrderModel.orderAmount, cod: true, isSenderPay: false, isParcel: parcel,
+                                ), isScrollControlled: true);
+                              }
+                            });
+                          }
+                          else if((orderVerificationActive || cod) && !parcel){
+                            Get.bottomSheet(VerifyDeliverySheetWidget(
+                              currentOrderModel: controllerOrderModel, verify: orderVerificationActive,
+                              orderAmount: controllerOrderModel.orderAmount, cod: cod,
                             ), isScrollControlled: true);
                           }
-                        });
-                      }
-                      else if((orderVerificationActive || cod) && !parcel){
-                        Get.bottomSheet(VerifyDeliverySheetWidget(
-                          currentOrderModel: controllerOrderModel, verify: orderVerificationActive,
-                          orderAmount: controllerOrderModel.orderAmount, cod: cod,
-                        ), isScrollControlled: true);
-                      }
-                      else if(!cod && parcel && controllerOrderModel.chargePayer == 'sender'){
-                        Get.bottomSheet(VerifyDeliverySheetWidget(
-                          currentOrderModel: controllerOrderModel, verify: orderVerificationActive,
-                          orderAmount: controllerOrderModel.orderAmount, cod: cod,
-                        ), isScrollControlled: true);
-                      }
-                      else {
-                        Get.find<OrderController>().updateOrderStatus(controllerOrderModel, AppConstants.delivered, back: widget.fromLocationScreen? false: true,
-                          gotoDashboard: widget.fromLocationScreen? true: false);
-                      }
-                    }
-
-                    else if(parcel && controllerOrderModel.chargePayer == 'sender' && cod){
-                      Get.bottomSheet(VerifyDeliverySheetWidget(
-                        currentOrderModel: controllerOrderModel, verify: orderVerificationActive,
-                        orderAmount: controllerOrderModel.orderAmount, cod: cod, isSenderPay: true, isParcel: parcel,
-                      ), isScrollControlled: true).then((value) {
-                        if(value == 'show_price_view') {
-                          Get.bottomSheet(VerifyDeliverySheetWidget(
-                            currentOrderModel: controllerOrderModel, verify: false, isSetOtp: false,
-                            orderAmount: controllerOrderModel.orderAmount, cod: cod, isSenderPay: true, isParcel: parcel,
-                          ), isScrollControlled: true);
+                          else if(!cod && parcel && controllerOrderModel.chargePayer == 'sender'){
+                            Get.bottomSheet(VerifyDeliverySheetWidget(
+                              currentOrderModel: controllerOrderModel, verify: orderVerificationActive,
+                              orderAmount: controllerOrderModel.orderAmount, cod: cod,
+                            ), isScrollControlled: true);
+                          }
+                          else {
+                            Get.find<OrderController>().updateOrderStatus(controllerOrderModel, AppConstants.delivered, back: widget.fromLocationScreen? false: true,
+                              gotoDashboard: widget.fromLocationScreen? true: false);
+                          }
                         }
-                      });
-                    }
-
-                    else if(handover!) {
-                      if(Get.find<ProfileController>().profileModel!.active == 1) {
-                        Get.find<OrderController>().updateOrderStatus(controllerOrderModel, AppConstants.pickedUp, back: widget.fromLocationScreen? false: true,
-                          gotoDashboard: widget.fromLocationScreen? true: false);
-                      }else {
-                        showCustomSnackBar('make_yourself_online_first'.tr);
-                      }
-                    }*/
-                                              },
-                                              label: Text(
-                                                (parcel && accepted)
-                                                    ? 'swipe_to_confirm_delivery'
-                                                        .tr
-                                                    : (cod &&
-                                                            accepted &&
-                                                            !restConfModel &&
-                                                            !selfDelivery)
-                                                        ? 'swipe_to_confirm_order'
+                      
+                        else if(parcel && controllerOrderModel.chargePayer == 'sender' && cod){
+                          Get.bottomSheet(VerifyDeliverySheetWidget(
+                            currentOrderModel: controllerOrderModel, verify: orderVerificationActive,
+                            orderAmount: controllerOrderModel.orderAmount, cod: cod, isSenderPay: true, isParcel: parcel,
+                          ), isScrollControlled: true).then((value) {
+                            if(value == 'show_price_view') {
+                              Get.bottomSheet(VerifyDeliverySheetWidget(
+                                currentOrderModel: controllerOrderModel, verify: false, isSetOtp: false,
+                                orderAmount: controllerOrderModel.orderAmount, cod: cod, isSenderPay: true, isParcel: parcel,
+                              ), isScrollControlled: true);
+                            }
+                          });
+                        }
+                      
+                        else if(handover!) {
+                          if(Get.find<ProfileController>().profileModel!.active == 1) {
+                            Get.find<OrderController>().updateOrderStatus(controllerOrderModel, AppConstants.pickedUp, back: widget.fromLocationScreen? false: true,
+                              gotoDashboard: widget.fromLocationScreen? true: false);
+                          }else {
+                            showCustomSnackBar('make_yourself_online_first'.tr);
+                          }
+                        }*/
+                                                  },
+                                                  label: Text(
+                                                    (parcel && accepted)
+                                                        ? 'swipe_to_confirm_delivery'
                                                             .tr
-                                                        : pickedUp!
-                                                            ? parcel
-                                                                ? 'swipe_to_deliver_parcel'
-                                                                    .tr
-                                                                : 'swipe_to_deliver_order'
-                                                                    .tr
-                                                            : handover!
+                                                        : (cod &&
+                                                                accepted &&
+                                                                !restConfModel &&
+                                                                !selfDelivery)
+                                                            ? 'swipe_to_confirm_order'
+                                                                .tr
+                                                            : pickedUp!
                                                                 ? parcel
-                                                                    ? 'swipe_to_pick_up_parcel'
+                                                                    ? 'swipe_to_deliver_parcel'
                                                                         .tr
-                                                                    : 'swipe_to_pick_up_order'
+                                                                    : 'swipe_to_deliver_order'
                                                                         .tr
-                                                                : '',
-                                                style: robotoMedium.copyWith(
-                                                    fontSize: Dimensions
-                                                        .fontSizeLarge,
-                                                    color: Theme.of(context)
-                                                        .primaryColor),
-                                              ),
-                                              dismissThresholds: 0.5,
-                                              dismissible: false,
-                                              shimmer: true,
-                                              width: 1170,
-                                              height: 60,
-                                              buttonSize: 50,
-                                              radius: 10,
-                                              icon: Center(
-                                                  child: Icon(
-                                                Get.find<LocalizationController>()
-                                                        .isLtr
-                                                    ? Icons.double_arrow_sharp
-                                                    : Icons.keyboard_arrow_left,
-                                                color: Colors.white,
-                                                size: 20.0,
-                                              )),
-                                              isLtr: Get.find<
-                                                      LocalizationController>()
-                                                  .isLtr,
-                                              boxShadow: const BoxShadow(
-                                                  blurRadius: 0),
-                                              buttonColor: Theme.of(context)
-                                                  .primaryColor,
-                                              backgroundColor:
-                                                  const Color(0xffF4F7FC),
-                                              baseColor: Theme.of(context)
-                                                  .primaryColor,
-                                            )
-                                      : const SizedBox()
-                              : const SizedBox(),
-                    ])
-                  : const Center(child: CircularProgressIndicator());
-            }),
+                                                                : handover!
+                                                                    ? parcel
+                                                                        ? 'swipe_to_pick_up_parcel'
+                                                                            .tr
+                                                                        : 'swipe_to_pick_up_order'
+                                                                            .tr
+                                                                    : '',
+                                                    style: robotoMedium.copyWith(
+                                                        fontSize: Dimensions
+                                                            .fontSizeLarge,
+                                                        color: Theme.of(context)
+                                                            .primaryColor),
+                                                  ),
+                                                  dismissThresholds: 0.5,
+                                                  dismissible: false,
+                                                  shimmer: true,
+                                                  width: 1170,
+                                                  height: 60,
+                                                  buttonSize: 50,
+                                                  radius: 10,
+                                                  icon: Center(
+                                                      child: Icon(
+                                                    Get.find<LocalizationController>()
+                                                            .isLtr
+                                                        ? Icons.double_arrow_sharp
+                                                        : Icons
+                                                            .keyboard_arrow_left,
+                                                    color: Colors.white,
+                                                    size: 20.0,
+                                                  )),
+                                                  isLtr: Get.find<
+                                                          LocalizationController>()
+                                                      .isLtr,
+                                                  boxShadow: const BoxShadow(
+                                                      blurRadius: 0),
+                                                  buttonColor: Theme.of(context)
+                                                      .primaryColor,
+                                                  backgroundColor:
+                                                      const Color(0xffF4F7FC),
+                                                  baseColor: Theme.of(context)
+                                                      .primaryColor,
+                                                )
+                                          : const SizedBox()
+                                  : const SizedBox(),
+                        ]),
+                      )
+                    : const Center(child: CircularProgressIndicator());
+              }),
+            ),
           ),
         ),
       ),

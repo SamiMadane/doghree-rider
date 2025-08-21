@@ -23,7 +23,7 @@ class EarningsGridSection extends StatelessWidget {
 
     return Obx(
       () => Container(
-        margin: const EdgeInsets.only(top: Dimensions.paddingSizeExtraLarge),
+        margin: const EdgeInsets.only(top: Dimensions.paddingSizeLarge),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

@@ -2,6 +2,7 @@ import 'package:sixam_mart_delivery/util/dimensions.dart';
 import 'package:sixam_mart_delivery/util/manager_assets.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
+import 'package:sixam_mart_delivery/util/manager_colors.dart';
 
 class OrderShimmerWidget extends StatelessWidget {
   final bool isEnabled;
@@ -20,25 +21,25 @@ class OrderShimmerWidget extends StatelessWidget {
       child: Column(children: [
 
         Row(children: [
-          Shimmer(child: Container(height: 15, width: 100, color: Theme.of(context).shadowColor)),
+          Shimmer(child: Container(height: 15, width: 100, color: ManagerColors.shimmer)),
           const Expanded(child: SizedBox()),
           Shimmer(child: Container(width: 7, height: 7, decoration: BoxDecoration(color: Theme.of(context).primaryColor, shape: BoxShape.circle))),
           const SizedBox(width: Dimensions.paddingSizeExtraSmall),
-          Shimmer(child: Container(height: 15, width: 70, color: Theme.of(context).shadowColor)),
+          Shimmer(child: Container(height: 15, width: 70, color: ManagerColors.shimmer)),
         ]),
         const SizedBox(height: Dimensions.paddingSizeDefault),
 
         Row(crossAxisAlignment: CrossAxisAlignment.center, mainAxisAlignment: MainAxisAlignment.start, children: [
           Image.asset(ManagerAssets.house, width: 20, height: 15, color: Theme.of(context).disabledColor),
           const SizedBox(width: Dimensions.paddingSizeExtraSmall),
-          Shimmer(child: Container(height: 15, width: 200, color: Theme.of(context).shadowColor)),
+          Shimmer(child: Container(height: 15, width: 200, color: ManagerColors.shimmer)),
         ]),
         const SizedBox(height: Dimensions.paddingSizeSmall),
 
         Row(crossAxisAlignment: CrossAxisAlignment.center, mainAxisAlignment: MainAxisAlignment.start, children: [
           Icon(Icons.location_on, size: 20, color: Theme.of(context).disabledColor),
           const SizedBox(width: Dimensions.paddingSizeExtraSmall),
-          Shimmer(child: Container(height: 15, width: 200, color: Theme.of(context).shadowColor)),
+          Shimmer(child: Container(height: 15, width: 200, color: ManagerColors.shimmer)),
         ]),
         const SizedBox(height: Dimensions.paddingSizeDefault),
 
