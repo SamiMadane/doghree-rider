@@ -97,4 +97,6 @@ class ManagerAssets {
   static const String keyIcon = '$iconPath/key.svg';
   static const String visibilityIcon = '$iconPath/visibility.svg';
   static const String visibilityOffIcon = '$iconPath/visibility_off.svg';
+  static const String sendIcon = '$iconPath/send.svg';
+  static const String attachedIcon = '$iconPath/attached.svg';
 }

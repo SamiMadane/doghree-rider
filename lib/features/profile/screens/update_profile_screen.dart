@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:phone_numbers_parser/phone_numbers_parser.dart'; // ✅ جديد
 import 'package:sixam_mart_delivery/common/widgets/custom_app_bar_widget.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_button_widget.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_snackbar_widget.dart';
@@ -28,7 +29,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
-  String _countryDialCode = '+970';
+  String _countryDialCode = '+970'; // الافتراضي
 
   @override
   void initState() {
@@ -49,7 +50,19 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
               _fullNameController.text.isEmpty) {
             _fullNameController.text =
                 '${profileController.profileModel!.fName ?? ''} ${profileController.profileModel!.lName ?? ''}';
-            _phoneController.text = profileController.profileModel!.phone ?? '';
+
+            // ✅ هنا نفصل الكود عن الرقم
+            String rawPhone = profileController.profileModel!.phone ?? '';
+            if (rawPhone.isNotEmpty) {
+              try {
+                final parsed = PhoneNumber.parse(rawPhone);
+                _countryDialCode = '+${parsed.countryCode}';
+                _phoneController.text = parsed.nsn; // الرقم بدون كود الدولة
+              } catch (e) {
+                _phoneController.text = rawPhone;
+              }
+            }
+
             _emailController.text = profileController.profileModel!.email ?? '';
           }
 
@@ -58,18 +71,17 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   children: [
                     Expanded(
                       child: Container(
-                        padding: const EdgeInsets.all(
-                            Dimensions.paddingSizeDefault),
+                        padding:
+                            const EdgeInsets.all(Dimensions.paddingSizeDefault),
                         margin: const EdgeInsets.only(
                             top: Dimensions.paddingSizeDefault),
                         color: Theme.of(context).cardColor,
                         child: SingleChildScrollView(
-                        physics: const BouncingScrollPhysics(),
-
+                          physics: const BouncingScrollPhysics(),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              SizedBox(
+                              const SizedBox(
                                 height: Dimensions.paddingSizeSmall,
                               ),
                               Stack(
@@ -134,7 +146,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                               ),
                               const SizedBox(
                                   height: Dimensions.paddingSizeExtraLarge),
-                                                
+
                               // Full Name
                               WidgetWithLabel(
                                 label: 'full_name'.tr,
@@ -163,8 +175,10 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                   focusNode: _emailFocus,
                                 ),
                               ),
-                              SizedBox(height: Dimensions.paddingSizeDefault),
-                                                
+                              const SizedBox(
+                                  height: Dimensions.paddingSizeDefault),
+
+                              // Phone
                               WidgetWithLabel(
                                 label: 'mobile_number'.tr,
                                 textField: CustomTextFieldWidget(
@@ -188,24 +202,24 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                         ),
                       ),
                     ),
-                    // زر التعديل ثابت اسفل الشاشة
+                    // زر التعديل
                     SafeArea(
                       child: Container(
-                         padding: const EdgeInsets.only(
-                      top: Dimensions.paddingSizeDefault,
-                      left: Dimensions.paddingSizeDefault,
-                      right: Dimensions.paddingSizeDefault,
-                      bottom: Dimensions.paddingSizeExtraSmall
-                    ),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).cardColor,
-                      boxShadow: const [
-                        BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 5,
-                            spreadRadius: 2)
-                      ],
-                    ),
+                        padding: const EdgeInsets.only(
+                          top: Dimensions.paddingSizeDefault,
+                          left: Dimensions.paddingSizeDefault,
+                          right: Dimensions.paddingSizeDefault,
+                          bottom: Dimensions.paddingSizeExtraSmall,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).cardColor,
+                          boxShadow: const [
+                            BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 5,
+                                spreadRadius: 2)
+                          ],
+                        ),
                         child: !profileController.isLoading
                             ? CustomButtonWidget(
                                 onPressed: () =>
@@ -228,7 +242,10 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     String email = _emailController.text.trim();
     String phoneNumber = _phoneController.text.trim();
 
-    // تقسيم الاسم الكامل الى fname و lname
+    // ✅ الرقم النهائي مع الكود
+    String fullPhoneNumber = '$_countryDialCode$phoneNumber';
+
+    // تقسيم الاسم
     List<String> nameParts = fullName.split(' ');
     String firstName = nameParts.isNotEmpty ? nameParts.first : '';
     String lastName =
@@ -236,7 +253,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
     if (profileController.profileModel!.fName == firstName &&
         profileController.profileModel!.lName == lastName &&
-        profileController.profileModel!.phone == phoneNumber &&
+        profileController.profileModel!.phone == fullPhoneNumber &&
         profileController.profileModel!.email == email &&
         profileController.pickedFile == null) {
       showCustomSnackBar('change_something_to_update'.tr);
@@ -253,10 +270,12 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     } else if (phoneNumber.length < 6) {
       showCustomSnackBar('enter_a_valid_phone_number'.tr);
     } else {
-      print('image is : ${profileController.profileModel!.imageFullUrl} ');
-
       ProfileModel updatedUser = ProfileModel(
-          fName: firstName, lName: lastName, email: email, phone: phoneNumber);
+        fName: firstName,
+        lName: lastName,
+        email: email,
+        phone: fullPhoneNumber, 
+      );
       profileController
           .updateUserInfo(
               updatedUser, Get.find<AuthController>().getUserToken())

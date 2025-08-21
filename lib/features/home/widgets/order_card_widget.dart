@@ -30,6 +30,7 @@ class OrderCardWidget extends StatelessWidget {
     bool parcel = order.orderType == 'parcel';
 
     return CustomCard(
+      width: MediaQuery.of(context).size.width,
       padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,18 +60,20 @@ class OrderCardWidget extends StatelessWidget {
                 ),
               ),
               CustomCard(
+                width: 80,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                    fillColor: order.paymentStatus == 'paid'
-                      ? Theme.of(context).primaryColor
-                      : Theme.of(context).colorScheme.error,
-                      borderRadius: Dimensions.radiusExtraLarge,
-               
-                child: Text(
-                  order.paymentStatus == 'paid' ? 'paid'.tr : 'unpaid'.tr,
-                  style: robotoBold.copyWith(
-                    color: Theme.of(context).colorScheme.onPrimary,
-                    fontSize: Dimensions.fontSizeDefault,
+                fillColor: order.paymentStatus == 'paid'
+                    ? Theme.of(context).primaryColor
+                    : Theme.of(context).colorScheme.error,
+                borderRadius: Dimensions.radiusExtraLarge,
+                child: Center(
+                  child: Text(
+                    order.paymentStatus == 'paid' ? 'paid'.tr : 'unpaid'.tr,
+                    style: robotoBold.copyWith(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                      fontSize: Dimensions.fontSizeDefault,
+                    ),
                   ),
                 ),
               ),

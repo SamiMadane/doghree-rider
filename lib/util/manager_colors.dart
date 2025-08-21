@@ -23,6 +23,7 @@ class ManagerColors {
   static const Color shadowLight = Color.fromRGBO(0, 0, 0, 0.03);
   static const Color iconLight = Color(0xFF292D32);
   static const Color TextColorLight = Color(0xFF2B3141);
+  static const Color senderMessageBgLight = Color(0xFFF8F8F8);
   static const Color bottomAppBarLight = Colors.white;
 
   // 🌚 Dark Theme Colors
@@ -34,6 +35,8 @@ class ManagerColors {
   static const Color hintDark = Color(0xFFBEBEBE);
   static const Color shadowDark = Color.fromRGBO(255, 255, 255, 0.03);
   static const Color TextColorDark = Color(0xFFFFFFFF);
+  static const Color senderMessageBgDark = Color(0xFF2C2C2C);
+
 
   static const Color iconDark = Colors.white;
   static const Color bottomAppBarDark = Colors.black;

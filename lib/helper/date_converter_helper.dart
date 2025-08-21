@@ -7,16 +7,22 @@ class DateConverterHelper {
     return DateFormat('yyyy-MM-dd hh:mm:ss').format(dateTime);
   }
 
+  static String localTimeOnly(DateTime dateTime) {
+    return DateFormat(_timeFormatter()).format(dateTime.toLocal());
+  }
+
   static String estimatedDate(DateTime dateTime) {
     return DateFormat('dd MMM yyyy').format(dateTime);
   }
 
   static String dateTimeStringToDateTime(String dateTime) {
-    return DateFormat('dd MMM yyyy  ${_timeFormatter()}').format(DateFormat('yyyy-MM-dd HH:mm:ss').parse(dateTime));
+    return DateFormat('dd MMM yyyy  ${_timeFormatter()}')
+        .format(DateFormat('yyyy-MM-dd HH:mm:ss').parse(dateTime));
   }
 
   static String dateTimeStringToDateOnly(String dateTime) {
-    return DateFormat('dd MMM yyyy').format(DateFormat('yyyy-MM-dd HH:mm:ss').parse(dateTime));
+    return DateFormat('dd MMM yyyy')
+        .format(DateFormat('yyyy-MM-dd HH:mm:ss').parse(dateTime));
   }
 
   static DateTime dateTimeStringToDate(String dateTime) {
@@ -44,7 +50,8 @@ class DateConverterHelper {
   }
 
   static String isoStringToLocalDateAnTime(String dateTime) {
-    return DateFormat('dd/MMM/yyyy ${_timeFormatter()}').format(isoStringToLocalDate(dateTime));
+    return DateFormat('dd/MMM/yyyy ${_timeFormatter()}')
+        .format(isoStringToLocalDate(dateTime));
   }
 
   static String localDateToIsoString(DateTime dateTime) {
@@ -52,26 +59,33 @@ class DateConverterHelper {
   }
 
   static String convertTimeToTime(String time) {
-    return DateFormat(_timeFormatter()).format(DateFormat('hh:mm:ss').parse(time));
+    return DateFormat(_timeFormatter())
+        .format(DateFormat('hh:mm:ss').parse(time));
   }
 
   static int timeDistanceInMin(String time) {
-    DateTime currentTime = Get.find<NavigationHandlerController>().currentTime.toLocal();
+    DateTime currentTime =
+        Get.find<NavigationHandlerController>().currentTime.toLocal();
     DateTime rangeTime = dateTimeStringToDate(time).toLocal();
     return currentTime.difference(rangeTime).inMinutes;
   }
 
   static String _timeFormatter() {
-    return Get.find<NavigationHandlerController>().configModel!.timeformat == '24' ? 'HH:mm' : 'hh:mm a';
+    return Get.find<NavigationHandlerController>().configModel!.timeformat ==
+            '24'
+        ? 'HH:mm'
+        : 'hh:mm a';
   }
 
   static String localDateToIsoStringAMPM(DateTime dateTime) {
-    return DateFormat('${_timeFormatter()} | d-MMM-yyyy ').format(dateTime.toLocal());
+    return DateFormat('${_timeFormatter()} | d-MMM-yyyy ')
+        .format(dateTime.toLocal());
   }
 
   static String dateTimeStringForDisbursement(String time) {
-    var newTime = '${time.substring(0,10)} ${time.substring(11,23)}';
-    return DateFormat('dd MMM, yyyy').format(DateFormat('yyyy-MM-dd HH:mm:ss').parse(newTime));
+    var newTime = '${time.substring(0, 10)} ${time.substring(11, 23)}';
+    return DateFormat('dd MMM, yyyy')
+        .format(DateFormat('yyyy-MM-dd HH:mm:ss').parse(newTime));
   }
 
   static String dateTimeForCoupon(DateTime dateTime) {
@@ -79,16 +93,21 @@ class DateConverterHelper {
   }
 
   static String convertTodayYesterdayDate(String createdAt) {
-    final DateTime createdDate = DateFormat('yyyy-MM-dd HH:mm:ss').parse(createdAt);
+    final DateTime createdDate =
+        DateFormat('yyyy-MM-dd HH:mm:ss').parse(createdAt);
     final DateTime now = DateTime.now();
     final DateFormat formatter = DateFormat('dd MMM yyyy');
 
-    if (createdDate.year == now.year && createdDate.month == now.month && createdDate.day == now.day) {
+    if (createdDate.year == now.year &&
+        createdDate.month == now.month &&
+        createdDate.day == now.day) {
       return 'Today';
     }
 
     final DateTime yesterday = now.subtract(const Duration(days: 1));
-    if (createdDate.year == yesterday.year && createdDate.month == yesterday.month && createdDate.day == yesterday.day) {
+    if (createdDate.year == yesterday.year &&
+        createdDate.month == yesterday.month &&
+        createdDate.day == yesterday.day) {
       return 'Yesterday';
     }
 
@@ -96,10 +115,13 @@ class DateConverterHelper {
   }
 
   static String convertTimeDifferenceInMinutes(String createdAt) {
-    final DateTime createdDate = DateFormat('yyyy-MM-dd HH:mm:ss').parse(createdAt);
+    final DateTime createdDate =
+        DateFormat('yyyy-MM-dd HH:mm:ss').parse(createdAt);
     final DateTime now = DateTime.now();
 
-    if (createdDate.year == now.year && createdDate.month == now.month && createdDate.day == now.day) {
+    if (createdDate.year == now.year &&
+        createdDate.month == now.month &&
+        createdDate.day == now.day) {
       int differenceInMinutes = now.difference(createdDate).inMinutes;
       return '$differenceInMinutes ${'min_ago'.tr}';
     } else {
@@ -108,11 +130,12 @@ class DateConverterHelper {
   }
 
   static String utcToDateTime(String dateTime) {
-    return DateFormat('dd MMM, yyyy h:mm a').format(DateTime.parse(dateTime).toLocal());
+    return DateFormat('dd MMM, yyyy h:mm a')
+        .format(DateTime.parse(dateTime).toLocal());
   }
 
   static String localDateToStringAMPM(DateTime dateTime) {
-    return DateFormat('${_timeFormatter()}\nd-MMM-yyyy ').format(dateTime.toLocal());
+    return DateFormat('${_timeFormatter()}\nd-MMM-yyyy ')
+        .format(dateTime.toLocal());
   }
-
 }

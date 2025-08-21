@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
+import 'package:sixam_mart_delivery/util/theme_extension.dart';
 
 class SearchFieldWidget extends StatefulWidget {
   final TextEditingController controller;
@@ -19,10 +20,12 @@ class SearchFieldWidget extends StatefulWidget {
 class _SearchFieldWidgetState extends State<SearchFieldWidget> {
   @override
   Widget build(BuildContext context) {
+    final customColor = Theme.of(context).extension<CustomColorsExtension>()!;
+
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: Theme.of(context).disabledColor.withValues(alpha: 0.2)),
-        borderRadius: BorderRadius.circular(Dimensions.radiusMedium),
+        border: Border.all(color:customColor.strock1),
+        borderRadius: BorderRadius.circular(Dimensions.radiusLarge),
       ),
       child: TextField(
         controller: widget.controller,
@@ -30,7 +33,7 @@ class _SearchFieldWidgetState extends State<SearchFieldWidget> {
         decoration: InputDecoration(
           hintText: widget.hint,
           hintStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(Dimensions.radiusMedium), borderSide: BorderSide.none),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(Dimensions.radiusLarge), borderSide: BorderSide.none),
           filled: true, fillColor: Theme.of(context).cardColor,
           isDense: true,
           suffixIcon: IconButton(

@@ -45,6 +45,7 @@ ThemeData light = ThemeData(
     CustomColorsExtension(
       strock1: ManagerColors.Strock1Light,
       strock2: ManagerColors.Strock2Light,
+      senderMessageBg: ManagerColors.senderMessageBgLight,
     ),
   ],
 );

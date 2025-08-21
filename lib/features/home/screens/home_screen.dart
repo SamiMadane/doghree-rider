@@ -148,19 +148,30 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: CustomAppBarWidget(
-        title:
-            '${profileController.profileModel?.fName} ${profileController.profileModel?.lName}',
         centerTitle: false,
         isBackButtonExist: false,
-        leadingWidget: Padding(
-          padding: const EdgeInsets.all(Dimensions.paddingSizeExtraSmall),
-          child: ClipOval(
-            child: CustomImageWidget(
-                
-              fit: BoxFit.cover,
-              image: profileController.profileModel!.imageFullUrl,
+        titleWidget: Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(Dimensions.paddingSizeExtraSmall),
+              child: ClipOval(
+                child: CustomImageWidget(
+                  width: 40,
+                  height: 40,
+                  fit: BoxFit.cover,
+                  image: profileController.profileModel!.imageFullUrl,
+                ),
+              ),
             ),
-          ),
+            SizedBox(width: Dimensions.p8),
+            Text(
+              '${profileController.profileModel?.fName} ${profileController.profileModel?.lName}',
+              style: robotoSemiBold.copyWith(
+                fontSize: Dimensions.fontSizeExtraLarge,
+                color: Theme.of(context).textTheme.bodyMedium!.color,
+              ),
+            )
+          ],
         ),
         actionWidget: IconButton(
           icon: Stack(
