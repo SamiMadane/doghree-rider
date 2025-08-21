@@ -22,7 +22,7 @@ class ProfileOrdersSection extends StatelessWidget {
             value: profileController.profileModel?.orderCount.toString(),
             imagePath: ManagerAssets.greenCardImage,
             isTopCard: true,
-            height: orientation==Orientation.landscape?300:150,
+            height: orientation==Orientation.landscape?320:150,
           ),
           SizedBox(
             height:orientation==Orientation.landscape?Dimensions.paddingSizeDefault:0),
@@ -34,7 +34,7 @@ class ProfileOrdersSection extends StatelessWidget {
                   value: profileController.profileModel?.thisWeekOrderCount
                       .toString(),
                   imagePath: ManagerAssets.orangeCardImage,
-            height: orientation==Orientation.landscape?250:150,
+            height: orientation==Orientation.landscape?270:150,
                 ),
               ),
               const SizedBox(width: Dimensions.paddingSizeDefault),
@@ -44,7 +44,7 @@ class ProfileOrdersSection extends StatelessWidget {
                   value:
                       profileController.profileModel?.todaysOrderCount.toString(),
                   imagePath: ManagerAssets.blueCardImage,
-            height: orientation==Orientation.landscape?250:150,
+            height: orientation==Orientation.landscape?270:150,
                 ),
               ),
             ],
