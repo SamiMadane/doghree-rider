@@ -165,40 +165,56 @@ class DashboardScreenState extends State<DashboardScreen> {
       child: Scaffold(
         bottomNavigationBar: GetPlatform.isDesktop
             ? const SizedBox()
-            : BottomAppBar(
-                elevation: 5,
-                notchMargin: 5,
-                shadowColor: Colors.grey[300],
-                shape: const CircularNotchedRectangle(),
-                child: Padding(
-                  padding:
-                      const EdgeInsets.all(Dimensions.paddingSizeExtraSmall),
-                  child: Row(
-                    children: [
-                    BottomNavItemWidget(
-                        label: 'home'.tr,
-                        svgPath: ManagerAssets.homeIcon,
-                        isSelected: _pageIndex == 0,
-                        onTap: () => _setPage(0)),
-                    BottomNavItemWidget(
-                        label: 'orders'.tr,
-                        svgPath: ManagerAssets.orderIcon,
-                        isSelected: _pageIndex == 1,
-                        pageIndex: 1,
-                        onTap: () {
-                          _navigateRequestPage();
-                        }),
-                    BottomNavItemWidget(
-                        label: 'my_orders'.tr,
-                        svgPath: ManagerAssets.myOrderIcon,
-                        isSelected: _pageIndex == 2,
-                        onTap: () => _setPage(2)),
-                    BottomNavItemWidget(
-                        label: 'profile'.tr,
-                        svgPath: ManagerAssets.userIcon,
-                        isSelected: _pageIndex == 3,
-                        onTap: () => _setPage(3)),
-                  ]),
+            : Container(
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                       color: Theme.of(context).shadowColor,
+                          blurRadius: 5,
+                          spreadRadius: 2,
+                          offset: const Offset(0, -3), 
+                    ),
+                  ],
+                ),
+                child: BottomAppBar(
+                  elevation: 0, 
+                  notchMargin: 5,
+                  shape: const CircularNotchedRectangle(),
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.all(Dimensions.paddingSizeExtraSmall),
+                    child: Row(
+                      children: [
+                        BottomNavItemWidget(
+                          label: 'home'.tr,
+                          svgPath: ManagerAssets.homeIcon,
+                          isSelected: _pageIndex == 0,
+                          onTap: () => _setPage(0),
+                        ),
+                        BottomNavItemWidget(
+                          label: 'orders'.tr,
+                          svgPath: ManagerAssets.orderIcon,
+                          isSelected: _pageIndex == 1,
+                          pageIndex: 1,
+                          onTap: () {
+                            _navigateRequestPage();
+                          },
+                        ),
+                        BottomNavItemWidget(
+                          label: 'my_orders'.tr,
+                          svgPath: ManagerAssets.myOrderIcon,
+                          isSelected: _pageIndex == 2,
+                          onTap: () => _setPage(2),
+                        ),
+                        BottomNavItemWidget(
+                          label: 'profile'.tr,
+                          svgPath: ManagerAssets.userIcon,
+                          isSelected: _pageIndex == 3,
+                          onTap: () => _setPage(3),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
         body: PageView.builder(
