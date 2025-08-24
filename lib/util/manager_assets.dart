@@ -62,9 +62,12 @@ class ManagerAssets {
   static const String greenCardImage = '$imagePath/green_card.png';
   static const String blueCardImage = '$imagePath/blue_card.png';
   static const String orangeCardImage = '$imagePath/orange_card.png';
+  static const String greenCardArabicImage = '$imagePath/green_card_ar.png';
+  static const String blueCardArabicImage = '$imagePath/blue_card_ar.png';
+  static const String orangeCardArabicImage = '$imagePath/orange_card_ar.png';
   static const String storeImage = '$imagePath/store.png';
   static const String balanceImage = '$imagePath/balance.png';
-    static const String payNowImage = '$imagePath/pay_now.png';
+  static const String payNowImage = '$imagePath/pay_now.png';
   static const String adjustPaymentImage = '$imagePath/adjust_payment.png';
 
   ///Svg Images
@@ -72,7 +75,6 @@ class ManagerAssets {
       '$imagePath/change_password_bg_image.svg';
   static const String orderOnTheWayIcon =
       '$imagePath/order_on_the_way_icon.svg';
-
 
   // icons
   static const String arrowBackIcon = '$iconPath/arrow_left.svg';
@@ -97,4 +99,13 @@ class ManagerAssets {
   static const String keyIcon = '$iconPath/key.svg';
   static const String visibilityIcon = '$iconPath/visibility.svg';
   static const String visibilityOffIcon = '$iconPath/visibility_off.svg';
+  static const String sendIcon = '$iconPath/send.svg';
+  static const String attachedIcon = '$iconPath/attached.svg';
+  static const String alertsIcon = '$iconPath/alerts.svg';
+  static const String moonIcon = '$iconPath/moon.svg';
+  static const String newOrderIcon = '$iconPath/new_order.svg';
+  static const String offersIcon = '$iconPath/offers.svg';
+  static const String sunIcon = '$iconPath/sun.svg';
+  static const String trakingIcon = '$iconPath/traking.svg';
+  static const String searchIcon = '$iconPath/search.svg';
 }

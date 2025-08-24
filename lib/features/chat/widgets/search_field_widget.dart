@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
+import 'package:sixam_mart_delivery/util/theme_extension.dart';
 
 class SearchFieldWidget extends StatefulWidget {
   final TextEditingController controller;
   final String hint;
-  final IconData suffixIcon;
+  final Widget suffixIcon;
   final Function iconPressed;
   final Function? onSubmit;
   final Function? onChanged;
@@ -19,23 +20,25 @@ class SearchFieldWidget extends StatefulWidget {
 class _SearchFieldWidgetState extends State<SearchFieldWidget> {
   @override
   Widget build(BuildContext context) {
+    final customColor = Theme.of(context).extension<CustomColorsExtension>()!;
+
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: Theme.of(context).disabledColor.withValues(alpha: 0.2)),
-        borderRadius: BorderRadius.circular(Dimensions.radiusMedium),
+        border: Border.all(color:customColor.strock1),
+        borderRadius: BorderRadius.circular(Dimensions.radiusLarge),
       ),
       child: TextField(
         controller: widget.controller,
         textInputAction: TextInputAction.search,
         decoration: InputDecoration(
           hintText: widget.hint,
-          hintStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(Dimensions.radiusMedium), borderSide: BorderSide.none),
+          hintStyle: robotoMedium.copyWith(fontSize: Dimensions.fontSizeDefault, color: Theme.of(context).disabledColor),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(Dimensions.radiusLarge), borderSide: BorderSide.none),
           filled: true, fillColor: Theme.of(context).cardColor,
           isDense: true,
           suffixIcon: IconButton(
             onPressed: widget.iconPressed as void Function()?,
-            icon: Icon(widget.suffixIcon, color: Theme.of(context).disabledColor.withValues(alpha: 0.6), size: 22, textDirection: TextDirection.ltr),
+            icon: widget.suffixIcon,
           ),
         ),
         onSubmitted: widget.onSubmit as void Function(String)?,

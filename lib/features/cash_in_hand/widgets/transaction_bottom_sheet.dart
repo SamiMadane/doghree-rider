@@ -18,8 +18,8 @@ class TransactionBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profileController = Get.find<ProfileController>();
-    // profileController.profileModel!.adjustable!
-    final bool showAdjust = true;
+
+    final bool showAdjust = profileController.profileModel!.adjustable!;
     final bool showPayNow = true;
 
     final buttons = <Widget>[];

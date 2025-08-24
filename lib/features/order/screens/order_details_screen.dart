@@ -137,12 +137,12 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
               margin: const EdgeInsets.only(top: Dimensions.paddingSizeDefault),
               child: GetBuilder<OrderController>(builder: (orderController) {
                 OrderModel? controllerOrderModel = orderController.orderModel;
-            
+
                 bool restConfModel = Get.find<NavigationHandlerController>()
                         .configModel!
                         .orderConfirmationModel !=
                     'deliveryman';
-            
+
                 bool? parcel,
                     processing,
                     accepted,
@@ -153,17 +153,17 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                     wallet,
                     partialPay,
                     offlinePay;
-            
+
                 bool orderVerificationActive =
                     Get.find<NavigationHandlerController>()
                             .configModel
                             ?.orderDeliveryVerification ??
                         false;
-            
+
                 late bool showBottomView;
                 late bool showSlider;
                 bool showDeliveryConfirmImage = false;
-            
+
                 double? deliveryCharge = 0;
                 double itemsPrice = 0;
                 double? discount = 0;
@@ -178,7 +178,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                 bool? taxIncluded = false;
                 bool showChatPermission = true;
                 OrderModel? order = controllerOrderModel;
-                if (order != null && orderController.orderDetailsModel != null) {
+                if (order != null &&
+                    orderController.orderDetailsModel != null) {
                   deliveryCharge = order.deliveryCharge;
                   dmTips = order.dmTips;
                   isPrescriptionOrder = order.prescriptionOrder;
@@ -208,7 +209,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                           (orderDetails.price! * orderDetails.quantity!);
                     }
                   }
-            
+
                   if (order.storeBusinessModel == 'commission') {
                     showChatPermission = true;
                   } else if (order.storeBusinessModel == 'subscription') {
@@ -228,26 +229,27 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                     additionalCharge +
                     extraPackagingAmount -
                     referrerBonusAmount;
-            
+
                 if (controllerOrderModel != null) {
                   parcel = controllerOrderModel.orderType == 'parcel';
-                  processing =
-                      controllerOrderModel.orderStatus == AppConstants.processing;
+                  processing = controllerOrderModel.orderStatus ==
+                      AppConstants.processing;
                   accepted =
                       controllerOrderModel.orderStatus == AppConstants.accepted;
-                  confirmed =
-                      controllerOrderModel.orderStatus == AppConstants.confirmed;
+                  confirmed = controllerOrderModel.orderStatus ==
+                      AppConstants.confirmed;
                   handover =
                       controllerOrderModel.orderStatus == AppConstants.handover;
                   pickedUp =
                       controllerOrderModel.orderStatus == AppConstants.pickedUp;
-                  cod = controllerOrderModel.paymentMethod == 'cash_on_delivery';
+                  cod =
+                      controllerOrderModel.paymentMethod == 'cash_on_delivery';
                   wallet = controllerOrderModel.paymentMethod == 'wallet';
                   partialPay =
                       controllerOrderModel.paymentMethod == 'partial_payment';
                   offlinePay =
                       controllerOrderModel.paymentMethod == 'offline_payment';
-            
+
                   showDeliveryConfirmImage = pickedUp &&
                       Get.find<NavigationHandlerController>()
                           .configModel!
@@ -269,7 +271,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                           pickedUp ||
                           (parcel && accepted);
                 }
-            
+
                 return (orderController.orderDetailsModel != null &&
                         controllerOrderModel != null)
                     ? SingleChildScrollView(
@@ -277,10 +279,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                         child: Column(children: [
                           OrderIdSection(
                             orderId: widget.orderId.toString(),
-                            isPaid: controllerOrderModel.paymentStatus == 'paid',
+                            isPaid:
+                                controllerOrderModel.paymentStatus == 'paid',
                           ),
                           const SizedBox(height: Dimensions.paddingSizeDefault),
-            
+
                           OrderInfoSection(
                             orderController: orderController,
                             controllerOrderModel: controllerOrderModel,
@@ -296,8 +299,9 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                             height: Dimensions.paddingSizeDefault,
                           ),
                           InfoCardSection(
-                            title:
-                                parcel ? 'sender_details'.tr : 'store_details'.tr,
+                            title: parcel
+                                ? 'sender_details'.tr
+                                : 'store_details'.tr,
                             address: parcel
                                 ? controllerOrderModel.deliveryAddress
                                 : DeliveryAddress(
@@ -317,12 +321,14 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                 ? controllerOrderModel.deliveryAddress!.latitude
                                 : controllerOrderModel.storeLat,
                             longitude: parcel
-                                ? controllerOrderModel.deliveryAddress!.longitude
+                                ? controllerOrderModel
+                                    .deliveryAddress!.longitude
                                 : controllerOrderModel.storeLng,
                             showButton: (controllerOrderModel.orderStatus !=
                                     'delivered' &&
                                 controllerOrderModel.orderStatus != 'failed' &&
-                                controllerOrderModel.orderStatus != 'canceled' &&
+                                controllerOrderModel.orderStatus !=
+                                    'canceled' &&
                                 controllerOrderModel.orderStatus != 'refunded'),
                             isStore: parcel ? false : true,
                             isChatAllow: showChatPermission,
@@ -367,14 +373,18 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                     .deliveryAddress!.contactPersonNumber,
                             latitude: parcel
                                 ? controllerOrderModel.receiverDetails!.latitude
-                                : controllerOrderModel.deliveryAddress!.latitude,
+                                : controllerOrderModel
+                                    .deliveryAddress!.latitude,
                             longitude: parcel
-                                ? controllerOrderModel.receiverDetails!.longitude
-                                : controllerOrderModel.deliveryAddress!.longitude,
+                                ? controllerOrderModel
+                                    .receiverDetails!.longitude
+                                : controllerOrderModel
+                                    .deliveryAddress!.longitude,
                             showButton: controllerOrderModel.orderStatus !=
                                     'delivered' &&
                                 controllerOrderModel.orderStatus != 'failed' &&
-                                controllerOrderModel.orderStatus != 'canceled' &&
+                                controllerOrderModel.orderStatus !=
+                                    'canceled' &&
                                 controllerOrderModel.orderStatus != 'refunded',
                             isStore: parcel ? false : true,
                             isChatAllow: showChatPermission,
@@ -395,7 +405,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                             order: order,
                           ),
                           const SizedBox(height: Dimensions.paddingSizeDefault),
-            
+
                           // here we go
                           (controllerOrderModel.orderNote != null &&
                                   controllerOrderModel.orderNote!.isNotEmpty)
@@ -411,7 +421,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                         padding: const EdgeInsets.all(
                                             Dimensions.paddingSizeSmall),
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(5),
+                                          borderRadius:
+                                              BorderRadius.circular(5),
                                           border: Border.all(
                                               width: 1,
                                               color: Theme.of(context)
@@ -420,7 +431,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                         child: Text(
                                           controllerOrderModel.orderNote!,
                                           style: robotoRegular.copyWith(
-                                              fontSize: Dimensions.fontSizeSmall,
+                                              fontSize:
+                                                  Dimensions.fontSizeSmall,
                                               color: Theme.of(context)
                                                   .disabledColor),
                                         ),
@@ -429,11 +441,13 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                               : const SizedBox(),
                           SizedBox(
                               height: (controllerOrderModel.orderNote != null &&
-                                      controllerOrderModel.orderNote!.isNotEmpty)
+                                      controllerOrderModel
+                                          .orderNote!.isNotEmpty)
                                   ? Dimensions.paddingSizeLarge
                                   : 0),
                           (Get.find<NavigationHandlerController>()
-                                      .getModule(controllerOrderModel.moduleType)
+                                      .getModule(
+                                          controllerOrderModel.moduleType)
                                       .orderAttachment! &&
                                   controllerOrderModel.orderAttachmentFullUrl !=
                                       null &&
@@ -527,8 +541,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                           itemBuilder:
                                               (BuildContext context, index) {
                                             return Padding(
-                                              padding:
-                                                  const EdgeInsets.only(right: 8),
+                                              padding: const EdgeInsets.only(
+                                                  right: 8),
                                               child: InkWell(
                                                 onTap: () => openDialog(
                                                     context,
@@ -539,7 +553,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                                     child: ClipRRect(
                                                   borderRadius:
                                                       BorderRadius.circular(
-                                                          Dimensions.radiusSmall),
+                                                          Dimensions
+                                                              .radiusSmall),
                                                   child: CustomImageWidget(
                                                     image: controllerOrderModel
                                                             .orderProofFullUrl![
@@ -556,7 +571,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                     ])
                               : const SizedBox(),
                           const SizedBox(height: Dimensions.paddingSizeDefault),
-            
+
                           PaymentDetailsSection(
                             parcel: parcel,
                             itemsPrice: itemsPrice,
@@ -576,7 +591,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                             restConfModel: restConfModel,
                           ),
                           showDeliveryConfirmImage &&
-                                  controllerOrderModel.orderStatus != 'delivered'
+                                  controllerOrderModel.orderStatus !=
+                                      'delivered'
                               ? Container(
                                   padding: const EdgeInsets.all(
                                       Dimensions.paddingSizeSmall),
@@ -593,10 +609,12 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                            'completed_after_delivery_picture'.tr,
+                                            'completed_after_delivery_picture'
+                                                .tr,
                                             style: robotoRegular),
                                         const SizedBox(
-                                            height: Dimensions.paddingSizeSmall),
+                                            height:
+                                                Dimensions.paddingSizeSmall),
                                         Container(
                                           height: 80,
                                           padding: const EdgeInsets.symmetric(
@@ -607,7 +625,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                             physics:
                                                 const BouncingScrollPhysics(),
                                             itemCount: orderController
-                                                    .pickedPrescriptions.length +
+                                                    .pickedPrescriptions
+                                                    .length +
                                                 1,
                                             itemBuilder: (context, index) {
                                               XFile? file = index ==
@@ -616,7 +635,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                                           .length
                                                   ? null
                                                   : orderController
-                                                      .pickedPrescriptions[index];
+                                                          .pickedPrescriptions[
+                                                      index];
                                               if (index < 5 &&
                                                   index ==
                                                       orderController
@@ -625,7 +645,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                                 return InkWell(
                                                   onTap: () {
                                                     if (GetPlatform.isIOS) {
-                                                      Get.find<OrderController>()
+                                                      Get.find<
+                                                              OrderController>()
                                                           .pickPrescriptionImage(
                                                               isRemove: false,
                                                               isCamera: false);
@@ -639,13 +660,13 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                                     width: 60,
                                                     alignment: Alignment.center,
                                                     decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              Dimensions
-                                                                  .radiusDefault),
+                                                      borderRadius: BorderRadius
+                                                          .circular(Dimensions
+                                                              .radiusDefault),
                                                       color: Theme.of(context)
                                                           .primaryColor
-                                                          .withValues(alpha: 0.1),
+                                                          .withValues(
+                                                              alpha: 0.1),
                                                     ),
                                                     child: Icon(
                                                         Icons.camera_alt_sharp,
@@ -671,7 +692,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                                           borderRadius: BorderRadius
                                                               .circular(Dimensions
                                                                   .radiusDefault),
-                                                          child: GetPlatform.isWeb
+                                                          child: GetPlatform
+                                                                  .isWeb
                                                               ? Image.network(
                                                                   file.path,
                                                                   width: 60,
@@ -680,7 +702,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                                                       .cover,
                                                                 )
                                                               : Image.file(
-                                                                  File(file.path),
+                                                                  File(file
+                                                                      .path),
                                                                   width: 60,
                                                                   height: 60,
                                                                   fit: BoxFit
@@ -707,7 +730,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                       Get.find<NotificationController>()
                                           .sendDeliveredNotification(
                                               controllerOrderModel.id);
-            
+
                                       Get.bottomSheet(
                                               VerifyDeliverySheetWidget(
                                                 currentOrderModel:
@@ -806,7 +829,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                           child: Text(
                                             processing!
                                                 ? 'order_is_preparing'.tr
-                                                : 'order_waiting_for_process'.tr,
+                                                : 'order_waiting_for_process'
+                                                    .tr,
                                             style: robotoMedium,
                                           ),
                                         )
@@ -837,17 +861,16 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                                       padding: EdgeInsets.zero,
                                                       shape:
                                                           RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                                Dimensions
-                                                                    .radiusSmall),
+                                                        borderRadius: BorderRadius
+                                                            .circular(Dimensions
+                                                                .radiusSmall),
                                                         side: BorderSide(
                                                             width: 1,
-                                                            color:
-                                                                Theme.of(context)
-                                                                    .textTheme
-                                                                    .bodyLarge!
-                                                                    .color!),
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .bodyLarge!
+                                                                .color!),
                                                       ),
                                                     ),
                                                     child: Text('cancel'.tr,
@@ -855,10 +878,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                                             TextAlign.center,
                                                         style: robotoRegular
                                                             .copyWith(
-                                                          color: Theme.of(context)
-                                                              .textTheme
-                                                              .bodyLarge!
-                                                              .color,
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .textTheme
+                                                                  .bodyLarge!
+                                                                  .color,
                                                           fontSize: Dimensions
                                                               .fontSizeLarge,
                                                         )),
@@ -909,21 +933,19 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                                                   controllerOrderModel
                                                                           .chargePayer !=
                                                                       'sender') {
-                                                                orderController
-                                                                    .updateOrderStatus(
-                                                                        controllerOrderModel,
-                                                                        AppConstants
-                                                                            .handover);
+                                                                orderController.updateOrderStatus(
+                                                                    controllerOrderModel,
+                                                                    AppConstants
+                                                                        .handover);
                                                               } else if (parcel &&
                                                                   controllerOrderModel
                                                                           .chargePayer ==
                                                                       'sender' &&
                                                                   cod!) {
-                                                                orderController
-                                                                    .updateOrderStatus(
-                                                                        controllerOrderModel,
-                                                                        AppConstants
-                                                                            .handover);
+                                                                orderController.updateOrderStatus(
+                                                                    controllerOrderModel,
+                                                                    AppConstants
+                                                                        .handover);
                                                               }
                                                             },
                                                           ),
@@ -938,7 +960,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                                             accepted! &&
                                                             !restConfModel &&
                                                             !selfDelivery) ||
-                                                        (parcel! && accepted!)) {
+                                                        (parcel! &&
+                                                            accepted!)) {
                                                       if (orderController
                                                           .isLoading) {
                                                         orderController
@@ -1055,7 +1078,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                                                   currentOrderModel:
                                                                       controllerOrderModel,
                                                                   verify: false,
-                                                                  isSetOtp: false,
+                                                                  isSetOtp:
+                                                                      false,
                                                                   orderAmount:
                                                                       controllerOrderModel
                                                                           .orderAmount,
@@ -1099,7 +1123,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                                                   currentOrderModel:
                                                                       controllerOrderModel,
                                                                   verify: false,
-                                                                  isSetOtp: false,
+                                                                  isSetOtp:
+                                                                      false,
                                                                   orderAmount:
                                                                       controllerOrderModel
                                                                           .orderAmount,
@@ -1177,7 +1202,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                                                         : false);
                                                       }
                                                     }
-            
+
                                                     /*else if(pickedUp!) {
                           if(parcel && controllerOrderModel.chargePayer != 'sender') {
                             Get.bottomSheet(VerifyDeliverySheetWidget(
@@ -1256,11 +1281,13 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                                                         : 'swipe_to_pick_up_order'
                                                                             .tr
                                                                     : '',
-                                                    style: robotoMedium.copyWith(
-                                                        fontSize: Dimensions
-                                                            .fontSizeLarge,
-                                                        color: Theme.of(context)
-                                                            .primaryColor),
+                                                    style:
+                                                        robotoMedium.copyWith(
+                                                            fontSize: Dimensions
+                                                                .fontSizeLarge,
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .primaryColor),
                                                   ),
                                                   dismissThresholds: 0.5,
                                                   dismissible: false,
@@ -1273,7 +1300,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                                       child: Icon(
                                                     Get.find<LocalizationController>()
                                                             .isLtr
-                                                        ? Icons.double_arrow_sharp
+                                                        ? Icons
+                                                            .double_arrow_sharp
                                                         : Icons
                                                             .keyboard_arrow_left,
                                                     color: Colors.white,

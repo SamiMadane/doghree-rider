@@ -8,8 +8,10 @@ import 'package:sixam_mart_delivery/features/home/widgets/order_action_row.dart'
 import 'package:sixam_mart_delivery/features/order/domain/models/order_model.dart';
 import 'package:sixam_mart_delivery/features/order/screens/order_details_screen.dart';
 import 'package:sixam_mart_delivery/helper/route_helper.dart';
+import 'package:sixam_mart_delivery/util/app_constants.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
 import 'package:sixam_mart_delivery/util/manager_assets.dart';
+import 'package:sixam_mart_delivery/util/manager_colors.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -28,8 +30,11 @@ class OrderCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool parcel = order.orderType == 'parcel';
+    var isArabic =
+        Get.locale?.languageCode == AppConstants.languages[1].languageCode;
 
     return CustomCard(
+      width: MediaQuery.of(context).size.width,
       padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,18 +64,22 @@ class OrderCardWidget extends StatelessWidget {
                 ),
               ),
               CustomCard(
+                width: isArabic ? 90 : 80,
+                isBorder: false,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                    fillColor: order.paymentStatus == 'paid'
-                      ? Theme.of(context).primaryColor
-                      : Theme.of(context).colorScheme.error,
-                      borderRadius: Dimensions.radiusExtraLarge,
-               
-                child: Text(
-                  order.paymentStatus == 'paid' ? 'paid'.tr : 'unpaid'.tr,
-                  style: robotoBold.copyWith(
-                    color: Theme.of(context).colorScheme.onPrimary,
-                    fontSize: Dimensions.fontSizeDefault,
+                fillColor: order.paymentStatus == 'paid'
+                    ? ManagerColors.success
+                    : Theme.of(context).colorScheme.error,
+                borderRadius: Dimensions.radiusExtraLarge,
+                child: Center(
+                  child: Text(
+                    order.paymentStatus == 'paid' ? 'paid'.tr : 'unpaid'.tr,
+                    style: robotoMedium.copyWith(
+                      color: ManagerColors.white,
+                      fontSize: Dimensions.fontSizeDefault,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ),
               ),

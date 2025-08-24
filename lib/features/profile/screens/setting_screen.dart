@@ -37,7 +37,7 @@ class SettingScreen extends StatelessWidget {
           child: Column(
             children: [
               ProfileButtonWidget(
-                iconData: Icons.dark_mode,
+                svgPath: ManagerAssets.moonIcon,
                 title: 'dark_mode'.tr,
                 isButtonActive: Get.isDarkMode,
                 onTap: () {

@@ -79,7 +79,7 @@ class AppConstants {
   static const String langIntro = 'language_intro';
   static const String notificationIdList = 'notification_id_list';
 
-  /// Status
+  /// Order Status
   static const String pending = 'pending';
   static const String confirmed = 'confirmed';
   static const String accepted = 'accepted';

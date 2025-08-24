@@ -30,7 +30,7 @@ class AccountSection extends StatelessWidget {
           child: Column(
             children: [
               if (profileController.profileModel != null &&
-                  profileController.profileModel!.earnings != 1)
+                  profileController.profileModel!.earnings == 1)
                 Padding(
                   padding: const EdgeInsets.only(
                       bottom: Dimensions.paddingSizeDefault),

@@ -74,7 +74,6 @@ class _DmRegistrationScreenState extends State<DmRegistrationScreen> {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: CustomAppBarWidget(
           title: 'join_delivery_partner'.tr,
-       
           onBackPressed: () async {
             if (Get.find<AuthController>().dmStatus != 0.4) {
               Get.find<AuthController>().dmStatusChange(0.4);
@@ -82,7 +81,6 @@ class _DmRegistrationScreenState extends State<DmRegistrationScreen> {
               Get.back();
             }
           },
-          
         ),
         body: GetBuilder<AuthController>(builder: (authController) {
           return GetBuilder<AddressController>(builder: (addressController) {
@@ -122,27 +120,26 @@ class _DmRegistrationScreenState extends State<DmRegistrationScreen> {
                             },
                           ),
                           DmRegistrationStep2(
-                            identityNumberController:
-                                _identityNumberController,
+                            identityNumberController: _identityNumberController,
                             identityNumberNode: _identityNumberNode,
                           ),
                         ]),
                   )),
                   Container(
                     padding: const EdgeInsets.only(
-                      top: Dimensions.paddingSizeDefault,
-                      left: Dimensions.paddingSizeDefault,
-                      right: Dimensions.paddingSizeDefault,
-                      bottom: Dimensions.paddingSizeExtraSmall
-
-                    ),
+                        top: Dimensions.paddingSizeDefault,
+                        left: Dimensions.paddingSizeDefault,
+                        right: Dimensions.paddingSizeDefault,
+                        bottom: Dimensions.paddingSizeExtraSmall),
                     decoration: BoxDecoration(
                       color: Theme.of(context).cardColor,
-                      boxShadow: const [
+                      boxShadow: [
                         BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 5,
-                            spreadRadius: 2)
+                          color: Theme.of(context).shadowColor,
+                          blurRadius: 5,
+                          spreadRadius: 2,
+                          offset: const Offset(0, -3),
+                        )
                       ],
                     ),
                     child: CustomButtonWidget(
@@ -157,20 +154,19 @@ class _DmRegistrationScreenState extends State<DmRegistrationScreen> {
                               String lName = _lNameController.text.trim();
                               String email = _emailController.text.trim();
                               String phone = _phoneController.text.trim();
-                              String password =
-                                  _passwordController.text.trim();
+                              String password = _passwordController.text.trim();
                               String confirmPass =
                                   _confirmPasswordController.text.trim();
                               String identityNumber =
                                   _identityNumberController.text.trim();
-                
+
                               String numberWithCountryCode =
                                   _countryDialCode! + phone;
                               PhoneValid phoneValid =
                                   await CustomValidator.isPhoneValid(
                                       numberWithCountryCode);
                               numberWithCountryCode = phoneValid.phone;
-                
+
                               if (authController.dmStatus == 0.4) {
                                 if (fName.isEmpty) {
                                   showCustomSnackBar(
@@ -203,8 +199,7 @@ class _DmRegistrationScreenState extends State<DmRegistrationScreen> {
                                 } else if (password != confirmPass) {
                                   showCustomSnackBar(
                                       'password_does_not_matched'.tr);
-                                } else if (authController.pickedImage ==
-                                    null) {
+                                } else if (authController.pickedImage == null) {
                                   showCustomSnackBar(
                                       'pick_delivery_man_profile_image'.tr);
                                 } else {
@@ -212,33 +207,28 @@ class _DmRegistrationScreenState extends State<DmRegistrationScreen> {
                                 }
                               } else {
                                 if (authController.selectedDmTypeId == null) {
-                                  showCustomSnackBar(
-                                      'select_delivery_type'.tr);
+                                  showCustomSnackBar('select_delivery_type'.tr);
                                 } else if (addressController
                                         .selectedDeliveryZoneId ==
                                     null) {
-                                  showCustomSnackBar(
-                                      'select_delivery_zone'.tr);
+                                  showCustomSnackBar('select_delivery_zone'.tr);
                                 } else if (authController.selectedVehicleId ==
                                     null) {
-                                  showCustomSnackBar(
-                                      'select_vehicle_type'.tr);
+                                  showCustomSnackBar('select_vehicle_type'.tr);
                                 } else if (authController
                                         .selectedIdentityType ==
                                     null) {
-                                  showCustomSnackBar(
-                                      'select_identity_type'.tr);
+                                  showCustomSnackBar('select_identity_type'.tr);
                                 } else if (identityNumber.isEmpty) {
                                   showCustomSnackBar(
-                                      'enter_delivery_man_identity_number'
-                                          .tr);
+                                      'enter_delivery_man_identity_number'.tr);
                                 } else if (authController
                                     .pickedIdentities.isEmpty) {
                                   showCustomSnackBar(
                                       'please_upload_identity_image'.tr);
                                 } else {
-                                  authController.registerDeliveryMan(
-                                      DeliveryManBodyModel(
+                                  authController
+                                      .registerDeliveryMan(DeliveryManBodyModel(
                                     fName: fName,
                                     lName: lName,
                                     password: password,
@@ -250,8 +240,7 @@ class _DmRegistrationScreenState extends State<DmRegistrationScreen> {
                                     earning: authController.selectedDmTypeId,
                                     zoneId: addressController
                                         .selectedDeliveryZoneId,
-                                    vehicleId:
-                                        authController.selectedVehicleId,
+                                    vehicleId: authController.selectedVehicleId,
                                   ));
                                 }
                               }
