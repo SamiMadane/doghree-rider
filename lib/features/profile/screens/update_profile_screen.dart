@@ -213,11 +213,13 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                         ),
                         decoration: BoxDecoration(
                           color: Theme.of(context).cardColor,
-                          boxShadow: const [
+                          boxShadow:  [
                             BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: 5,
-                                spreadRadius: 2)
+                                  color: Theme.of(context).shadowColor,
+                                  blurRadius: 5,
+                                  spreadRadius: 2,
+                                  offset: const Offset(0, -3),
+                                  )
                           ],
                         ),
                         child: !profileController.isLoading

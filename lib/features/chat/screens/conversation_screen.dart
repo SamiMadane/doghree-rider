@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_card.dart';
 import 'package:sixam_mart_delivery/features/chat/controllers/chat_controller.dart';
@@ -9,6 +11,7 @@ import 'package:sixam_mart_delivery/helper/date_converter_helper.dart';
 import 'package:sixam_mart_delivery/helper/route_helper.dart';
 import 'package:sixam_mart_delivery/util/app_constants.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
+import 'package:sixam_mart_delivery/util/manager_assets.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_app_bar_widget.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_image_widget.dart';
@@ -58,8 +61,12 @@ class _ConversationScreenState extends State<ConversationScreen> {
                     controller: _searchController,
                     hint: 'search'.tr,
                     suffixIcon: chatController.searchConversationModel != null
-                        ? Icons.close
-                        : CupertinoIcons.search,
+                        ? Icon(Icons.close)
+                        : SvgPicture.asset(
+                            ManagerAssets.searchIcon,
+                            color:
+                                Theme.of(context).textTheme.bodyMedium!.color,
+                          ),
                     onSubmit: (String text) {
                       if (_searchController.text.trim().isNotEmpty) {
                         chatController
@@ -237,7 +244,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                                                       DateConverterHelper.dateTimeStringToDate(
                                                                           conversation
                                                                               .lastMessageTime!)),
-                                                                  style: robotoRegular.copyWith(
+                                                                  style: robotoMedium.copyWith(
                                                                       color: Theme.of(
                                                                               context)
                                                                           .hintColor,

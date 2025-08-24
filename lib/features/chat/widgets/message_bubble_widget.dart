@@ -15,277 +15,219 @@ class MessageBubbleWidget extends StatelessWidget {
   final User? sender;
   final String userType;
 
-  const MessageBubbleWidget(
-      {super.key,
-      required this.message,
-      required this.user,
-      required this.userType,
-      required this.sender});
+  const MessageBubbleWidget({
+    super.key,
+    required this.message,
+    required this.user,
+    required this.userType,
+    required this.sender,
+  });
 
   @override
   Widget build(BuildContext context) {
     final customColor = Theme.of(context).extension<CustomColorsExtension>()!;
     bool isReply = message.senderId == user!.id;
+    final hasImages =
+        message.filesFullUrl != null && message.filesFullUrl!.isNotEmpty;
+    final hasText = message.message != null && message.message!.isNotEmpty;
 
     return Directionality(
-      textDirection: TextDirection.ltr, 
-      child: (isReply)
-          ? Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: Dimensions.paddingSizeDefault,
-                vertical: Dimensions.paddingSizeSmall,
-              ),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Flexible(
-                            child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  if (message.message != null)
-                                    Flexible(
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium!
-                                              .color,
-                                          borderRadius: const BorderRadius.only(
-                                            bottomRight: Radius.circular(
-                                                Dimensions.radiusDefault),
-                                            topRight: Radius.circular(
-                                                Dimensions.radiusDefault),
-                                            topLeft: Radius.circular(
-                                                Dimensions.radiusDefault),
-                                          ),
-                                        ),
-                                        padding: message.message != null
-                                            ? EdgeInsets.symmetric(
-                                                horizontal: Dimensions
-                                                    .paddingSizeDefault,
-                                                vertical:
-                                                    Dimensions.paddingSizeSmall)
-                                            : EdgeInsets.all(0),
-                                        child: Directionality(
-                                          textDirection: TextDirection
-                                              .rtl, // اتجاه النص فقط
-                                          child: Text(
-                                            message.message ?? '',
-                                            style: robotoRegular.copyWith(
-                                              fontSize:
-                                                  Dimensions.fontSizeLarge,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onPrimary,
-                                            ),
-                                            textAlign: TextAlign.start,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  const SizedBox(height: 8.0),
-                                  message.filesFullUrl != null
-                                      ? GridView.builder(
-                                          gridDelegate:
-                                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                            childAspectRatio: 1,
-                                            crossAxisCount: 3,
-                                            mainAxisSpacing: 10,
-                                            crossAxisSpacing: 5,
-                                          ),
-                                          shrinkWrap: true,
-                                          physics:
-                                              const NeverScrollableScrollPhysics(),
-                                          itemCount:
-                                              message.filesFullUrl!.length,
-                                          itemBuilder:
-                                              (BuildContext context, index) {
-                                            return message
-                                                    .filesFullUrl!.isNotEmpty
-                                                ? Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            right: 8),
-                                                    child: InkWell(
-                                                      hoverColor:
-                                                          Colors.transparent,
-                                                      onTap: () => showDialog(
-                                                          context: context,
-                                                          builder: (ctx) =>
-                                                              ImageDialogWidget(
-                                                                imageUrl: message
-                                                                        .filesFullUrl![
-                                                                    index],
-                                                              )),
-                                                      child: ClipRRect(
-                                                        borderRadius: BorderRadius
-                                                            .circular(Dimensions
-                                                                .paddingSizeSmall),
-                                                        child:
-                                                            CustomImageWidget(
-                                                          height: 100,
-                                                          width: 100,
-                                                          fit: BoxFit.cover,
-                                                          image: message
-                                                                  .filesFullUrl![
-                                                              index],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  )
-                                                : const SizedBox();
-                                          },
-                                        )
-                                      : const SizedBox(),
-                                ]),
-                          ),
-                        ]),
-                    const SizedBox(height: Dimensions.p8),
-                    Text(
-                      DateConverterHelper.isoStringToLocalTimeOnly(
-                          message.createdAt!),
-                      style: robotoRegular.copyWith(
-                          color: Theme.of(context).hintColor,
-                          fontSize: Dimensions.fontSizeSmall),
-                    ),
-                  ]),
-            )
-          : Container(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: Dimensions.paddingSizeDefault,
-                  vertical: Dimensions.paddingSizeSmall),
-              child:
-                  Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Flexible(
-                        child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              (message.message != null &&
-                                      message.message!.isNotEmpty)
-                                  ? Flexible(
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: customColor.senderMessageBg,
-                                          borderRadius: const BorderRadius.only(
-                                            topLeft: Radius.circular(
-                                                Dimensions.radiusLarge),
-                                            topRight: Radius.circular(
-                                                Dimensions.radiusLarge),
-                                            bottomLeft: Radius.circular(
-                                                Dimensions.radiusLarge),
-                                          ),
-                                        ),
-                                        child: Container(
-                                          padding: message.message != null
-                                              ? EdgeInsets.symmetric(
-                                                  horizontal: Dimensions
-                                                      .paddingSizeDefault,
-                                                  vertical: Dimensions
-                                                      .paddingSizeSmall)
-                                              : EdgeInsets.all(0),
-                                          child: Directionality(
-                                            textDirection: TextDirection
-                                                .rtl, // اتجاه النص فقط
-                                            child: Text(
-                                              message.message ?? '',
-                                              style: robotoRegular.copyWith(
-                                                fontSize:
-                                                    Dimensions.fontSizeLarge,
-                                                color: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyMedium!
-                                                    .color,
-                                              ),
-                                              textAlign: TextAlign.start,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    )
-                                  : const SizedBox(),
-                              message.filesFullUrl != null
-                                  ? Container(
-                                      width: double.infinity,
-                                      child: Wrap(
-                                        alignment: WrapAlignment
-                                            .end, // محاذاة الصور لليمين
-                                        runAlignment: WrapAlignment.end,
-                                        spacing: 5,
-                                        runSpacing: 10,
-                                        children: message.filesFullUrl!
-                                            .map((imageUrl) {
-                                          return InkWell(
-                                            onTap: () => showDialog(
-                                                context: context,
-                                                builder: (ctx) =>
-                                                    ImageDialogWidget(
-                                                      imageUrl: imageUrl,
-                                                    )),
-                                            child: Container(
-                                              margin: EdgeInsets.only(
-                                                left:
-                                                    Dimensions.paddingSizeSmall,
-                                                top: (message.message != null &&
-                                                        message.message!
-                                                            .isNotEmpty)
-                                                    ? Dimensions
-                                                        .paddingSizeSmall
-                                                    : 0,
-                                              ),
-                                              child: ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        Dimensions.radiusSmall),
-                                                child: CustomImageWidget(
-                                                  height: 100,
-                                                  width: 100,
-                                                  fit: BoxFit.cover,
-                                                  image: imageUrl,
-                                                ),
-                                              ),
-                                            ),
-                                          );
-                                        }).toList(),
-                                      ),
-                                    )
-                                  : const SizedBox(),
-                            ]),
+      textDirection: TextDirection.ltr,
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: Dimensions.paddingSizeDefault,
+          vertical: Dimensions.paddingSizeSmall,
+        ),
+        child: Column(
+          crossAxisAlignment:
+              isReply ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+          children: [
+            // فقاعات الرسائل
+            Row(
+              mainAxisAlignment:
+                  isReply ? MainAxisAlignment.start : MainAxisAlignment.end,
+              children: [
+                Flexible(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: isReply
+                          ? customColor.receiverMessageBg
+                          : customColor.senderMessageBg,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(Dimensions.radiusLarge),
+                        topRight: Radius.circular(Dimensions.radiusLarge),
+                        bottomLeft: isReply
+                            ? Radius.circular(0)
+                            : Radius.circular(Dimensions.radiusLarge),
+                        bottomRight: isReply
+                            ? Radius.circular(Dimensions.radiusLarge)
+                            : Radius.circular(0),
                       ),
-                    ]),
-                const SizedBox(height: Dimensions.p8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(
-                      message.isSeen == 1 ? 'read'.tr : 'unread'.tr,
-                      style: robotoRegular.copyWith(
-                          color: Theme.of(context).hintColor,
-                          fontSize: Dimensions.fontSizeSmall),
                     ),
-                    SizedBox(width: Dimensions.paddingSizeExtraSmall),
-                    Text(
-                      DateConverterHelper.isoStringToLocalTimeOnly(
-                          message.createdAt!),
-                      style: robotoRegular.copyWith(
-                          color: Theme.of(context).hintColor,
-                          fontSize: Dimensions.fontSizeSmall),
+                    padding:
+                        const EdgeInsets.all(Dimensions.paddingSizeDefault),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // الصور
+                        if (hasImages)
+                          Padding(
+                            padding: EdgeInsets.only(
+                              bottom: hasText ? Dimensions.paddingSizeSmall : 0,
+                            ),
+                            child: _buildImagesLayout(context, message),
+                          ),
+
+                        // النص أسفل الصور أو لوحده فقط
+                        if (hasText)
+                          Text(
+                            message.message!,
+                            style: robotoRegular.copyWith(
+                              fontSize: Dimensions.fontSizeLarge,
+                              color: isReply
+                                  ? Colors.white
+                                  : Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .color,
+                            ),
+                          ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-                SizedBox(height: Dimensions.paddingSizeDefault),
-              ]),
+              ],
             ),
+
+            const SizedBox(height: Dimensions.p8),
+
+            // تاريخ ووقت الإرسال + حالة القراءة
+            Row(
+              mainAxisAlignment:
+                  isReply ? MainAxisAlignment.start : MainAxisAlignment.end,
+              children: [
+                if (!isReply) ...[
+                  Row(
+                    children: [
+                      Icon(
+                        message.isSeen == 1 ? Icons.done_all : Icons.done,
+                        size: 14,
+                        color: message.isSeen == 1
+                            ? Colors.green
+                            : Theme.of(context).hintColor,
+                      ),
+                      const SizedBox(width: 3),
+                      Text(
+                        message.isSeen == 1 ? 'read'.tr : 'unread'.tr,
+                        style: robotoRegular.copyWith(
+                          color: Theme.of(context).hintColor,
+                          fontSize: Dimensions.fontSizeSmall,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(width: Dimensions.paddingSizeExtraSmall),
+                ],
+                Text(
+                  DateConverterHelper.isoStringToLocalTimeOnly(
+                      message.createdAt!),
+                  style: robotoRegular.copyWith(
+                    color: Theme.of(context).hintColor,
+                    fontSize: Dimensions.fontSizeSmall,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: Dimensions.paddingSizeDefault),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildImagesLayout(BuildContext context, Message message) {
+    final images = message.filesFullUrl!;
+
+    // حالة صورة واحدة
+    if (images.length == 1) {
+      return _buildImage(context, images[0], fullWidth: true);
+    }
+
+    // حالة صورتين
+    if (images.length == 2) {
+      return GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 6,
+          mainAxisSpacing: 6,
+          childAspectRatio: 1,
+        ),
+        itemCount: 2,
+        itemBuilder: (context, index) {
+          return _buildImage(context, images[index]);
+        },
+      );
+    }
+
+    // حالة 3 صور (2 + 1 تحت)
+    if (images.length == 3) {
+      return Column(
+        children: [
+          _buildImage(context, images[0], fullWidth: true),
+          const SizedBox(height: 6),
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 6,
+              mainAxisSpacing: 6,
+              childAspectRatio: 1,
+            ),
+            itemCount: 2,
+            itemBuilder: (context, index) {
+              return _buildImage(context, images[index + 1]); // صور رقم 1 و 2
+            },
+          ),
+        ],
+      );
+    }
+
+    // أكثر من 3 صور → Grid 2x2
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 6,
+        mainAxisSpacing: 6,
+        childAspectRatio: 1,
+      ),
+      itemCount: images.length,
+      itemBuilder: (context, index) {
+        return _buildImage(context, images[index]);
+      },
+    );
+  }
+
+  Widget _buildImage(BuildContext context, String imageUrl,
+      {bool fullWidth = false}) {
+    return InkWell(
+      onTap: () => showDialog(
+        context: context,
+        builder: (ctx) => ImageDialogWidget(imageUrl: imageUrl),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
+        child: CustomImageWidget(
+          image: imageUrl,
+          fit: BoxFit.cover,
+          width: fullWidth ? double.infinity : null,
+          height: fullWidth ? 200 : double.infinity,
+        ),
+      ),
     );
   }
 }

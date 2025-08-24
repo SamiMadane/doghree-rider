@@ -268,8 +268,11 @@
   "freelancer": "Persona de libre dedicación",
   "salary_based": "Basado en salario",
   "user": "Cliente",
-  "search": "Buscar",
+  "search": "Buscar..",
   "not_found": "Extraviado",
+  "read": "Leído",
+"unread": "No leído",
+
   "deleted": "Eliminado",
   "customer_not_found": "Cliente no encontrado",
   "chat": "Charlar",

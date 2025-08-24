@@ -5,11 +5,13 @@ class CustomColorsExtension extends ThemeExtension<CustomColorsExtension> {
   final Color strock1;
   final Color strock2;
   final Color senderMessageBg;
+  final Color receiverMessageBg;
 
   const CustomColorsExtension({
     required this.strock1,
     required this.strock2,
     required this.senderMessageBg,
+    required this.receiverMessageBg,
   });
 
   @override
@@ -17,11 +19,13 @@ class CustomColorsExtension extends ThemeExtension<CustomColorsExtension> {
     Color? stroke1,
     Color? stroke2,
     Color? senderMessageBg,
+    Color? receiverMessageBg,
   }) {
     return CustomColorsExtension(
       strock1: stroke1 ?? this.strock1,
       strock2: stroke2 ?? this.strock2,
       senderMessageBg: senderMessageBg ?? this.senderMessageBg,
+      receiverMessageBg: receiverMessageBg ?? this.receiverMessageBg,
     );
   }
 
@@ -33,6 +37,7 @@ class CustomColorsExtension extends ThemeExtension<CustomColorsExtension> {
       strock1: Color.lerp(strock1, other.strock1, t)!,
       strock2: Color.lerp(strock2, other.strock2, t)!,
       senderMessageBg: Color.lerp(senderMessageBg, other.senderMessageBg, t)!,
+      receiverMessageBg: Color.lerp(receiverMessageBg, other.receiverMessageBg, t)!,
     );
   }
 }

@@ -255,7 +255,10 @@
   "freelancer": "Freelancer",
   "salary_based": "Salary Based",
   "user": "Customer",
-  "search": "Search",
+  "read": "Read",
+  "unread": "Unread",
+
+  "search": "Search..",
   "not_found": "Not Found",
   "deleted": "Deleted",
   "customer_not_found": "Customer Not Found",

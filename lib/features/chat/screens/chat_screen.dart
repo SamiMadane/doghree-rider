@@ -179,11 +179,13 @@ class _ChatScreenState extends State<ChatScreen> {
                         Container(
                           decoration: BoxDecoration(
                             color: Theme.of(context).cardColor,
-                            boxShadow: const [
+                            boxShadow:  [
                               BoxShadow(
-                                  color: Colors.black12,
+                                  color: Theme.of(context).shadowColor,
                                   blurRadius: 5,
-                                  spreadRadius: 2)
+                                  spreadRadius: 2,
+                                  offset: const Offset(0, -3),
+                                  )
                             ],
                           ),
                           padding: const EdgeInsets.only(
@@ -196,29 +198,29 @@ class _ChatScreenState extends State<ChatScreen> {
                             children: [
                               // صور المرفقات إذا كانت موجودة
                               if (chatController.chatImage!.isNotEmpty)
-                                SizedBox(
+                                Container(
+                                  margin: EdgeInsets.only(
+                                      bottom: Dimensions.paddingSizeSmall),
                                   height: 100,
-                                  child: ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    shrinkWrap: true,
-                                    itemCount: chatController.chatImage!.length,
-                                    itemBuilder: (context, index) {
-                                      return Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Stack(
-                                          children: [
-                                            Container(
-                                              width: 100,
-                                              height: 100,
-                                              decoration: const BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(20)),
-                                              ),
-                                              child: ClipRRect(
-                                                borderRadius: BorderRadius
-                                                    .circular(Dimensions
-                                                        .paddingSizeDefault),
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: ListView.builder(
+                                      scrollDirection: Axis.horizontal,
+                                      shrinkWrap: true,
+                                      itemCount:
+                                          chatController.chatImage!.length,
+                                      itemBuilder: (context, index) {
+                                        return Container(
+                                          margin: EdgeInsets.only(
+                                              right: Dimensions
+                                                  .paddingSizeDefault), // هنا فقط مسافة بين الصور
+                                          child: Stack(
+                                            children: [
+                                              ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        Dimensions
+                                                            .radiusMedium),
                                                 child: ResponsiveHelper.isWeb()
                                                     ? Image.network(
                                                         chatController
@@ -237,36 +239,52 @@ class _ChatScreenState extends State<ChatScreen> {
                                                         fit: BoxFit.cover,
                                                       ),
                                               ),
-                                            ),
-                                            Positioned(
-                                              top: 0,
-                                              right: 0,
-                                              child: InkWell(
-                                                onTap: () => chatController
-                                                    .removeImage(index),
-                                                child: Container(
-                                                  decoration:
-                                                      const BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius: BorderRadius
-                                                        .all(Radius.circular(
-                                                            Dimensions
-                                                                .paddingSizeDefault)),
-                                                  ),
-                                                  child: const Padding(
-                                                    padding:
-                                                        EdgeInsets.all(4.0),
-                                                    child: Icon(Icons.clear,
-                                                        color: Colors.red,
-                                                        size: 15),
+                                              Positioned(
+                                                top: 4,
+                                                left: 4,
+                                                child: InkWell(
+                                                  onTap: () => chatController
+                                                      .removeImage(index),
+                                                  child: Container(
+                                                    width:
+                                                        28, // الدائرة الخارجية
+                                                    height: 28,
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.white.withAlpha(
+                                                          200), // الدائرة البيضاء
+                                                      shape: BoxShape.circle,
+                                                    ),
+                                                    child: Center(
+                                                      child: Container(
+                                                        width:
+                                                            20, // الإطار الأسود
+                                                        height: 20,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          shape:
+                                                              BoxShape.circle,
+                                                          border: Border.all(
+                                                              color:
+                                                                  Colors.black,
+                                                              width: 1.5),
+                                                        ),
+                                                        child: const Center(
+                                                          child: Icon(
+                                                              Icons.clear,
+                                                              color:
+                                                                  Colors.black,
+                                                              size: 12),
+                                                        ),
+                                                      ),
+                                                    ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    },
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    ),
                                   ),
                                 ),
 
@@ -391,7 +409,10 @@ class _ChatScreenState extends State<ChatScreen> {
                                                       .isSendButtonActive
                                                   ? Theme.of(context)
                                                       .primaryColor
-                                                  : Theme.of(context).hintColor,
+                                                  : Get.isDarkMode
+                                                      ? Colors.white
+                                                      : Theme.of(context)
+                                                          .hintColor,
                                             ),
                                           )
                                         : const Padding(

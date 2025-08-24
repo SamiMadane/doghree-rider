@@ -44,9 +44,9 @@ ThemeData dark = ThemeData(
   ),
   extensions: <ThemeExtension<dynamic>>[
     CustomColorsExtension(
-      strock1: ManagerColors.Strock1Dark,
-      strock2: ManagerColors.Strock2Dark,
-      senderMessageBg: ManagerColors.senderMessageBgDark,
-    ),
+        strock1: ManagerColors.Strock1Dark,
+        strock2: ManagerColors.Strock2Dark,
+        senderMessageBg: ManagerColors.senderMessageBgDark,
+        receiverMessageBg: ManagerColors.receiverMessageBgDark),
   ],
 );

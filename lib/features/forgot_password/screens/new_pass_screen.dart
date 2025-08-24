@@ -146,11 +146,13 @@ class _NewPassScreenState extends State<NewPassScreen> {
                       ),
                       decoration: BoxDecoration(
                         color: Theme.of(context).cardColor,
-                        boxShadow: const [
-                          BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: 5,
-                              spreadRadius: 2)
+                        boxShadow:  [
+                         BoxShadow(
+                                  color: Theme.of(context).shadowColor,
+                                  blurRadius: 5,
+                                  spreadRadius: 2,
+                                  offset: const Offset(0, -3),
+                                  )
                         ],
                       ),
                       child: !forgotPasswordController.isLoading
