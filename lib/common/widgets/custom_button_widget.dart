@@ -13,12 +13,13 @@ class CustomButtonWidget extends StatelessWidget {
   final double? width;
   final double? fontSize;
   final double radius;
-  final IconData? icon;
+  final Widget? icon;
   final Color? backgroundColor;
   final Color? fontColor;
   final bool isLoading;
   final bool isBold;
   final bool isBorder;
+  final Color? borderColor;
   const CustomButtonWidget(
       {super.key,
       this.onPressed,
@@ -34,7 +35,9 @@ class CustomButtonWidget extends StatelessWidget {
       this.fontColor,
       this.isLoading = false,
       this.isBold = true,
-      this.isBorder = false});
+      this.isBorder = false,
+      this.borderColor
+      });
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +57,7 @@ class CustomButtonWidget extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(radius),
         side:
-            isBorder ? BorderSide(color: customColor.strock2) : BorderSide.none,
+            isBorder ? BorderSide(color: borderColor ?? customColor.strock2) : BorderSide.none,
       ),
     );
 
@@ -95,16 +98,13 @@ class CustomButtonWidget extends StatelessWidget {
                                     padding: const EdgeInsets.only(
                                         right:
                                             Dimensions.paddingSizeExtraSmall),
-                                    child: Icon(icon,
-                                        color: transparent
-                                            ? Theme.of(context).primaryColor
-                                            : Theme.of(context).cardColor),
+                                    child: icon
                                   )
                                 : const SizedBox(),
                             Text(buttonText,
                                 textAlign: TextAlign.center,
                                 style: isBold
-                                    ? robotoBold.copyWith(
+                                    ? robotoSemiBold.copyWith(
                                         color: fontColor ??
                                             (transparent
                                                 ? Theme.of(context).primaryColor

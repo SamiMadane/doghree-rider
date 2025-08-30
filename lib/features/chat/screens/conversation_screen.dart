@@ -12,6 +12,7 @@ import 'package:sixam_mart_delivery/helper/route_helper.dart';
 import 'package:sixam_mart_delivery/util/app_constants.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
 import 'package:sixam_mart_delivery/util/manager_assets.dart';
+import 'package:sixam_mart_delivery/util/manager_colors.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_app_bar_widget.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_image_widget.dart';
@@ -292,7 +293,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                                                             : 0.0),
                                                                         decoration: BoxDecoration(
                                                                             color:
-                                                                                Theme.of(context).primaryColor,
+                                                                                ManagerColors.darkGreen,
                                                                             shape: BoxShape.circle),
                                                                         child:
                                                                             Text(

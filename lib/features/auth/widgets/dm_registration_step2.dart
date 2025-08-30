@@ -16,6 +16,7 @@ import 'package:sixam_mart_delivery/features/auth/widgets/condition_check_box_wi
 import 'package:sixam_mart_delivery/util/dimensions.dart';
 import 'package:sixam_mart_delivery/util/manager_assets.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
+import 'package:sixam_mart_delivery/util/theme_extension.dart';
 
 class DmRegistrationStep2 extends StatelessWidget {
   final TextEditingController identityNumberController;
@@ -30,6 +31,7 @@ class DmRegistrationStep2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authController = Get.find<AuthController>();
+    final customColor = Theme.of(context).extension<CustomColorsExtension>()!;
     final addressController = Get.find<AddressController>();
 
     return Visibility(
@@ -247,7 +249,7 @@ class DmRegistrationStep2 extends StatelessWidget {
                         // عرض الصور المرفوعة
                         return DottedBorder(
                           options: RoundedRectDottedBorderOptions(
-                            color: const Color(0xFFE5E5E5),
+                            color: customColor.strock1,
                             strokeWidth: 1,
                             strokeCap: StrokeCap.butt,
                             dashPattern: const [8, 5],
@@ -301,7 +303,6 @@ class DmRegistrationStep2 extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: Dimensions.paddingSizeDefault),
-
               ConditionCheckBoxWidget(
                 authController: authController,
                 fromSignUp: true,

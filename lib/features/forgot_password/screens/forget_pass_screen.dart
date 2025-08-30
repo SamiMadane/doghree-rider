@@ -43,7 +43,7 @@ class _ForgetPassScreenState extends State<ForgetPassScreen> {
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
           child: Column(children: [
-            Image.asset(ManagerAssets.logo, width: 200),
+            Image.asset(ManagerAssets.logo),
             SizedBox(
               height: Dimensions.paddingSizeExtraLarge,
             ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_card.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
+import 'package:sixam_mart_delivery/util/manager_colors.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
 
 class OrderIdSection extends StatelessWidget {
@@ -36,7 +37,7 @@ class OrderIdSection extends StatelessWidget {
                   text: '#$orderId',
                   style: robotoSemiBold.copyWith(
                     fontSize: Dimensions.fontSizeDefault,
-                    color: Theme.of(context).primaryColor,
+                    color: ManagerColors.darkGreen,
                   ),
                 ),
               ],
@@ -49,13 +50,13 @@ class OrderIdSection extends StatelessWidget {
                 horizontal: Dimensions.paddingSizeSmall,
                 vertical: Dimensions.paddingSizeSmall),
             fillColor: isPaid
-                ? Theme.of(context).primaryColor
+                ? ManagerColors.darkGreen
                 : Theme.of(context).colorScheme.error,
             child: Center(
               child: Text(
                 isPaid ? 'paid'.tr : 'unpaid'.tr,
                 style: robotoBold.copyWith(
-                  color: Theme.of(context).colorScheme.onPrimary,
+                  color: ManagerColors.white,
                   fontSize: Dimensions.fontSizeDefault,
                 ),
               ),

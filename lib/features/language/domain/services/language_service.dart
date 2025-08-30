@@ -24,7 +24,7 @@ class LanguageService implements LanguageServiceInterface {
   }
 
   @override
-  Locale getLocaleFromSharedPref() {
+  Locale? getLocaleFromSharedPref() {
     return languageRepositoryInterface.getLocaleFromSharedPref();
   }
 

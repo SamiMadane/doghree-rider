@@ -31,7 +31,7 @@ void showCustomBottomSheet({
           // زر الإغلاق X
           Positioned(
             top: -16,
-            left: 16,
+            right: 16,
             child: GestureDetector(
               onTap: onClose ?? () => Get.back(),
               child: Container(

@@ -6,11 +6,12 @@ import 'package:sixam_mart_delivery/features/language/domain/services/language_s
 
 class LocalizationController extends GetxController implements GetxService {
   final LanguageServiceInterface languageServiceInterface;
-  LocalizationController({required this.languageServiceInterface}){
+  LocalizationController({required this.languageServiceInterface}) {
     loadCurrentLanguage();
   }
 
-  Locale _locale = Locale(AppConstants.languages[0].languageCode!, AppConstants.languages[0].countryCode);
+  Locale _locale = Locale(AppConstants.languages[0].languageCode!,
+      AppConstants.languages[0].countryCode);
   Locale get locale => _locale;
 
   bool _isLtr = true;
@@ -27,23 +28,34 @@ class LocalizationController extends GetxController implements GetxService {
     _locale = locale;
     _isLtr = languageServiceInterface.setLTR(_locale);
     languageServiceInterface.updateHeader(_locale);
-    if(!fromBottomSheet) {
+    if (!fromBottomSheet) {
       saveLanguage(_locale);
     }
     update();
   }
 
-  void loadCurrentLanguage() async {
-    _locale = languageServiceInterface.getLocaleFromSharedPref();
-    _isLtr = _locale.languageCode != 'ar';
-    _selectedLanguageIndex = languageServiceInterface.setSelectedLanguageIndex(AppConstants.languages, _locale);
-    _languages = [];
-    _languages.addAll(AppConstants.languages);
-    update();
+Future<void> loadCurrentLanguage() async {
+  Locale? savedLocale = languageServiceInterface.getLocaleFromSharedPref();
+
+  if (savedLocale == null) {
+    _selectedLanguageIndex = -1; // ما في لغة محفوظة → يظهر LanguageInitScreen
+    _locale = Locale(AppConstants.languages[0].languageCode!,
+        AppConstants.languages[0].countryCode);
+  } else {
+    _locale = savedLocale;
+    _selectedLanguageIndex = languageServiceInterface.setSelectedLanguageIndex(
+        AppConstants.languages, _locale);
   }
 
+  _isLtr = _locale.languageCode != 'ar';
+  _languages = [];
+  _languages.addAll(AppConstants.languages);
+  update();
+}
+
   void saveCacheLanguage(Locale? locale) {
-    languageServiceInterface.saveCacheLanguage(locale ?? languageServiceInterface.getLocaleFromSharedPref());
+    languageServiceInterface.saveCacheLanguage(
+        locale!);
   }
 
   void saveLanguage(Locale locale) async {
@@ -61,10 +73,11 @@ class LocalizationController extends GetxController implements GetxService {
 
   void searchSelectedLanguage() {
     for (var language in AppConstants.languages) {
-      if (language.languageCode!.toLowerCase().contains(_locale.languageCode.toLowerCase())) {
+      if (language.languageCode!
+          .toLowerCase()
+          .contains(_locale.languageCode.toLowerCase())) {
         _selectedLanguageIndex = AppConstants.languages.indexOf(language);
       }
     }
   }
-
 }

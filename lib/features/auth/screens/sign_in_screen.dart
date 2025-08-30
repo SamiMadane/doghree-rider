@@ -62,7 +62,6 @@ class _SignInScreenState extends State<SignInScreen> {
             return Column(children: [
               Image.asset(
                 ManagerAssets.logo,
-                width: 200,
               ),
               SizedBox(
                 height: Dimensions.paddingSizeLarge,

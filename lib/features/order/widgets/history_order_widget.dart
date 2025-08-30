@@ -2,6 +2,7 @@ import 'package:sixam_mart_delivery/common/widgets/custom_card.dart';
 import 'package:sixam_mart_delivery/features/order/domain/models/order_model.dart';
 import 'package:sixam_mart_delivery/helper/date_converter_helper.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
+import 'package:sixam_mart_delivery/util/manager_colors.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_image_widget.dart';
 import 'package:sixam_mart_delivery/features/order/screens/order_details_screen.dart';
@@ -75,7 +76,7 @@ class HistoryOrderWidget extends StatelessWidget {
                         text: '#${orderModel.id}',
                         style: robotoSemiBold.copyWith(
                           fontSize: Dimensions.fontSizeDefault,
-                          color: Theme.of(context).primaryColor,
+                          color: ManagerColors.darkGreen,
                         ),
                       ),
                     ],
@@ -94,7 +95,7 @@ class HistoryOrderWidget extends StatelessWidget {
                           child: Text('parcel'.tr,
                               style: robotoMedium.copyWith(
                                 fontSize: Dimensions.fontSizeDefault,
-                                color: Theme.of(context).primaryColor,
+                                color: Theme.of(context).textTheme.bodyMedium?.color,
                               )),
                         ),
                       )
@@ -109,7 +110,7 @@ class HistoryOrderWidget extends StatelessWidget {
                     : orderModel.storeName ?? 'no_store_data_found'.tr,
                 style: robotoSemiBold.copyWith(
                     fontSize: Dimensions.fontSizeDefault,
-                    color: Theme.of(context).primaryColor),
+                    color: Theme.of(context).textTheme.bodyMedium?.color),
               ),
               const SizedBox(height: Dimensions.paddingSizeExtraSmall),
               Row(children: [

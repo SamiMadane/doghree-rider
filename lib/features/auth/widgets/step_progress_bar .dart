@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
+import 'package:sixam_mart_delivery/util/manager_colors.dart';
 
 class StepProgressBar extends StatelessWidget {
   final double status;
@@ -18,8 +19,8 @@ class StepProgressBar extends StatelessWidget {
                 child: Container(
                   decoration: BoxDecoration(
                     color: status == 0.4
-                        ? Theme.of(context).primaryColor
-                        : Theme.of(context).primaryColor,
+                        ? ManagerColors.darkGreen
+                        : ManagerColors.darkGreen,
                     borderRadius: BorderRadius.circular(6),
                   ),
                 ),
@@ -29,7 +30,7 @@ class StepProgressBar extends StatelessWidget {
                 child: Container(
                   decoration: BoxDecoration(
                     color: status != 0.4
-                        ? Theme.of(context).primaryColor
+                        ? ManagerColors.darkGreen
                         : Theme.of(context).disabledColor.withAlpha(128),
                     borderRadius: BorderRadius.circular(6),
                   ),

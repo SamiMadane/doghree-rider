@@ -13,7 +13,7 @@ import 'package:sixam_mart_delivery/features/dashboard/widgets/bottom_nav_item_w
 import 'package:sixam_mart_delivery/features/dashboard/widgets/new_request_dialog_widget.dart';
 import 'package:sixam_mart_delivery/features/home/screens/home_screen.dart';
 import 'package:sixam_mart_delivery/features/profile/screens/profile_screen.dart';
-import 'package:sixam_mart_delivery/features/order/screens/order_request_screen.dart';
+import 'package:sixam_mart_delivery/features/order/screens/available_orders_screen.dart';
 import 'package:sixam_mart_delivery/features/order/screens/order_screen.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -49,7 +49,7 @@ class DashboardScreenState extends State<DashboardScreen> {
 
     _screens = [
       const HomeScreen(),
-      OrderRequestScreen(onTap: () => _setPage(0)),
+      AvailableOrdersScreen(onTap: () => _setPage(0)),
       const OrderScreen(),
       const ProfileScreen(),
     ];

@@ -131,7 +131,7 @@ class StatusSwitchSection extends StatelessWidget {
             width: 60,
             height: 30,
             valueFontSize: Dimensions.fontSizeExtraSmall,
-            activeColor: Theme.of(context).primaryColor,
+            activeColor: ManagerColors.darkGreen,
             value: isActive,
             onToggle: (bool toggle) async {
               if (!toggle && orderController.currentOrderList!.isNotEmpty) {

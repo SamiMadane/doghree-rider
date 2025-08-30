@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sixam_mart_delivery/common/controllers/theme_controller.dart';
 import 'package:sixam_mart_delivery/common/widgets/confirmation_bottom_sheet.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_app_bar_widget.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_bottom_sheet_widget.dart';
+import 'package:sixam_mart_delivery/common/widgets/custom_snackbar_widget.dart';
 import 'package:sixam_mart_delivery/features/auth/controllers/auth_controller.dart';
 import 'package:sixam_mart_delivery/features/profile/controllers/profile_controller.dart';
-import 'package:sixam_mart_delivery/features/profile/widgets/notification_status_change_bottom_sheet.dart';
 import 'package:sixam_mart_delivery/features/profile/widgets/profile_button_widget.dart';
 import 'package:sixam_mart_delivery/helper/route_helper.dart';
 import 'package:sixam_mart_delivery/util/app_constants.dart';
@@ -53,21 +52,44 @@ class SettingScreen extends StatelessWidget {
                   isButtonActive: authController.notification,
                   onTap: () {
                     showCustomBottomSheet(
-                        child: const NotificationStatusChangeBottomSheet());
+                        child: ConfirmationBottomSheet(
+                      title: 'are_you_sure_you_want_to_enable_notification'.tr,
+                      iconSize: 60,
+                      acceptText: !authController.notification
+                          ? 'yes_enable'.tr
+                          : 'yes_disable'.tr,
+                      acceptColor: Theme.of(context).primaryColor,
+                      cancelText: 'no'.tr,
+                      onAccept: () async {
+                        if (await Permission.notification.status.isDenied ||
+                            await Permission
+                                .notification.status.isPermanentlyDenied) {
+                          showCustomSnackBar(
+                              'make_sure_to_enable_app_notifications_first'.tr);
+                        } else {
+                          await authController.setNotificationActive(
+                              !authController.notification);
+                          Get.back();
+                        }
+                      },
+                      onCancel: () => Get.back(),
+                    ));
                   },
                 );
               }),
               SizedBox(height: Dimensions.paddingSizeExtraSmall),
               Divider(),
-              ProfileButtonWidget(
-                svgPath: ManagerAssets.notification2Icon,
-                title: 'background_notification'.tr,
-                isButtonActive: profileController.backgroundNotification,
-                onTap: () {
-                  showBgNotificationBottomSheet(
-                      profileController.backgroundNotification);
-                },
-              ),
+              GetBuilder<ProfileController>(builder: (profileController) {
+                return ProfileButtonWidget(
+                  svgPath: ManagerAssets.notification2Icon,
+                  title: 'background_notification'.tr,
+                  isButtonActive: profileController.backgroundNotification,
+                  onTap: () {
+                    showBgNotificationBottomSheet(
+                        profileController.backgroundNotification);
+                  },
+                );
+              }),
               SizedBox(height: Dimensions.paddingSizeExtraSmall),
               Divider(),
               SizedBox(height: Dimensions.paddingSizeSmall),
@@ -132,13 +154,16 @@ void checkBatteryPermission() async {
 void showBgNotificationBottomSheet(bool allow) {
   Get.bottomSheet(
           Container(
+            padding: EdgeInsets.symmetric(
+                horizontal: Dimensions.paddingSizeOverLarge,
+                vertical: Dimensions.paddingSizeDefault),
             decoration: BoxDecoration(
-              color: Theme.of(context as BuildContext).cardColor,
+              color: Theme.of(Get.context!).cardColor,
               borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(Dimensions.radiusExtraLarge),
-                  topRight: Radius.circular(Dimensions.radiusExtraLarge)),
+                topLeft: Radius.circular(Dimensions.radiusExtraLarge),
+                topRight: Radius.circular(Dimensions.radiusExtraLarge),
+              ),
             ),
-            padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
             child: SafeArea(
               child: Column(mainAxisSize: MainAxisSize.min, children: [
                 Container(
@@ -146,24 +171,46 @@ void showBgNotificationBottomSheet(bool allow) {
                   width: 50,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(Dimensions.radiusLarge),
-                    color: Theme.of(context as BuildContext).disabledColor,
+                    color: Theme.of(Get.context!).disabledColor,
                   ),
                 ),
                 const SizedBox(height: Dimensions.paddingSizeLarge),
-                Text(
-                  '${!allow ? 'allow'.tr : 'disable'.tr} ${AppConstants.appName} ${!allow ? 'to_run_notification_in_background'.tr : 'from_running_notification_in_background'.tr}',
-                  textAlign: TextAlign.center,
-                  style:
-                      robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Image.asset(
+                      ManagerAssets.logo,
+                      width: 70,
+                      height: 70,
+                    ),
+                    SizedBox(width: Dimensions.paddingSizeDefault),
+                    Expanded(
+                      child: Text(
+                        '${!allow ? 'allow'.tr : 'disable'.tr} ${AppConstants.appName} ${!allow ? 'to_run_notification_in_background'.tr : 'from_running_notification_in_background'.tr}',
+                        textAlign: TextAlign.start,
+                        style: robotoBold.copyWith(
+                            fontSize: Dimensions.fontSizeLarge),
+                        maxLines: 3,
+                      ),
+                    ),
+                  ],
                 ),
                 allow
-                    ? Text(
-                        '(${AppConstants.appName} -> Battery -> Select Optimized)',
-                        textAlign: TextAlign.center,
-                        style: robotoMedium.copyWith(
-                            fontSize: Dimensions.fontSizeSmall,
-                            color:
-                                Theme.of(context as BuildContext).primaryColor),
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: Dimensions.paddingSizeDefault),
+                          Text(
+                            "Follow these steps:",
+                            style: robotoBold.copyWith(
+                              fontSize: Dimensions.fs15,
+                            ),
+                          ),
+                          const SizedBox(height: Dimensions.paddingSizeSmall),
+                          _buildStep("1", "${AppConstants.appName}"),
+                          _buildStep("2", "Battery"),
+                          _buildStep("3", "Select Optimized"),
+                        ],
                       )
                     : const SizedBox(),
                 const SizedBox(height: Dimensions.paddingSizeLarge),
@@ -177,28 +224,55 @@ void showBgNotificationBottomSheet(bool allow) {
                         .tr
                     : 'notification_will_not_always_send_alert_from_the_background'
                         .tr),
-                const SizedBox(height: 20.0),
+                const SizedBox(height: Dimensions.paddingSizeLarge),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     TextButton(
-                      onPressed: () => Navigator.pop(context as BuildContext),
+                      onPressed: () => Navigator.pop(Get.context!),
                       child: Text("cancel".tr, style: robotoMedium),
                     ),
                     const SizedBox(width: Dimensions.paddingSizeSmall),
                     ElevatedButton(
                       onPressed: () async {
-                        if (await Permission
-                            .ignoreBatteryOptimizations.status.isGranted) {
+                        final profileController = Get.find<ProfileController>();
+
+                        if (allow) {
                           openAppSettings();
+                          if (await Permission
+                              .ignoreBatteryOptimizations.status.isGranted) {
+                            profileController
+                                .setBackgroundNotificationActive(true);
+                          } else {
+                            profileController
+                                .setBackgroundNotificationActive(false);
+                          }
+                          Get.back();
                         } else {
-                          await Permission.ignoreBatteryOptimizations.request();
+                          // إذا الإذن موجود، نفتح الإعدادات وننتظر العودة
+                          if (await Permission
+                              .ignoreBatteryOptimizations.status.isGranted) {
+                            await openAppSettings();
+                          } else {
+                            await Permission.ignoreBatteryOptimizations
+                                .request();
+                          }
+
+                          // بعد العودة من الإعدادات، نتأكد من الحالة الحقيقية
+                          if (await Permission
+                              .ignoreBatteryOptimizations.status.isGranted) {
+                            profileController
+                                .setBackgroundNotificationActive(true);
+                          } else {
+                            profileController
+                                .setBackgroundNotificationActive(false);
+                          }
+
+                          Get.back();
                         }
-                        Get.back();
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            Theme.of(context as BuildContext).primaryColor,
+                        backgroundColor: Theme.of(Get.context!).primaryColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.0),
                         ),
@@ -206,7 +280,7 @@ void showBgNotificationBottomSheet(bool allow) {
                       child: Text(
                         "okay".tr,
                         style: robotoMedium.copyWith(
-                            color: Theme.of(context as BuildContext).cardColor),
+                            color: Theme.of(Get.context!).cardColor),
                       ),
                     ),
                   ],
@@ -225,14 +299,43 @@ Widget _buildInfoText(String text) {
     padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
     margin: const EdgeInsets.only(bottom: Dimensions.paddingSizeSmall),
     decoration: BoxDecoration(
-      color: Theme.of(context as BuildContext)
-          .disabledColor
-          .withValues(alpha: 0.2),
+      color: Theme.of(Get.context!).disabledColor.withValues(alpha: 0.2),
       borderRadius: BorderRadius.circular(8.0),
     ),
     child: Text(
       text,
       style: robotoRegular,
+    ),
+  );
+}
+
+Widget _buildStep(String number, String text) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeExtraSmall),
+    child: Row(
+      children: [
+        CircleAvatar(
+          radius: 12,
+          backgroundColor: Theme.of(Get.context!).primaryColor,
+          child: Text(
+            number,
+            style: robotoBold.copyWith(
+              fontSize: 12,
+              color: Colors.white,
+            ),
+          ),
+        ),
+        const SizedBox(width: Dimensions.p8),
+        Expanded(
+          child: Text(
+            text,
+            style: robotoMedium.copyWith(
+              fontSize: Dimensions.fs13,
+              color: Theme.of(Get.context!).primaryColor,
+            ),
+          ),
+        ),
+      ],
     ),
   );
 }

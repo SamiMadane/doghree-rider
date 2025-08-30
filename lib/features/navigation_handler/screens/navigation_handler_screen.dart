@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:lottie/lottie.dart';
+import 'package:sixam_mart_delivery/common/widgets/custom_button_widget.dart';
 import 'package:sixam_mart_delivery/features/auth/controllers/auth_controller.dart';
 import 'package:sixam_mart_delivery/features/dashboard/screens/dashboard_screen.dart';
 import 'package:sixam_mart_delivery/features/language/controllers/language_controller.dart';
-import 'package:sixam_mart_delivery/features/language/widgets/language_bottom_sheet_widget.dart';
 import 'package:sixam_mart_delivery/features/navigation_handler/widgets/loading_dots.dart';
 import 'package:sixam_mart_delivery/features/profile/controllers/profile_controller.dart';
 import 'package:sixam_mart_delivery/features/navigation_handler/controllers/navigation_handler_controller.dart';
@@ -35,25 +36,41 @@ class NavigationHandlerScreenState extends State<NavigationHandlerScreen> {
     super.initState();
     print("NavigationHandler: initState started");
 
+    _initializeApp();
+  }
+
+  Future<void> _initializeApp() async {
+    await Get.find<NavigationHandlerController>().initSharedData();
+
+    // تحقق من اللغة
+    final localizationController = Get.find<LocalizationController>();
+    print(
+        'localizationController.selectedLanguageIndex = ${localizationController.selectedLanguageIndex}');
+
+    // إذا المستخدم مسجل دخول
     if (Get.find<AuthController>().isLoggedIn()) {
-      print("NavigationHandler: User is logged in, fetching profile");
-      Get.find<ProfileController>().getProfile();
-    } else {
-      print("NavigationHandler: User is NOT logged in");
+      await Get.find<ProfileController>().getProfile();
     }
 
+    // بدء مراقبة الاتصال
+    _listenConnectivity();
+
+    // تحميل Config
+    _loadConfig();
+  }
+
+  void _listenConnectivity() {
     bool firstTime = true;
     _onConnectivityChanged = Connectivity()
         .onConnectivityChanged
         .listen((List<ConnectivityResult> result) {
       bool isConnected = result.contains(ConnectivityResult.wifi) ||
           result.contains(ConnectivityResult.mobile);
-      print(
-          "NavigationHandler: Connectivity changed - isConnected: $isConnected");
 
       if (!firstTime) {
         if (isConnected && _loadFailed) {
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          _loadConfig();
         }
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           backgroundColor: isConnected ? Colors.green : Colors.red,
@@ -63,20 +80,9 @@ class NavigationHandlerScreenState extends State<NavigationHandlerScreen> {
             textAlign: TextAlign.center,
           ),
         ));
-        if (isConnected && _loadFailed) {
-          _loadConfig();
-        }
       }
-
       firstTime = false;
     });
-
-    print("NavigationHandler: Initializing shared data");
-    Get.find<NavigationHandlerController>().initSharedData();
-
-    // بدء تحميل البيانات فور الدخول
-    print("NavigationHandler: Calling _loadConfig()");
-    _loadConfig();
   }
 
   @override
@@ -106,15 +112,6 @@ class NavigationHandlerScreenState extends State<NavigationHandlerScreen> {
 
   void _route() async {
     print("NavigationHandler: Starting _route()");
-
-    final localizationController = Get.find<LocalizationController>();
-
-    if (localizationController.selectedLanguageIndex == -1) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _showLanguageBottomSheet();
-      });
-      return;
-    }
 
     Timer(const Duration(seconds: 1), () async {
       double? minimumVersion = _getMinimumVersion();
@@ -176,13 +173,6 @@ class NavigationHandlerScreenState extends State<NavigationHandlerScreen> {
   }
 
   void _handleDefaultRouting() async {
-    final localizationController = Get.find<LocalizationController>();
-
-    if (localizationController.selectedLanguageIndex == -1) {
-      _showLanguageBottomSheet();
-      return;
-    }
-
     if (Get.find<AuthController>().isLoggedIn()) {
       await Get.find<AuthController>().updateToken();
       await Get.find<ProfileController>().getProfile();
@@ -192,59 +182,107 @@ class NavigationHandlerScreenState extends State<NavigationHandlerScreen> {
     }
   }
 
-  void _showLanguageBottomSheet() {
-    showModalBottomSheet(
-      context: context,
-      isDismissible: false,
-      enableDrag: false,
-      builder: (_) => const LanguageBottomSheetWidget(),
-    ).then((_) async {
-      if (Get.find<AuthController>().isLoggedIn()) {
-        await Get.find<AuthController>().updateToken();
-        await Get.find<ProfileController>().getProfile();
-        Get.offNamed(RouteHelper.getInitialRoute());
-      } else {
-        Get.offNamed(RouteHelper.getSignInRoute());
-      }
-    });
-  }
-
-  @override
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).cardColor,
       key: _globalKey,
       body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(Dimensions.paddingSizeLarge),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
+        child: _loadFailed ? _buildErrorWidget() : _buildLoadingWidget(),
+      ),
+    );
+  }
+
+  Widget _buildLoadingWidget() {
+    return Padding(
+      padding: const EdgeInsets.all(Dimensions.paddingSizeLarge),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(height: 50),
+          Image.asset(
+            ManagerAssets.logo,
+          ),
+          const SizedBox(height: Dimensions.paddingSizeSmall),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(height:50),
-              Image.asset(
-                ManagerAssets.logo,
-                width: 180,
+              Text(
+                "delivery".tr,
+                style: robotoSemiBold.copyWith(
+                  fontSize: Dimensions.fontSizeLarge,
+                  color: Theme.of(context).textTheme.bodyLarge!.color,
+                ),
               ),
-              const SizedBox(height: Dimensions.paddingSizeSmall),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "delivery".tr,
-                    style:robotoSemiBold.copyWith(
-                      fontSize: Dimensions.fontSizeLarge,
-                      color: Theme.of(context).textTheme.bodyLarge!.color,
-                    ),
+              const SizedBox(width: Dimensions.paddingSizeExtraSmall),
+              LoadingDots(
+                  color: Theme.of(context).textTheme.bodyMedium!.color!),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildErrorWidget() {
+    return Column(
+      children: [
+        Expanded(
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Lottie.asset(
+                  ManagerAssets.deliveryLottie,
+                  fit: BoxFit.contain,
+                ),
+                const SizedBox(height: Dimensions.paddingSizeExtraLarge),
+
+                Text(
+                  "no_connection".tr,
+                  style: robotoBold.copyWith(
+                    fontSize: Dimensions.fontSizeOverLarge,
+                    color: Theme.of(context).textTheme.bodyLarge!.color,
                   ),
-                  const SizedBox(width: Dimensions.paddingSizeExtraSmall),
-                  LoadingDots(color: Theme.of(context).textTheme.bodyMedium!.color!),
-                ],
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: Dimensions.paddingSizeSmall),
+                Text(
+                  "please_check_your_internet_and_try_again".tr,
+                  style: robotoRegular.copyWith(
+                    fontSize: Dimensions.fontSizeExtraLarge,
+                    color: Theme.of(context).disabledColor,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+        ),
+
+        // زر retry ثابت بأسفل الصفحة
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Theme.of(Get.context!).cardColor,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 5,
+                spreadRadius: 1,
+                offset: const Offset(0, -2),
               ),
             ],
           ),
+          child: CustomButtonWidget(
+            onPressed: () {
+              _loadConfig();
+            },
+            buttonText: "retry".tr,
+          ),
         ),
-      ),
+      ],
     );
   }
 }

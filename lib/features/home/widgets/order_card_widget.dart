@@ -57,7 +57,7 @@ class OrderCardWidget extends StatelessWidget {
                       text: '#${order.id}', // القيمة نفسها
                       style: robotoSemiBold.copyWith(
                         fontSize: Dimensions.fontSizeDefault,
-                        color: Theme.of(context).primaryColor, // برايمري كولور
+                        color: ManagerColors.darkGreen, // برايمري كولور
                       ),
                     ),
                   ],

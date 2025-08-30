@@ -13,6 +13,7 @@ import 'package:sixam_mart_delivery/util/dimensions.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_text_field_widget.dart';
 import 'package:sixam_mart_delivery/common/widgets/field_with_label.dart';
 import 'package:sixam_mart_delivery/util/manager_assets.dart';
+import 'package:sixam_mart_delivery/util/manager_colors.dart';
 
 class UpdateProfileScreen extends StatefulWidget {
   const UpdateProfileScreen({super.key});
@@ -134,8 +135,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                             child: Center(
                                                 child: SvgPicture.asset(
                                               ManagerAssets.editIcon,
-                                              color: Theme.of(context)
-                                                  .primaryColor,
+                                              color: ManagerColors.orange,
                                             )),
                                           ),
                                         ),
