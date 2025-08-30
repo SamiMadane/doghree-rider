@@ -1,5 +1,6 @@
 const String imagePath = 'assets/image';
 const String iconPath = 'assets/icon';
+const String lottiePath = 'assets/lottie';
 
 class ManagerAssets {
   static const String logo = '$imagePath/logo.png';
@@ -69,6 +70,7 @@ class ManagerAssets {
   static const String balanceImage = '$imagePath/balance.png';
   static const String payNowImage = '$imagePath/pay_now.png';
   static const String adjustPaymentImage = '$imagePath/adjust_payment.png';
+  static const String mapPlaceholderImage = '$imagePath/map_placeholder.png';
 
   ///Svg Images
   static const String changePasswordBgImage =
@@ -106,6 +108,19 @@ class ManagerAssets {
   static const String newOrderIcon = '$iconPath/new_order.svg';
   static const String offersIcon = '$iconPath/offers.svg';
   static const String sunIcon = '$iconPath/sun.svg';
-  static const String trakingIcon = '$iconPath/traking.svg';
+  static const String trakingIcon = '$iconPath/tracking.svg';
   static const String searchIcon = '$iconPath/search.svg';
+  static const String callIcon = '$iconPath/call.svg';
+  static const String messageIcon = '$iconPath/message.svg';
+  static const String myLocationIcon = '$iconPath/my_location.svg';
+  static const String openInFullIcon = '$iconPath/open_in_full.svg';
+  static const String cameraIcon = '$iconPath/camera.svg';
+  static const String galleryIcon = '$iconPath/gallery.svg';
+  static const String warningIcon = '$iconPath/warning.svg';
+
+// Lottie 
+  static const String deliveryLottie = '$lottiePath/delivery.json';
+
 }
+
+

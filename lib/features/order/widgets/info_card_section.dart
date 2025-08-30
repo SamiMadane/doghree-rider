@@ -1,6 +1,10 @@
+import 'package:flutter_svg/svg.dart';
+import 'package:sixam_mart_delivery/common/widgets/custom_button_widget.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_card.dart';
 import 'package:sixam_mart_delivery/features/order/domain/models/order_model.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
+import 'package:sixam_mart_delivery/util/manager_assets.dart';
+import 'package:sixam_mart_delivery/util/manager_colors.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_image_widget.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_snackbar_widget.dart';
@@ -37,6 +41,7 @@ class InfoCardSection extends StatelessWidget {
     required this.order,
     required this.isChatAllow,
   });
+
 
   @override
   Widget build(BuildContext context) {
@@ -142,50 +147,48 @@ class InfoCardSection extends StatelessWidget {
             Row(
               children: [
                 if (phone != null && phone!.isNotEmpty)
-                  TextButton.icon(
-                    onPressed: () async {
-                      if (await canLaunchUrlString('tel:$phone')) {
-                        await launchUrlString('tel:$phone',
-                            mode: LaunchMode.externalApplication);
-                      } else {
-                        showCustomSnackBar('invalid_phone_number_found'.tr);
-                      }
-                    },
-                    icon: Icon(Icons.call,
-                        color: Theme.of(context).primaryColor, size: 20),
-                    label: Text('call'.tr,
-                        style: robotoRegular.copyWith(
-                            fontSize: Dimensions.fontSizeSmall,
-                            color: Theme.of(context).primaryColor)),
+                  Expanded(
+                    child: CustomButtonWidget(
+                      onPressed: () async {
+                        if (await canLaunchUrlString('tel:$phone')) {
+                          await launchUrlString('tel:$phone',
+                              mode: LaunchMode.externalApplication);
+                        } else {
+                          showCustomSnackBar('invalid_phone_number_found'.tr);
+                        }
+                      },
+                      buttonText: 'call'.tr,
+                      fontColor: Theme.of(context).textTheme.bodyMedium!.color,
+                      transparent: true,
+                      isBorder: true,
+                      borderColor:
+                          Theme.of(context).textTheme.bodyMedium!.color,
+                      height: 45,
+                      icon: SvgPicture.asset(
+                        ManagerAssets.callIcon,
+                        height: 22,
+                        width: 22,
+                        color: Theme.of(context).textTheme.bodyMedium?.color,
+                      ),
+                    ),
                   ),
-                if (isStore && isChatAllow && !order.isGuest!)
-                  TextButton.icon(
-                    onPressed: messageOnTap as void Function()?,
-                    icon: Icon(Icons.message,
-                        color: Theme.of(context).primaryColor, size: 20),
-                    label: Text('chat'.tr,
-                        style: robotoRegular.copyWith(
-                            fontSize: Dimensions.fontSizeSmall,
-                            color: Theme.of(context).primaryColor)),
-                  ),
-                TextButton.icon(
-                  onPressed: () async {
-                    String url =
-                        'https://www.google.com/maps/dir/?api=1&destination=$latitude,$longitude&mode=d';
-                    if (await canLaunchUrlString(url)) {
-                      await launchUrlString(url,
-                          mode: LaunchMode.externalApplication);
-                    } else {
-                      showCustomSnackBar('${'could_not_launch'.tr} $url');
-                    }
-                  },
-                  icon: Icon(Icons.directions,
-                      color: Theme.of(context).disabledColor, size: 20),
-                  label: Text('direction'.tr,
-                      style: robotoRegular.copyWith(
-                          fontSize: Dimensions.fontSizeSmall,
-                          color: Theme.of(context).disabledColor)),
+                SizedBox(
+                  width: Dimensions.paddingSizeDefault,
                 ),
+                if (isStore && isChatAllow && !order.isGuest!)
+                  Expanded(
+                    child: CustomButtonWidget(
+                      onPressed: messageOnTap as void Function()?,
+                      buttonText: 'chat'.tr,
+                      height: 45,
+                      icon: SvgPicture.asset(
+                        ManagerAssets.messageIcon,
+                        height: 22,
+                        width: 22,
+                        color: ManagerColors.white,
+                      ),
+                    ),
+                  ),
               ],
             ),
           if (!showButton)

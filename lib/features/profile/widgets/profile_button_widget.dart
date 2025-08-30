@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
 import 'package:sixam_mart_delivery/util/manager_assets.dart';
+import 'package:sixam_mart_delivery/util/manager_colors.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
+import 'package:sixam_mart_delivery/util/theme_extension.dart';
 class ProfileButtonWidget extends StatelessWidget {
   final IconData? iconData;
   final String? svgPath;
@@ -30,6 +32,8 @@ class ProfileButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final customColor = Theme.of(context).extension<CustomColorsExtension>()!;
+
     return InkWell(
       onTap: isButtonActive == null ? onTap : null,
       child: Container(
@@ -53,7 +57,7 @@ class ProfileButtonWidget extends StatelessWidget {
                             ((isButtonActive == null)
                                 ? Theme.of(context).textTheme.bodyMedium!.color
                                 : (isButtonActive!
-                                    ? Theme.of(context).primaryColor
+                                    ? ManagerColors.darkGreen
                                     : Theme.of(context)
                                         .textTheme
                                         .bodyMedium!
@@ -67,7 +71,7 @@ class ProfileButtonWidget extends StatelessWidget {
                             ((isButtonActive == null)
                                 ? Theme.of(context).textTheme.bodyMedium!.color
                                 : (isButtonActive!
-                                    ? Theme.of(context).primaryColor
+                                    ? ManagerColors.darkGreen
                                     : Theme.of(context)
                                         .textTheme
                                         .bodyMedium!
@@ -83,7 +87,7 @@ class ProfileButtonWidget extends StatelessWidget {
                 title,
                 style: robotoRegular.copyWith(
                   fontSize: Dimensions.fontSizeLarge,
-                  color: titleColor ?? Theme.of(context).textTheme.bodyMedium!.color,
+                  color: titleColor ?? (isButtonActive == true ? ManagerColors.darkGreen : Theme.of(context).textTheme.bodyMedium!.color),
                 ),
               ),
             ),
@@ -102,9 +106,9 @@ class ProfileButtonWidget extends StatelessWidget {
                       child: CupertinoSwitch(
                         value: isButtonActive!,
                         onChanged: (bool? value) => onTap(),
-                        activeTrackColor: Theme.of(context).primaryColor,
+                        activeTrackColor: ManagerColors.darkGreen,
                         inactiveTrackColor:
-                            Theme.of(context).primaryColor.withValues(alpha: 0.5),
+                            customColor.strock2,
                       ),
                     )
                   : SvgPicture.asset(

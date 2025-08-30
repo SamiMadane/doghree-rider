@@ -6,7 +6,11 @@ import 'package:sixam_mart_delivery/util/dimensions.dart';
 import 'package:get/get.dart';
 
 class LanguageBottomSheetWidget extends StatefulWidget {
-  const LanguageBottomSheetWidget({super.key});
+  final bool isFromInitScreen;
+  LanguageBottomSheetWidget({
+    super.key,
+    this.isFromInitScreen = false,
+  });
 
   @override
   State<LanguageBottomSheetWidget> createState() =>
@@ -39,8 +43,8 @@ class _LanguageBottomSheetWidgetState extends State<LanguageBottomSheetWidget> {
           const SizedBox(height: Dimensions.paddingSizeLarge),
 
           Text('choose_your_language'.tr,
-              style:
-                  robotoSemiBold.copyWith(fontSize: Dimensions.fontSizeLarge)),
+              style: robotoSemiBold.copyWith(
+                  fontSize: Dimensions.fontSizeExtraLarge)),
           const SizedBox(height: Dimensions.paddingSizeExtraLarge),
 
           Flexible(
@@ -59,6 +63,7 @@ class _LanguageBottomSheetWidgetState extends State<LanguageBottomSheetWidget> {
                         localizationController: localizationController,
                         index: index,
                         fromBottomSheet: true,
+                        isFromInitScreen: widget.isFromInitScreen,
                       ),
                       const SizedBox(
                           height: Dimensions

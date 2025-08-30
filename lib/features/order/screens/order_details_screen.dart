@@ -1,10 +1,10 @@
 import 'dart:async';
-import 'dart:io';
-import 'package:image_picker/image_picker.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:sixam_mart_delivery/features/language/controllers/language_controller.dart';
-import 'package:sixam_mart_delivery/features/notification/controllers/notification_controller.dart';
+
 import 'package:sixam_mart_delivery/features/order/controllers/order_controller.dart';
+import 'package:sixam_mart_delivery/features/order/widgets/delivery_images_section.dart';
+import 'package:sixam_mart_delivery/features/order/widgets/map_preview_section.dart';
+import 'package:sixam_mart_delivery/features/order/widgets/order_action_buttons_section.dart';
 import 'package:sixam_mart_delivery/features/order/widgets/order_id_section.dart';
 import 'package:sixam_mart_delivery/features/order/widgets/order_info_section.dart';
 import 'package:sixam_mart_delivery/features/order/widgets/payment_details_section.dart';
@@ -18,19 +18,10 @@ import 'package:sixam_mart_delivery/helper/responsive_helper.dart';
 import 'package:sixam_mart_delivery/helper/route_helper.dart';
 import 'package:sixam_mart_delivery/util/app_constants.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/manager_assets.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
-import 'package:sixam_mart_delivery/common/widgets/confirmation_dialog_widget.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_app_bar_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_button_widget.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_image_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_snackbar_widget.dart';
-import 'package:sixam_mart_delivery/features/order/widgets/camera_button_sheet_widget.dart';
-import 'package:sixam_mart_delivery/features/order/widgets/cancellation_dialogue_widget.dart';
-import 'package:sixam_mart_delivery/features/order/widgets/collect_money_delivery_sheet_widget.dart';
-import 'package:sixam_mart_delivery/features/order/widgets/verify_delivery_sheet_widget.dart';
 import 'package:sixam_mart_delivery/features/order/widgets/info_card_section.dart';
-import 'package:sixam_mart_delivery/features/order/widgets/slider_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -277,6 +268,23 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                     ? SingleChildScrollView(
                         physics: BouncingScrollPhysics(),
                         child: Column(children: [
+                          MapPreviewSection(
+                            latitude: parcel!
+                                ? controllerOrderModel
+                                    .deliveryAddress!.latitude!
+                                : controllerOrderModel.storeLat!,
+                            longitude: parcel
+                                ? controllerOrderModel
+                                    .deliveryAddress!.longitude!
+                                : controllerOrderModel.storeLng!,
+                            showMap: (controllerOrderModel.orderStatus !=
+                                    'delivered' &&
+                                controllerOrderModel.orderStatus != 'failed' &&
+                                controllerOrderModel.orderStatus !=
+                                    'canceled' &&
+                                controllerOrderModel.orderStatus != 'refunded'),
+                          ),
+
                           OrderIdSection(
                             orderId: widget.orderId.toString(),
                             isPaid:
@@ -287,17 +295,18 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                           OrderInfoSection(
                             orderController: orderController,
                             controllerOrderModel: controllerOrderModel,
-                            parcel: parcel!,
+                            parcel: parcel,
                             cod: cod,
                             wallet: wallet,
                             partialPay: partialPay,
                             offlinePay: offlinePay,
-                            showOrderCount: false,
+                            showOrderCount: true,
                             showPaymentType: false,
                           ),
                           SizedBox(
                             height: Dimensions.paddingSizeDefault,
                           ),
+
                           InfoCardSection(
                             title: parcel
                                 ? 'sender_details'.tr
@@ -306,8 +315,9 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                 ? controllerOrderModel.deliveryAddress
                                 : DeliveryAddress(
                                     address: controllerOrderModel.storeAddress),
+                            // TODO: PARCEL ORDER NOT HAVE IMAGE
                             image: parcel
-                                ? ''
+                                ? 'controllerOrderModel.deliveryAddress.image'
                                 : '${controllerOrderModel.storeLogoFullUrl}',
                             name: parcel
                                 ? controllerOrderModel
@@ -355,7 +365,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                 : 'customer_details'.tr,
                             address: parcel
                                 ? controllerOrderModel.receiverDetails
-                                : controllerOrderModel.deliveryAddress,
+                                : controllerOrderModel.deliveryAddress, 
                             image: parcel
                                 ? ''
                                 : controllerOrderModel.customer != null
@@ -394,10 +404,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                 orderId: controllerOrderModel.id,
                                 customerId: controllerOrderModel.customer!.id,
                               ),
+                              // TODO: THIS CODE PASS CUSTOMAR INFO FOR CHAT , NOT DELIVARY ADDRESS INFO
                               user: User(
                                 id: controllerOrderModel.customer!.id,
-                                fName: controllerOrderModel.customer!.fName,
-                                lName: controllerOrderModel.customer!.lName,
+                                fName: controllerOrderModel.customer!.fName, // yousef
+                                lName: controllerOrderModel.customer!.lName, // iwadi
                                 imageFullUrl:
                                     controllerOrderModel.customer!.imageFullUrl,
                               ),
@@ -406,7 +417,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                           ),
                           const SizedBox(height: Dimensions.paddingSizeDefault),
 
-                          // here we go
+                          // TODO: ADD THIS SECTION FROM BACKENT TO TEST IT
                           (controllerOrderModel.orderNote != null &&
                                   controllerOrderModel.orderNote!.isNotEmpty)
                               ? Column(
@@ -590,737 +601,29 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                             total: total,
                             restConfModel: restConfModel,
                           ),
-                          showDeliveryConfirmImage &&
-                                  controllerOrderModel.orderStatus !=
-                                      'delivered'
-                              ? Container(
-                                  padding: const EdgeInsets.all(
-                                      Dimensions.paddingSizeSmall),
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(context)
-                                        .primaryColor
-                                        .withValues(alpha: 0.05),
-                                    borderRadius: const BorderRadius.vertical(
-                                        top: Radius.circular(
-                                            Dimensions.radiusDefault)),
-                                  ),
-                                  child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                            'completed_after_delivery_picture'
-                                                .tr,
-                                            style: robotoRegular),
-                                        const SizedBox(
-                                            height:
-                                                Dimensions.paddingSizeSmall),
-                                        Container(
-                                          height: 80,
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical:
-                                                  Dimensions.paddingSizeSmall),
-                                          child: ListView.builder(
-                                            scrollDirection: Axis.horizontal,
-                                            physics:
-                                                const BouncingScrollPhysics(),
-                                            itemCount: orderController
-                                                    .pickedPrescriptions
-                                                    .length +
-                                                1,
-                                            itemBuilder: (context, index) {
-                                              XFile? file = index ==
-                                                      orderController
-                                                          .pickedPrescriptions
-                                                          .length
-                                                  ? null
-                                                  : orderController
-                                                          .pickedPrescriptions[
-                                                      index];
-                                              if (index < 5 &&
-                                                  index ==
-                                                      orderController
-                                                          .pickedPrescriptions
-                                                          .length) {
-                                                return InkWell(
-                                                  onTap: () {
-                                                    if (GetPlatform.isIOS) {
-                                                      Get.find<
-                                                              OrderController>()
-                                                          .pickPrescriptionImage(
-                                                              isRemove: false,
-                                                              isCamera: false);
-                                                    } else {
-                                                      Get.bottomSheet(
-                                                          const CameraButtonSheetWidget());
-                                                    }
-                                                  },
-                                                  child: Container(
-                                                    height: 60,
-                                                    width: 60,
-                                                    alignment: Alignment.center,
-                                                    decoration: BoxDecoration(
-                                                      borderRadius: BorderRadius
-                                                          .circular(Dimensions
-                                                              .radiusDefault),
-                                                      color: Theme.of(context)
-                                                          .primaryColor
-                                                          .withValues(
-                                                              alpha: 0.1),
-                                                    ),
-                                                    child: Icon(
-                                                        Icons.camera_alt_sharp,
-                                                        color: Theme.of(context)
-                                                            .primaryColor,
-                                                        size: 32),
-                                                  ),
-                                                );
-                                              }
-                                              return file != null
-                                                  ? Container(
-                                                      margin: const EdgeInsets
-                                                          .only(
-                                                          right: Dimensions
-                                                              .paddingSizeSmall),
-                                                      decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius
-                                                            .circular(Dimensions
-                                                                .radiusDefault),
-                                                      ),
-                                                      child: Stack(children: [
-                                                        ClipRRect(
-                                                          borderRadius: BorderRadius
-                                                              .circular(Dimensions
-                                                                  .radiusDefault),
-                                                          child: GetPlatform
-                                                                  .isWeb
-                                                              ? Image.network(
-                                                                  file.path,
-                                                                  width: 60,
-                                                                  height: 60,
-                                                                  fit: BoxFit
-                                                                      .cover,
-                                                                )
-                                                              : Image.file(
-                                                                  File(file
-                                                                      .path),
-                                                                  width: 60,
-                                                                  height: 60,
-                                                                  fit: BoxFit
-                                                                      .cover,
-                                                                ),
-                                                        ),
-                                                      ]),
-                                                    )
-                                                  : const SizedBox();
-                                            },
-                                          ),
-                                        ),
-                                      ]),
-                                )
-                              : const SizedBox(),
-                          showDeliveryConfirmImage &&
-                                  controllerOrderModel.orderStatus !=
-                                      'delivered' &&
-                                  !parcel
-                              ? CustomButtonWidget(
-                                  buttonText: 'complete_delivery'.tr,
-                                  onPressed: () {
-                                    if (orderVerificationActive) {
-                                      Get.find<NotificationController>()
-                                          .sendDeliveredNotification(
-                                              controllerOrderModel.id);
-
-                                      Get.bottomSheet(
-                                              VerifyDeliverySheetWidget(
-                                                currentOrderModel:
-                                                    controllerOrderModel,
-                                                verify: orderVerificationActive,
-                                                orderAmount: partialPay!
-                                                    ? controllerOrderModel
-                                                        .payments![1].amount!
-                                                        .toDouble()
-                                                    : controllerOrderModel
-                                                        .orderAmount,
-                                                cod: cod! ||
-                                                    (partialPay &&
-                                                        controllerOrderModel
-                                                                .payments![1]
-                                                                .paymentMethod ==
-                                                            'cash_on_delivery'),
-                                              ),
-                                              isScrollControlled: true)
-                                          .then((isSuccess) {
-                                        if (isSuccess &&
-                                            (cod! ||
-                                                (partialPay! &&
-                                                    controllerOrderModel
-                                                            .payments![1]
-                                                            .paymentMethod ==
-                                                        'cash_on_delivery'))) {
-                                          Get.bottomSheet(
-                                              CollectMoneyDeliverySheetWidget(
-                                                currentOrderModel:
-                                                    controllerOrderModel,
-                                                verify: orderVerificationActive,
-                                                orderAmount: partialPay!
-                                                    ? controllerOrderModel
-                                                        .payments![1].amount!
-                                                        .toDouble()
-                                                    : controllerOrderModel
-                                                        .orderAmount,
-                                                cod: cod ||
-                                                    (partialPay &&
-                                                        controllerOrderModel
-                                                                .payments![1]
-                                                                .paymentMethod ==
-                                                            'cash_on_delivery'),
-                                              ),
-                                              isScrollControlled: true,
-                                              isDismissible: false);
-                                        }
-                                      });
-                                    } else {
-                                      Get.bottomSheet(
-                                          CollectMoneyDeliverySheetWidget(
-                                            currentOrderModel:
-                                                controllerOrderModel,
-                                            verify: orderVerificationActive,
-                                            orderAmount: partialPay!
-                                                ? controllerOrderModel
-                                                    .payments![1].amount!
-                                                    .toDouble()
-                                                : controllerOrderModel
-                                                    .orderAmount,
-                                            cod: cod! ||
-                                                (partialPay &&
-                                                    controllerOrderModel
-                                                            .payments![1]
-                                                            .paymentMethod ==
-                                                        'cash_on_delivery'),
-                                          ),
-                                          isScrollControlled: true);
-                                    }
-                                  },
-                                )
-                              : showBottomView
-                                  ? ((accepted! &&
-                                              !parcel &&
-                                              (!cod! ||
-                                                  restConfModel ||
-                                                  selfDelivery)) ||
-                                          processing! ||
-                                          confirmed!)
-                                      ? Container(
-                                          padding: const EdgeInsets.all(
-                                              Dimensions.paddingSizeDefault),
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(
-                                                Dimensions.radiusSmall),
-                                            border: Border.all(
-                                                width: 1,
-                                                color: Get.isDarkMode
-                                                    ? Colors.grey[700]!
-                                                    : Colors.grey[200]!),
-                                          ),
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            processing!
-                                                ? 'order_is_preparing'.tr
-                                                : 'order_waiting_for_process'
-                                                    .tr,
-                                            style: robotoMedium,
-                                          ),
-                                        )
-                                      : showSlider
-                                          ? ((cod! &&
-                                                      accepted &&
-                                                      !restConfModel &&
-                                                      cancelPermission! &&
-                                                      !selfDelivery) ||
-                                                  (parcel &&
-                                                      accepted &&
-                                                      cancelPermission!))
-                                              ? Row(children: [
-                                                  Expanded(
-                                                      child: TextButton(
-                                                    onPressed: () {
-                                                      orderController
-                                                          .setOrderCancelReason(
-                                                              '');
-                                                      Get.dialog(
-                                                          CancellationDialogueWidget(
-                                                              orderId: widget
-                                                                  .orderId));
-                                                    },
-                                                    style: TextButton.styleFrom(
-                                                      minimumSize:
-                                                          const Size(1170, 40),
-                                                      padding: EdgeInsets.zero,
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                        borderRadius: BorderRadius
-                                                            .circular(Dimensions
-                                                                .radiusSmall),
-                                                        side: BorderSide(
-                                                            width: 1,
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .textTheme
-                                                                .bodyLarge!
-                                                                .color!),
-                                                      ),
-                                                    ),
-                                                    child: Text('cancel'.tr,
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        style: robotoRegular
-                                                            .copyWith(
-                                                          color:
-                                                              Theme.of(context)
-                                                                  .textTheme
-                                                                  .bodyLarge!
-                                                                  .color,
-                                                          fontSize: Dimensions
-                                                              .fontSizeLarge,
-                                                        )),
-                                                  )),
-                                                  const SizedBox(
-                                                      width: Dimensions
-                                                          .paddingSizeSmall),
-                                                  Expanded(
-                                                      child: CustomButtonWidget(
-                                                    buttonText: 'confirm'.tr,
-                                                    height: 40,
-                                                    onPressed: () {
-                                                      Get.dialog(
-                                                          ConfirmationDialogWidget(
-                                                            icon: ManagerAssets
-                                                                .warning,
-                                                            title:
-                                                                'are_you_sure_to_confirm'
-                                                                    .tr,
-                                                            description: parcel!
-                                                                ? 'you_want_to_confirm_this_delivery'
-                                                                    .tr
-                                                                : 'you_want_to_confirm_this_order'
-                                                                    .tr,
-                                                            onYesPressed: () {
-                                                              if ((orderVerificationActive ||
-                                                                      cod!) &&
-                                                                  !parcel!) {
-                                                                orderController
-                                                                    .updateOrderStatus(
-                                                                  controllerOrderModel,
-                                                                  parcel
-                                                                      ? AppConstants
-                                                                          .handover
-                                                                      : AppConstants
-                                                                          .confirmed,
-                                                                  back: widget
-                                                                          .fromLocationScreen
-                                                                      ? false
-                                                                      : true,
-                                                                  gotoDashboard:
-                                                                      widget.fromLocationScreen
-                                                                          ? true
-                                                                          : false,
-                                                                );
-                                                              } else if (parcel! &&
-                                                                  cod! &&
-                                                                  controllerOrderModel
-                                                                          .chargePayer !=
-                                                                      'sender') {
-                                                                orderController.updateOrderStatus(
-                                                                    controllerOrderModel,
-                                                                    AppConstants
-                                                                        .handover);
-                                                              } else if (parcel &&
-                                                                  controllerOrderModel
-                                                                          .chargePayer ==
-                                                                      'sender' &&
-                                                                  cod!) {
-                                                                orderController.updateOrderStatus(
-                                                                    controllerOrderModel,
-                                                                    AppConstants
-                                                                        .handover);
-                                                              }
-                                                            },
-                                                          ),
-                                                          barrierDismissible:
-                                                              false);
-                                                    },
-                                                  )),
-                                                ])
-                                              : SliderButton(
-                                                  action: () {
-                                                    if ((cod! &&
-                                                            accepted! &&
-                                                            !restConfModel &&
-                                                            !selfDelivery) ||
-                                                        (parcel! &&
-                                                            accepted!)) {
-                                                      if (orderController
-                                                          .isLoading) {
-                                                        orderController
-                                                            .initLoading();
-                                                      }
-                                                      Get.dialog(
-                                                          ConfirmationDialogWidget(
-                                                            icon: ManagerAssets
-                                                                .warning,
-                                                            title:
-                                                                'are_you_sure_to_confirm'
-                                                                    .tr,
-                                                            description: parcel!
-                                                                ? 'you_want_to_confirm_this_delivery'
-                                                                    .tr
-                                                                : 'you_want_to_confirm_this_order'
-                                                                    .tr,
-                                                            onYesPressed: () {
-                                                              orderController.updateOrderStatus(
-                                                                  controllerOrderModel,
-                                                                  parcel!
-                                                                      ? AppConstants
-                                                                          .handover
-                                                                      : AppConstants
-                                                                          .confirmed,
-                                                                  back: widget
-                                                                          .fromLocationScreen
-                                                                      ? false
-                                                                      : true,
-                                                                  gotoDashboard:
-                                                                      widget.fromLocationScreen
-                                                                          ? true
-                                                                          : false);
-                                                            },
-                                                          ),
-                                                          barrierDismissible:
-                                                              false);
-                                                    } else if (handover!) {
-                                                      if (parcel &&
-                                                          controllerOrderModel
-                                                                  .chargePayer ==
-                                                              'sender' &&
-                                                          cod) {
-                                                        Get.bottomSheet(
-                                                            VerifyDeliverySheetWidget(
-                                                              currentOrderModel:
-                                                                  controllerOrderModel,
-                                                              verify: false,
-                                                              isSetOtp: false,
-                                                              orderAmount:
-                                                                  controllerOrderModel
-                                                                      .orderAmount,
-                                                              cod: cod,
-                                                              isSenderPay: true,
-                                                              isParcel: parcel,
-                                                            ),
-                                                            isScrollControlled:
-                                                                true);
-                                                      } else {
-                                                        if (Get.find<
-                                                                    ProfileController>()
-                                                                .profileModel!
-                                                                .active ==
-                                                            1) {
-                                                          Get.find<
-                                                                  OrderController>()
-                                                              .updateOrderStatus(
-                                                                  controllerOrderModel,
-                                                                  AppConstants
-                                                                      .pickedUp,
-                                                                  back: widget
-                                                                          .fromLocationScreen
-                                                                      ? false
-                                                                      : true,
-                                                                  gotoDashboard:
-                                                                      widget.fromLocationScreen
-                                                                          ? true
-                                                                          : false);
-                                                        } else {
-                                                          showCustomSnackBar(
-                                                              'make_yourself_online_first'
-                                                                  .tr);
-                                                        }
-                                                      }
-                                                    } else if (parcel &&
-                                                        pickedUp!) {
-                                                      if (orderVerificationActive &&
-                                                          controllerOrderModel
-                                                                  .chargePayer !=
-                                                              'sender' &&
-                                                          cod) {
-                                                        Get.bottomSheet(
-                                                                VerifyDeliverySheetWidget(
-                                                                  currentOrderModel:
-                                                                      controllerOrderModel,
-                                                                  verify:
-                                                                      orderVerificationActive,
-                                                                  orderAmount:
-                                                                      controllerOrderModel
-                                                                          .orderAmount,
-                                                                  cod: cod,
-                                                                  isParcel:
-                                                                      parcel,
-                                                                  isSenderPay:
-                                                                      false,
-                                                                ),
-                                                                isScrollControlled:
-                                                                    true)
-                                                            .then((value) {
-                                                          if (value ==
-                                                              'show_price_view') {
-                                                            Get.bottomSheet(
-                                                                VerifyDeliverySheetWidget(
-                                                                  currentOrderModel:
-                                                                      controllerOrderModel,
-                                                                  verify: false,
-                                                                  isSetOtp:
-                                                                      false,
-                                                                  orderAmount:
-                                                                      controllerOrderModel
-                                                                          .orderAmount,
-                                                                  cod: cod,
-                                                                  isSenderPay:
-                                                                      false,
-                                                                  isParcel:
-                                                                      parcel,
-                                                                ),
-                                                                isScrollControlled:
-                                                                    true);
-                                                          }
-                                                        });
-                                                      } else if (orderVerificationActive &&
-                                                          controllerOrderModel
-                                                                  .chargePayer ==
-                                                              'sender' &&
-                                                          cod) {
-                                                        Get.bottomSheet(
-                                                                VerifyDeliverySheetWidget(
-                                                                  currentOrderModel:
-                                                                      controllerOrderModel,
-                                                                  verify:
-                                                                      orderVerificationActive,
-                                                                  orderAmount:
-                                                                      controllerOrderModel
-                                                                          .orderAmount,
-                                                                  cod: cod,
-                                                                  isSenderPay:
-                                                                      true,
-                                                                  isParcel:
-                                                                      parcel,
-                                                                ),
-                                                                isScrollControlled:
-                                                                    true)
-                                                            .then((value) {
-                                                          if (value ==
-                                                              'show_price_view') {
-                                                            Get.bottomSheet(
-                                                                VerifyDeliverySheetWidget(
-                                                                  currentOrderModel:
-                                                                      controllerOrderModel,
-                                                                  verify: false,
-                                                                  isSetOtp:
-                                                                      false,
-                                                                  orderAmount:
-                                                                      controllerOrderModel
-                                                                          .orderAmount,
-                                                                  cod: cod,
-                                                                  isSenderPay:
-                                                                      true,
-                                                                  isParcel:
-                                                                      parcel,
-                                                                ),
-                                                                isScrollControlled:
-                                                                    true);
-                                                          }
-                                                        });
-                                                      } else if (orderVerificationActive) {
-                                                        Get.bottomSheet(
-                                                            VerifyDeliverySheetWidget(
-                                                              currentOrderModel:
-                                                                  controllerOrderModel,
-                                                              verify:
-                                                                  orderVerificationActive,
-                                                              orderAmount:
-                                                                  controllerOrderModel
-                                                                      .orderAmount,
-                                                              cod: cod,
-                                                            ),
-                                                            isScrollControlled:
-                                                                true);
-                                                      } else {
-                                                        Get.find<
-                                                                OrderController>()
-                                                            .updateOrderStatus(
-                                                                controllerOrderModel,
-                                                                AppConstants
-                                                                    .delivered,
-                                                                back: widget
-                                                                        .fromLocationScreen
-                                                                    ? false
-                                                                    : true,
-                                                                gotoDashboard:
-                                                                    widget.fromLocationScreen
-                                                                        ? true
-                                                                        : false);
-                                                      }
-                                                    } else if (!parcel &&
-                                                        pickedUp!) {
-                                                      if (orderVerificationActive ||
-                                                          cod) {
-                                                        Get.bottomSheet(
-                                                            VerifyDeliverySheetWidget(
-                                                              currentOrderModel:
-                                                                  controllerOrderModel,
-                                                              verify:
-                                                                  orderVerificationActive,
-                                                              orderAmount:
-                                                                  controllerOrderModel
-                                                                      .orderAmount,
-                                                              cod: cod,
-                                                            ),
-                                                            isScrollControlled:
-                                                                true);
-                                                      } else {
-                                                        Get.find<
-                                                                OrderController>()
-                                                            .updateOrderStatus(
-                                                                controllerOrderModel,
-                                                                AppConstants
-                                                                    .delivered,
-                                                                back: widget
-                                                                        .fromLocationScreen
-                                                                    ? false
-                                                                    : true,
-                                                                gotoDashboard:
-                                                                    widget.fromLocationScreen
-                                                                        ? true
-                                                                        : false);
-                                                      }
-                                                    }
-
-                                                    /*else if(pickedUp!) {
-                          if(parcel && controllerOrderModel.chargePayer != 'sender') {
-                            Get.bottomSheet(VerifyDeliverySheetWidget(
-                              currentOrderModel: controllerOrderModel, verify: orderVerificationActive,
-                              orderAmount: controllerOrderModel.orderAmount, cod: true, isParcel: parcel,
-                            ), isScrollControlled: true).then((value) {
-                              if(value == 'show_price_view') {
-                                Get.bottomSheet(VerifyDeliverySheetWidget(
-                                  currentOrderModel: controllerOrderModel, verify: false, isSetOtp: false,
-                                  orderAmount: controllerOrderModel.orderAmount, cod: true, isSenderPay: false, isParcel: parcel,
-                                ), isScrollControlled: true);
-                              }
-                            });
-                          }
-                          else if((orderVerificationActive || cod) && !parcel){
-                            Get.bottomSheet(VerifyDeliverySheetWidget(
-                              currentOrderModel: controllerOrderModel, verify: orderVerificationActive,
-                              orderAmount: controllerOrderModel.orderAmount, cod: cod,
-                            ), isScrollControlled: true);
-                          }
-                          else if(!cod && parcel && controllerOrderModel.chargePayer == 'sender'){
-                            Get.bottomSheet(VerifyDeliverySheetWidget(
-                              currentOrderModel: controllerOrderModel, verify: orderVerificationActive,
-                              orderAmount: controllerOrderModel.orderAmount, cod: cod,
-                            ), isScrollControlled: true);
-                          }
-                          else {
-                            Get.find<OrderController>().updateOrderStatus(controllerOrderModel, AppConstants.delivered, back: widget.fromLocationScreen? false: true,
-                              gotoDashboard: widget.fromLocationScreen? true: false);
-                          }
-                        }
-                      
-                        else if(parcel && controllerOrderModel.chargePayer == 'sender' && cod){
-                          Get.bottomSheet(VerifyDeliverySheetWidget(
-                            currentOrderModel: controllerOrderModel, verify: orderVerificationActive,
-                            orderAmount: controllerOrderModel.orderAmount, cod: cod, isSenderPay: true, isParcel: parcel,
-                          ), isScrollControlled: true).then((value) {
-                            if(value == 'show_price_view') {
-                              Get.bottomSheet(VerifyDeliverySheetWidget(
-                                currentOrderModel: controllerOrderModel, verify: false, isSetOtp: false,
-                                orderAmount: controllerOrderModel.orderAmount, cod: cod, isSenderPay: true, isParcel: parcel,
-                              ), isScrollControlled: true);
-                            }
-                          });
-                        }
-                      
-                        else if(handover!) {
-                          if(Get.find<ProfileController>().profileModel!.active == 1) {
-                            Get.find<OrderController>().updateOrderStatus(controllerOrderModel, AppConstants.pickedUp, back: widget.fromLocationScreen? false: true,
-                              gotoDashboard: widget.fromLocationScreen? true: false);
-                          }else {
-                            showCustomSnackBar('make_yourself_online_first'.tr);
-                          }
-                        }*/
-                                                  },
-                                                  label: Text(
-                                                    (parcel && accepted)
-                                                        ? 'swipe_to_confirm_delivery'
-                                                            .tr
-                                                        : (cod &&
-                                                                accepted &&
-                                                                !restConfModel &&
-                                                                !selfDelivery)
-                                                            ? 'swipe_to_confirm_order'
-                                                                .tr
-                                                            : pickedUp!
-                                                                ? parcel
-                                                                    ? 'swipe_to_deliver_parcel'
-                                                                        .tr
-                                                                    : 'swipe_to_deliver_order'
-                                                                        .tr
-                                                                : handover!
-                                                                    ? parcel
-                                                                        ? 'swipe_to_pick_up_parcel'
-                                                                            .tr
-                                                                        : 'swipe_to_pick_up_order'
-                                                                            .tr
-                                                                    : '',
-                                                    style:
-                                                        robotoMedium.copyWith(
-                                                            fontSize: Dimensions
-                                                                .fontSizeLarge,
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .primaryColor),
-                                                  ),
-                                                  dismissThresholds: 0.5,
-                                                  dismissible: false,
-                                                  shimmer: true,
-                                                  width: 1170,
-                                                  height: 60,
-                                                  buttonSize: 50,
-                                                  radius: 10,
-                                                  icon: Center(
-                                                      child: Icon(
-                                                    Get.find<LocalizationController>()
-                                                            .isLtr
-                                                        ? Icons
-                                                            .double_arrow_sharp
-                                                        : Icons
-                                                            .keyboard_arrow_left,
-                                                    color: Colors.white,
-                                                    size: 20.0,
-                                                  )),
-                                                  isLtr: Get.find<
-                                                          LocalizationController>()
-                                                      .isLtr,
-                                                  boxShadow: const BoxShadow(
-                                                      blurRadius: 0),
-                                                  buttonColor: Theme.of(context)
-                                                      .primaryColor,
-                                                  backgroundColor:
-                                                      const Color(0xffF4F7FC),
-                                                  baseColor: Theme.of(context)
-                                                      .primaryColor,
-                                                )
-                                          : const SizedBox()
-                                  : const SizedBox(),
+                          DeliveryImagesSection(
+                            order: controllerOrderModel,
+                            showDeliveryConfirmImage: showDeliveryConfirmImage,
+                          ),
+                          OrderActionButtonsSection(
+                            order: order,
+                            showDeliveryConfirmImage: showDeliveryConfirmImage,
+                            showBottomView: showBottomView,
+                            showSlider: showSlider,
+                            accepted: accepted!,
+                            parcel: parcel,
+                            processing: processing!,
+                            confirmed: confirmed!,
+                            cod: cod!,
+                            partialPay: partialPay,
+                            selfDelivery: selfDelivery,
+                            pickedUp: pickedUp!,
+                            handover: handover!,
+                            restConfModel: restConfModel,
+                            orderVerificationActive: orderVerificationActive,
+                            cancelPermission: cancelPermission!,
+                            fromLocationScreen: widget.fromLocationScreen,
+                          ),
                         ]),
                       )
                     : const Center(child: CircularProgressIndicator());

@@ -34,7 +34,7 @@ class ConfirmationBottomSheet extends StatelessWidget {
     this.hasCancel = true,
     this.titleStyle,
     this.descriptionStyle,
-    this.topPaddingIfNoIcon = Dimensions.paddingSizeExtraLarge,
+    this.topPaddingIfNoIcon = Dimensions.p50,
   });
 
   @override

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:sixam_mart_delivery/features/auth/screens/dm_registration_success_screen.dart';
 import 'package:sixam_mart_delivery/features/cash_in_hand/screens/my_earning_filter_screen.dart';
 import 'package:sixam_mart_delivery/features/cash_in_hand/screens/my_earning_screen.dart';
+import 'package:sixam_mart_delivery/features/navigation_handler/screens/language_init_screen.dart';
 import 'package:sixam_mart_delivery/features/notification/domain/models/notification_body_model.dart';
 import 'package:sixam_mart_delivery/features/chat/domain/models/conversation_model.dart';
 import 'package:sixam_mart_delivery/features/auth/screens/sign_in_screen.dart';
@@ -63,6 +64,8 @@ class RouteHelper {
   static const String dmRegistrationSuccess = '/dm-registration-success';
   static const String taskScreen = '/task';
   static const String settingScreen = '/setting';
+  static String languageInit = '/language-init';
+
 
   static String getInitialRoute({bool? fromOrderDetails}) =>
       '$initial?from_order_details=${fromOrderDetails.toString()}';
@@ -139,9 +142,12 @@ class RouteHelper {
 
   static String getTaskRoute() => taskScreen;
   static String getSettingRoute() => settingScreen;
+  static String getLanguageInitRoute() => languageInit;
+
 
 
   static List<GetPage> routes = [
+     GetPage(name: languageInit, page: () => const LanguageInitScreen()),
     GetPage(
         name: initial,
         page: () => DashboardScreen(

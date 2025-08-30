@@ -15,10 +15,18 @@ class LanguageRepository implements LanguageRepositoryInterface {
   }
 
   @override
-  Locale getLocaleFromSharedPref() {
-    return Locale(sharedPreferences.getString(AppConstants.languageCode) ?? AppConstants.languages[0].languageCode!,
-        sharedPreferences.getString(AppConstants.countryCode) ?? AppConstants.languages[0].countryCode);
+ Locale? getLocaleFromSharedPref() {
+  String? langCode = sharedPreferences.getString(AppConstants.languageCode);
+  String? countryCode = sharedPreferences.getString(AppConstants.countryCode);
+
+  if (langCode != null && countryCode != null) {
+    // لغة محفوظة مسبقًا
+    return Locale(langCode, countryCode);
+  } else {
+    // مافي لغة محفوظة → نخليها null
+    return null;
   }
+}
 
   @override
   void saveLanguage(Locale locale) async {

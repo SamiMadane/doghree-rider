@@ -241,7 +241,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                               ),
                                               Positioned(
                                                 top: 4,
-                                                left: 4,
+                                                right: 4,
                                                 child: InkWell(
                                                   onTap: () => chatController
                                                       .removeImage(index),

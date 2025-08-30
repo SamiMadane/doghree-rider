@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:sixam_mart_delivery/features/language/domain/models/language_model.dart';
+import 'package:sixam_mart_delivery/features/navigation_handler/screens/navigation_handler_screen.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:sixam_mart_delivery/features/language/controllers/language_controller.dart';
@@ -10,35 +11,52 @@ class LanguageCardWidget extends StatelessWidget {
   final LanguageModel languageModel;
   final LocalizationController localizationController;
   final int index;
-  final bool fromBottomSheet;
+  final bool fromBottomSheet; // إذا كانت البطاقة داخل Bottom Sheet
+  final bool isFromInitScreen; // إذا كانت من بداية التطبيق
 
-  const LanguageCardWidget(
-      {super.key,
-      required this.languageModel,
-      required this.localizationController,
-      required this.index,
-      this.fromBottomSheet = false});
+  const LanguageCardWidget({
+    super.key,
+    required this.languageModel,
+    required this.localizationController,
+    required this.index,
+    this.fromBottomSheet = false,
+    this.isFromInitScreen = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     final isSelected = localizationController.selectedLanguageIndex == index;
+
     return InkWell(
       onTap: () {
-        // تحديد اللغة وحفظها مباشرة عند الضغط
-        localizationController.setSelectLanguageIndex(index);
-        localizationController.setLanguage(
-            Locale(
-              AppConstants.languages[index].languageCode!,
-              AppConstants.languages[index].countryCode,
-            ),
-            fromBottomSheet: fromBottomSheet);
+        final selectedLocale = Locale(
+          AppConstants.languages[index].languageCode!,
+          AppConstants.languages[index].countryCode,
+        );
 
-        if (fromBottomSheet) {
-          localizationController.saveCacheLanguage(Locale(
-            AppConstants.languages[index].languageCode!,
-            AppConstants.languages[index].countryCode,
-          ));
-          Get.back(); // اغلاق الـ Bottom Sheet
+        // تحديث اللغة داخلياً
+        localizationController.setSelectLanguageIndex(index);
+
+        // إذا جئنا من البداية → حفظ اللغة والتوجيه
+        if (isFromInitScreen) {
+          localizationController.saveLanguage(selectedLocale);
+
+          // تأجيل التوجيه بعد اكتمال إطار البناء
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Get.offAll(() => const NavigationHandlerScreen(body: null));
+          });
+        }
+
+        // تعيين اللغة
+        localizationController.setLanguage(
+          selectedLocale,
+          fromBottomSheet: fromBottomSheet,
+        );
+
+        // إذا من الإعدادات → اغلاق الـ Bottom Sheet
+        if (fromBottomSheet && !isFromInitScreen) {
+          localizationController.saveCacheLanguage(selectedLocale);
+          Get.back();
         }
       },
       child: Container(
@@ -53,41 +71,40 @@ class LanguageCardWidget extends StatelessWidget {
             width: 1,
           ),
         ),
-        child: Row(children: [
-          // دائرة الاختيار
-          Container(
-            width: 20,
-            height: 20,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: Theme.of(context)
-                    .textTheme
-                    .bodyMedium!
-                    .color!, 
-                width: isSelected ? 6 : 1.5, 
+        child: Row(
+          children: [
+            Container(
+              width: 20,
+              height: 20,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Theme.of(context).textTheme.bodyMedium!.color!,
+                  width: isSelected ? 6 : 1.5,
+                ),
               ),
-            ),
-            child: isSelected
-                ? Center(
-                    child: Container(
-                      width: 10,
-                      height: 10,
-                      decoration: BoxDecoration(
-                        color: Colors.transparent,
-                        shape: BoxShape.circle,
+              child: isSelected
+                  ? Center(
+                      child: Container(
+                        width: 10,
+                        height: 10,
+                        decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          shape: BoxShape.circle,
+                        ),
                       ),
-                    ),
-                  )
-                : null,
-          ),
-          const SizedBox(width: Dimensions.paddingSizeLarge),
-          Image.asset(languageModel.imageUrl!, width: 36, height: 36),
-          const SizedBox(width: Dimensions.paddingSizeSmall),
-          Text(languageModel.languageName!,
-              style:
-                  robotoRegular.copyWith(fontSize: Dimensions.fontSizeLarge)),
-        ]),
+                    )
+                  : null,
+            ),
+            const SizedBox(width: Dimensions.paddingSizeLarge),
+            Image.asset(languageModel.imageUrl!, width: 36, height: 36),
+            const SizedBox(width: Dimensions.paddingSizeSmall),
+            Text(
+              languageModel.languageName!,
+              style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeLarge),
+            ),
+          ],
+        ),
       ),
     );
   }

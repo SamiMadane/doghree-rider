@@ -89,8 +89,9 @@ class AccountSection extends StatelessWidget {
 }
 
 _manageLanguageFunctionality() {
-  Get.find<LocalizationController>().saveCacheLanguage(null);
-  Get.find<LocalizationController>().searchSelectedLanguage();
+  final localizationController = Get.find<LocalizationController>();
+
+  localizationController.searchSelectedLanguage();
 
   showModalBottomSheet(
     isScrollControlled: true,
@@ -106,9 +107,15 @@ _manageLanguageFunctionality() {
       return ConstrainedBox(
         constraints:
             BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.8),
-        child: const LanguageBottomSheetWidget(),
+        child: LanguageBottomSheetWidget(),
       );
     },
-  ).then((value) => Get.find<LocalizationController>().setLanguage(
-      Get.find<LocalizationController>().getCacheLocaleFromSharedPref()));
+  ).then((value) {
+    final cachedLocale = localizationController.getCacheLocaleFromSharedPref();
+    // ignore: unnecessary_null_comparison
+    if (cachedLocale != null) {
+      localizationController.setLanguage(cachedLocale);
+    }
+  });
 }
+

@@ -4,6 +4,7 @@ import 'package:sixam_mart_delivery/features/chat/domain/models/conversation_mod
 import 'package:sixam_mart_delivery/features/chat/domain/models/message_model.dart';
 import 'package:sixam_mart_delivery/helper/date_converter_helper.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
+import 'package:sixam_mart_delivery/util/manager_colors.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_image_widget.dart';
 import 'package:sixam_mart_delivery/features/chat/widgets/image_diaglog_widget.dart';
@@ -113,7 +114,7 @@ class MessageBubbleWidget extends StatelessWidget {
                         message.isSeen == 1 ? Icons.done_all : Icons.done,
                         size: 14,
                         color: message.isSeen == 1
-                            ? Colors.green
+                            ? ManagerColors.darkGreen
                             : Theme.of(context).hintColor,
                       ),
                       const SizedBox(width: 3),

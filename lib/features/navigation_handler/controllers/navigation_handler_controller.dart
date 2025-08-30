@@ -27,7 +27,7 @@ class NavigationHandlerController extends GetxController implements GetxService 
  Future<bool> getConfigData() async {
   try {
     Response response = await navigationHandlerServiceInterface.getConfigData()
-      .timeout(Duration(seconds: 10));
+      .timeout(Duration(seconds: 7));
 
     if (response.statusCode == 200) {
       _data = response.body;

@@ -1,6 +1,7 @@
 import 'package:sixam_mart_delivery/features/navigation_handler/controllers/navigation_handler_controller.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 class DateConverterHelper {
   static String formatDate(DateTime dateTime) {
@@ -92,41 +93,61 @@ class DateConverterHelper {
     return DateFormat('yyyy-MM-dd').format(dateTime);
   }
 
-  static String convertTodayYesterdayDate(String createdAt) {
+  static Future<void> initLocaleDateFormatting() async {
+    final locale = Get.locale?.languageCode ?? 'en';
+    await initializeDateFormatting(locale);
+  }
+
+  static String formatDateLocalized(DateTime date) {
+    final locale = Get.locale?.languageCode ?? 'en';
+
+    final formatter = DateFormat('d MMMM yyyy', locale);
+    return formatter.format(date);
+  }
+
+  static String convertTodayYesterdayDate(String createdAt,
+      {bool showDate = false}) {
     final DateTime createdDate =
         DateFormat('yyyy-MM-dd HH:mm:ss').parse(createdAt);
     final DateTime now = DateTime.now();
-    final DateFormat formatter = DateFormat('dd MMM yyyy');
+
+    final locale = Get.locale?.languageCode ?? 'en';
+    final formatter = DateFormat('d MMMM yyyy', locale); // التاريخ مع اللغة
 
     if (createdDate.year == now.year &&
         createdDate.month == now.month &&
         createdDate.day == now.day) {
-      return 'Today';
+      return showDate
+          ? '${'today'.tr}, ${formatter.format(createdDate)}'
+          : 'today'.tr;
     }
 
     final DateTime yesterday = now.subtract(const Duration(days: 1));
     if (createdDate.year == yesterday.year &&
         createdDate.month == yesterday.month &&
         createdDate.day == yesterday.day) {
-      return 'Yesterday';
+      return showDate
+          ? '${'yesterday'.tr}, ${formatter.format(createdDate)}'
+          : 'yesterday'.tr;
     }
 
     return formatter.format(createdDate);
   }
 
-  static String convertTimeDifferenceInMinutes(String createdAt) {
+  static String convertTimeDifference(String createdAt) {
     final DateTime createdDate =
         DateFormat('yyyy-MM-dd HH:mm:ss').parse(createdAt);
     final DateTime now = DateTime.now();
+    final difference = now.difference(createdDate);
+    final locale = Get.locale?.languageCode ?? 'en';
 
-    if (createdDate.year == now.year &&
-        createdDate.month == now.month &&
-        createdDate.day == now.day) {
-      int differenceInMinutes = now.difference(createdDate).inMinutes;
-      return '$differenceInMinutes ${'min_ago'.tr}';
-    } else {
-      return DateFormat('h:mm a').format(createdDate);
-    }
+
+    if (difference.inMinutes <= 0) return 'now'.tr;
+    if (difference.inMinutes < 60) return '${difference.inMinutes} ${'m'.tr}';
+    if (difference.inHours < 24) return '${difference.inHours}${'h'.tr}';
+
+    // أكثر من 24 ساعة → نعرض الوقت
+    return DateFormat('h:mm a',locale).format(createdDate);
   }
 
   static String utcToDateTime(String dateTime) {

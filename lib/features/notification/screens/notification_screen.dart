@@ -1,13 +1,10 @@
-import 'package:sixam_mart_delivery/common/widgets/custom_asset_image_widget.dart';
 import 'package:sixam_mart_delivery/features/notification/controllers/notification_controller.dart';
 import 'package:sixam_mart_delivery/helper/date_converter_helper.dart';
 import 'package:sixam_mart_delivery/helper/route_helper.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/manager_assets.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_app_bar_widget.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_image_widget.dart';
-import 'package:sixam_mart_delivery/features/notification/widgets/notification_dialog_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -23,150 +20,179 @@ class _NotificationScreenState extends State<NotificationScreen> {
   @override
   void initState() {
     super.initState();
-
+    // جلب البيانات من API
     Get.find<NotificationController>().getNotificationList();
   }
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (didPop, result) {
-        if (widget.fromNotification) {
-          Get.offAllNamed(RouteHelper.getInitialRoute());
-        } else {
-          Future.delayed(Duration.zero, () {
+    return Scaffold(
+      appBar: CustomAppBarWidget(
+        title: 'notifications'.tr,
+        onBackPressed: () {
+          if (widget.fromNotification) {
+            Get.offAllNamed(RouteHelper.getInitialRoute());
+          } else {
             Get.back();
-          });
-        }
-      },
-      child: Scaffold(
-        appBar: CustomAppBarWidget( 
-          title: 'notification'.tr,
-          onBackPressed: () {
-            if (widget.fromNotification) {
-              Get.offAllNamed(RouteHelper.getInitialRoute());
-            } else {
-              Get.back();
-            }
-          },
-        ),
-        body: GetBuilder<NotificationController>(builder: (notificationController) {
-          if (notificationController.notificationList != null) {
-            notificationController.saveSeenNotificationCount(notificationController.notificationList!.length);
           }
+        },
+      ),
+      body: GetBuilder<NotificationController>(builder: (controller) {
+        final notifications = controller.notificationList;
+        if (notifications == null) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (notifications.isEmpty) {
+          return Center(child: Text('no_notification_found'.tr));
+        }
 
-          List<DateTime> dateTimeList = [];
+        List<DateTime> dateTimeList = [];
 
-          return notificationController.notificationList != null ? notificationController.notificationList!.isNotEmpty ? RefreshIndicator(
-            onRefresh: () async {
-              await notificationController.getNotificationList();
-            },
+        return RefreshIndicator(
+          onRefresh: () async {
+            await controller.getNotificationList();
+          },
+          child: Container(
+            color: Theme.of(context).cardColor,
+            margin: EdgeInsets.only(top: Dimensions.paddingSizeDefault),
             child: ListView.builder(
-              itemCount: notificationController.notificationList!.length,
-              padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
-              shrinkWrap: true,
+              itemCount: notifications.length,
               itemBuilder: (context, index) {
+                final notification = notifications[index];
+                DateTime originalDateTime =
+                    DateConverterHelper.dateTimeStringToDate(
+                        notification.createdAt!);
+                DateTime convertedDate = DateTime(originalDateTime.year,
+                    originalDateTime.month, originalDateTime.day);
 
-                DateTime originalDateTime = DateConverterHelper.dateTimeStringToDate(notificationController.notificationList![index].createdAt!);
-                DateTime convertedDate = DateTime(originalDateTime.year, originalDateTime.month, originalDateTime.day);
                 bool addTitle = false;
-
                 if (!dateTimeList.contains(convertedDate)) {
                   addTitle = true;
                   dateTimeList.add(convertedDate);
                 }
 
-                bool isSeen = notificationController.getSeenNotificationIdList()!.contains(notificationController.notificationList![index].id);
+                bool isSeen = controller
+                        .getSeenNotificationIdList()
+                        ?.contains(notification.id) ??
+                    false;
 
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: Dimensions.paddingSizeSmall),
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-
-                    addTitle ? Padding(
-                      padding: const EdgeInsets.only(bottom: Dimensions.paddingSizeDefault),
-                      child: Text(
-                        DateConverterHelper.convertTodayYesterdayDate(notificationController.notificationList![index].createdAt!),
-                        style: robotoRegular.copyWith(color: Theme.of(context).textTheme.bodyLarge?.color?.withValues(alpha: 0.7)),
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (addTitle)
+                      Padding(
+                        padding:
+                            const EdgeInsets.all(Dimensions.paddingSizeDefault),
+                        child: Text(
+                          DateConverterHelper.convertTodayYesterdayDate(
+                              notification.createdAt!),
+                          style: robotoRegular.copyWith(
+                              color: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge
+                                  ?.color
+                                  ?.withAlpha(180)),
+                        ),
                       ),
-                    ) : const SizedBox(),
-
                     InkWell(
                       onTap: () {
-                        notificationController.addSeenNotificationId(notificationController.notificationList![index].id!);
-
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return NotificationDialogWidget(notificationModel: notificationController.notificationList![index]);
-                          },
-                        );
+                        controller.addSeenNotificationId(notification.id!);
                       },
-                      child: Container(
-                        padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
-                        decoration: BoxDecoration(
-                          color: isSeen ? null : Theme.of(context).disabledColor.withValues(alpha: 0.05),
-                          borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
-                        ),
-                        child: Row(children: [
-
-                          notificationController.notificationList![index].data?.type == 'push_notification' ? ClipOval(
-                            child: CustomImageWidget(
-                              image: '${notificationController.notificationList![index].imageFullUrl}',
-                              height: 60, width: 60,
-                              fit: BoxFit.cover,
-                            ),
-                          ) : const CustomAssetImageWidget(
-                            image: ManagerAssets.orderOnTheWayIcon,
-                            height: 60, width: 60,
-                          ),
-                          const SizedBox(width: Dimensions.paddingSizeDefault),
-
-                          Expanded(
-                            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-
-                              Row(children: [
-
+                      child: Column(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(
+                                Dimensions.paddingSizeDefault),
+                            color: isSeen
+                                ? null
+                                : Theme.of(context).primaryColor.withAlpha(10),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (notification.imageFullUrl != null &&
+                                    notification.imageFullUrl!.isNotEmpty)
+                                  ClipOval(
+                                    child: CustomImageWidget(
+                                      image: notification.imageFullUrl!,
+                                      height: 60,
+                                      width: 60,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  )
+                                else if (!isSeen)
+                                  Container(
+                                    height: 12,
+                                    width: 12,
+                                    margin: const EdgeInsets.only(top: 4),
+                                    decoration: const BoxDecoration(
+                                      color: Colors.green,
+                                      shape: BoxShape.circle,
+                                    ),
+                                  )
+                                else
+                                  const SizedBox(width: 12),
+                                const SizedBox(
+                                    width: Dimensions.paddingSizeDefault),
                                 Expanded(
-                                  child: Text(
-                                    notificationController.notificationList![index].title ?? '',
-                                    style: robotoMedium.copyWith(color: Theme.of(context).textTheme.bodyLarge?.color, fontWeight: isSeen ? FontWeight.w400 : FontWeight.w700),
-                                    maxLines: 1, overflow: TextOverflow.ellipsis,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              notification.title ?? '',
+                                              style: robotoSemiBold.copyWith(
+                                                  fontSize: Dimensions
+                                                      .fontSizeDefault),
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                              width:
+                                                  Dimensions.paddingSizeSmall),
+                                          Text(
+                                            DateConverterHelper
+                                                .convertTimeDifference(
+                                                    notification.createdAt!),
+                                            style: robotoMedium.copyWith(
+                                                fontSize:
+                                                    Dimensions.fontSizeSmall,
+                                                color: Theme.of(context)
+                                                    .hintColor),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                          height:
+                                              Dimensions.paddingSizeExtraSmall),
+                                      Text(
+                                        notification.description ?? '',
+                                        style: robotoRegular.copyWith(
+                                            fontSize:
+                                                Dimensions.fontSizeDefault),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
                                   ),
-                                ),
-                                const SizedBox(width: Dimensions.paddingSizeSmall),
-
-                                Text(
-                                  DateConverterHelper.convertTimeDifferenceInMinutes(notificationController.notificationList![index].createdAt!),
-                                  style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).textTheme.bodyLarge?.color),
-                                ),
-
-                              ]),
-                              const SizedBox(height: Dimensions.paddingSizeExtraSmall),
-
-                              Padding(
-                                padding: const EdgeInsets.only(right: 40),
-                                child: Text(
-                                  notificationController.notificationList![index].description ?? '',
-                                  style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: isSeen ? Theme.of(context).disabledColor : Theme.of(context).hintColor),
-                                  maxLines: 1, overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-
-                            ]),
+                                )
+                              ],
+                            ),
                           ),
-
-                        ]),
+                          const Divider(height: 1),
+                        ],
                       ),
                     ),
-
-                  ]),
+                  ],
                 );
               },
             ),
-          ) : Center(child: Text('no_notification_found'.tr)) : const Center(child: CircularProgressIndicator());
-        }),
-      ),
+          ),
+        );
+      }),
     );
   }
 }

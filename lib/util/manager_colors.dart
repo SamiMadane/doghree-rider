@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class ManagerColors {
   // 🌟 Primary & Secondary Colors
-  static const Color primary = Color(0xFF2A9849);
+  static const Color primary = Color(0xFF750F22);
   static const Color secondary = Color(0xFF1ED7AA);
   static const Color shimmer = Color(0xFFC2C2C2);
 
@@ -11,6 +11,9 @@ class ManagerColors {
   static const Color black = Colors.black;
   static const Color gray = Color(0xFF9E9E9E);
   static const Color moreGray = Color(0xFF757575);
+  static const Color orange = Color(0xFFE28D00);
+  static const Color green = Color(0xFF2A9849);
+  static const Color darkGreen = Color(0xFF388E3C);
 
   // 🌞 Light Theme Colors
   static const Color scaffoldBgLight = Color(0xFFF7F7F7);
