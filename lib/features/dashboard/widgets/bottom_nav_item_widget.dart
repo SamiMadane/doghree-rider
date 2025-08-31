@@ -66,7 +66,7 @@ class BottomNavItemWidget extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: Colors.red,
                         borderRadius:
-                            BorderRadius.circular(Dimensions.radiusDefault),
+                            BorderRadius.circular(Dimensions.r10),
                       ),
                       child: GetBuilder<OrderController>(
                         builder: (orderController) {
@@ -75,7 +75,7 @@ class BottomNavItemWidget extends StatelessWidget {
                                     .toString() ??
                                 '0',
                             style: robotoRegular.copyWith(
-                              fontSize: Dimensions.fontSizeExtraSmall,
+                              fontSize: Dimensions.fs10,
                               color: Colors.white,
                             ),
                           );
@@ -92,11 +92,11 @@ class BottomNavItemWidget extends StatelessWidget {
                   label!,
                   style: isSelected
                       ? robotoSemiBold.copyWith(
-                          fontSize: Dimensions.fontSizeSmall,
+                          fontSize: Dimensions.fs12,
                           color: Theme.of(context).primaryColor,
                         )
                       : robotoRegular.copyWith(
-                          fontSize: Dimensions.fontSizeExtraSmall,
+                          fontSize: Dimensions.fs10,
                           color: Theme.of(context).hintColor,
                         ),
                 ),

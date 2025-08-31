@@ -31,16 +31,16 @@ class DeliveryImagesSection extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.only(top: Dimensions.paddingSizeDefault),
+      padding: const EdgeInsets.only(top: Dimensions.p16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'completed_after_delivery_picture'.tr,
             style:
-                robotoSemiBold.copyWith(fontSize: Dimensions.fontSizeLarge),
+                robotoSemiBold.copyWith(fontSize: Dimensions.fs16),
           ),
-          const SizedBox(height: Dimensions.paddingSizeDefault),
+          const SizedBox(height: Dimensions.p16),
           SizedBox(
             height: 100,
             child: ListView(
@@ -64,7 +64,7 @@ class DeliveryImagesSection extends StatelessWidget {
                       strokeCap: StrokeCap.butt,
                       dashPattern: const [8, 5],
                       padding: const EdgeInsets.all(5),
-                      radius: const Radius.circular(Dimensions.radiusDefault),
+                      radius: const Radius.circular(Dimensions.r10),
                     ),
                     child: SizedBox(
                       height: 100,
@@ -83,7 +83,7 @@ class DeliveryImagesSection extends StatelessWidget {
                           Text(
                             'add_a_photo'.tr,
                             style: robotoRegular.copyWith(
-                              fontSize: Dimensions.fontSizeDefault,
+                              fontSize: Dimensions.fs14,
                               color: Theme.of(context).hintColor,
                             ),
                           ),
@@ -93,7 +93,7 @@ class DeliveryImagesSection extends StatelessWidget {
                   ),
                 ),
 
-                const SizedBox(width: Dimensions.paddingSizeSmall),
+                const SizedBox(width: Dimensions.p10),
 
                 // الصور المضافة تظهر بعد زر الإضافة
                 ...orderController.pickedPrescriptions.map((file) {
@@ -101,14 +101,14 @@ class DeliveryImagesSection extends StatelessWidget {
                     children: [
                       Container(
                         margin: const EdgeInsets.only(
-                            right: Dimensions.paddingSizeSmall),
+                            right: Dimensions.p10),
                         decoration: BoxDecoration(
                           borderRadius:
-                              BorderRadius.circular(Dimensions.radiusDefault),
+                              BorderRadius.circular(Dimensions.r10),
                         ),
                         child: ClipRRect(
                           borderRadius:
-                              BorderRadius.circular(Dimensions.radiusDefault),
+                              BorderRadius.circular(Dimensions.r10),
                           child: GetPlatform.isWeb
                               ? Image.network(
                                   file.path,

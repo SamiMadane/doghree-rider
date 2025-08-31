@@ -26,14 +26,14 @@ class _MyEarningFilterScreenState extends State<MyEarningFilterScreen> {
 
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+              padding: const EdgeInsets.all(Dimensions.p16),
               child: Column(children: [
 
                 CustomDropdownButton(
                   hintText: 'select_earning_types'.tr,
                   dropdownMenuItems: cashInHandController.earningTypes.map((type) => DropdownMenuItem<String>(
                     value: type,
-                    child: Text(type.tr, style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeDefault)),
+                    child: Text(type.tr, style: robotoRegular.copyWith(fontSize: Dimensions.fs14)),
                   )).toList(),
                   isBorder: true,
                   backgroundColor: Theme.of(context).cardColor,
@@ -42,13 +42,13 @@ class _MyEarningFilterScreenState extends State<MyEarningFilterScreen> {
                   },
                   selectedValue: cashInHandController.selectedEarningType,
                 ),
-                const SizedBox(height: Dimensions.paddingSizeExtraLarge),
+                const SizedBox(height: Dimensions.p25),
 
                 CustomDropdownButton(
                   hintText: 'select_date_range'.tr,
                   dropdownMenuItems: cashInHandController.dateTypes.map((range) => DropdownMenuItem<String>(
                     value: range,
-                    child: Text(range.tr, style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeDefault)),
+                    child: Text(range.tr, style: robotoRegular.copyWith(fontSize: Dimensions.fs14)),
                   )).toList(),
                   isBorder: true,
                   backgroundColor: Theme.of(context).cardColor,
@@ -61,11 +61,11 @@ class _MyEarningFilterScreenState extends State<MyEarningFilterScreen> {
                 Visibility(
                   visible: cashInHandController.selectedDateType == 'custom_date_range',
                   child: Container(
-                    padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
-                    margin: const EdgeInsetsDirectional.only(top: Dimensions.paddingSizeExtraLarge),
+                    padding: const EdgeInsets.all(Dimensions.p10),
+                    margin: const EdgeInsetsDirectional.only(top: Dimensions.p25),
                     decoration: BoxDecoration(
                       color: Theme.of(context).cardColor,
-                      borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
+                      borderRadius: BorderRadius.circular(Dimensions.r10),
                       border: Border.all(color: Theme.of(context).disabledColor.withValues(alpha: 0.3)),
                     ),
                     child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -90,10 +90,10 @@ class _MyEarningFilterScreenState extends State<MyEarningFilterScreen> {
           ),
 
           Container(
-            padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+            padding: const EdgeInsets.all(Dimensions.p16),
             decoration: BoxDecoration(
               color: Theme.of(context).cardColor,
-              borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
+              borderRadius: BorderRadius.circular(Dimensions.r4),
               boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 5, spreadRadius: 1)],
             ),
             child: Row(children: [
@@ -115,7 +115,7 @@ class _MyEarningFilterScreenState extends State<MyEarningFilterScreen> {
                   },
                 ),
               ),
-              const SizedBox(width: Dimensions.paddingSizeSmall),
+              const SizedBox(width: Dimensions.p10),
 
               Expanded(
                 child: CustomButtonWidget(

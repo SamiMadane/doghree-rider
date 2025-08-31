@@ -29,10 +29,10 @@ class SettingScreen extends StatelessWidget {
         isBackButtonExist: true,
       ),
       body: Padding(
-        padding: EdgeInsets.only(top: Dimensions.paddingSizeDefault),
+        padding: EdgeInsets.only(top: Dimensions.p16),
         child: Container(
           color: Theme.of(context).cardColor,
-          padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+          padding: const EdgeInsets.all(Dimensions.p16),
           child: Column(
             children: [
               ProfileButtonWidget(
@@ -43,7 +43,7 @@ class SettingScreen extends StatelessWidget {
                   Get.find<ThemeController>().toggleTheme();
                 },
               ),
-              SizedBox(height: Dimensions.paddingSizeExtraSmall),
+              SizedBox(height: Dimensions.p5),
               Divider(),
               GetBuilder<AuthController>(builder: (authController) {
                 return ProfileButtonWidget(
@@ -77,7 +77,7 @@ class SettingScreen extends StatelessWidget {
                   },
                 );
               }),
-              SizedBox(height: Dimensions.paddingSizeExtraSmall),
+              SizedBox(height: Dimensions.p5),
               Divider(),
               GetBuilder<ProfileController>(builder: (profileController) {
                 return ProfileButtonWidget(
@@ -90,9 +90,9 @@ class SettingScreen extends StatelessWidget {
                   },
                 );
               }),
-              SizedBox(height: Dimensions.paddingSizeExtraSmall),
+              SizedBox(height: Dimensions.p5),
               Divider(),
-              SizedBox(height: Dimensions.paddingSizeSmall),
+              SizedBox(height: Dimensions.p10),
               ProfileButtonWidget(
                 svgPath: ManagerAssets.keyIcon,
                 title: 'change_password'.tr,
@@ -128,7 +128,7 @@ class SettingScreen extends StatelessWidget {
                     'delete_your_account'.tr,
                     style: robotoMedium.copyWith(
                       color: Colors.red,
-                      fontSize: Dimensions.fontSizeLarge,
+                      fontSize: Dimensions.fs16,
                     ),
                   ),
                 ),
@@ -155,13 +155,13 @@ void showBgNotificationBottomSheet(bool allow) {
   Get.bottomSheet(
           Container(
             padding: EdgeInsets.symmetric(
-                horizontal: Dimensions.paddingSizeOverLarge,
-                vertical: Dimensions.paddingSizeDefault),
+                horizontal: Dimensions.p30,
+                vertical: Dimensions.p16),
             decoration: BoxDecoration(
               color: Theme.of(Get.context!).cardColor,
               borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(Dimensions.radiusExtraLarge),
-                topRight: Radius.circular(Dimensions.radiusExtraLarge),
+                topLeft: Radius.circular(Dimensions.r20),
+                topRight: Radius.circular(Dimensions.r20),
               ),
             ),
             child: SafeArea(
@@ -170,11 +170,11 @@ void showBgNotificationBottomSheet(bool allow) {
                   height: 5,
                   width: 50,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(Dimensions.radiusLarge),
+                    borderRadius: BorderRadius.circular(Dimensions.r16),
                     color: Theme.of(Get.context!).disabledColor,
                   ),
                 ),
-                const SizedBox(height: Dimensions.paddingSizeLarge),
+                const SizedBox(height: Dimensions.p20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -183,13 +183,13 @@ void showBgNotificationBottomSheet(bool allow) {
                       width: 70,
                       height: 70,
                     ),
-                    SizedBox(width: Dimensions.paddingSizeDefault),
+                    SizedBox(width: Dimensions.p16),
                     Expanded(
                       child: Text(
                         '${!allow ? 'allow'.tr : 'disable'.tr} ${AppConstants.appName} ${!allow ? 'to_run_notification_in_background'.tr : 'from_running_notification_in_background'.tr}',
                         textAlign: TextAlign.start,
                         style: robotoBold.copyWith(
-                            fontSize: Dimensions.fontSizeLarge),
+                            fontSize: Dimensions.fs16),
                         maxLines: 3,
                       ),
                     ),
@@ -199,21 +199,21 @@ void showBgNotificationBottomSheet(bool allow) {
                     ? Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const SizedBox(height: Dimensions.paddingSizeDefault),
+                          const SizedBox(height: Dimensions.p16),
                           Text(
                             "Follow these steps:",
                             style: robotoBold.copyWith(
                               fontSize: Dimensions.fs15,
                             ),
                           ),
-                          const SizedBox(height: Dimensions.paddingSizeSmall),
+                          const SizedBox(height: Dimensions.p10),
                           _buildStep("1", "${AppConstants.appName}"),
                           _buildStep("2", "Battery"),
                           _buildStep("3", "Select Optimized"),
                         ],
                       )
                     : const SizedBox(),
-                const SizedBox(height: Dimensions.paddingSizeLarge),
+                const SizedBox(height: Dimensions.p20),
                 _buildInfoText(
                     "you_will_be_able_to_get_order_notification_even_if_you_are_not_in_the_app"
                         .tr),
@@ -224,7 +224,7 @@ void showBgNotificationBottomSheet(bool allow) {
                         .tr
                     : 'notification_will_not_always_send_alert_from_the_background'
                         .tr),
-                const SizedBox(height: Dimensions.paddingSizeLarge),
+                const SizedBox(height: Dimensions.p20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -232,7 +232,7 @@ void showBgNotificationBottomSheet(bool allow) {
                       onPressed: () => Navigator.pop(Get.context!),
                       child: Text("cancel".tr, style: robotoMedium),
                     ),
-                    const SizedBox(width: Dimensions.paddingSizeSmall),
+                    const SizedBox(width: Dimensions.p10),
                     ElevatedButton(
                       onPressed: () async {
                         final profileController = Get.find<ProfileController>();
@@ -296,8 +296,8 @@ void showBgNotificationBottomSheet(bool allow) {
 
 Widget _buildInfoText(String text) {
   return Container(
-    padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
-    margin: const EdgeInsets.only(bottom: Dimensions.paddingSizeSmall),
+    padding: const EdgeInsets.all(Dimensions.p10),
+    margin: const EdgeInsets.only(bottom: Dimensions.p10),
     decoration: BoxDecoration(
       color: Theme.of(Get.context!).disabledColor.withValues(alpha: 0.2),
       borderRadius: BorderRadius.circular(8.0),
@@ -311,7 +311,7 @@ Widget _buildInfoText(String text) {
 
 Widget _buildStep(String number, String text) {
   return Padding(
-    padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeExtraSmall),
+    padding: const EdgeInsets.symmetric(vertical: Dimensions.p5),
     child: Row(
       children: [
         CircleAvatar(

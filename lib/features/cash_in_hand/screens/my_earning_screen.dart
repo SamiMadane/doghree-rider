@@ -73,10 +73,10 @@ class _MyEarningScreenState extends State<MyEarningScreen> {
                     dmId: Get.find<ProfileController>().profileModel!.id!);
               },
               child: Container(
-                padding: const EdgeInsets.all(Dimensions.paddingSizeExtraSmall),
+                padding: const EdgeInsets.all(Dimensions.p5),
                 decoration: BoxDecoration(
                   color: Theme.of(context).primaryColor,
-                  borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
+                  borderRadius: BorderRadius.circular(Dimensions.r4),
                 ),
                 child: !cashInHandController.downloadLoading!
                     ? Icon(
@@ -96,7 +96,7 @@ class _MyEarningScreenState extends State<MyEarningScreen> {
                       ),
               ),
             ),
-            const SizedBox(width: Dimensions.paddingSizeSmall + 2),
+            const SizedBox(width: Dimensions.p10 + 2),
             InkWell(
               onTap: () {
                 Get.toNamed(RouteHelper.getMyEarningFilterRoute());
@@ -106,11 +106,11 @@ class _MyEarningScreenState extends State<MyEarningScreen> {
                 children: [
                   Container(
                     padding:
-                        const EdgeInsets.all(Dimensions.paddingSizeExtraSmall),
+                        const EdgeInsets.all(Dimensions.p5),
                     decoration: BoxDecoration(
                       color: Theme.of(context).primaryColor,
                       borderRadius:
-                          BorderRadius.circular(Dimensions.radiusSmall),
+                          BorderRadius.circular(Dimensions.r4),
                     ),
                     child: Icon(
                       Icons.filter_list_sharp,
@@ -149,7 +149,7 @@ class _MyEarningScreenState extends State<MyEarningScreen> {
                   ? SingleChildScrollView(
                       controller: scrollController,
                       padding:
-                          const EdgeInsets.all(Dimensions.paddingSizeDefault),
+                          const EdgeInsets.all(Dimensions.p16),
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -161,14 +161,14 @@ class _MyEarningScreenState extends State<MyEarningScreen> {
                                   Container(
                                     width: 170,
                                     margin: const EdgeInsets.only(
-                                        right: Dimensions.paddingSizeSmall),
+                                        right: Dimensions.p10),
                                     padding: const EdgeInsets.all(
-                                        Dimensions.paddingSizeDefault),
+                                        Dimensions.p16),
                                     decoration: BoxDecoration(
                                       color: const Color(0xff313F38)
                                           .withValues(alpha: 0.05),
                                       borderRadius: BorderRadius.circular(
-                                          Dimensions.radiusDefault),
+                                          Dimensions.r10),
                                     ),
                                     child: Column(children: [
                                       Text(
@@ -187,10 +187,10 @@ class _MyEarningScreenState extends State<MyEarningScreen> {
                                                       .primaryColor
                                                   : const Color(0xff313F38),
                                               fontSize: Dimensions
-                                                  .fontSizeExtraLarge)),
+                                                  .fs18)),
                                       const SizedBox(
                                           height:
-                                              Dimensions.paddingSizeExtraSmall -
+                                              Dimensions.p5 -
                                                   2),
                                       Text('total_earning'.tr,
                                           style: robotoMedium.copyWith(
@@ -201,14 +201,14 @@ class _MyEarningScreenState extends State<MyEarningScreen> {
                                   Container(
                                     width: 170,
                                     margin: const EdgeInsets.only(
-                                        right: Dimensions.paddingSizeSmall),
+                                        right: Dimensions.p10),
                                     padding: const EdgeInsets.all(
-                                        Dimensions.paddingSizeDefault),
+                                        Dimensions.p16),
                                     decoration: BoxDecoration(
                                       color: const Color(0xffFF7E0D)
                                           .withValues(alpha: 0.05),
                                       borderRadius: BorderRadius.circular(
-                                          Dimensions.radiusDefault),
+                                          Dimensions.r10),
                                     ),
                                     child: Column(children: [
                                       Text(
@@ -219,10 +219,10 @@ class _MyEarningScreenState extends State<MyEarningScreen> {
                                           style: robotoBold.copyWith(
                                               color: const Color(0xffFF7E0D),
                                               fontSize: Dimensions
-                                                  .fontSizeExtraLarge)),
+                                                  .fs18)),
                                       const SizedBox(
                                           height:
-                                              Dimensions.paddingSizeExtraSmall -
+                                              Dimensions.p5 -
                                                   2),
                                       Text('delivery_fee_earned'.tr,
                                           style: robotoMedium.copyWith(
@@ -233,12 +233,12 @@ class _MyEarningScreenState extends State<MyEarningScreen> {
                                   Container(
                                     width: 170,
                                     padding: const EdgeInsets.all(
-                                        Dimensions.paddingSizeDefault),
+                                        Dimensions.p16),
                                     decoration: BoxDecoration(
                                       color: const Color(0xff006FBD)
                                           .withValues(alpha: 0.05),
                                       borderRadius: BorderRadius.circular(
-                                          Dimensions.radiusDefault),
+                                          Dimensions.r10),
                                     ),
                                     child: Column(children: [
                                       Text(
@@ -249,10 +249,10 @@ class _MyEarningScreenState extends State<MyEarningScreen> {
                                           style: robotoBold.copyWith(
                                               color: const Color(0xff006FBD),
                                               fontSize: Dimensions
-                                                  .fontSizeExtraLarge)),
+                                                  .fs18)),
                                       const SizedBox(
                                           height:
-                                              Dimensions.paddingSizeExtraSmall -
+                                              Dimensions.p5 -
                                                   2),
                                       Text('delivery_tips_earned'.tr,
                                           style: robotoMedium.copyWith(
@@ -264,25 +264,25 @@ class _MyEarningScreenState extends State<MyEarningScreen> {
                               ),
                             ),
                             const SizedBox(
-                                height: Dimensions.paddingSizeExtraLarge),
+                                height: Dimensions.p25),
                             Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text('earning_statement'.tr,
                                       style: robotoRegular.copyWith(
-                                          fontSize: Dimensions.fontSizeLarge,
+                                          fontSize: Dimensions.fs16,
                                           color: Theme.of(context).hintColor)),
                                   Text(
                                       '${cashInHandController.pageSize ?? 0} ${'result_found'.tr}',
                                       style: robotoRegular.copyWith(
-                                          fontSize: Dimensions.fontSizeLarge,
+                                          fontSize: Dimensions.fs16,
                                           color: Theme.of(context).hintColor)),
                                 ]),
-                            const SizedBox(height: Dimensions.paddingSizeSmall),
+                            const SizedBox(height: Dimensions.p10),
                             CustomCard(
                               padding: const EdgeInsets.all(
-                                  Dimensions.paddingSizeDefault),
+                                  Dimensions.p16),
                               child: Column(children: [
                                 ListView.builder(
                                   physics: const NeverScrollableScrollPhysics(),
@@ -316,7 +316,7 @@ class _MyEarningScreenState extends State<MyEarningScreen> {
                                                           1
                                                   ? 0
                                                   : Dimensions
-                                                      .paddingSizeSmall),
+                                                      .p10),
                                           child: Row(children: [
                                             Column(
                                                 crossAxisAlignment:
@@ -337,7 +337,7 @@ class _MyEarningScreenState extends State<MyEarningScreen> {
                                                     ),
                                                     style: robotoBold.copyWith(
                                                         fontSize: Dimensions
-                                                            .fontSizeLarge),
+                                                            .fs16),
                                                   ),
                                                   Text(
                                                       '${'order'.tr} #${earning.order?.id}',
@@ -351,7 +351,7 @@ class _MyEarningScreenState extends State<MyEarningScreen> {
                                                                       alpha:
                                                                           0.6),
                                                           fontSize: Dimensions
-                                                              .fontSizeSmall)),
+                                                              .fs12)),
                                                   (cashInHandController
                                                                   .selectedEarningType ==
                                                               'delivery_fee' &&
@@ -432,11 +432,11 @@ class _MyEarningScreenState extends State<MyEarningScreen> {
                                                                   .disabledColor)),
                                                   const SizedBox(
                                                       height: Dimensions
-                                                          .paddingSizeDefault),
+                                                          .p16),
                                                   Container(
                                                     padding: const EdgeInsets
                                                         .all(Dimensions
-                                                            .paddingSizeExtraSmall),
+                                                            .p5),
                                                     decoration: BoxDecoration(
                                                       color: Theme.of(context)
                                                           .hintColor
@@ -444,7 +444,7 @@ class _MyEarningScreenState extends State<MyEarningScreen> {
                                                               alpha: 0.1),
                                                       borderRadius: BorderRadius
                                                           .circular(Dimensions
-                                                              .radiusDefault),
+                                                              .r10),
                                                     ),
                                                     child: Icon(
                                                       Icons.arrow_forward_ios,
@@ -463,9 +463,9 @@ class _MyEarningScreenState extends State<MyEarningScreen> {
                                             ? Padding(
                                                 padding: const EdgeInsets.only(
                                                     top: Dimensions
-                                                        .paddingSizeSmall,
+                                                        .p10,
                                                     bottom: Dimensions
-                                                        .paddingSizeDefault),
+                                                        .p16),
                                                 child: DottedBorder(
                                                   options:
                                                       RoundedRectDottedBorderOptions(
@@ -478,13 +478,13 @@ class _MyEarningScreenState extends State<MyEarningScreen> {
                                                     padding: const EdgeInsets
                                                         .only(
                                                         left: Dimensions
-                                                            .paddingSizeDefault,
+                                                            .p16,
                                                         right: Dimensions
-                                                            .paddingSizeDefault),
+                                                            .p16),
                                                     radius:
                                                         const Radius.circular(
                                                             Dimensions
-                                                                .radiusDefault),
+                                                                .r10),
                                                   ),
                                                   child: Container(),
                                                 ),
@@ -501,7 +501,7 @@ class _MyEarningScreenState extends State<MyEarningScreen> {
                   : Center(
                       child: Text('no_earning_found'.tr,
                           style: robotoMedium.copyWith(
-                              fontSize: Dimensions.fontSizeLarge)),
+                              fontSize: Dimensions.fs16)),
                     )
               : const Center(child: CircularProgressIndicator());
         }),

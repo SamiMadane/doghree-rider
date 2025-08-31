@@ -55,7 +55,7 @@ class DmRegistrationStep1 extends StatelessWidget {
       visible: authController.dmStatus == 0.4,
       child: Column(children: [
         SizedBox(
-          height: Dimensions.paddingSizeSmall,
+          height: Dimensions.p10,
         ),
         Stack(
           children: [
@@ -103,7 +103,7 @@ class DmRegistrationStep1 extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: Dimensions.paddingSizeExtraLarge),
+        const SizedBox(height: Dimensions.p25),
         WidgetWithLabel(
           label: 'first_name'.tr,
           textField: CustomTextFieldWidget(
@@ -117,7 +117,7 @@ class DmRegistrationStep1 extends StatelessWidget {
             nextFocus: lNameNode,
           ),
         ),
-        const SizedBox(height: Dimensions.paddingSizeDefault),
+        const SizedBox(height: Dimensions.p16),
         WidgetWithLabel(
           label: 'last_name'.tr,
           textField: CustomTextFieldWidget(
@@ -132,7 +132,7 @@ class DmRegistrationStep1 extends StatelessWidget {
             nextFocus: phoneNode,
           ),
         ),
-        const SizedBox(height: Dimensions.paddingSizeDefault),
+        const SizedBox(height: Dimensions.p16),
         WidgetWithLabel(
           label: 'mobile_number'.tr,
           textField: CustomTextFieldWidget(
@@ -149,7 +149,7 @@ class DmRegistrationStep1 extends StatelessWidget {
             countryDialCode: countryDialCode,
           ),
         ),
-        const SizedBox(height: Dimensions.paddingSizeDefault),
+        const SizedBox(height: Dimensions.p16),
         WidgetWithLabel(
           label: 'email'.tr,
           textField: CustomTextFieldWidget(
@@ -163,7 +163,7 @@ class DmRegistrationStep1 extends StatelessWidget {
             nextFocus: passwordNode,
           ),
         ),
-        const SizedBox(height: Dimensions.paddingSizeDefault),
+        const SizedBox(height: Dimensions.p16),
         WidgetWithLabel(
           label: 'password'.tr,
           textField: CustomTextFieldWidget(
@@ -190,7 +190,7 @@ class DmRegistrationStep1 extends StatelessWidget {
             },
           ),
         ),
-        const SizedBox(height: Dimensions.paddingSizeDefault),
+        const SizedBox(height: Dimensions.p16),
         WidgetWithLabel(
           label: 'confirm_password'.tr,
           textField: CustomTextFieldWidget(
@@ -205,7 +205,7 @@ class DmRegistrationStep1 extends StatelessWidget {
             inputAction: TextInputAction.done,
           ),
         ),
-        const SizedBox(height: Dimensions.paddingSizeExtraLarge),
+        const SizedBox(height: Dimensions.p25),
       ]),
     );
   }

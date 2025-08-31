@@ -53,7 +53,7 @@ class CustomTextFieldWidget extends StatefulWidget {
     this.divider = false,
     this.showTitle = false,
     this.prefixImage,
-    this.prefixSize = Dimensions.paddingSizeSmall,
+    this.prefixSize = Dimensions.p10,
     this.iconSize = 18,
     this.isPhone = false,
     this.countryDialCode,
@@ -93,14 +93,14 @@ class CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       widget.showTitle
           ? Text(widget.hintText,
-              style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall))
+              style: robotoRegular.copyWith(fontSize: Dimensions.fs12))
           : const SizedBox(),
-      SizedBox(height: widget.showTitle ? Dimensions.paddingSizeExtraSmall : 0),
+      SizedBox(height: widget.showTitle ? Dimensions.p5 : 0),
       TextField(
         maxLines: widget.maxLines,
         controller: widget.controller,
         focusNode: widget.focusNode,
-        style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeLarge),
+        style: robotoRegular.copyWith(fontSize: Dimensions.fs16),
         textInputAction: widget.inputAction,
         keyboardType: widget.inputType,
         cursorColor: Theme.of(context).primaryColor,
@@ -115,21 +115,21 @@ class CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
             : null,
         decoration: InputDecoration(
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(Dimensions.radiusLarge),
+            borderRadius: BorderRadius.circular(Dimensions.r16),
             borderSide: BorderSide(
                 style: widget.border ? BorderStyle.solid : BorderStyle.none,
                 width: 1,
                 color: Theme.of(context).dividerTheme.color!),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(Dimensions.radiusLarge),
+            borderRadius: BorderRadius.circular(Dimensions.r16),
             borderSide: BorderSide(
                 style: widget.border ? BorderStyle.solid : BorderStyle.none,
                 width: 1,
                 color: Theme.of(context).dividerTheme.color!),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(Dimensions.radiusLarge),
+            borderRadius: BorderRadius.circular(Dimensions.r16),
             borderSide: BorderSide(
                 style: widget.border ? BorderStyle.solid : BorderStyle.none,
                 width: 1.5,
@@ -139,7 +139,7 @@ class CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
           hintText: widget.hintText,
           fillColor: Theme.of(context).cardColor,
           hintStyle: robotoRegular.copyWith(
-              fontSize: Dimensions.fontSizeLarge,
+              fontSize: Dimensions.fs16,
               color: Theme.of(context).hintColor),
           filled: true,
           label: showLabelInside
@@ -149,14 +149,14 @@ class CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
                         text: widget.labelText ?? '',
                         style: robotoRegular.copyWith(
                             fontSize: widget.labelTextSize ??
-                                Dimensions.fontSizeDefault,
+                                Dimensions.fs14,
                             color: Theme.of(context).hintColor.withAlpha(180))),
                     if (widget.isRequired && widget.labelText != null)
                       TextSpan(
                           text: ' *',
                           style: robotoRegular.copyWith(
                               color: Theme.of(context).colorScheme.error,
-                              fontSize: Dimensions.fontSizeDefault)),
+                              fontSize: Dimensions.fs14)),
                   ]),
                 )
               : null,
@@ -179,7 +179,7 @@ class CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
                           initialSelection: widget.countryDialCode,
                           favorite: [widget.countryDialCode!],
                           textStyle: robotoRegular.copyWith(
-                              fontSize: Dimensions.fontSizeDefault,
+                              fontSize: Dimensions.fs14,
                               color: Theme.of(context)
                                   .textTheme
                                   .bodyMedium!
@@ -233,7 +233,7 @@ class CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
       widget.divider
           ? const Padding(
               padding:
-                  EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeLarge),
+                  EdgeInsets.symmetric(horizontal: Dimensions.p20),
               child: Divider())
           : const SizedBox(),
     ]);

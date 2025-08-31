@@ -18,18 +18,18 @@ class PaymentSuccessfulWidget extends StatelessWidget {
       body: SafeArea(child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
 
         Image.asset(success ? ManagerAssets.checked : ManagerAssets.warning, width: 100, height: 100, color: success ? Colors.green : Colors.red),
-        const SizedBox(height: Dimensions.paddingSizeLarge),
+        const SizedBox(height: Dimensions.p20),
 
         Text(
           success ? 'your_payment_is_successfully_completed'.tr : 'your_payment_is_not_done'.tr,
-          style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge),
+          style: robotoMedium.copyWith(fontSize: Dimensions.fs16),
         ),
-        const SizedBox(height: Dimensions.paddingSizeSmall),
+        const SizedBox(height: Dimensions.p10),
 
         const SizedBox(height: 30),
 
         Padding(
-          padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
+          padding: const EdgeInsets.all(Dimensions.p10),
           child: CustomButtonWidget(buttonText: 'okay'.tr, onPressed: () => Get.offAllNamed(RouteHelper.getInitialRoute())),
         ),
       ])),

@@ -47,12 +47,12 @@ class _CustomDropdownButtonState extends State<CustomDropdownButton> {
     return Container(
       decoration: BoxDecoration(
         color: widget.backgroundColor ?? Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(widget.borderRadius ?? Dimensions.radiusDefault),
+        borderRadius: BorderRadius.circular(widget.borderRadius ?? Dimensions.r10),
       ),
       child: DropdownButtonFormField2<String>(
         isExpanded: true,
         decoration: InputDecoration(
-          contentPadding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeSmall),
+          contentPadding: const EdgeInsets.symmetric(vertical: Dimensions.p10),
           focusedBorder: _border(),
           enabledBorder: _border(),
           disabledBorder: _border(),
@@ -61,20 +61,20 @@ class _CustomDropdownButtonState extends State<CustomDropdownButton> {
         ),
         hint: Text(
           widget.hintText ?? 'select_an_option'.tr,
-          style: robotoRegular.copyWith(color: Theme.of(context).disabledColor, fontSize: Dimensions.fontSizeDefault),
+          style: robotoRegular.copyWith(color: Theme.of(context).disabledColor, fontSize: Dimensions.fs14),
         ),
         value: widget.selectedValue,
         items: (widget.dropdownMenuItems ?? widget.items?.map((item) => DropdownMenuItem<String>(
           value: item,
           child: Text(
-            item.tr, style: robotoRegular.copyWith(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: Dimensions.fontSizeDefault),
+            item.tr, style: robotoRegular.copyWith(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: Dimensions.fs14),
           ),
         )).toList()) ?? [
           DropdownMenuItem<String>(
             value: null,
             child: Text(
               'no_data_available'.tr,
-              style: robotoRegular.copyWith(color: Theme.of(context).disabledColor, fontSize: Dimensions.fontSizeDefault),
+              style: robotoRegular.copyWith(color: Theme.of(context).disabledColor, fontSize: Dimensions.fs14),
             ),
           )
         ],
@@ -96,7 +96,7 @@ class _CustomDropdownButtonState extends State<CustomDropdownButton> {
         dropdownStyleData: DropdownStyleData(
           maxHeight: 300,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
+            borderRadius: BorderRadius.circular(Dimensions.r10),
           ),
         ),
         menuItemStyleData: const MenuItemStyleData(
@@ -108,7 +108,7 @@ class _CustomDropdownButtonState extends State<CustomDropdownButton> {
 
   OutlineInputBorder _border() {
     return OutlineInputBorder(
-      borderRadius: BorderRadius.all(Radius.circular(widget.borderRadius ?? Dimensions.radiusDefault)),
+      borderRadius: BorderRadius.all(Radius.circular(widget.borderRadius ?? Dimensions.r10)),
       borderSide: BorderSide(width: 1, color: widget.isBorder ? Theme.of(context).dividerTheme.color! : Colors.transparent),
     );
   }

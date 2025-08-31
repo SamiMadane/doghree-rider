@@ -11,11 +11,11 @@ class OrderShimmerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
+      padding: const EdgeInsets.all(Dimensions.p10),
       height: 150,
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
+        borderRadius: BorderRadius.circular(Dimensions.r10),
         border: Border.all(color: Theme.of(context).disabledColor.withValues(alpha: 0.1), width: 1.5),
       ),
       child: Column(children: [
@@ -24,24 +24,24 @@ class OrderShimmerWidget extends StatelessWidget {
           Shimmer(child: Container(height: 15, width: 100, color: ManagerColors.shimmer)),
           const Expanded(child: SizedBox()),
           Shimmer(child: Container(width: 7, height: 7, decoration: BoxDecoration(color: Theme.of(context).primaryColor, shape: BoxShape.circle))),
-          const SizedBox(width: Dimensions.paddingSizeExtraSmall),
+          const SizedBox(width: Dimensions.p5),
           Shimmer(child: Container(height: 15, width: 70, color: ManagerColors.shimmer)),
         ]),
-        const SizedBox(height: Dimensions.paddingSizeDefault),
+        const SizedBox(height: Dimensions.p16),
 
         Row(crossAxisAlignment: CrossAxisAlignment.center, mainAxisAlignment: MainAxisAlignment.start, children: [
           Image.asset(ManagerAssets.house, width: 20, height: 15, color: Theme.of(context).disabledColor),
-          const SizedBox(width: Dimensions.paddingSizeExtraSmall),
+          const SizedBox(width: Dimensions.p5),
           Shimmer(child: Container(height: 15, width: 200, color: ManagerColors.shimmer)),
         ]),
-        const SizedBox(height: Dimensions.paddingSizeSmall),
+        const SizedBox(height: Dimensions.p10),
 
         Row(crossAxisAlignment: CrossAxisAlignment.center, mainAxisAlignment: MainAxisAlignment.start, children: [
           Icon(Icons.location_on, size: 20, color: Theme.of(context).disabledColor),
-          const SizedBox(width: Dimensions.paddingSizeExtraSmall),
+          const SizedBox(width: Dimensions.p5),
           Shimmer(child: Container(height: 15, width: 200, color: ManagerColors.shimmer)),
         ]),
-        const SizedBox(height: Dimensions.paddingSizeDefault),
+        const SizedBox(height: Dimensions.p16),
 
       ]),
     );

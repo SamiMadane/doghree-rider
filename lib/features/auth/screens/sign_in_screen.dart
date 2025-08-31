@@ -57,26 +57,26 @@ class _SignInScreenState extends State<SignInScreen> {
       body: SafeArea(
           child: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+          padding: const EdgeInsets.all(Dimensions.p16),
           child: GetBuilder<AuthController>(builder: (authController) {
             return Column(children: [
               Image.asset(
                 ManagerAssets.logo,
               ),
               SizedBox(
-                height: Dimensions.paddingSizeLarge,
+                height: Dimensions.p20,
               ),
               Text('sign_in_account'.tr,
                   style: robotoBold.copyWith(
-                      fontSize: Dimensions.fontSizeExtraLarge)),
+                      fontSize: Dimensions.fs18)),
               SizedBox(
-                height: Dimensions.paddingSizeExtraSmall,
+                height: Dimensions.p5,
               ),
               Text('enter_details_continue'.tr,
                   style: robotoRegular.copyWith(
                       color: Theme.of(context).disabledColor,
-                      fontSize: Dimensions.fontSizeDefault)),
-              const SizedBox(height: Dimensions.paddingSizeExtraLarge),
+                      fontSize: Dimensions.fs14)),
+              const SizedBox(height: Dimensions.p25),
               WidgetWithLabel(
                 label: 'mobile_number'.tr,
                 textField: CustomTextFieldWidget(
@@ -100,7 +100,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           .code,
                 ),
               ),
-              const SizedBox(height: Dimensions.paddingSizeExtraLarge),
+              const SizedBox(height: Dimensions.p25),
               WidgetWithLabel(
                 label: 'password'.tr,
                 textField: CustomTextFieldWidget(
@@ -135,7 +135,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           authController.toggleRememberMe(),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(Dimensions
-                            .radiusSmall), // غير الرقم لتكبير أو تصغير الزوايا
+                            .r4), // غير الرقم لتكبير أو تصغير الزوايا
                       ),
                     ),
                     title: Text('remember_me'.tr,
@@ -156,7 +156,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   ),
                 ),
               ]),
-              const SizedBox(height: Dimensions.paddingSizeDefault),
+              const SizedBox(height: Dimensions.p16),
               CustomButtonWidget(
                 buttonText: 'sign_in'.tr,
                 isLoading: authController.isLoading,
@@ -172,7 +172,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   height: Get.find<NavigationHandlerController>()
                           .configModel!
                           .toggleDmRegistration!
-                      ? Dimensions.paddingSizeExtraLarge
+                      ? Dimensions.p25
                       : 0),
               Get.find<NavigationHandlerController>()
                       .configModel!
@@ -191,12 +191,12 @@ class _SignInScreenState extends State<SignInScreen> {
                             text: '${'join_as_a'.tr} ',
                             style: robotoMedium.copyWith(
                                 color: Theme.of(context).disabledColor,
-                                fontSize: Dimensions.fontSizeLarge)),
+                                fontSize: Dimensions.fs16)),
                         TextSpan(
                             text: 'delivery_man'.tr,
                             style: robotoMedium.copyWith(
                                 color: Theme.of(context).disabledColor,
-                                fontSize: Dimensions.fontSizeLarge)),
+                                fontSize: Dimensions.fs16)),
                       ])),
                     )
                   : const SizedBox(),

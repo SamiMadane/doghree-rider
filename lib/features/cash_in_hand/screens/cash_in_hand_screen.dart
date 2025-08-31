@@ -53,9 +53,9 @@ class _CashInHandScreenState extends State<CashInHandScreen> {
                   child: Container(
                     color: Theme.of(context).cardColor,
                     margin: const EdgeInsets.only(
-                        top: Dimensions.paddingSizeDefault),
+                        top: Dimensions.p16),
                     padding:
-                        const EdgeInsets.all(Dimensions.paddingSizeDefault),
+                        const EdgeInsets.all(Dimensions.p16),
                     child: Column(children: [
                       Expanded(
                         child: SingleChildScrollView(
@@ -64,7 +64,7 @@ class _CashInHandScreenState extends State<CashInHandScreen> {
                             BalanceOverviewSection(
                                 profileController: profileController),
                             const SizedBox(
-                                height: Dimensions.paddingSizeExtraLarge),
+                                height: Dimensions.p25),
                             TransactionHistorySection(
                                 cashInHandController: cashInHandController),
                           ]),

@@ -20,7 +20,7 @@ class UserProfileInfoCard extends StatelessWidget {
       children: [
         // الكارد الرئيسي (صورة، اسم، رقم، زر تعديل)
         CustomCard(
-          padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+          padding: const EdgeInsets.all(Dimensions.p16),
           isBorder: false,
           child: Row(
             children: [
@@ -43,7 +43,7 @@ class UserProfileInfoCard extends StatelessWidget {
                       ),
                     ),
 
-              const SizedBox(width: Dimensions.paddingSizeDefault),
+              const SizedBox(width: Dimensions.p16),
 
               /// اسم ورقم الهاتف
               Expanded(
@@ -53,13 +53,13 @@ class UserProfileInfoCard extends StatelessWidget {
                     Text(
                       '${profile?.fName ?? ""} ${profile?.lName ?? ""}',
                       style: robotoSemiBold.copyWith(
-                          fontSize: Dimensions.fontSizeLarge),
+                          fontSize: Dimensions.fs16),
                     ),
-                    const SizedBox(height: Dimensions.paddingSizeExtraSmall),
+                    const SizedBox(height: Dimensions.p5),
                     Text(
                       profile?.phone ?? "",
                       style: robotoRegular.copyWith(
-                          fontSize: Dimensions.fontSizeDefault),
+                          fontSize: Dimensions.fs14),
                     ),
                   ],
                 ),
@@ -70,7 +70,7 @@ class UserProfileInfoCard extends StatelessWidget {
                 width: 100,
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 fontColor: Theme.of(context).textTheme.bodyMedium!.color,
-                radius: Dimensions.radiusOverLarge,
+                radius: Dimensions.r24,
                 buttonText: 'edit'.tr,
                 isBorder: true,
                 isBold: false,
@@ -82,7 +82,7 @@ class UserProfileInfoCard extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(height: Dimensions.paddingSizeDefault),
+        const SizedBox(height: Dimensions.p16),
 
         // صف المعلومات الإضافية (عدد الأيام + إجمالي الطلبات)
         Row(
@@ -91,7 +91,7 @@ class UserProfileInfoCard extends StatelessWidget {
               title: 'since_joining'.tr,
               data: '${profile?.memberSinceDays ?? 0} ${'days'.tr}',
             ),
-            const SizedBox(width: Dimensions.paddingSizeSmall),
+            const SizedBox(width: Dimensions.p10),
             ProfileCardWidget(
               title: 'total_orders'.tr,
               data: profile?.orderCount.toString() ?? '0',

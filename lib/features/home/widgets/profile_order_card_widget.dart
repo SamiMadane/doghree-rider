@@ -29,9 +29,9 @@ class ProfileOrderCardWidget extends StatelessWidget {
           image: AssetImage(imagePath),
           fit: BoxFit.contain,
         ),
-        borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
+        borderRadius: BorderRadius.circular(Dimensions.r10),
       ),
-      padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+      padding: const EdgeInsets.all(Dimensions.p16),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,16 +40,16 @@ class ProfileOrderCardWidget extends StatelessWidget {
             title,
             style: robotoSemiBold.copyWith(
               color: Colors.white,
-              fontSize: isTopCard ? Dimensions.fontSizeOverLarge:Dimensions.fontSizeExtraLarge,
+              fontSize: isTopCard ? Dimensions.fs24:Dimensions.fs18,
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: Dimensions.paddingSizeExtraSmall),
+          const SizedBox(height: Dimensions.p5),
           value != null
               ? Text(
                   value!,
                   style: robotoSemiBold.copyWith(
-                    fontSize: Dimensions.fontSizeOverLarge,
+                    fontSize: Dimensions.fs24,
                     color: Colors.white, // أو overlay لون إذا الصورة فاتحة
                   ),
                   textAlign: TextAlign.center,

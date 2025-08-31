@@ -23,7 +23,7 @@ class _LanguageBottomSheetWidgetState extends State<LanguageBottomSheetWidget> {
     return GetBuilder<LocalizationController>(
         builder: (localizationController) {
       return Container(
-        padding: const EdgeInsets.only(top: Dimensions.paddingSizeLarge),
+        padding: const EdgeInsets.only(top: Dimensions.p20),
         decoration: BoxDecoration(
           color: Theme.of(context).cardColor,
           borderRadius: const BorderRadius.only(
@@ -40,12 +40,12 @@ class _LanguageBottomSheetWidgetState extends State<LanguageBottomSheetWidget> {
               borderRadius: BorderRadius.circular(5),
             ),
           ),
-          const SizedBox(height: Dimensions.paddingSizeLarge),
+          const SizedBox(height: Dimensions.p20),
 
           Text('choose_your_language'.tr,
               style: robotoSemiBold.copyWith(
-                  fontSize: Dimensions.fontSizeExtraLarge)),
-          const SizedBox(height: Dimensions.paddingSizeExtraLarge),
+                  fontSize: Dimensions.fs18)),
+          const SizedBox(height: Dimensions.p25),
 
           Flexible(
             child: SingleChildScrollView(
@@ -54,7 +54,7 @@ class _LanguageBottomSheetWidgetState extends State<LanguageBottomSheetWidget> {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 padding: const EdgeInsets.symmetric(
-                    horizontal: Dimensions.paddingSizeLarge),
+                    horizontal: Dimensions.p20),
                 itemBuilder: (context, index) {
                   return Column(
                     children: [
@@ -67,7 +67,7 @@ class _LanguageBottomSheetWidgetState extends State<LanguageBottomSheetWidget> {
                       ),
                       const SizedBox(
                           height: Dimensions
-                              .paddingSizeSmall), // المسافة بين البطاقات
+                              .p10), // المسافة بين البطاقات
                     ],
                   );
                 },
@@ -75,7 +75,7 @@ class _LanguageBottomSheetWidgetState extends State<LanguageBottomSheetWidget> {
             ),
           ),
 
-          const SizedBox(height: Dimensions.paddingSizeDefault), // فاصل آمن
+          const SizedBox(height: Dimensions.p16), // فاصل آمن
         ]),
       );
     });

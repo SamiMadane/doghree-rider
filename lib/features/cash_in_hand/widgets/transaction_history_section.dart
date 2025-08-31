@@ -31,7 +31,7 @@ class TransactionHistorySection extends StatelessWidget {
                 },
               ),
             ),
-            const SizedBox(width: Dimensions.paddingSizeSmall),
+            const SizedBox(width: Dimensions.p10),
             Expanded(
               child: _TransactionToggleButton(
                 text: 'wallet_provided_earning'.tr,
@@ -45,7 +45,7 @@ class TransactionHistorySection extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: Dimensions.paddingSizeExtraLarge),
+        const SizedBox(height: Dimensions.p25),
 
         // Transaction History + View All
         Row(
@@ -53,7 +53,7 @@ class TransactionHistorySection extends StatelessWidget {
           children: [
             Text(
               "transaction_history".tr,
-              style: robotoSemiBold.copyWith(fontSize: Dimensions.fontSizeLarge),
+              style: robotoSemiBold.copyWith(fontSize: Dimensions.fs16),
             ),
             (cashInHandController.selectedIndex == 0 &&
                         cashInHandController.transactions!.isEmpty) ||
@@ -71,14 +71,14 @@ class TransactionHistorySection extends StatelessWidget {
                     child: Text(
                       'view_all'.tr,
                       style: robotoMedium.copyWith(
-                        fontSize: Dimensions.fontSizeLarge,
+                        fontSize: Dimensions.fs16,
                         color: Theme.of(context).disabledColor,
                       ),
                     ),
                   ),
           ],
         ),
-        const SizedBox(height: Dimensions.paddingSizeDefault),
+        const SizedBox(height: Dimensions.p16),
 
         // القوائم
         if (cashInHandController.selectedIndex == 0)
@@ -113,7 +113,7 @@ class _TransactionToggleButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomButtonWidget(
       buttonText: text,
-      fontSize: Dimensions.fontSizeDefault,
+      fontSize: Dimensions.fs14,
       backgroundColor: isSelected
           ? Theme.of(context).textTheme.bodyMedium!.color
           : Theme.of(context).cardColor,
@@ -173,7 +173,7 @@ class _TransactionList extends StatelessWidget {
                     children: [
                       Text(
                         PriceConverterHelper.convertPrice(item.amount),
-                        style: robotoSemiBold.copyWith(fontSize: Dimensions.fontSizeDefault),
+                        style: robotoSemiBold.copyWith(fontSize: Dimensions.fs14),
                         textDirection: TextDirection.ltr,
                       ),
                       const SizedBox(height: Dimensions.p8),
@@ -182,7 +182,7 @@ class _TransactionList extends StatelessWidget {
                             ? '${'wallet'.tr} ${item.method?.replaceAll('_', ' ').capitalize ?? ''}'
                             : '${'paid_via'.tr} ${item.method?.replaceAll('_', ' ').capitalize ?? ''}',
                         style: robotoRegular.copyWith(
-                          fontSize: Dimensions.fontSizeExtraSmall,
+                          fontSize: Dimensions.fs10,
                           color: Theme.of(context).disabledColor,
                         ),
                       ),
@@ -195,7 +195,7 @@ class _TransactionList extends StatelessWidget {
                     Text(
                       item.paymentTime.toString(),
                       style: robotoRegular.copyWith(
-                        fontSize: Dimensions.fontSizeExtraSmall,
+                        fontSize: Dimensions.fs10,
                         color: Theme.of(context).disabledColor,
                       ),
                     ),
@@ -203,7 +203,7 @@ class _TransactionList extends StatelessWidget {
                     Text(
                       status.tr,
                       style: robotoSemiBold.copyWith(
-                        fontSize: Dimensions.fontSizeExtraSmall,
+                        fontSize: Dimensions.fs10,
                         color: statusColor,
                       ),
                     ),
@@ -211,7 +211,7 @@ class _TransactionList extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: Dimensions.paddingSizeSmall),
+            const SizedBox(height: Dimensions.p10),
           ],
         );
       },

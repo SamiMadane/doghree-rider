@@ -293,15 +293,15 @@ class _MapPreviewSectionState extends State<MapPreviewSection> {
   Widget build(BuildContext context) {
     return widget.showMap
         ? Container(
-            margin: EdgeInsets.only(bottom: Dimensions.paddingSizeDefault),
+            margin: EdgeInsets.only(bottom: Dimensions.p16),
             height: 200,
             width: double.infinity,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(Dimensions.radiusLarge),
+              borderRadius: BorderRadius.circular(Dimensions.r16),
               border: Border.all(color: Colors.grey.shade300),
             ),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(Dimensions.radiusLarge),
+              borderRadius: BorderRadius.circular(Dimensions.r16),
               child: Stack(
                 children: [
                   // الخريطة الحقيقية
@@ -320,7 +320,7 @@ class _MapPreviewSectionState extends State<MapPreviewSection> {
                                         ?.color,
                                   ),
                                   SizedBox(
-                                      height: Dimensions.paddingSizeDefault),
+                                      height: Dimensions.p16),
                                   Text(
                                     'locating'.tr,
                                     style: TextStyle(

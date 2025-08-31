@@ -21,7 +21,7 @@ class WidgetWithLabel extends StatelessWidget {
           label,
           style: robotoMedium,
         ),
-        const SizedBox(height: Dimensions.paddingSizeSmall),
+        const SizedBox(height: Dimensions.p10),
         textField,
       ],
     );

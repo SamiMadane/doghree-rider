@@ -21,11 +21,11 @@ class AccountSection extends StatelessWidget {
       children: [
         Text(
           'account'.tr,
-          style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge),
+          style: robotoMedium.copyWith(fontSize: Dimensions.fs16),
         ),
-        SizedBox(height: Dimensions.paddingSizeDefault),
+        SizedBox(height: Dimensions.p16),
         CustomCard(
-          padding: EdgeInsets.all(Dimensions.paddingSizeDefault),
+          padding: EdgeInsets.all(Dimensions.p16),
           isBorder: false,
           child: Column(
             children: [
@@ -33,7 +33,7 @@ class AccountSection extends StatelessWidget {
                   profileController.profileModel!.earnings == 1)
                 Padding(
                   padding: const EdgeInsets.only(
-                      bottom: Dimensions.paddingSizeDefault),
+                      bottom: Dimensions.p16),
                   child: ProfileButtonWidget(
                     svgPath: ManagerAssets.walletIcon,
                     title: 'balance'.tr,
@@ -50,7 +50,7 @@ class AccountSection extends StatelessWidget {
                 },
               ),
               SizedBox(
-                height: Dimensions.paddingSizeDefault,
+                height: Dimensions.p16,
               ),
               ProfileButtonWidget(
                 svgPath: ManagerAssets.languageIcon,
@@ -71,7 +71,7 @@ class AccountSection extends StatelessWidget {
                 ),
               ),
               SizedBox(
-                height: Dimensions.paddingSizeDefault,
+                height: Dimensions.p16,
               ),
               ProfileButtonWidget(
                 svgPath: ManagerAssets.conversationIcon,
@@ -100,8 +100,8 @@ _manageLanguageFunctionality() {
     backgroundColor: Colors.white,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(Dimensions.radiusExtraLarge),
-          topRight: Radius.circular(Dimensions.radiusExtraLarge)),
+          topLeft: Radius.circular(Dimensions.r20),
+          topRight: Radius.circular(Dimensions.r20)),
     ),
     builder: (context) {
       return ConstrainedBox(

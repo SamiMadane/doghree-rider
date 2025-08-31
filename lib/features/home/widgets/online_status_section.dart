@@ -81,7 +81,7 @@ class StatusSwitchSection extends StatelessWidget {
 
   Widget _buildShimmer(BuildContext context) {
     return CustomCard(
-      padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+      padding: const EdgeInsets.all(Dimensions.p16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -119,18 +119,18 @@ class StatusSwitchSection extends StatelessWidget {
   Widget _buildStatusCard(BuildContext context, bool isActive,
       ProfileController profileController, OrderController orderController) {
     return CustomCard(
-      padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+      padding: const EdgeInsets.all(Dimensions.p16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             isActive ? 'online'.tr : 'offline'.tr,
-            style: robotoSemiBold.copyWith(fontSize: Dimensions.fontSizeLarge),
+            style: robotoSemiBold.copyWith(fontSize: Dimensions.fs16),
           ),
           FlutterSwitch(
             width: 60,
             height: 30,
-            valueFontSize: Dimensions.fontSizeExtraSmall,
+            valueFontSize: Dimensions.fs10,
             activeColor: ManagerColors.darkGreen,
             value: isActive,
             onToggle: (bool toggle) async {
@@ -170,7 +170,7 @@ class StatusSwitchSection extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(
-                                width: Dimensions.paddingSizeDefault),
+                                width: Dimensions.p16),
                             Expanded(
                               child: CustomButtonWidget(
                                 onPressed: () => Get.back(),

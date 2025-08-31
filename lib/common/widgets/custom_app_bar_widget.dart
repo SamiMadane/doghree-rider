@@ -38,7 +38,7 @@ class CustomAppBarWidget extends StatelessWidget
               ? Text(
                   title!,
                   style: robotoSemiBold.copyWith(
-                    fontSize: Dimensions.fontSizeExtraLarge,
+                    fontSize: Dimensions.fs18,
                     color: Theme.of(context).textTheme.bodyMedium!.color,
                   ),
                 )
@@ -75,7 +75,7 @@ class CustomAppBarWidget extends StatelessWidget
       scrolledUnderElevation: 0,
       actions: [
         Padding(
-          padding: const EdgeInsets.only(right: Dimensions.paddingSizeDefault),
+          padding: const EdgeInsets.only(right: Dimensions.p16),
           child: actionWidget ?? const SizedBox(),
         ),
       ],

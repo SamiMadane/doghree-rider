@@ -49,12 +49,12 @@ class _WithdrawMethodScreenState extends State<WithdrawMethodScreen> {
         return disbursementController.disbursementMethodBody != null ? disbursementController.disbursementMethodBody!.methods!.isNotEmpty ? ListView.builder(
           itemCount: disbursementController.disbursementMethodBody!.methods!.length,
           shrinkWrap: true,
-          padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+          padding: const EdgeInsets.all(Dimensions.p16),
           itemBuilder: (context, index) {
             Methods method = disbursementController.disbursementMethodBody!.methods![index];
             return Container(
               width: context.width,
-              margin: const EdgeInsets.only(bottom: Dimensions.paddingSizeDefault),
+              margin: const EdgeInsets.only(bottom: Dimensions.p16),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 color: Theme.of(context).cardColor,
@@ -63,23 +63,23 @@ class _WithdrawMethodScreenState extends State<WithdrawMethodScreen> {
               child: Column(children: [
 
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault, vertical: Dimensions.paddingSizeExtraSmall),
+                  padding: const EdgeInsets.symmetric(horizontal: Dimensions.p16, vertical: Dimensions.p5),
                   child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
 
                     Flexible(
                       child: Text(
                         '${'payment_method'.tr} : ${method.methodName}',
                         maxLines: 1, overflow: TextOverflow.ellipsis,
-                        style: robotoBold.copyWith(fontSize: Dimensions.fontSizeLarge),
+                        style: robotoBold.copyWith(fontSize: Dimensions.fs16),
                       ),
                     ),
 
                     method.isDefault == true ?  Container(
                       decoration: BoxDecoration(
                         color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
+                        borderRadius: BorderRadius.circular(Dimensions.r10),
                       ),
-                      padding: const EdgeInsets.all(Dimensions.fontSizeSmall),
+                      padding: const EdgeInsets.all(Dimensions.fs12),
                       child: Text('default_method'.tr, style: robotoMedium.copyWith(color: Theme.of(context).primaryColor),),
                     ) : InkWell(
                       onTap: () {
@@ -88,9 +88,9 @@ class _WithdrawMethodScreenState extends State<WithdrawMethodScreen> {
                       child: Container(
                         decoration: BoxDecoration(
                           color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
+                          borderRadius: BorderRadius.circular(Dimensions.r10),
                         ),
-                        padding: const EdgeInsets.all(Dimensions.fontSizeSmall),
+                        padding: const EdgeInsets.all(Dimensions.fs12),
                         child: !(disbursementController.isLoading && (index == disbursementController.index))
                           ? Text('make_default'.tr, style: robotoMedium.copyWith(color: Theme.of(context).cardColor))
                           : SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Theme.of(context).cardColor)),
@@ -103,7 +103,7 @@ class _WithdrawMethodScreenState extends State<WithdrawMethodScreen> {
                 const Divider(height: 1, thickness: 0.5),
 
                 Padding(
-                  padding: const EdgeInsets.only(left: Dimensions.paddingSizeDefault, right: Dimensions.paddingSizeDefault, top: Dimensions.paddingSizeDefault),
+                  padding: const EdgeInsets.only(left: Dimensions.p16, right: Dimensions.p16, top: Dimensions.p16),
                   child: Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
 
                     Expanded(
@@ -113,7 +113,7 @@ class _WithdrawMethodScreenState extends State<WithdrawMethodScreen> {
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
                           return Padding(
-                            padding: const EdgeInsets.only(bottom: Dimensions.paddingSizeDefault),
+                            padding: const EdgeInsets.only(bottom: Dimensions.p16),
                             child: Row(children: [
                               Expanded(
                                 child: Text(method.methodFields![index].userInput!.replaceAll('_', ' '),
@@ -124,7 +124,7 @@ class _WithdrawMethodScreenState extends State<WithdrawMethodScreen> {
                               Expanded(
                                 child: Text(
                                   '${method.methodFields![index].userData}',
-                                  style: robotoBold.copyWith(fontSize: Dimensions.fontSizeDefault),
+                                  style: robotoBold.copyWith(fontSize: Dimensions.fs14),
                                   maxLines: 1, overflow: TextOverflow.ellipsis,
                                 ),
                               ),
@@ -134,14 +134,14 @@ class _WithdrawMethodScreenState extends State<WithdrawMethodScreen> {
                         },
                       ),
                     ),
-                    const SizedBox(width: Dimensions.paddingSizeDefault),
+                    const SizedBox(width: Dimensions.p16),
 
                     InkWell(
                       onTap: () {
                         Get.dialog(ConfirmDialogWidget(id: method.id!));
                       },
                       child: Padding(
-                        padding: const EdgeInsets.only(bottom: Dimensions.paddingSizeDefault, top: Dimensions.paddingSizeDefault),
+                        padding: const EdgeInsets.only(bottom: Dimensions.p16, top: Dimensions.p16),
                         child: Icon(CupertinoIcons.delete, color: Theme.of(context).colorScheme.error, size: 20),
                       ),
                     )

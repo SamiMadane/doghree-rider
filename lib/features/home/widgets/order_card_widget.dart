@@ -35,7 +35,7 @@ class OrderCardWidget extends StatelessWidget {
 
     return CustomCard(
       width: MediaQuery.of(context).size.width,
-      padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+      padding: const EdgeInsets.all(Dimensions.p16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -49,14 +49,14 @@ class OrderCardWidget extends StatelessWidget {
                     TextSpan(
                       text: '${'id_label'.tr}: ', // هذا نص الـ Label للترجمة
                       style: robotoSemiBold.copyWith(
-                        fontSize: Dimensions.fontSizeDefault,
+                        fontSize: Dimensions.fs14,
                         color: Theme.of(context).hintColor, // لون رمادي
                       ),
                     ),
                     TextSpan(
                       text: '#${order.id}', // القيمة نفسها
                       style: robotoSemiBold.copyWith(
-                        fontSize: Dimensions.fontSizeDefault,
+                        fontSize: Dimensions.fs14,
                         color: ManagerColors.darkGreen, // برايمري كولور
                       ),
                     ),
@@ -71,13 +71,13 @@ class OrderCardWidget extends StatelessWidget {
                 fillColor: order.paymentStatus == 'paid'
                     ? ManagerColors.success
                     : Theme.of(context).colorScheme.error,
-                borderRadius: Dimensions.radiusExtraLarge,
+                borderRadius: Dimensions.r20,
                 child: Center(
                   child: Text(
                     order.paymentStatus == 'paid' ? 'paid'.tr : 'unpaid'.tr,
                     style: robotoMedium.copyWith(
                       color: ManagerColors.white,
-                      fontSize: Dimensions.fontSizeDefault,
+                      fontSize: Dimensions.fs14,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
@@ -85,7 +85,7 @@ class OrderCardWidget extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: Dimensions.paddingSizeDefault),
+          const SizedBox(height: Dimensions.p16),
 
           // أيقونات + خطوط
           Row(
@@ -114,37 +114,37 @@ class OrderCardWidget extends StatelessWidget {
                   children: [
                     Text(order.storeName!,
                         style: robotoSemiBold.copyWith(
-                            fontSize: Dimensions.fontSizeDefault)),
+                            fontSize: Dimensions.fs14)),
                     Text(order.storeAddress!,
                         style: robotoRegular.copyWith(
-                            fontSize: Dimensions.fontSizeDefault,
+                            fontSize: Dimensions.fs14,
                             color: Theme.of(context).hintColor)),
-                    const SizedBox(height: Dimensions.paddingSizeExtraSmall),
+                    const SizedBox(height: Dimensions.p5),
                     if (parcel)
                       Container(
                         padding: const EdgeInsets.all(
-                            Dimensions.paddingSizeExtraSmall),
+                            Dimensions.p5),
                         decoration: BoxDecoration(
                           borderRadius:
-                              BorderRadius.circular(Dimensions.radiusSmall),
+                              BorderRadius.circular(Dimensions.r4),
                           color:
                               Theme.of(context).primaryColor.withOpacity(0.1),
                         ),
                         child: Text('parcel'.tr,
                             style: robotoMedium.copyWith(
-                                fontSize: Dimensions.fontSizeExtraSmall,
+                                fontSize: Dimensions.fs10,
                                 color: Theme.of(context).primaryColor)),
                       ),
-                    const SizedBox(height: Dimensions.paddingSizeSmall),
+                    const SizedBox(height: Dimensions.p10),
                     Text(
                         parcel
                             ? order.deliveryAddress.toString()
                             : order.storeAddress!,
                         style: robotoSemiBold.copyWith(
-                            fontSize: Dimensions.fontSizeDefault)),
+                            fontSize: Dimensions.fs14)),
                     Text(parcel ? 'Delivery Location' : 'Store Location',
                         style: robotoRegular.copyWith(
-                            fontSize: Dimensions.fontSizeDefault,
+                            fontSize: Dimensions.fs14,
                             color: Theme.of(context).hintColor)),
                   ],
                 ),

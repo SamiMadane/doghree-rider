@@ -19,29 +19,29 @@ class ConfirmationDialogWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.radiusSmall)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.r4)),
       child: Padding(
-        padding: const EdgeInsets.all(Dimensions.paddingSizeLarge),
+        padding: const EdgeInsets.all(Dimensions.p20),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
 
           Padding(
-            padding: const EdgeInsets.all(Dimensions.paddingSizeLarge),
+            padding: const EdgeInsets.all(Dimensions.p20),
             child: Image.asset(icon, width: iconSize, height: iconSize),
           ),
 
           title != null ? Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeLarge),
+            padding: const EdgeInsets.symmetric(horizontal: Dimensions.p20),
             child: Text(
               title!, textAlign: TextAlign.center,
-              style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeExtraLarge, color: Colors.red),
+              style: robotoMedium.copyWith(fontSize: Dimensions.fs18, color: Colors.red),
             ),
           ) : const SizedBox(),
 
           Padding(
-            padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
-            child: Text(description, style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge), textAlign: TextAlign.center),
+            padding: const EdgeInsets.all(Dimensions.p10),
+            child: Text(description, style: robotoMedium.copyWith(fontSize: Dimensions.fs16), textAlign: TextAlign.center),
           ),
-          const SizedBox(height: Dimensions.paddingSizeLarge),
+          const SizedBox(height: Dimensions.p20),
 
           GetBuilder<OrderController>(builder: (orderController) {
             return !orderController.isLoading ? Row(children: [
@@ -50,14 +50,14 @@ class ConfirmationDialogWidget extends StatelessWidget {
                 onPressed: () => isLogOut ? onYesPressed() : Get.back(),
                 style: TextButton.styleFrom(
                   backgroundColor: Theme.of(context).disabledColor.withValues(alpha: 0.3), minimumSize: const Size(1170, 40), padding: EdgeInsets.zero,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.radiusSmall)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.r4)),
                 ),
                 child: Text(
                   isLogOut ? 'yes'.tr : 'no'.tr, textAlign: TextAlign.center,
                   style: robotoBold.copyWith(color: Theme.of(context).textTheme.bodyLarge!.color),
                 ),
               )) : const SizedBox(),
-              SizedBox(width: hasCancel ? Dimensions.paddingSizeLarge : 0),
+              SizedBox(width: hasCancel ? Dimensions.p20 : 0),
 
               Expanded(child: CustomButtonWidget(
                 buttonText: isLogOut ? 'no'.tr : hasCancel ? 'yes'.tr : 'ok'.tr,

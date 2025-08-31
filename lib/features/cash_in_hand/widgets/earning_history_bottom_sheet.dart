@@ -21,26 +21,26 @@ class EarningHistoryBottomSheet extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(Dimensions.radiusLarge)),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(Dimensions.r16)),
       ),
       child: Column(mainAxisSize: MainAxisSize.min, children: [
 
         Container(
           height: 5, width: 50,
-          margin: const EdgeInsets.only(top: Dimensions.paddingSizeSmall, bottom: Dimensions.paddingSizeDefault),
+          margin: const EdgeInsets.only(top: Dimensions.p10, bottom: Dimensions.p16),
           decoration: BoxDecoration(
             color: Theme.of(context).disabledColor.withValues(alpha: 0.3),
-            borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
+            borderRadius: BorderRadius.circular(Dimensions.r4),
           ),
         ),
 
         Text(
           'earning_details'.tr,
-          style: robotoBold.copyWith(color: const Color(0xff313F38), fontSize: Dimensions.fontSizeExtraLarge)
+          style: robotoBold.copyWith(color: const Color(0xff313F38), fontSize: Dimensions.fs18)
         ),
-        const SizedBox(height: Dimensions.paddingSizeDefault),
+        const SizedBox(height: Dimensions.p16),
 
-        Text(PriceConverterHelper.convertPrice(orderWiseTotalEarning), style: robotoBold.copyWith(fontSize: Dimensions.fontSizeExtraLarge + 2, color: Theme.of(context).primaryColor)),
+        Text(PriceConverterHelper.convertPrice(orderWiseTotalEarning), style: robotoBold.copyWith(fontSize: Dimensions.fs18 + 2, color: Theme.of(context).primaryColor)),
 
         RichText(
           textAlign: TextAlign.center,
@@ -58,40 +58,40 @@ class EarningHistoryBottomSheet extends StatelessWidget {
         Text('${'pay_by'.tr}: ${data?.order?.paymentMethod?.tr}'.replaceAll('_', ' '), style: robotoRegular.copyWith(color: Theme.of(context).hintColor)),
 
         Padding(
-          padding: const EdgeInsets.all(Dimensions.paddingSizeLarge),
+          padding: const EdgeInsets.all(Dimensions.p20),
           child: Column(children: [
             Container(
-              padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+              padding: const EdgeInsets.all(Dimensions.p16),
               decoration: BoxDecoration(
                 color: const Color(0xff313F38).withValues(alpha: 0.03),
-                borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
+                borderRadius: BorderRadius.circular(Dimensions.r10),
               ),
               child: Column(children: [
 
                 Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                  Text('delivery_fee'.tr, style: robotoRegular.copyWith(color: Theme.of(context).hintColor, fontSize: Dimensions.fontSizeLarge)),
+                  Text('delivery_fee'.tr, style: robotoRegular.copyWith(color: Theme.of(context).hintColor, fontSize: Dimensions.fs16)),
 
-                  Text(PriceConverterHelper.convertPrice(deliveryFee), style: robotoRegular.copyWith(color: Theme.of(context).hintColor, fontSize: Dimensions.fontSizeLarge)),
+                  Text(PriceConverterHelper.convertPrice(deliveryFee), style: robotoRegular.copyWith(color: Theme.of(context).hintColor, fontSize: Dimensions.fs16)),
                 ]),
-                const SizedBox(height: Dimensions.paddingSizeSmall),
+                const SizedBox(height: Dimensions.p10),
 
                 Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                  Text('delivery_tips'.tr, style: robotoRegular.copyWith(color: Theme.of(context).hintColor, fontSize: Dimensions.fontSizeLarge)),
+                  Text('delivery_tips'.tr, style: robotoRegular.copyWith(color: Theme.of(context).hintColor, fontSize: Dimensions.fs16)),
 
-                  Text(PriceConverterHelper.convertPrice(deliveryTip), style: robotoRegular.copyWith(color: Theme.of(context).hintColor, fontSize: Dimensions.fontSizeLarge)),
+                  Text(PriceConverterHelper.convertPrice(deliveryTip), style: robotoRegular.copyWith(color: Theme.of(context).hintColor, fontSize: Dimensions.fs16)),
                 ]),
-                const SizedBox(height: Dimensions.paddingSizeSmall),
+                const SizedBox(height: Dimensions.p10),
 
                 Container(
                   width: double.infinity, height: 1,
-                  margin: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeSmall),
+                  margin: const EdgeInsets.symmetric(vertical: Dimensions.p10),
                   color: Theme.of(context).disabledColor.withValues(alpha: 0.3),
                 ),
 
                 Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                  Text('total'.tr, style: robotoBold.copyWith(color: const Color(0xff313F38), fontSize: Dimensions.fontSizeLarge)),
+                  Text('total'.tr, style: robotoBold.copyWith(color: const Color(0xff313F38), fontSize: Dimensions.fs16)),
 
-                  Text(PriceConverterHelper.convertPrice(orderWiseTotalEarning), style: robotoBold.copyWith(color: const Color(0xff313F38), fontSize: Dimensions.fontSizeLarge)),
+                  Text(PriceConverterHelper.convertPrice(orderWiseTotalEarning), style: robotoBold.copyWith(color: const Color(0xff313F38), fontSize: Dimensions.fs16)),
                 ]),
 
               ]),

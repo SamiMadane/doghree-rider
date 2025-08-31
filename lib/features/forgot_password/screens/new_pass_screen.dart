@@ -62,9 +62,9 @@ class _NewPassScreenState extends State<NewPassScreen> {
             children: [
               Expanded(
                 child: Container(
-                  padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+                  padding: const EdgeInsets.all(Dimensions.p16),
                   margin:
-                      const EdgeInsets.only(top: Dimensions.paddingSizeDefault),
+                      const EdgeInsets.only(top: Dimensions.p16),
                   color: Theme.of(context).cardColor,
                   child: Column(
                     children: [
@@ -82,7 +82,7 @@ class _NewPassScreenState extends State<NewPassScreen> {
                           ),
                         ),
                       if (widget.fromPasswordChange)
-                        const SizedBox(height: Dimensions.paddingSizeDefault),
+                        const SizedBox(height: Dimensions.p16),
 
                       // New Password
                       WidgetWithLabel(
@@ -113,7 +113,7 @@ class _NewPassScreenState extends State<NewPassScreen> {
                           alignment: Alignment.centerLeft,
                           child: PassViewWidget(),
                         ),
-                      const SizedBox(height: Dimensions.paddingSizeDefault),
+                      const SizedBox(height: Dimensions.p16),
 
                       // Confirm Password
                       WidgetWithLabel(
@@ -138,10 +138,10 @@ class _NewPassScreenState extends State<NewPassScreen> {
                   return SafeArea(
                     child: Container(
                       padding: const EdgeInsets.only(
-                        top: Dimensions.paddingSizeDefault,
-                        left: Dimensions.paddingSizeDefault,
-                        right: Dimensions.paddingSizeDefault,
-                      bottom: Dimensions.paddingSizeExtraSmall
+                        top: Dimensions.p16,
+                        left: Dimensions.p16,
+                        right: Dimensions.p16,
+                      bottom: Dimensions.p5
 
                       ),
                       decoration: BoxDecoration(

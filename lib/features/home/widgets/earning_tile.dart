@@ -21,9 +21,9 @@ class EarningTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomCard(
-      padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+      padding: const EdgeInsets.all(Dimensions.p16),
       fillColor: Theme.of(context).scaffoldBackgroundColor,
-      borderRadius: Dimensions.radiusDefault,
+      borderRadius: Dimensions.r10,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -34,7 +34,7 @@ class EarningTile extends StatelessWidget {
               Text(
                 title,
                 style: robotoMedium.copyWith(
-                  fontSize: Dimensions.fontSizeLarge,
+                  fontSize: Dimensions.fs16,
                 ),
               ),
               if (title == 'Total Earnings') ...[
@@ -49,14 +49,14 @@ class EarningTile extends StatelessWidget {
               ]
             ],
           ),
-          const SizedBox(height: Dimensions.paddingSizeSmall),
+          const SizedBox(height: Dimensions.p10),
           // الصف الثاني: المبلغ أو *****
           Text(
             (amount != null && showAmount)
                 ? PriceConverterHelper.convertPrice(amount)
                 : '*****',
             style: robotoMedium.copyWith(
-              fontSize: Dimensions.fontSizeExtraLarge,
+              fontSize: Dimensions.fs18,
             ),
           ),
         ],

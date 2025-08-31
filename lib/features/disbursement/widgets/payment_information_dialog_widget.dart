@@ -13,7 +13,7 @@ class PaymentInformationDialogWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: context.width * 0.9,
-      padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+      padding: const EdgeInsets.all(Dimensions.p16),
       child: Column(mainAxisSize: MainAxisSize.min, children: [
 
         Align(
@@ -34,12 +34,12 @@ class PaymentInformationDialogWidget extends StatelessWidget {
         ),
 
         Padding(
-          padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+          padding: const EdgeInsets.all(Dimensions.p16),
           child: Column(children: [
 
             disbursement.status == 'completed' ? Column(children: [
-              Text("payment_information".tr, style: robotoBold.copyWith(fontSize: Dimensions.fontSizeExtraLarge)),
-              const SizedBox(height: Dimensions.paddingSizeDefault),
+              Text("payment_information".tr, style: robotoBold.copyWith(fontSize: Dimensions.fs18)),
+              const SizedBox(height: Dimensions.p16),
 
               Text(
                 "you_payment_has_been_completed_your_will_receive_the_amount_within_7_day_please_wait_till_then".tr,
@@ -48,45 +48,45 @@ class PaymentInformationDialogWidget extends StatelessWidget {
               ),
             ]) : const SizedBox(),
 
-            const SizedBox(height: Dimensions.paddingSizeDefault),
+            const SizedBox(height: Dimensions.p16),
 
             Align(
               alignment: Alignment.centerLeft,
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text("payment_information".tr, style: robotoBold.copyWith(fontSize: Dimensions.fontSizeExtraLarge)),
-                const SizedBox(height: Dimensions.paddingSizeDefault),
+                Text("payment_information".tr, style: robotoBold.copyWith(fontSize: Dimensions.fs18)),
+                const SizedBox(height: Dimensions.p16),
 
                 Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                  Text('payment_method'.tr, style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeSmall)),
+                  Text('payment_method'.tr, style: robotoMedium.copyWith(fontSize: Dimensions.fs12)),
 
                   Text(disbursement.withdrawMethod!.methodName!, style: robotoBold),
                 ]),
-                const SizedBox(height: Dimensions.paddingSizeDefault),
+                const SizedBox(height: Dimensions.p16),
 
                 Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                  Text('amount'.tr, style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeSmall)),
+                  Text('amount'.tr, style: robotoMedium.copyWith(fontSize: Dimensions.fs12)),
 
                   Text(PriceConverterHelper.convertPrice(disbursement.disbursementAmount), style: robotoBold),
                 ]),
-                const SizedBox(height: Dimensions.paddingSizeDefault),
+                const SizedBox(height: Dimensions.p16),
 
                 Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                  Text('disbursement_id'.tr, style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeSmall)),
+                  Text('disbursement_id'.tr, style: robotoMedium.copyWith(fontSize: Dimensions.fs12)),
 
                   Text(disbursement.disbursementId.toString(), style: robotoBold),
                 ]),
-                const SizedBox(height: Dimensions.paddingSizeDefault),
+                const SizedBox(height: Dimensions.p16),
 
                 Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                  Text('status'.tr, style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeSmall)),
+                  Text('status'.tr, style: robotoMedium.copyWith(fontSize: Dimensions.fs12)),
 
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault, vertical: Dimensions.paddingSizeExtraSmall),
+                    padding: const EdgeInsets.symmetric(horizontal: Dimensions.p16, vertical: Dimensions.p5),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
+                      borderRadius: BorderRadius.circular(Dimensions.r4),
                       color: disbursement.status == 'pending' ? Colors.blue.withValues(alpha: 0.1) : disbursement.status == 'completed' ? Colors.green.withValues(alpha: 0.1) : Colors.red.withValues(alpha: 0.1),
                     ),
-                    child: Text(disbursement.status!.tr, style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeSmall, color: disbursement.status == 'pending' ? Colors.blue : disbursement.status == 'completed' ? Colors.green : Colors.red)),
+                    child: Text(disbursement.status!.tr, style: robotoMedium.copyWith(fontSize: Dimensions.fs12, color: disbursement.status == 'pending' ? Colors.blue : disbursement.status == 'completed' ? Colors.green : Colors.red)),
                   ),
                 ]),
 

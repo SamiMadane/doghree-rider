@@ -4,6 +4,7 @@ import 'package:sixam_mart_delivery/features/auth/controllers/auth_controller.da
 import 'package:sixam_mart_delivery/features/order/controllers/order_controller.dart';
 import 'package:sixam_mart_delivery/features/disbursement/helper/disbursement_helper.dart';
 import 'package:sixam_mart_delivery/features/profile/controllers/profile_controller.dart';
+import 'package:sixam_mart_delivery/features/task/screens/task_screen.dart';
 import 'package:sixam_mart_delivery/helper/notification_helper.dart';
 import 'package:sixam_mart_delivery/helper/route_helper.dart';
 import 'package:sixam_mart_delivery/main.dart';
@@ -51,6 +52,7 @@ class DashboardScreenState extends State<DashboardScreen> {
       const HomeScreen(),
       AvailableOrdersScreen(onTap: () => _setPage(0)),
       const OrderScreen(),
+      TaskScreen(),
       const ProfileScreen(),
     ];
 
@@ -153,7 +155,7 @@ class DashboardScreenState extends State<DashboardScreen> {
             behavior: SnackBarBehavior.floating,
             backgroundColor: Colors.green,
             duration: const Duration(seconds: 2),
-            margin: const EdgeInsets.all(Dimensions.paddingSizeSmall),
+            margin: const EdgeInsets.all(Dimensions.p10),
           ));
           _canExit = true;
 
@@ -169,20 +171,20 @@ class DashboardScreenState extends State<DashboardScreen> {
                 decoration: BoxDecoration(
                   boxShadow: [
                     BoxShadow(
-                       color: Theme.of(context).shadowColor,
-                          blurRadius: 5,
-                          spreadRadius: 2,
-                          offset: const Offset(0, -3), 
+                      color: Theme.of(context).shadowColor,
+                      blurRadius: 5,
+                      spreadRadius: 2,
+                      offset: const Offset(0, -3),
                     ),
                   ],
                 ),
                 child: BottomAppBar(
-                  elevation: 0, 
+                  elevation: 0,
                   notchMargin: 5,
                   shape: const CircularNotchedRectangle(),
                   child: Padding(
                     padding:
-                        const EdgeInsets.all(Dimensions.paddingSizeExtraSmall),
+                        const EdgeInsets.all(Dimensions.p5),
                     child: Row(
                       children: [
                         BottomNavItemWidget(
@@ -207,10 +209,17 @@ class DashboardScreenState extends State<DashboardScreen> {
                           onTap: () => _setPage(2),
                         ),
                         BottomNavItemWidget(
-                          label: 'profile'.tr,
-                          svgPath: ManagerAssets.userIcon,
+                          label: 'task'.tr,
+                          svgPath:
+                              ManagerAssets.taskIcon, // ضع أيقونة جديدة للتاب
                           isSelected: _pageIndex == 3,
                           onTap: () => _setPage(3),
+                        ),
+                        BottomNavItemWidget(
+                          label: 'profile'.tr,
+                          svgPath: ManagerAssets.userIcon,
+                          isSelected: _pageIndex == 4,
+                          onTap: () => _setPage(4),
                         ),
                       ],
                     ),

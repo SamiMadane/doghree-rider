@@ -54,7 +54,7 @@ class OrderRequestWidget extends StatelessWidget {
     );
 
     return CustomCard(
-      padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+      padding: const EdgeInsets.all(Dimensions.p16),
       child: GetBuilder<OrderController>(builder: (orderController) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -68,14 +68,14 @@ class OrderRequestWidget extends StatelessWidget {
                       TextSpan(
                         text: '${'order_id'.tr}: ', // هذا نص الـ Label للترجمة
                         style: robotoRegular.copyWith(
-                          fontSize: Dimensions.fontSizeDefault,
+                          fontSize: Dimensions.fs14,
                           color: Theme.of(context).hintColor, // لون رمادي
                         ),
                       ),
                       TextSpan(
                         text: '#${orderModel.id}', // القيمة نفسها
                         style: robotoRegular.copyWith(
-                          fontSize: Dimensions.fontSizeDefault,
+                          fontSize: Dimensions.fs14,
                           color: Theme.of(context)
                               .textTheme
                               .bodyMedium
@@ -92,7 +92,7 @@ class OrderRequestWidget extends StatelessWidget {
                   '${DateConverterHelper.timeDistanceInMin(orderModel.createdAt!)} ${'mins_ago'.tr}',
                   style: robotoRegular.copyWith(
                       color: ManagerColors.darkGreen,
-                      fontSize: Dimensions.fontSizeExtraSmall),
+                      fontSize: Dimensions.fs10),
                 ),
                 Spacer(),
                 Row(
@@ -111,7 +111,7 @@ class OrderRequestWidget extends StatelessWidget {
                                 orderModel.originalDeliveryCharge! +
                                     orderModel.dmTips!),
                             style: robotoSemiBold.copyWith(
-                                fontSize: Dimensions.fontSizeDefault),
+                                fontSize: Dimensions.fs14),
                           )
                         : const SizedBox(),
                     SizedBox(
@@ -120,7 +120,7 @@ class OrderRequestWidget extends StatelessWidget {
                     Text(
                       '${orderModel.paymentMethod == 'cash_on_delivery' ? 'cod'.tr : orderModel.paymentMethod == 'wallet' ? 'wallet'.tr : 'paid'.tr}',
                       style: robotoSemiBold.copyWith(
-                        fontSize: Dimensions.fontSizeDefault,
+                        fontSize: Dimensions.fs14,
                         color: orderModel.paymentMethod == 'cash_on_delivery'
                             ? ManagerColors.orange
                             : orderModel.paymentMethod == 'wallet'
@@ -132,7 +132,7 @@ class OrderRequestWidget extends StatelessWidget {
                 )
               ],
             ),
-            const SizedBox(height: Dimensions.paddingSizeDefault),
+            const SizedBox(height: Dimensions.p16),
 
             // ICONS + DOTTED LINE + CONTENT
             Row(
@@ -192,7 +192,7 @@ class OrderRequestWidget extends StatelessWidget {
                                               ''
                                           : orderModel.storeName ?? '',
                                       style: robotoSemiBold.copyWith(
-                                        fontSize: Dimensions.fontSizeSmall,
+                                        fontSize: Dimensions.fs12,
                                       ),
                                     ),
                                     SizedBox(
@@ -202,20 +202,20 @@ class OrderRequestWidget extends StatelessWidget {
                                       '${distance > 1000 ? '1000+' : distance.toStringAsFixed(2)} ${'km_away'.tr}',
                                       style: robotoRegular.copyWith(
                                           fontSize:
-                                              Dimensions.fontSizeExtraSmall,
+                                              Dimensions.fs10,
                                           color: ManagerColors.darkGreen),
                                       textAlign: TextAlign.center,
                                     ),
                                   ],
                                 ),
                                 const SizedBox(
-                                    height: Dimensions.paddingSizeExtraSmall),
+                                    height: Dimensions.p5),
                                 Text(
                                   parcel
                                       ? 'parcel'.tr
                                       : '${orderModel.detailsCount} ${orderModel.detailsCount! > 1 ? 'items'.tr : 'item'.tr}',
                                   style: robotoMedium.copyWith(
-                                    fontSize: Dimensions.fontSizeSmall,
+                                    fontSize: Dimensions.fs12,
                                     color: ManagerColors.darkGreen,
                                   ),
                                 ),
@@ -229,7 +229,7 @@ class OrderRequestWidget extends StatelessWidget {
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: robotoRegular.copyWith(
-                                    fontSize: Dimensions.fontSizeSmall,
+                                    fontSize: Dimensions.fs12,
                                     color: Theme.of(context).disabledColor,
                                   ),
                                 ),
@@ -239,7 +239,7 @@ class OrderRequestWidget extends StatelessWidget {
                         ],
                       ),
 
-                      const SizedBox(height: Dimensions.paddingSizeLarge),
+                      const SizedBox(height: Dimensions.p20),
 
                       // delivery + view on map
                       Row(
@@ -256,7 +256,7 @@ class OrderRequestWidget extends StatelessWidget {
                                       : orderModel.deliveryAddress?.address ??
                                           '',
                                   style: robotoSemiBold.copyWith(
-                                    fontSize: Dimensions.fontSizeSmall,
+                                    fontSize: Dimensions.fs12,
                                   ),
                                 ),
                                 const SizedBox(height: 4),
@@ -265,7 +265,7 @@ class OrderRequestWidget extends StatelessWidget {
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: robotoRegular.copyWith(
-                                    fontSize: Dimensions.fontSizeSmall,
+                                    fontSize: Dimensions.fs12,
                                     color: Theme.of(context).disabledColor,
                                   ),
                                 ),
@@ -278,7 +278,7 @@ class OrderRequestWidget extends StatelessWidget {
                           Expanded(
                             child: CustomButtonWidget(
                               buttonText: 'view_on_map'.tr,
-                              radius: Dimensions.radiusOverLarge,
+                              radius: Dimensions.r24,
                               fontColor:
                                   Theme.of(context).textTheme.bodyMedium?.color,
                               onPressed: () => Get.to(() => OrderLocationScreen(
@@ -302,7 +302,7 @@ class OrderRequestWidget extends StatelessWidget {
               ],
             ),
 
-            const SizedBox(height: Dimensions.paddingSizeLarge),
+            const SizedBox(height: Dimensions.p20),
 
             // ACTIONS: ignore + accept
             Row(
@@ -310,10 +310,10 @@ class OrderRequestWidget extends StatelessWidget {
                 Expanded(
                   child: CustomButtonWidget(
                       height: 40,
-                      radius: Dimensions.radiusDefault,
+                      radius: Dimensions.r10,
                       buttonText: 'ignore'.tr,
                       transparent: true,
-                      fontSize: Dimensions.fontSizeLarge,
+                      fontSize: Dimensions.fs16,
                       fontColor: Theme.of(context).textTheme.bodyLarge!.color,
                       isBorder: true,
                       borderColor: Theme.of(context).textTheme.bodyLarge!.color,
@@ -335,13 +335,13 @@ class OrderRequestWidget extends StatelessWidget {
                             ),
                           )),
                 ),
-                const SizedBox(width: Dimensions.paddingSizeSmall),
+                const SizedBox(width: Dimensions.p10),
                 Expanded(
                   child: CustomButtonWidget(
                       height: 40,
-                      radius: Dimensions.radiusDefault,
+                      radius: Dimensions.r10,
                       buttonText: 'accept'.tr,
-                      fontSize: Dimensions.fontSizeLarge,
+                      fontSize: Dimensions.fs16,
                       onPressed: () => showCustomBottomSheet(
                             child: ConfirmationBottomSheet(
                               title: 'are_you_sure_you_want_to_accept_this_order'.tr,

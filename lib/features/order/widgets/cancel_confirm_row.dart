@@ -38,7 +38,7 @@ class CancelConfirmRow extends StatelessWidget {
               minimumSize: const Size(1170, 40),
               padding: EdgeInsets.zero,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
+                borderRadius: BorderRadius.circular(Dimensions.r4),
                 side: BorderSide(
                   width: 1,
                   color: Theme.of(context).textTheme.bodyLarge!.color!,
@@ -50,12 +50,12 @@ class CancelConfirmRow extends StatelessWidget {
               textAlign: TextAlign.center,
               style: robotoRegular.copyWith(
                 color: Theme.of(context).textTheme.bodyLarge!.color,
-                fontSize: Dimensions.fontSizeLarge,
+                fontSize: Dimensions.fs16,
               ),
             ),
           ),
         ),
-        const SizedBox(width: Dimensions.paddingSizeSmall),
+        const SizedBox(width: Dimensions.p10),
         Expanded(
           child: CustomButtonWidget(
             buttonText: 'confirm'.tr,

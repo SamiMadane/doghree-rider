@@ -48,43 +48,43 @@ class _NewRequestDialogWidgetState extends State<NewRequestDialogWidget> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.radiusSmall)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.r4)),
       child: Padding(
-        padding: const EdgeInsets.all(Dimensions.paddingSizeLarge),
+        padding: const EdgeInsets.all(Dimensions.p20),
         child: GetBuilder<OrderController>(builder: (orderController) {
           return Column(mainAxisSize: MainAxisSize.min, children: [
 
             Image.asset(ManagerAssets.notificationIn, height: 60, color: Theme.of(context).primaryColor),
 
             Padding(
-              padding: const EdgeInsets.all(Dimensions.paddingSizeLarge),
+              padding: const EdgeInsets.all(Dimensions.p20),
               child: Text(
                 widget.isRequest ? 'new_order_request_from_a_customer'.tr : 'you_have_assigned_a_new_order'.tr, textAlign: TextAlign.center,
-                style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeLarge),
+                style: robotoRegular.copyWith(fontSize: Dimensions.fs16),
               ),
             ),
 
             orderController.orderDetailsModel != null ? Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Text('with'.tr , textAlign: TextAlign.center, style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeDefault)),
+              Text('with'.tr , textAlign: TextAlign.center, style: robotoRegular.copyWith(fontSize: Dimensions.fs14)),
               Text(
                 ' ${orderController.orderDetailsModel != null ? orderController.orderDetailsModel!.length.toString() : 0} ',
-                textAlign: TextAlign.center, style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge),
+                textAlign: TextAlign.center, style: robotoMedium.copyWith(fontSize: Dimensions.fs16),
               ),
-              Text('items'.tr, textAlign: TextAlign.center, style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeDefault)),
+              Text('items'.tr, textAlign: TextAlign.center, style: robotoRegular.copyWith(fontSize: Dimensions.fs14)),
             ]) : const SizedBox(),
 
             orderController.orderDetailsModel != null ? ListView.builder(
               itemCount: orderController.orderDetailsModel!.length,
               shrinkWrap: true,
-              padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeSmall),
+              padding: const EdgeInsets.symmetric(vertical: Dimensions.p10),
               itemBuilder: (context,index){
                 return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeExtraSmall),
+                  padding: const EdgeInsets.symmetric(vertical: Dimensions.p5),
                   child: Row(children: [
-                    Text('${'item'.tr} ${index + 1}: ', style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeSmall)),
+                    Text('${'item'.tr} ${index + 1}: ', style: robotoMedium.copyWith(fontSize: Dimensions.fs12)),
                     Flexible(child: Text(
                         '${orderController.orderDetailsModel![index].itemDetails!.name!} ( x ${orderController.orderDetailsModel![index].quantity})',
-                        maxLines: 2, overflow: TextOverflow.ellipsis, style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall)),
+                        maxLines: 2, overflow: TextOverflow.ellipsis, style: robotoRegular.copyWith(fontSize: Dimensions.fs12)),
                     ),
                   ]),
                 );

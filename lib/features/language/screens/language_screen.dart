@@ -34,19 +34,19 @@ class ChooseLanguageScreen extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(
-                horizontal: Dimensions.paddingSizeLarge),
+                horizontal: Dimensions.p20),
             child: Text('choose_your_language'.tr,
-                style: robotoBold.copyWith(fontSize: Dimensions.fontSizeLarge)),
+                style: robotoBold.copyWith(fontSize: Dimensions.fs16)),
           ),
-          const SizedBox(height: Dimensions.paddingSizeExtraSmall),
+          const SizedBox(height: Dimensions.p5),
           Padding(
             padding: const EdgeInsets.symmetric(
-                horizontal: Dimensions.paddingSizeLarge),
+                horizontal: Dimensions.p20),
             child: Text('choose_your_language_to_proceed'.tr,
                 style:
-                    robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall)),
+                    robotoRegular.copyWith(fontSize: Dimensions.fs12)),
           ),
-          const SizedBox(height: Dimensions.paddingSizeExtraLarge),
+          const SizedBox(height: Dimensions.p25),
           Expanded(
             child: SingleChildScrollView(
               child: ListView.builder(
@@ -54,7 +54,7 @@ class ChooseLanguageScreen extends StatelessWidget {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 padding: const EdgeInsets.symmetric(
-                    horizontal: Dimensions.paddingSizeLarge),
+                    horizontal: Dimensions.p20),
                 itemBuilder: (context, index) {
                   return LanguageCardWidget(
                     languageModel: localizationController.languages[index],
@@ -67,8 +67,8 @@ class ChooseLanguageScreen extends StatelessWidget {
           ),
           Container(
             padding: const EdgeInsets.symmetric(
-                vertical: Dimensions.paddingSizeDefault,
-                horizontal: Dimensions.paddingSizeExtraLarge),
+                vertical: Dimensions.p16,
+                horizontal: Dimensions.p25),
             decoration: BoxDecoration(
               color: Theme.of(context).cardColor,
               boxShadow: [

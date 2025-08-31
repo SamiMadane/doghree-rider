@@ -30,59 +30,59 @@ class CollectMoneyDeliverySheetWidget extends StatelessWidget {
       child: GetBuilder<OrderController>(builder: (orderController) {
 
         return Padding(
-          padding: const EdgeInsets.all(Dimensions.paddingSizeLarge),
+          padding: const EdgeInsets.all(Dimensions.p20),
           child: Column(mainAxisSize: MainAxisSize.min, children: [
 
             Container(
               height: 5, width: 50,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(Dimensions.radiusLarge),
+                borderRadius: BorderRadius.circular(Dimensions.r16),
                 color: Theme.of(context).disabledColor.withValues(alpha: 0.5),
               ),
             ),
 
             cod! ? Column(children: [
-              const SizedBox(height: Dimensions.paddingSizeLarge),
+              const SizedBox(height: Dimensions.p20),
 
               Image.asset(ManagerAssets.deliveredSuccess, height: 100, width: 100),
-              const SizedBox(height: Dimensions.paddingSizeSmall),
+              const SizedBox(height: Dimensions.p10),
 
               Text(
                 'collect_money_from_customer'.tr, textAlign: TextAlign.center,
-                style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge),
+                style: robotoMedium.copyWith(fontSize: Dimensions.fs16),
               ),
-              const SizedBox(height: Dimensions.paddingSizeLarge),
+              const SizedBox(height: Dimensions.p20),
 
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 Text(
                   '${'order_amount'.tr}:', textAlign: TextAlign.center,
-                  style: robotoBold.copyWith(fontSize: Dimensions.fontSizeLarge),
+                  style: robotoBold.copyWith(fontSize: Dimensions.fs16),
                 ),
-                const SizedBox(width: Dimensions.paddingSizeExtraSmall),
+                const SizedBox(width: Dimensions.p5),
                 Text(
                   PriceConverterHelper.convertPrice(orderAmount), textAlign: TextAlign.center,
-                  style: robotoBold.copyWith(fontSize: Dimensions.fontSizeLarge, color: Theme.of(context).primaryColor),
+                  style: robotoBold.copyWith(fontSize: Dimensions.fs16, color: Theme.of(context).primaryColor),
                 ),
               ]),
               SizedBox(height: verify! ? 20 : 40),
             ]) : Column(children: [
-              const SizedBox(height: Dimensions.paddingSizeLarge),
+              const SizedBox(height: Dimensions.p20),
 
               Image.asset(ManagerAssets.deliveredSuccess, height: 100, width: 100),
-              const SizedBox(height: Dimensions.paddingSizeSmall),
+              const SizedBox(height: Dimensions.p10),
 
               Text(
                 'want_to_complete_the_order'.tr, textAlign: TextAlign.center,
-                style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge),
+                style: robotoMedium.copyWith(fontSize: Dimensions.fs16),
               ),
-              const SizedBox(height: Dimensions.paddingSizeLarge),
+              const SizedBox(height: Dimensions.p20),
               SizedBox(height: verify! ? 20 : 40),
             ]),
 
            !orderController.isLoading ? CustomButtonWidget(
               buttonText: 'ok'.tr,
-              radius: Dimensions.radiusDefault,
-              margin: const EdgeInsets.only(bottom: Dimensions.paddingSizeSmall),
+              radius: Dimensions.r10,
+              margin: const EdgeInsets.only(bottom: Dimensions.p10),
               onPressed: () {
 
                 if(verify!){
@@ -101,7 +101,7 @@ class CollectMoneyDeliverySheetWidget extends StatelessWidget {
               },
             ) : const Center(child: CircularProgressIndicator()),
 
-            const SizedBox(height: Dimensions.paddingSizeLarge),
+            const SizedBox(height: Dimensions.p20),
           ]),
         );
       }),

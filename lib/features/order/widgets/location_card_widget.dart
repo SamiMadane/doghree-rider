@@ -66,13 +66,13 @@ class LocationCardWidget extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.symmetric(
-          horizontal: Dimensions.paddingSizeDefault,
-          vertical: Dimensions.paddingSizeExtraLarge),
+          horizontal: Dimensions.p16,
+          vertical: Dimensions.p25),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(Dimensions.radiusExtraLarge),
-          topRight: Radius.circular(Dimensions.radiusExtraLarge),
+          topLeft: Radius.circular(Dimensions.r20),
+          topRight: Radius.circular(Dimensions.r20),
         ),
         boxShadow: [
           BoxShadow(
@@ -88,7 +88,7 @@ class LocationCardWidget extends StatelessWidget {
         children: [
           // -------- STORE / PICKUP --------
           CustomCard(
-            padding: EdgeInsets.all(Dimensions.paddingSizeDefault),
+            padding: EdgeInsets.all(Dimensions.p16),
             child: Row(
               children: [
                 parcel
@@ -107,7 +107,7 @@ class LocationCardWidget extends StatelessWidget {
                           fit: BoxFit.cover,
                         ),
                       ),
-                const SizedBox(width: Dimensions.paddingSizeSmall),
+                const SizedBox(width: Dimensions.p10),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -118,14 +118,14 @@ class LocationCardWidget extends StatelessWidget {
                           ? orderModel.parcelCategory?.name ?? '' // is it true ? add parcel order to check it
                           : orderModel.storeName ?? '', // وفرة مارت
                       style: robotoMedium.copyWith(
-                          fontSize: Dimensions.fontSizeLarge),
+                          fontSize: Dimensions.fs16),
                     ),
                     Text(
                       parcel
                           ? orderModel.parcelCategory?.description ?? '' // not have type 
                           : orderModel.moduleType ?? '', // grocery
                       style: robotoRegular.copyWith(
-                          fontSize: Dimensions.fontSizeDefault,
+                          fontSize: Dimensions.fs14,
                           color: Theme.of(context).hintColor),
                     ),
                   ],
@@ -134,7 +134,7 @@ class LocationCardWidget extends StatelessWidget {
                 Text(
                   '${restaurantDistance > 1000 ? '1000+' : restaurantDistance.toStringAsFixed(2)} ${'km_away'.tr}',
                   style: robotoMedium.copyWith(
-                    fontSize: Dimensions.fontSizeSmall,
+                    fontSize: Dimensions.fs12,
                     color: ManagerColors.darkGreen,
                   ),
                 ),
@@ -142,11 +142,11 @@ class LocationCardWidget extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: Dimensions.paddingSizeSmall),
+          const SizedBox(height: Dimensions.p10),
 
           // -------- CUSTOMER / DELIVERY --------
           CustomCard(
-            padding: EdgeInsets.all(Dimensions.paddingSizeDefault),
+            padding: EdgeInsets.all(Dimensions.p16),
             child: Row(
               children: [
                 parcel
@@ -165,7 +165,7 @@ class LocationCardWidget extends StatelessWidget {
                           fit: BoxFit.cover,
                         ),
                       ),
-                const SizedBox(width: Dimensions.paddingSizeSmall),
+                const SizedBox(width: Dimensions.p10),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -174,14 +174,14 @@ class LocationCardWidget extends StatelessWidget {
                           ? orderModel.receiverDetails?.contactPersonName ?? ''
                           : orderModel.customer?.fName ?? '',
                       style: robotoMedium.copyWith(
-                          fontSize: Dimensions.fontSizeLarge),
+                          fontSize: Dimensions.fs16),
                     ),
                     Text(
                       parcel
                           ? orderModel.receiverDetails?.addressType ?? ''
                           : 'customer'.tr,
                       style: robotoRegular.copyWith(
-                          fontSize: Dimensions.fontSizeDefault,
+                          fontSize: Dimensions.fs14,
                           color: Theme.of(context).hintColor),
                     ),
                   ],
@@ -190,7 +190,7 @@ class LocationCardWidget extends StatelessWidget {
                 Text(
                   '${restaurantToCustomerDistance > 1000 ? '1000+' : restaurantToCustomerDistance.toStringAsFixed(2)} ${'km_away'.tr}',
                   style: robotoMedium.copyWith(
-                    fontSize: Dimensions.fontSizeSmall,
+                    fontSize: Dimensions.fs12,
                     color: ManagerColors.darkGreen,
                   ),
                 ),
@@ -198,7 +198,7 @@ class LocationCardWidget extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: Dimensions.paddingSizeLarge),
+          const SizedBox(height: Dimensions.p20),
 
           // -------- PRICE + PAYMENT --------
           Row(
@@ -212,16 +212,16 @@ class LocationCardWidget extends StatelessWidget {
                           orderModel.originalDeliveryCharge! +
                               orderModel.dmTips!),
                       style: robotoMedium.copyWith(
-                          fontSize: Dimensions.fontSizeLarge),
+                          fontSize: Dimensions.fs16),
                     )
                   : const SizedBox(),
               SizedBox(
-                width: Dimensions.paddingSizeSmall,
+                width: Dimensions.p10,
               ),
               Text(
                 '${orderModel.paymentMethod == 'cash_on_delivery' ? 'cod'.tr : orderModel.paymentMethod == 'wallet' ? 'wallet'.tr : 'paid'.tr}',
                 style: robotoSemiBold.copyWith(
-                  fontSize: Dimensions.fontSizeDefault,
+                  fontSize: Dimensions.fs14,
                   color: orderModel.paymentMethod == 'cash_on_delivery'
                       ? ManagerColors.orange
                       : orderModel.paymentMethod == 'wallet'
@@ -232,7 +232,7 @@ class LocationCardWidget extends StatelessWidget {
             ],
           ),
 
-          const SizedBox(height: Dimensions.paddingSizeLarge),
+          const SizedBox(height: Dimensions.p20),
 
           // -------- ACTION BUTTONS --------
           Row(
@@ -240,10 +240,10 @@ class LocationCardWidget extends StatelessWidget {
               Expanded(
                 child: CustomButtonWidget(
                     height: 40,
-                    radius: Dimensions.radiusDefault,
+                    radius: Dimensions.r10,
                     buttonText: 'ignore'.tr,
                     transparent: true,
-                    fontSize: Dimensions.fontSizeLarge,
+                    fontSize: Dimensions.fs16,
                     fontColor: Theme.of(context).textTheme.bodyLarge!.color,
                     isBorder: true,
                     borderColor: Theme.of(context).textTheme.bodyLarge!.color,
@@ -266,13 +266,13 @@ class LocationCardWidget extends StatelessWidget {
                           ),
                         )),
               ),
-              const SizedBox(width: Dimensions.paddingSizeSmall),
+              const SizedBox(width: Dimensions.p10),
               Expanded(
                 child: CustomButtonWidget(
                     height: 40,
-                    radius: Dimensions.radiusDefault,
+                    radius: Dimensions.r10,
                     buttonText: 'accept'.tr,
-                    fontSize: Dimensions.fontSizeLarge,
+                    fontSize: Dimensions.fs16,
                     onPressed: () => showCustomBottomSheet(
                           child: ConfirmationBottomSheet(
                             title:

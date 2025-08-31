@@ -60,7 +60,7 @@ class VerificationScreenState extends State<VerificationScreen> {
 
       body: SafeArea(child: Center(child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
+        padding: const EdgeInsets.all(Dimensions.p10),
         child: Center(child: SizedBox(width: 1170, child: GetBuilder<ForgotPasswordController>(builder: (forgotPasswordController) {
           return Column(children: [
 
@@ -72,7 +72,7 @@ class VerificationScreenState extends State<VerificationScreen> {
             ])),
 
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault, vertical: 35),
+              padding: const EdgeInsets.symmetric(horizontal: Dimensions.p16, vertical: 35),
               child: PinCodeTextField(
                 length: 6,
                 appContext: context,
@@ -83,7 +83,7 @@ class VerificationScreenState extends State<VerificationScreen> {
                   fieldHeight: 60,
                   fieldWidth: 50,
                   borderWidth: 1,
-                  borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
+                  borderRadius: BorderRadius.circular(Dimensions.r4),
                   selectedColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
                   selectedFillColor: Colors.white,
                   inactiveFillColor: Theme.of(context).disabledColor.withValues(alpha: 0.2),
@@ -127,7 +127,7 @@ class VerificationScreenState extends State<VerificationScreen> {
                 child: Text('${'resend'.tr}${_seconds > 0 ? ' ($_seconds)' : ''}'),
               ) : Container(
                 height: 20, width: 20,
-                padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeLarge),
+                padding: const EdgeInsets.symmetric(horizontal: Dimensions.p20),
                 child: const CircularProgressIndicator(),
               ),
 

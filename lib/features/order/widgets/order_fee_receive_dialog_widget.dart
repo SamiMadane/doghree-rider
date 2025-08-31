@@ -14,32 +14,32 @@ class OrderFeeReceiveDialogWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.radiusSmall)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.r4)),
       child: Padding(
-        padding: const EdgeInsets.all(Dimensions.paddingSizeLarge),
+        padding: const EdgeInsets.all(Dimensions.p20),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
 
           Image.asset(ManagerAssets.money, height: 100, width: 100),
-          const SizedBox(height: Dimensions.paddingSizeLarge),
+          const SizedBox(height: Dimensions.p20),
 
           Text(
             'collect_money_from_customer'.tr, textAlign: TextAlign.center,
-            style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge),
+            style: robotoMedium.copyWith(fontSize: Dimensions.fs16),
           ),
-          const SizedBox(height: Dimensions.paddingSizeLarge),
+          const SizedBox(height: Dimensions.p20),
 
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             Text(
               '${'order_amount'.tr}:', textAlign: TextAlign.center,
-              style: robotoBold.copyWith(fontSize: Dimensions.fontSizeLarge),
+              style: robotoBold.copyWith(fontSize: Dimensions.fs16),
             ),
-            const SizedBox(width: Dimensions.paddingSizeExtraSmall),
+            const SizedBox(width: Dimensions.p5),
             Text(
               PriceConverterHelper.convertPrice(totalAmount), textAlign: TextAlign.center,
-              style: robotoBold.copyWith(fontSize: Dimensions.fontSizeLarge, color: Theme.of(context).primaryColor),
+              style: robotoBold.copyWith(fontSize: Dimensions.fs16, color: Theme.of(context).primaryColor),
             ),
           ]),
-          const SizedBox(height: Dimensions.paddingSizeLarge),
+          const SizedBox(height: Dimensions.p20),
 
           CustomButtonWidget(
             buttonText: 'ok'.tr,

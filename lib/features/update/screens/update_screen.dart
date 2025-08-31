@@ -17,7 +17,7 @@ class UpdateScreen extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(Dimensions.paddingSizeLarge),
+          padding: const EdgeInsets.all(Dimensions.p20),
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
 
             Image.asset(

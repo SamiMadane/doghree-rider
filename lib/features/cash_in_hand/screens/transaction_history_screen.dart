@@ -30,26 +30,26 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
         return cashInHandController.transactions != null ? cashInHandController.transactions!.isNotEmpty ? ListView.builder(
           itemCount: cashInHandController.transactions!.length,
           shrinkWrap: true,
-          padding: const EdgeInsets.only(bottom: Dimensions.paddingSizeDefault, left: Dimensions.paddingSizeDefault, right: Dimensions.paddingSizeDefault),
+          padding: const EdgeInsets.only(bottom: Dimensions.p16, left: Dimensions.p16, right: Dimensions.p16),
           physics: const BouncingScrollPhysics(),
           itemBuilder: (context, index) {
             return Column(children: [
 
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeLarge),
+                padding: const EdgeInsets.symmetric(vertical: Dimensions.p20),
                 child: Row(children: [
                   Expanded(
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text(PriceConverterHelper.convertPrice(cashInHandController.transactions![index].amount), style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeDefault)),
-                      const SizedBox(height: Dimensions.paddingSizeExtraSmall),
+                      Text(PriceConverterHelper.convertPrice(cashInHandController.transactions![index].amount), style: robotoMedium.copyWith(fontSize: Dimensions.fs14)),
+                      const SizedBox(height: Dimensions.p5),
 
                       Text('${'paid_via'.tr} ${cashInHandController.transactions![index].method?.replaceAll('_', ' ').capitalize??''}', style: robotoRegular.copyWith(
-                        fontSize: Dimensions.fontSizeExtraSmall, color: Theme.of(context).disabledColor,
+                        fontSize: Dimensions.fs10, color: Theme.of(context).disabledColor,
                       )),
                     ]),
                   ),
                   Text(cashInHandController.transactions![index].paymentTime.toString(),
-                    style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor),
+                    style: robotoRegular.copyWith(fontSize: Dimensions.fs12, color: Theme.of(context).disabledColor),
                   ),
                 ]),
               ),

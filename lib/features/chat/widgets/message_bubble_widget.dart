@@ -36,8 +36,8 @@ class MessageBubbleWidget extends StatelessWidget {
       textDirection: TextDirection.ltr,
       child: Container(
         padding: const EdgeInsets.symmetric(
-          horizontal: Dimensions.paddingSizeDefault,
-          vertical: Dimensions.paddingSizeSmall,
+          horizontal: Dimensions.p16,
+          vertical: Dimensions.p10,
         ),
         child: Column(
           crossAxisAlignment:
@@ -55,18 +55,18 @@ class MessageBubbleWidget extends StatelessWidget {
                           ? customColor.receiverMessageBg
                           : customColor.senderMessageBg,
                       borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(Dimensions.radiusLarge),
-                        topRight: Radius.circular(Dimensions.radiusLarge),
+                        topLeft: Radius.circular(Dimensions.r16),
+                        topRight: Radius.circular(Dimensions.r16),
                         bottomLeft: isReply
                             ? Radius.circular(0)
-                            : Radius.circular(Dimensions.radiusLarge),
+                            : Radius.circular(Dimensions.r16),
                         bottomRight: isReply
-                            ? Radius.circular(Dimensions.radiusLarge)
+                            ? Radius.circular(Dimensions.r16)
                             : Radius.circular(0),
                       ),
                     ),
                     padding:
-                        const EdgeInsets.all(Dimensions.paddingSizeDefault),
+                        const EdgeInsets.all(Dimensions.p16),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -74,7 +74,7 @@ class MessageBubbleWidget extends StatelessWidget {
                         if (hasImages)
                           Padding(
                             padding: EdgeInsets.only(
-                              bottom: hasText ? Dimensions.paddingSizeSmall : 0,
+                              bottom: hasText ? Dimensions.p10 : 0,
                             ),
                             child: _buildImagesLayout(context, message),
                           ),
@@ -84,7 +84,7 @@ class MessageBubbleWidget extends StatelessWidget {
                           Text(
                             message.message!,
                             style: robotoRegular.copyWith(
-                              fontSize: Dimensions.fontSizeLarge,
+                              fontSize: Dimensions.fs16,
                               color: isReply
                                   ? Colors.white
                                   : Theme.of(context)
@@ -122,24 +122,24 @@ class MessageBubbleWidget extends StatelessWidget {
                         message.isSeen == 1 ? 'read'.tr : 'unread'.tr,
                         style: robotoRegular.copyWith(
                           color: Theme.of(context).hintColor,
-                          fontSize: Dimensions.fontSizeSmall,
+                          fontSize: Dimensions.fs12,
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(width: Dimensions.paddingSizeExtraSmall),
+                  SizedBox(width: Dimensions.p5),
                 ],
                 Text(
                   DateConverterHelper.isoStringToLocalTimeOnly(
                       message.createdAt!),
                   style: robotoRegular.copyWith(
                     color: Theme.of(context).hintColor,
-                    fontSize: Dimensions.fontSizeSmall,
+                    fontSize: Dimensions.fs12,
                   ),
                 ),
               ],
             ),
-            SizedBox(height: Dimensions.paddingSizeDefault),
+            SizedBox(height: Dimensions.p16),
           ],
         ),
       ),
@@ -221,7 +221,7 @@ class MessageBubbleWidget extends StatelessWidget {
         builder: (ctx) => ImageDialogWidget(imageUrl: imageUrl),
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
+        borderRadius: BorderRadius.circular(Dimensions.r4),
         child: CustomImageWidget(
           image: imageUrl,
           fit: BoxFit.cover,

@@ -12,18 +12,18 @@ class CustomAlertDialogWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.radiusSmall)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.r4)),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeLarge, vertical: Dimensions.paddingSizeSmall),
+        padding: const EdgeInsets.symmetric(horizontal: Dimensions.p20, vertical: Dimensions.p10),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
 
           Icon(Icons.info, size: 80, color: Theme.of(context).primaryColor),
 
           Padding(
-            padding: const EdgeInsets.all(Dimensions.paddingSizeLarge),
+            padding: const EdgeInsets.all(Dimensions.p20),
             child: Text(
               description, textAlign: TextAlign.center,
-              style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge),
+              style: robotoMedium.copyWith(fontSize: Dimensions.fs16),
             ),
           ),
 

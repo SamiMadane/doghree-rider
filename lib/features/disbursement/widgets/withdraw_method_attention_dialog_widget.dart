@@ -14,7 +14,7 @@ class WithdrawMethodAttentionDialogWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: context.width * 0.95,
-      padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
+      padding: const EdgeInsets.all(Dimensions.p10),
       child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
 
         Align(
@@ -36,11 +36,11 @@ class WithdrawMethodAttentionDialogWidget extends StatelessWidget {
 
         Row(children: [
           Image.asset(ManagerAssets.attentionWarningIcon, width: 20, height: 20),
-          const SizedBox(width: Dimensions.paddingSizeSmall),
+          const SizedBox(width: Dimensions.p10),
 
           Text('attention_please'.tr, style: robotoBold.copyWith(color: Colors.black)),
         ]),
-        const SizedBox(height: Dimensions.paddingSizeSmall),
+        const SizedBox(height: Dimensions.p10),
 
         RichText(
           text: TextSpan(

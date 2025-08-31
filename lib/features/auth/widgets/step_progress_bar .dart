@@ -25,7 +25,7 @@ class StepProgressBar extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(width: Dimensions.paddingSizeSmall),
+              SizedBox(width: Dimensions.p10),
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
@@ -39,7 +39,7 @@ class StepProgressBar extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: Dimensions.paddingSizeSmall),
+        const SizedBox(height: Dimensions.p10),
         Divider(),
       ],
     );

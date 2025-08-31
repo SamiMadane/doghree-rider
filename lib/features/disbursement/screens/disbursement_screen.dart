@@ -41,7 +41,7 @@ class _DisbursementScreenState extends State<DisbursementScreen> {
         isBackButtonExist: true,
         actionWidget: GetBuilder<ProfileController>(builder: (profileController) {
           return Container(
-            margin: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeExtraSmall),
+            margin: const EdgeInsets.symmetric(vertical: Dimensions.p5),
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(200), border: Border.all(width: 1.5, color: Theme.of(context).primaryColor)),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(200),
@@ -92,18 +92,18 @@ class _DisbursementScreenState extends State<DisbursementScreen> {
             ),
 
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault),
+              padding: const EdgeInsets.symmetric(horizontal: Dimensions.p16),
               child: Text(
                 "disbursement_history".tr,
                 style: robotoBold.copyWith(
-                  fontSize: Dimensions.fontSizeLarge,
+                  fontSize: Dimensions.fs16,
                   color: Theme.of(context).textTheme.bodyLarge!.color,
                 ),
               ),
             ),
 
             (disbursementController.disbursementReportModel!.disbursements != null  && disbursementController.disbursementReportModel!.disbursements!.isNotEmpty)? ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault, vertical: Dimensions.paddingSizeLarge),
+              padding: const EdgeInsets.symmetric(horizontal: Dimensions.p16, vertical: Dimensions.p20),
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: disbursementController.disbursementReportModel!.disbursements!.length,
@@ -118,7 +118,7 @@ class _DisbursementScreenState extends State<DisbursementScreen> {
                         builder: (BuildContext context) {
                           return Dialog(
                             insetPadding: EdgeInsets.zero,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.radiusDefault)), //this right here
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.r10)), //this right here
                             child: PaymentInformationDialogWidget(disbursement: disbursement),
                           );
                         }
@@ -128,22 +128,22 @@ class _DisbursementScreenState extends State<DisbursementScreen> {
                       contentPadding: EdgeInsets.zero,
                       title: Text(PriceConverterHelper.convertPrice(disbursement.disbursementAmount), style: robotoMedium),
                       subtitle: Text(disbursement.withdrawMethod != null ? '${"payment_method".tr} : ${disbursement.withdrawMethod!.methodName}' : 'payment_method_deleted'.tr,
-                        style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor)),
+                        style: robotoRegular.copyWith(fontSize: Dimensions.fs12, color: Theme.of(context).disabledColor)),
                       trailing: Column(crossAxisAlignment: CrossAxisAlignment.end, mainAxisAlignment: MainAxisAlignment.center, children: [
 
                         Text(
                           DateConverterHelper.dateTimeStringForDisbursement(disbursement.createdAt!),
-                          style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor),
+                          style: robotoRegular.copyWith(fontSize: Dimensions.fs12, color: Theme.of(context).disabledColor),
                         ),
-                        const SizedBox(height: Dimensions.paddingSizeExtraSmall),
+                        const SizedBox(height: Dimensions.p5),
 
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault, vertical: Dimensions.paddingSizeExtraSmall),
+                          padding: const EdgeInsets.symmetric(horizontal: Dimensions.p16, vertical: Dimensions.p5),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
+                            borderRadius: BorderRadius.circular(Dimensions.r4),
                             color: disbursement.status == 'pending' ? Colors.blue.withValues(alpha: 0.1) : disbursement.status == 'completed' ? Colors.green.withValues(alpha: 0.1) : Colors.red.withValues(alpha: 0.1),
                           ),
-                          child: Text(disbursement.status!.tr, style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeSmall, color: disbursement.status == 'pending' ? Colors.blue : disbursement.status == 'completed' ? Colors.green : Colors.red)),
+                          child: Text(disbursement.status!.tr, style: robotoMedium.copyWith(fontSize: Dimensions.fs12, color: disbursement.status == 'pending' ? Colors.blue : disbursement.status == 'completed' ? Colors.green : Colors.red)),
                         ),
 
                       ]),

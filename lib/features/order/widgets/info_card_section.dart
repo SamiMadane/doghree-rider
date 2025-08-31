@@ -46,7 +46,7 @@ class InfoCardSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomCard(
-      padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+      padding: const EdgeInsets.all(Dimensions.p16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -54,10 +54,10 @@ class InfoCardSection extends StatelessWidget {
           Text(
             title,
             style: robotoSemiBold.copyWith(
-              fontSize: Dimensions.fontSizeLarge,
+              fontSize: Dimensions.fs16,
             ),
           ),
-          const SizedBox(height: Dimensions.paddingSizeDefault),
+          const SizedBox(height: Dimensions.p16),
 
           // صورة واسم وعنوان رئيسي
           Row(
@@ -71,7 +71,7 @@ class InfoCardSection extends StatelessWidget {
                   image: image.isNotEmpty ? image : '',
                 ),
               ),
-              const SizedBox(width: Dimensions.paddingSizeDefault),
+              const SizedBox(width: Dimensions.p16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,10 +80,10 @@ class InfoCardSection extends StatelessWidget {
                       Text(
                         name!,
                         style: robotoSemiBold.copyWith(
-                          fontSize: Dimensions.fontSizeDefault,
+                          fontSize: Dimensions.fs14,
                         ),
                       ),
-                    const SizedBox(height: Dimensions.paddingSizeExtraSmall),
+                    const SizedBox(height: Dimensions.p5),
                     if (address != null)
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -92,14 +92,14 @@ class InfoCardSection extends StatelessWidget {
                           Text(
                             address!.address ?? '',
                             style: robotoMedium.copyWith(
-                              fontSize: Dimensions.fontSizeSmall,
+                              fontSize: Dimensions.fs12,
                               color: Theme.of(context).disabledColor,
                             ),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
                           const SizedBox(
-                              height: Dimensions.paddingSizeExtraSmall),
+                              height: Dimensions.p5),
 
                           // التفاصيل الأخرى
                           Wrap(
@@ -109,7 +109,7 @@ class InfoCardSection extends StatelessWidget {
                                 Text(
                                   '${'street_number'.tr}: ${address!.streetNumber!}, ',
                                   style: robotoMedium.copyWith(
-                                    fontSize: Dimensions.fontSizeExtraSmall,
+                                    fontSize: Dimensions.fs10,
                                     color: Theme.of(context).disabledColor,
                                   ),
                                 ),
@@ -118,7 +118,7 @@ class InfoCardSection extends StatelessWidget {
                                 Text(
                                   '${'house'.tr}: ${address!.house!}, ',
                                   style: robotoMedium.copyWith(
-                                    fontSize: Dimensions.fontSizeExtraSmall,
+                                    fontSize: Dimensions.fs10,
                                     color: Theme.of(context).disabledColor,
                                   ),
                                 ),
@@ -127,7 +127,7 @@ class InfoCardSection extends StatelessWidget {
                                 Text(
                                   '${'floor'.tr}: ${address!.floor!}',
                                   style: robotoMedium.copyWith(
-                                    fontSize: Dimensions.fontSizeExtraSmall,
+                                    fontSize: Dimensions.fs10,
                                     color: Theme.of(context).disabledColor,
                                   ),
                                 ),
@@ -140,7 +140,7 @@ class InfoCardSection extends StatelessWidget {
               )
             ],
           ),
-          if (showButton) const SizedBox(height: Dimensions.paddingSizeDefault),
+          if (showButton) const SizedBox(height: Dimensions.p16),
 
           // أزرار Call, Chat, Direction
           if (showButton)
@@ -173,7 +173,7 @@ class InfoCardSection extends StatelessWidget {
                     ),
                   ),
                 SizedBox(
-                  width: Dimensions.paddingSizeDefault,
+                  width: Dimensions.p16,
                 ),
                 if (isStore && isChatAllow && !order.isGuest!)
                   Expanded(
@@ -192,17 +192,17 @@ class InfoCardSection extends StatelessWidget {
               ],
             ),
           if (!showButton)
-            const SizedBox(height: Dimensions.paddingSizeDefault),
+            const SizedBox(height: Dimensions.p16),
 
           // رسالة عند عدم وجود بيانات
           if ((name == null || name!.isEmpty) && (address == null))
             Center(
               child: Padding(
                 padding: const EdgeInsets.symmetric(
-                    vertical: Dimensions.paddingSizeSmall),
+                    vertical: Dimensions.p10),
                 child: Text('no_store_data_found'.tr,
                     style: robotoRegular.copyWith(
-                        fontSize: Dimensions.fontSizeSmall)),
+                        fontSize: Dimensions.fs12)),
               ),
             ),
         ],

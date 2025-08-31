@@ -29,7 +29,7 @@ class CustomButtonWidget extends StatelessWidget {
       this.width,
       this.height,
       this.fontSize,
-      this.radius = Dimensions.radiusLarge,
+      this.radius = Dimensions.r16,
       this.icon,
       this.backgroundColor,
       this.fontColor,
@@ -52,8 +52,8 @@ class CustomButtonWidget extends StatelessWidget {
       minimumSize: Size(width != null ? width! : Dimensions.webMaxWidth,
           height != null ? height! : 50),
       padding: EdgeInsets.symmetric(
-          horizontal: Dimensions.paddingSizeSmall,
-          vertical: Dimensions.paddingSizeExtraSmall),
+          horizontal: Dimensions.p10,
+          vertical: Dimensions.p5),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(radius),
         side:
@@ -84,7 +84,7 @@ class CustomButtonWidget extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(
-                                  width: Dimensions.paddingSizeSmall),
+                                  width: Dimensions.p10),
                               Text('loading'.tr,
                                   style: robotoMedium.copyWith(
                                       color: Colors.white)),
@@ -97,7 +97,7 @@ class CustomButtonWidget extends StatelessWidget {
                                 ? Padding(
                                     padding: const EdgeInsets.only(
                                         right:
-                                            Dimensions.paddingSizeExtraSmall),
+                                            Dimensions.p5),
                                     child: icon
                                   )
                                 : const SizedBox(),
@@ -110,7 +110,7 @@ class CustomButtonWidget extends StatelessWidget {
                                                 ? Theme.of(context).primaryColor
                                                 : Colors.white),
                                         fontSize: fontSize ??
-                                            Dimensions.fontSizeLarge,
+                                            Dimensions.fs16,
                                       )
                                     : robotoRegular.copyWith(
                                         color: fontColor ??
@@ -118,7 +118,7 @@ class CustomButtonWidget extends StatelessWidget {
                                                 ? Theme.of(context).primaryColor
                                                 : Colors.white),
                                         fontSize: fontSize ??
-                                            Dimensions.fontSizeLarge,
+                                            Dimensions.fs16,
                                       )),
                           ]),
               ),
