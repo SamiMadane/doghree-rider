@@ -141,12 +141,12 @@ class _HomeScreenState extends State<HomeScreen> {
   void showNotificationPermissionBottomSheet() {
     Get.bottomSheet(
       Container(
-        padding: EdgeInsets.all(Dimensions.paddingSizeOverLarge),
+        padding: EdgeInsets.all(Dimensions.p30),
         decoration: BoxDecoration(
           color: Theme.of(context).cardColor,
           borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(Dimensions.radiusExtraLarge),
-            topRight: Radius.circular(Dimensions.radiusExtraLarge),
+            topLeft: Radius.circular(Dimensions.r20),
+            topRight: Radius.circular(Dimensions.r20),
           ),
         ),
         child: SingleChildScrollView(
@@ -162,7 +162,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: 70,
                     width: 70,
                   ),
-                  SizedBox(width: Dimensions.paddingSizeDefault),
+                  SizedBox(width: Dimensions.p16),
                   Expanded(
                     child: Text(
                       'Make Your Work Easier with Notifications!',
@@ -173,41 +173,41 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
 
-              SizedBox(height: Dimensions.paddingSizeDefault),
+              SizedBox(height: Dimensions.p16),
 
               // Description
               Text(
                 'Enable notifications to get new orders instantly and stay updated on every step.',
                 style: robotoRegular.copyWith(
-                    fontSize: Dimensions.fontSizeDefault),
+                    fontSize: Dimensions.fs14),
                 maxLines: 2,
               ),
 
-              SizedBox(height: Dimensions.paddingSizeOverLarge),
+              SizedBox(height: Dimensions.p30),
 
               // Subheading
               Text(
                 'Why enable notifications?',
                 style: robotoBold.copyWith(
-                    fontSize: Dimensions.fontSizeExtraLarge),
+                    fontSize: Dimensions.fs18),
               ),
 
-              SizedBox(height: Dimensions.paddingSizeDefault),
+              SizedBox(height: Dimensions.p16),
 
               // Features list
               _buildFeatureRow(
                   ManagerAssets.newOrderIcon, 'Receive new orders right away'),
-              SizedBox(height: Dimensions.paddingSizeSmall),
+              SizedBox(height: Dimensions.p10),
               _buildFeatureRow(ManagerAssets.trakingIcon,
                   'Track delivery status step by step'),
-              SizedBox(height: Dimensions.paddingSizeSmall),
+              SizedBox(height: Dimensions.p10),
               _buildFeatureRow(ManagerAssets.offersIcon,
                   'Get special offers & incentives for drivers'),
-              SizedBox(height: Dimensions.paddingSizeSmall),
+              SizedBox(height: Dimensions.p10),
               _buildFeatureRow(ManagerAssets.alertsIcon,
                   'Important alerts from the management'),
 
-              SizedBox(height: Dimensions.paddingSizeOverLarge),
+              SizedBox(height: Dimensions.p30),
 
               // Buttons
               Row(
@@ -222,7 +222,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       buttonText: 'Allow Notifications',
                     ),
                   ),
-                  SizedBox(width: Dimensions.paddingSizeDefault),
+                  SizedBox(width: Dimensions.p16),
                   Expanded(
                     flex: 1,
                     child: CustomButtonWidget(
@@ -255,7 +255,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Expanded(
           child: Text(
             text,
-            style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeDefault),
+            style: robotoRegular.copyWith(fontSize: Dimensions.fs14),
           ),
         ),
       ],
@@ -280,7 +280,7 @@ class _HomeScreenState extends State<HomeScreen> {
         titleWidget: Row(
           children: [
             Padding(
-              padding: const EdgeInsets.all(Dimensions.paddingSizeExtraSmall),
+              padding: const EdgeInsets.all(Dimensions.p5),
               child: ClipOval(
                 child: CustomImageWidget(
                   width: 40,
@@ -294,7 +294,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Text(
               '${profileController.profileModel?.fName} ${profileController.profileModel?.lName}',
               style: robotoSemiBold.copyWith(
-                fontSize: Dimensions.fontSizeExtraLarge,
+                fontSize: Dimensions.fs18,
                 color: Theme.of(context).textTheme.bodyMedium!.color,
               ),
             )
@@ -333,7 +333,7 @@ class _HomeScreenState extends State<HomeScreen> {
           return await _loadData();
         },
         child: Padding(
-          padding: const EdgeInsets.only(top: Dimensions.paddingSizeDefault),
+          padding: const EdgeInsets.only(top: Dimensions.p16),
           child: Container(
             color: Theme.of(context).cardColor,
             child: Column(children: [
@@ -357,7 +357,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     }),
               Expanded(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+                  padding: const EdgeInsets.all(Dimensions.p16),
                   child: GetBuilder<ProfileController>(
                       builder: (profileController) {
                     return Column(children: [
@@ -398,8 +398,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return Container(
       width: double.infinity,
       margin: EdgeInsets.symmetric(
-          horizontal: Dimensions.paddingSizeSmall,
-          vertical: Dimensions.paddingSizeExtraSmall),
+          horizontal: Dimensions.p10,
+          vertical: Dimensions.p5),
       decoration: BoxDecoration(
         color: bgColor,
         boxShadow: [
@@ -416,12 +416,12 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Stack(
           children: [
             Padding(
-              padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
+              padding: const EdgeInsets.all(Dimensions.p10),
               child: Row(
                 children: [
                   Container(
                       padding: const EdgeInsets.all(
-                          Dimensions.paddingSizeExtraSmall),
+                          Dimensions.p5),
                       decoration: BoxDecoration(
                         color: ManagerColors.orange
                             .withOpacity(0.2), // أصفر فاتح شفاف
@@ -445,12 +445,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                     .tr,
                             maxLines: 2,
                             style: robotoRegular.copyWith(
-                              fontSize: Dimensions.fontSizeSmall,
+                              fontSize: Dimensions.fs12,
                               color: textColor,
                             ),
                           ),
                         ),
-                        const SizedBox(width: Dimensions.paddingSizeSmall),
+                        const SizedBox(width: Dimensions.p10),
                         Icon(
                           isArabic
                               ? Icons.arrow_circle_left_rounded

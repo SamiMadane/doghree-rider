@@ -22,11 +22,11 @@ class DisbursementStatusCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 160, width: context.width * 0.65,
-      padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
-      margin: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault, vertical: Dimensions.paddingSizeLarge),
+      padding: const EdgeInsets.all(Dimensions.p16),
+      margin: const EdgeInsets.symmetric(horizontal: Dimensions.p16, vertical: Dimensions.p20),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
+        borderRadius: BorderRadius.circular(Dimensions.r10),
         boxShadow: Get.isDarkMode ? null : [BoxShadow(color: Colors.grey[200]!, spreadRadius: 0.5, blurRadius: 0.5)],
       ),
       child: Column(children: [
@@ -75,7 +75,7 @@ class DisbursementStatusCardWidget extends StatelessWidget {
 
               Container(
                 height: 50, width: 50,
-                padding: const EdgeInsets.all(Dimensions.paddingSizeExtraSmall),
+                padding: const EdgeInsets.all(Dimensions.p5),
                 decoration: BoxDecoration(color: isPending ? Colors.blue : isCompleted ? Colors.green : Colors.red, shape: BoxShape.circle),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(100),
@@ -89,7 +89,7 @@ class DisbursementStatusCardWidget extends StatelessWidget {
               ),
 
             ]),
-            const SizedBox(width: Dimensions.paddingSizeDefault),
+            const SizedBox(width: Dimensions.p16),
 
             Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center, children: [
 
@@ -100,12 +100,12 @@ class DisbursementStatusCardWidget extends StatelessWidget {
                 ),
                 textDirection: TextDirection.ltr,
               ),
-              const SizedBox(height: Dimensions.paddingSizeSmall),
+              const SizedBox(height: Dimensions.p10),
 
               Text(
                 text,
                 style: robotoRegular.copyWith(
-                  fontSize: Dimensions.fontSizeSmall,
+                  fontSize: Dimensions.fs12,
                   color: Theme.of(context).textTheme.bodyLarge!.color,
                 ),
               ),

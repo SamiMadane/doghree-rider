@@ -41,16 +41,16 @@ class ConfirmationBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.fromLTRB(
-        Dimensions.paddingSizeLarge,
-        icon != null ? Dimensions.paddingSizeLarge : topPaddingIfNoIcon,
-        Dimensions.paddingSizeLarge,
-        Dimensions.paddingSizeLarge,
+        Dimensions.p20,
+        icon != null ? Dimensions.p20 : topPaddingIfNoIcon,
+        Dimensions.p20,
+        Dimensions.p20,
       ),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(Dimensions.radiusExtraLarge),
-          topRight: Radius.circular(Dimensions.radiusExtraLarge),
+          topLeft: Radius.circular(Dimensions.r20),
+          topRight: Radius.circular(Dimensions.r20),
         ),
       ),
       child: Column(
@@ -58,7 +58,7 @@ class ConfirmationBottomSheet extends StatelessWidget {
         children: [
           if (icon != null)
             Padding(
-              padding: const EdgeInsets.all(Dimensions.paddingSizeLarge),
+              padding: const EdgeInsets.all(Dimensions.p20),
               child: Image.asset(icon!, width: iconSize, height: iconSize),
             ),
 
@@ -68,10 +68,10 @@ class ConfirmationBottomSheet extends StatelessWidget {
             textAlign: TextAlign.center,
             style: titleStyle ??
                 robotoSemiBold.copyWith(
-                  fontSize: Dimensions.fontSizeExtraLarge,
+                  fontSize: Dimensions.fs18,
                 ),
           ),
-          const SizedBox(height: Dimensions.paddingSizeSmall),
+          const SizedBox(height: Dimensions.p10),
 
           // الوصف
           if (description != null)
@@ -80,10 +80,10 @@ class ConfirmationBottomSheet extends StatelessWidget {
               textAlign: TextAlign.center,
               style: descriptionStyle ??
                   robotoRegular.copyWith(
-                      fontSize: Dimensions.fontSizeLarge,
+                      fontSize: Dimensions.fs16,
                       color: Theme.of(context).disabledColor),
             ),
-          const SizedBox(height: Dimensions.paddingSizeExtraLarge),
+          const SizedBox(height: Dimensions.p25),
 
           // الأزرار
           Row(
@@ -95,7 +95,7 @@ class ConfirmationBottomSheet extends StatelessWidget {
                     text: cancelText,
                   ),
                 ),
-              if (hasCancel) const SizedBox(width: Dimensions.paddingSizeSmall),
+              if (hasCancel) const SizedBox(width: Dimensions.p10),
               Expanded(
                 child: CustomButtonWidget(
                   onPressed: onAccept,
@@ -105,7 +105,7 @@ class ConfirmationBottomSheet extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: Dimensions.paddingSizeLarge),
+          const SizedBox(height: Dimensions.p20),
         ],
       ),
     );

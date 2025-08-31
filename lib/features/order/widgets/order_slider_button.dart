@@ -215,7 +215,7 @@ class OrderSliderButton extends StatelessWidget {
                             : 'swipe_to_pick_up_order'.tr
                         : '',
         style: robotoMedium.copyWith(
-          fontSize: Dimensions.fontSizeLarge,
+          fontSize: Dimensions.fs16,
           color: Theme.of(context).primaryColor,
         ),
       ),

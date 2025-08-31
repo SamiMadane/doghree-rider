@@ -25,15 +25,15 @@ class _SearchFieldWidgetState extends State<SearchFieldWidget> {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color:customColor.strock1),
-        borderRadius: BorderRadius.circular(Dimensions.radiusLarge),
+        borderRadius: BorderRadius.circular(Dimensions.r16),
       ),
       child: TextField(
         controller: widget.controller,
         textInputAction: TextInputAction.search,
         decoration: InputDecoration(
           hintText: widget.hint,
-          hintStyle: robotoMedium.copyWith(fontSize: Dimensions.fontSizeDefault, color: Theme.of(context).disabledColor),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(Dimensions.radiusLarge), borderSide: BorderSide.none),
+          hintStyle: robotoMedium.copyWith(fontSize: Dimensions.fs14, color: Theme.of(context).disabledColor),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(Dimensions.r16), borderSide: BorderSide.none),
           filled: true, fillColor: Theme.of(context).cardColor,
           isDense: true,
           suffixIcon: IconButton(

@@ -9,11 +9,28 @@ class ManagerColors {
   // ⚪ Neutral / Base Colors
   static const Color white = Colors.white;
   static const Color black = Colors.black;
-  static const Color gray = Color(0xFF9E9E9E);
-  static const Color moreGray = Color(0xFF757575);
+
   static const Color orange = Color(0xFFE28D00);
-  static const Color green = Color(0xFF2A9849);
+
   static const Color darkGreen = Color(0xFF388E3C);
+
+  // status connection
+  static const Color gray = Color(0xFFEFF0F2);
+  static const Color grayBg = Color(0xFFE9E9E9);
+  static const Color grayCirule = Color(0xFFA7A7A7);
+  static const Color grayBgSelected = Color(0xFF68707D);
+  static const Color grayCiruleSelected = Color(0xFFCECECE);
+  static const Color green = Color(0xFF70A43A);
+  static const Color lightGreen = Color(0xFF2ABF61);
+  static const Color greenCircle = Color(0xFFDCFBBB);
+  static const Color red = Color(0xFFE64849);
+  static const Color redCircle = Color(0xFFFFD9D7);
+  static const Color blueBg = Color(0xFFF9FBFF);
+  static const Color darkBlue = Color(0xFF2B3E82);
+  static const Color blue = Color(0xFF1E36A4);
+  static const Color yallowBg = Color(0xFFFFFCE8);
+  static const Color yallow = Color(0xFF9A713F);
+  static const Color textBlue = Color(0xFF2E68E5);
 
   // 🌞 Light Theme Colors
   static const Color scaffoldBgLight = Color(0xFFF7F7F7);

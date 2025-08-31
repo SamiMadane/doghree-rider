@@ -10,24 +10,24 @@ class FundPaymentDialogWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.radiusSmall)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.r4)),
       insetPadding: const EdgeInsets.all(30),
       clipBehavior: Clip.antiAliasWithSaveLayer,
       child: SizedBox(
         width: 500,
         child: Padding(
-          padding: const EdgeInsets.all(Dimensions.paddingSizeLarge),
+          padding: const EdgeInsets.all(Dimensions.p20),
           child: Column(mainAxisSize: MainAxisSize.min, children: [
             Padding(
-              padding: const EdgeInsets.all(Dimensions.paddingSizeLarge),
+              padding: const EdgeInsets.all(Dimensions.p20),
               child: Image.asset(ManagerAssets.warning, width: 70, height: 70),
             ),
 
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeLarge),
+              padding: const EdgeInsets.symmetric(horizontal: Dimensions.p20),
               child: Text(
                 'do_you_want_to_cancel_this_payment'.tr, textAlign: TextAlign.center,
-                style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeExtraLarge, color: Colors.red),
+                style: robotoMedium.copyWith(fontSize: Dimensions.fs18, color: Colors.red),
               ),
             ),
 
@@ -40,7 +40,7 @@ class FundPaymentDialogWidget extends StatelessWidget {
               },
               style: TextButton.styleFrom(
                 backgroundColor: Theme.of(context).disabledColor.withValues(alpha: 0.3), minimumSize:  const Size(Dimensions.webMaxWidth, 40), padding: EdgeInsets.zero,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.radiusSmall)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.r4)),
               ),
               child: Text('cancel_payment'.tr, textAlign: TextAlign.center, style: robotoBold.copyWith(color: Theme.of(context).textTheme.bodyLarge!.color)),
             ),

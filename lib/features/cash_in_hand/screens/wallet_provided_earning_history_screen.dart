@@ -30,23 +30,23 @@ class _WalletProvidedHistoryScreenState extends State<WalletProvidedHistoryScree
         return cashInHandController.walletProvidedTransactions != null ? cashInHandController.walletProvidedTransactions!.isNotEmpty ? ListView.builder(
           itemCount: cashInHandController.walletProvidedTransactions!.length,
           shrinkWrap: true,
-          padding: const EdgeInsets.only(bottom: Dimensions.paddingSizeDefault, left: Dimensions.paddingSizeDefault, right: Dimensions.paddingSizeDefault),
+          padding: const EdgeInsets.only(bottom: Dimensions.p16, left: Dimensions.p16, right: Dimensions.p16),
           physics: const BouncingScrollPhysics(),
           itemBuilder: (context, index) {
             return Column(children: [
 
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeLarge),
+                padding: const EdgeInsets.symmetric(vertical: Dimensions.p20),
                 child: Row(children: [
 
                   Expanded(
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
-                      Text(PriceConverterHelper.convertPrice(cashInHandController.walletProvidedTransactions![index].amount), style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeDefault)),
-                      const SizedBox(height: Dimensions.paddingSizeExtraSmall),
+                      Text(PriceConverterHelper.convertPrice(cashInHandController.walletProvidedTransactions![index].amount), style: robotoMedium.copyWith(fontSize: Dimensions.fs14)),
+                      const SizedBox(height: Dimensions.p5),
 
                       Text('${'wallet'.tr} ${cashInHandController.walletProvidedTransactions![index].method?.replaceAll('_', ' ').capitalize??''}', style: robotoRegular.copyWith(
-                        fontSize: Dimensions.fontSizeExtraSmall, color: Theme.of(context).disabledColor,
+                        fontSize: Dimensions.fs10, color: Theme.of(context).disabledColor,
                       )),
 
                     ]),
@@ -55,12 +55,12 @@ class _WalletProvidedHistoryScreenState extends State<WalletProvidedHistoryScree
                   Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
 
                     Text(cashInHandController.walletProvidedTransactions![index].paymentTime.toString(),
-                      style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor),
+                      style: robotoRegular.copyWith(fontSize: Dimensions.fs12, color: Theme.of(context).disabledColor),
                     ),
-                    const SizedBox(height: Dimensions.paddingSizeExtraSmall),
+                    const SizedBox(height: Dimensions.p5),
 
                     Text(cashInHandController.walletProvidedTransactions![index].status!.tr, style: robotoRegular.copyWith(
-                      fontSize: Dimensions.fontSizeSmall,
+                      fontSize: Dimensions.fs12,
                       color: cashInHandController.walletProvidedTransactions![index].status == 'approved' ? Theme.of(context).primaryColor : cashInHandController.walletProvidedTransactions![index].status == 'denied'
                           ? Theme.of(context).colorScheme.error : Colors.blue,
                     )),

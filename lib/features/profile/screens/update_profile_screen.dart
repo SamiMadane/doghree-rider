@@ -73,9 +73,9 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     Expanded(
                       child: Container(
                         padding:
-                            const EdgeInsets.all(Dimensions.paddingSizeDefault),
+                            const EdgeInsets.all(Dimensions.p16),
                         margin: const EdgeInsets.only(
-                            top: Dimensions.paddingSizeDefault),
+                            top: Dimensions.p16),
                         color: Theme.of(context).cardColor,
                         child: SingleChildScrollView(
                           physics: const BouncingScrollPhysics(),
@@ -83,7 +83,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               const SizedBox(
-                                height: Dimensions.paddingSizeSmall,
+                                height: Dimensions.p10,
                               ),
                               Stack(
                                 children: [
@@ -145,7 +145,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                 ],
                               ),
                               const SizedBox(
-                                  height: Dimensions.paddingSizeExtraLarge),
+                                  height: Dimensions.p25),
 
                               // Full Name
                               WidgetWithLabel(
@@ -162,7 +162,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                 ),
                               ),
                               const SizedBox(
-                                  height: Dimensions.paddingSizeDefault),
+                                  height: Dimensions.p16),
                               // Email
                               WidgetWithLabel(
                                 label: 'email'.tr,
@@ -176,7 +176,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                 ),
                               ),
                               const SizedBox(
-                                  height: Dimensions.paddingSizeDefault),
+                                  height: Dimensions.p16),
 
                               // Phone
                               WidgetWithLabel(
@@ -206,10 +206,10 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     SafeArea(
                       child: Container(
                         padding: const EdgeInsets.only(
-                          top: Dimensions.paddingSizeDefault,
-                          left: Dimensions.paddingSizeDefault,
-                          right: Dimensions.paddingSizeDefault,
-                          bottom: Dimensions.paddingSizeExtraSmall,
+                          top: Dimensions.p16,
+                          left: Dimensions.p16,
+                          right: Dimensions.p16,
+                          bottom: Dimensions.p5,
                         ),
                         decoration: BoxDecoration(
                           color: Theme.of(context).cardColor,

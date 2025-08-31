@@ -11,7 +11,7 @@ class DialogImageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.radiusDefault)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.r10)),
       backgroundColor: Colors.transparent,
       child: Column(mainAxisSize: MainAxisSize.min, children: [
 
@@ -26,26 +26,26 @@ class DialogImageWidget extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: Dimensions.paddingSizeSmall),
+        const SizedBox(height: Dimensions.p10),
 
         Container(
           width: double.infinity,
           decoration: BoxDecoration(
             color: Theme.of(context).cardColor,
-            borderRadius: BorderRadius.circular(Dimensions.radiusExtraLarge),
+            borderRadius: BorderRadius.circular(Dimensions.r20),
           ),
-          padding: const EdgeInsets.all(Dimensions.paddingSizeLarge),
+          padding: const EdgeInsets.all(Dimensions.p20),
           child: Column(mainAxisSize: MainAxisSize.min, children: [
 
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeLarge),
+              padding: const EdgeInsets.symmetric(horizontal: Dimensions.p20),
               child: Text(
                 'take_a_picture'.tr, textAlign: TextAlign.center,
-                style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeExtraLarge, color: Theme.of(context).primaryColor),
+                style: robotoMedium.copyWith(fontSize: Dimensions.fs18, color: Theme.of(context).primaryColor),
               ),
             ),
 
-            const SizedBox(height: Dimensions.paddingSizeLarge),
+            const SizedBox(height: Dimensions.p20),
 
             GetBuilder<OrderController>(builder: (orderController) {
               return InkWell(
@@ -59,7 +59,7 @@ class DialogImageWidget extends StatelessWidget {
                 },
                 child: Container(
                   height: 100, width: 150, alignment: Alignment.center, decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
+                  borderRadius: BorderRadius.circular(Dimensions.r10),
                   color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
                 ),
                   child:  Icon(Icons.camera_alt_sharp, color: Theme.of(context).primaryColor, size: 32),

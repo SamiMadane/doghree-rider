@@ -25,11 +25,11 @@ class CustomConfirmationBottomSheet extends StatelessWidget {
         return GetBuilder<AuthController>(builder: (authController) {
           return Container(
             width: context.width,
-            padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
+            padding: const EdgeInsets.all(Dimensions.p10),
             decoration: BoxDecoration(
               color: Get.isDarkMode ? Theme.of(context).scaffoldBackgroundColor : Theme.of(context).cardColor,
               borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(Dimensions.radiusExtraLarge), topRight: Radius.circular(Dimensions.radiusExtraLarge),
+                topLeft: Radius.circular(Dimensions.r20), topRight: Radius.circular(Dimensions.r20),
               ),
             ),
             child: Column(mainAxisSize: MainAxisSize.min, children: [
@@ -38,18 +38,18 @@ class CustomConfirmationBottomSheet extends StatelessWidget {
                 height: 5, width: 50,
                 decoration: BoxDecoration(
                   color: Theme.of(context).disabledColor.withValues(alpha: 0.5),
-                  borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
+                  borderRadius: BorderRadius.circular(Dimensions.r10),
                 ),
               ),
-              const SizedBox(height: Dimensions.paddingSizeLarge),
+              const SizedBox(height: Dimensions.p20),
 
               Image.asset(
                 image ?? ManagerAssets.warning, height: 60, width: 60,
               ),
-              const SizedBox(height: Dimensions.paddingSizeLarge),
+              const SizedBox(height: Dimensions.p20),
 
-              Text(title, style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge), textAlign: TextAlign.center),
-              const SizedBox(height: Dimensions.paddingSizeDefault),
+              Text(title, style: robotoMedium.copyWith(fontSize: Dimensions.fs16), textAlign: TextAlign.center),
+              const SizedBox(height: Dimensions.p16),
 
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 35),
@@ -61,7 +61,7 @@ class CustomConfirmationBottomSheet extends StatelessWidget {
               const SizedBox(height: 30),
 
               buttonWidget ?? Padding(
-                padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall, vertical: Dimensions.paddingSizeLarge),
+                padding: const EdgeInsets.symmetric(horizontal: Dimensions.p10, vertical: Dimensions.p20),
                 child: Row(children: [
 
                   Expanded(
@@ -74,7 +74,7 @@ class CustomConfirmationBottomSheet extends StatelessWidget {
                       fontColor: Theme.of(context).textTheme.bodyLarge!.color,
                     ),
                   ),
-                  const SizedBox(width: Dimensions.paddingSizeDefault),
+                  const SizedBox(width: Dimensions.p16),
 
                   Expanded(
                     child: CustomButtonWidget(

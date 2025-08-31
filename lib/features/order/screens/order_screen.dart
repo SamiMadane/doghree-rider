@@ -53,7 +53,7 @@ class _OrderScreenState extends State<OrderScreen> {
                     child: Container(
                       color: Theme.of(context).cardColor,
                       padding:
-                          const EdgeInsets.all(Dimensions.paddingSizeDefault),
+                          const EdgeInsets.all(Dimensions.p16),
                       child: ConstrainedBox(
                         constraints: BoxConstraints(
                           minHeight: MediaQuery.of(context).size.height -
@@ -81,7 +81,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                 ? const Center(
                                     child: Padding(
                                     padding: EdgeInsets.all(
-                                        Dimensions.paddingSizeSmall),
+                                        Dimensions.p10),
                                     child: CircularProgressIndicator(),
                                   ))
                                 : const SizedBox(),

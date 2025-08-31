@@ -17,7 +17,7 @@ class CancellationDialogueWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     Get.find<OrderController>().getOrderCancelReasons();
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.radiusSmall)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.r4)),
       insetPadding: const EdgeInsets.all(30),
       clipBehavior: Clip.antiAliasWithSaveLayer,
       child: GetBuilder<OrderController>(builder: (orderController) {
@@ -27,14 +27,14 @@ class CancellationDialogueWidget extends StatelessWidget {
 
             Container(
               width: 500,
-              padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeSmall),
+              padding: const EdgeInsets.symmetric(vertical: Dimensions.p10),
               decoration: BoxDecoration(
                 color: Theme.of(context).cardColor,
                 boxShadow: Get.isDarkMode ? null : [BoxShadow(color: Colors.grey[200]!, spreadRadius: 1, blurRadius: 5)],
               ),
               child: Column(children: [
-                Text('select_cancellation_reasons'.tr, style: robotoMedium.copyWith(color: Theme.of(context).primaryColor, fontSize: Dimensions.fontSizeLarge)),
-                const SizedBox(height: Dimensions.paddingSizeExtraSmall),
+                Text('select_cancellation_reasons'.tr, style: robotoMedium.copyWith(color: Theme.of(context).primaryColor, fontSize: Dimensions.fs16)),
+                const SizedBox(height: Dimensions.p5),
               ]),
             ),
 
@@ -44,7 +44,7 @@ class CancellationDialogueWidget extends StatelessWidget {
                 shrinkWrap: true,
                 itemBuilder: (context, index){
                   return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall),
+                    padding: const EdgeInsets.symmetric(horizontal: Dimensions.p10),
                     child: ListTile(
                       onTap: (){
                         orderController.setOrderCancelReason(orderController.orderCancelReasons![index].reason);
@@ -52,7 +52,7 @@ class CancellationDialogueWidget extends StatelessWidget {
                       title: Row(children: [
 
                         Icon(orderController.orderCancelReasons![index].reason == orderController.cancelReason ? Icons.radio_button_checked : Icons.radio_button_off, color: Theme.of(context).primaryColor, size: 18),
-                        const SizedBox(width: Dimensions.paddingSizeExtraSmall),
+                        const SizedBox(width: Dimensions.p5),
 
                         Flexible(child: Text(orderController.orderCancelReasons![index].reason!, style: robotoRegular, maxLines: 3, overflow: TextOverflow.ellipsis)),
 
@@ -62,17 +62,17 @@ class CancellationDialogueWidget extends StatelessWidget {
                 },
               ) : Center(child: Text('no_reasons_available'.tr)) : const Center(child: CircularProgressIndicator()),
             ),
-            const SizedBox(height: Dimensions.paddingSizeExtraSmall),
+            const SizedBox(height: Dimensions.p5),
 
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Dimensions.fontSizeDefault, vertical: Dimensions.paddingSizeSmall),
+              padding: const EdgeInsets.symmetric(horizontal: Dimensions.fs14, vertical: Dimensions.p10),
               child: !orderController.isLoading ? Row(children: [
 
                 Expanded(child: CustomButtonWidget(
                   buttonText: 'cancel'.tr, backgroundColor: Theme.of(context).disabledColor, radius: 50,
                   onPressed: () => Get.back(),
                 )),
-                const SizedBox(width: Dimensions.paddingSizeSmall),
+                const SizedBox(width: Dimensions.p10),
 
                 Expanded(child: CustomButtonWidget(
                   buttonText: 'submit'.tr,  radius: 50,

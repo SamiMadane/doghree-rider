@@ -30,13 +30,13 @@ class TransactionBottomSheet extends StatelessWidget {
 
     if (showPayNow) {
       if (showAdjust) {
-        buttons.add(const SizedBox(width: Dimensions.paddingSizeLarge));
+        buttons.add(const SizedBox(width: Dimensions.p20));
       }
       buttons.add(const Expanded(child: PayNowButton()));
     }
 
     return Padding(
-      padding: const EdgeInsets.all(Dimensions.paddingSizeLarge),
+      padding: const EdgeInsets.all(Dimensions.p20),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -46,11 +46,11 @@ class TransactionBottomSheet extends StatelessWidget {
               ? Text(
                   'choose_type'.tr,
                   style: robotoSemiBold.copyWith(
-                    fontSize: Dimensions.fontSizeExtraLarge,
+                    fontSize: Dimensions.fs18,
                   ),
                 )
               : SizedBox(),
-          const SizedBox(height: Dimensions.paddingSizeLarge),
+          const SizedBox(height: Dimensions.p20),
 
           // الأزرار
           buttons.length == 1
@@ -99,10 +99,10 @@ class AdjustPaymentButton extends StatelessWidget {
           strokeCap: StrokeCap.butt,
           dashPattern: const [8, 5],
           padding: const EdgeInsets.all(5),
-          radius: const Radius.circular(Dimensions.radiusDefault),
+          radius: const Radius.circular(Dimensions.r10),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+          padding: const EdgeInsets.all(Dimensions.p16),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -114,13 +114,13 @@ class AdjustPaymentButton extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
               ),
-              const SizedBox(height: Dimensions.paddingSizeSmall),
+              const SizedBox(height: Dimensions.p10),
               Center(
                 child: Text(
                   'adjust_payments'.tr,
                   textAlign: TextAlign.center,
                   style: robotoMedium.copyWith(
-                      fontSize: Dimensions.fontSizeDefault,
+                      fontSize: Dimensions.fs14,
                       color: Theme.of(context).disabledColor),
                 ),
               ),
@@ -171,10 +171,10 @@ class PayNowButton extends StatelessWidget {
           strokeCap: StrokeCap.butt,
           dashPattern: const [8, 5],
           padding: const EdgeInsets.all(5),
-          radius: const Radius.circular(Dimensions.radiusDefault),
+          radius: const Radius.circular(Dimensions.r10),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+          padding: const EdgeInsets.all(Dimensions.p16),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -186,13 +186,13 @@ class PayNowButton extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
               ),
-              const SizedBox(height: Dimensions.paddingSizeSmall),
+              const SizedBox(height: Dimensions.p10),
               Center(
                 child: Text(
                   'pay_now'.tr,
                   textAlign: TextAlign.center,
                   style: robotoMedium.copyWith(
-                      fontSize: Dimensions.fontSizeDefault,
+                      fontSize: Dimensions.fs14,
                       color: Theme.of(context).disabledColor),
                 ),
               ),

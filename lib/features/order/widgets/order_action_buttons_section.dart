@@ -51,7 +51,7 @@ class OrderActionButtonsSection extends StatelessWidget {
         order.orderStatus != 'delivered' &&
         !parcel) {
       return Padding(
-        padding: const EdgeInsets.only(top: Dimensions.paddingSizeLarge),
+        padding: const EdgeInsets.only(top: Dimensions.p20),
         child: CompleteDeliveryButton(
           order: order,
           orderVerificationActive: orderVerificationActive,
@@ -66,7 +66,7 @@ class OrderActionButtonsSection extends StatelessWidget {
           processing ||
           confirmed) {
         return Padding(
-          padding: const EdgeInsets.only(top: Dimensions.paddingSizeLarge),
+          padding: const EdgeInsets.only(top: Dimensions.p20),
           child: OrderStatusInfoContainer(processing: processing),
         );
       }
@@ -79,7 +79,7 @@ class OrderActionButtonsSection extends StatelessWidget {
                 !selfDelivery) ||
             (parcel && accepted && cancelPermission)) {
           return Padding(
-            padding: const EdgeInsets.only(top: Dimensions.paddingSizeLarge),
+            padding: const EdgeInsets.only(top: Dimensions.p20),
             child: CancelConfirmRow(
               order: order,
               parcel: parcel,
@@ -88,7 +88,7 @@ class OrderActionButtonsSection extends StatelessWidget {
           );
         } else {
           return Padding(
-            padding: const EdgeInsets.only(top: Dimensions.paddingSizeLarge),
+            padding: const EdgeInsets.only(top: Dimensions.p20),
             child: OrderSliderButton(
               order: order,
               parcel: parcel,

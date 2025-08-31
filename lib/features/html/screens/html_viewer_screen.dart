@@ -35,7 +35,7 @@ class _HtmlViewerScreenState extends State<HtmlViewerScreen> {
           width: MediaQuery.of(context).size.width,
           color: Theme.of(context).cardColor,
           child: htmlController.htmlText != null ? SingleChildScrollView(
-            padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
+            padding: const EdgeInsets.all(Dimensions.p10),
             physics: const BouncingScrollPhysics(),
             child: HtmlWidget(
               htmlController.htmlText ?? '',

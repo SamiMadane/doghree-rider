@@ -54,7 +54,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
           },
           child: Container(
             color: Theme.of(context).cardColor,
-            margin: EdgeInsets.only(top: Dimensions.paddingSizeDefault),
+            margin: EdgeInsets.only(top: Dimensions.p16),
             child: ListView.builder(
               itemCount: notifications.length,
               itemBuilder: (context, index) {
@@ -82,7 +82,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                     if (addTitle)
                       Padding(
                         padding:
-                            const EdgeInsets.all(Dimensions.paddingSizeDefault),
+                            const EdgeInsets.all(Dimensions.p16),
                         child: Text(
                           DateConverterHelper.convertTodayYesterdayDate(
                               notification.createdAt!),
@@ -102,7 +102,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                         children: [
                           Container(
                             padding: const EdgeInsets.all(
-                                Dimensions.paddingSizeDefault),
+                                Dimensions.p16),
                             color: isSeen
                                 ? null
                                 : Theme.of(context).primaryColor.withAlpha(10),
@@ -132,7 +132,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                 else
                                   const SizedBox(width: 12),
                                 const SizedBox(
-                                    width: Dimensions.paddingSizeDefault),
+                                    width: Dimensions.p16),
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment:
@@ -145,21 +145,21 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                               notification.title ?? '',
                                               style: robotoSemiBold.copyWith(
                                                   fontSize: Dimensions
-                                                      .fontSizeDefault),
+                                                      .fs14),
                                               maxLines: 2,
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                           ),
                                           const SizedBox(
                                               width:
-                                                  Dimensions.paddingSizeSmall),
+                                                  Dimensions.p10),
                                           Text(
                                             DateConverterHelper
                                                 .convertTimeDifference(
                                                     notification.createdAt!),
                                             style: robotoMedium.copyWith(
                                                 fontSize:
-                                                    Dimensions.fontSizeSmall,
+                                                    Dimensions.fs12,
                                                 color: Theme.of(context)
                                                     .hintColor),
                                           ),
@@ -167,12 +167,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                       ),
                                       const SizedBox(
                                           height:
-                                              Dimensions.paddingSizeExtraSmall),
+                                              Dimensions.p5),
                                       Text(
                                         notification.description ?? '',
                                         style: robotoRegular.copyWith(
                                             fontSize:
-                                                Dimensions.fontSizeDefault),
+                                                Dimensions.fs14),
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                       ),

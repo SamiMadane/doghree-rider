@@ -65,7 +65,7 @@ class OrderItemWidget extends StatelessWidget {
           children: [
             if(showImage && orderDetails.itemDetails!.imageFullUrl != null)
               ClipRRect(
-                borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
+                borderRadius: BorderRadius.circular(Dimensions.r4),
                 child: CustomImageWidget(
                   image: orderDetails.itemDetails!.imageFullUrl!,
                   width: 50,
@@ -73,7 +73,7 @@ class OrderItemWidget extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
               ),
-            if(showImage) SizedBox(width: Dimensions.paddingSizeSmall),
+            if(showImage) SizedBox(width: Dimensions.p10),
             
             Expanded(
               child: Column(
@@ -85,7 +85,7 @@ class OrderItemWidget extends StatelessWidget {
                       TitleWidget(
                         title: orderDetails.itemDetails!.name!,
                         titleStyle: robotoMedium.copyWith(
-                          fontSize: Dimensions.fontSizeDefault,
+                          fontSize: Dimensions.fs14,
                         ),
                         showOrderCount: true,
                         orderCount: orderDetails.quantity!,
@@ -93,7 +93,7 @@ class OrderItemWidget extends StatelessWidget {
                       Text(
                         PriceConverterHelper.convertPrice(orderDetails.price! - (showDiscount ? orderDetails.discountOnItem! : 0)),
                         style: robotoMedium.copyWith(
-                          fontSize: Dimensions.fontSizeDefault,
+                          fontSize: Dimensions.fs14,
                         ),
                       ),
                     ],
@@ -103,7 +103,7 @@ class OrderItemWidget extends StatelessWidget {
                       PriceConverterHelper.convertPrice(orderDetails.price),
                       style: robotoMedium.copyWith(
                         decoration: TextDecoration.lineThrough,
-                        fontSize: Dimensions.fontSizeSmall,
+                        fontSize: Dimensions.fs12,
                         color: Theme.of(context).disabledColor,
                       ),
                     ),
@@ -112,16 +112,16 @@ class OrderItemWidget extends StatelessWidget {
                     || (Get.find<NavigationHandlerController>().configModel!.toggleVegNonVeg! && Get.find<NavigationHandlerController>().getModule(order.moduleType).vegNonVeg!))
                   )
                     Container(
-                      padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeExtraSmall, horizontal: Dimensions.paddingSizeSmall),
+                      padding: const EdgeInsets.symmetric(vertical: Dimensions.p5, horizontal: Dimensions.p10),
                       decoration: BoxDecoration(
                         color: Theme.of(context).primaryColor.withAlpha(25),
-                        borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
+                        borderRadius: BorderRadius.circular(Dimensions.r4),
                       ),
                       child: Text(
                         Get.find<NavigationHandlerController>().getModule(order.moduleType).unit!
                           ? orderDetails.itemDetails!.unitType ?? ''
                           : orderDetails.itemDetails!.veg == 0 ? 'non_veg'.tr : 'veg'.tr,
-                        style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeExtraSmall, color: Theme.of(context).primaryColor),
+                        style: robotoRegular.copyWith(fontSize: Dimensions.fs10, color: Theme.of(context).primaryColor),
                       ),
                     ),
                 ],
@@ -132,17 +132,17 @@ class OrderItemWidget extends StatelessWidget {
 
         if(showAddons && addOnText.isNotEmpty)
           Padding(
-            padding: const EdgeInsets.only(left: 60, top: Dimensions.paddingSizeExtraSmall),
+            padding: const EdgeInsets.only(left: 60, top: Dimensions.p5),
             child: Text('addons'.tr + ': ' + addOnText,
-              style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor),
+              style: robotoRegular.copyWith(fontSize: Dimensions.fs12, color: Theme.of(context).disabledColor),
             ),
           ),
 
         if(showVariations && variationText.isNotEmpty)
           Padding(
-            padding: const EdgeInsets.only(left: 60, top: Dimensions.paddingSizeExtraSmall),
+            padding: const EdgeInsets.only(left: 60, top: Dimensions.p5),
             child: Text('variations'.tr + ': ' + variationText,
-              style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor),
+              style: robotoRegular.copyWith(fontSize: Dimensions.fs12, color: Theme.of(context).disabledColor),
             ),
           ),
 

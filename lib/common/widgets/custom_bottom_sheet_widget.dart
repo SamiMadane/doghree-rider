@@ -13,8 +13,8 @@ void showCustomBottomSheet({
     backgroundColor: Colors.white,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(Dimensions.radiusExtraLarge),
-        topRight: Radius.circular(Dimensions.radiusExtraLarge),
+        topLeft: Radius.circular(Dimensions.r20),
+        topRight: Radius.circular(Dimensions.r20),
       ),
     ),
     builder: (context) {
@@ -35,7 +35,7 @@ void showCustomBottomSheet({
             child: GestureDetector(
               onTap: onClose ?? () => Get.back(),
               child: Container(
-                padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
+                padding: const EdgeInsets.all(Dimensions.p10),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: Colors.white,
@@ -46,7 +46,7 @@ void showCustomBottomSheet({
                     color: Colors.white,
                     border: Border.all(color: Colors.black, width: 1.5),
                   ),
-                  padding: EdgeInsets.all(Dimensions.paddingSizeExtraSmall),
+                  padding: EdgeInsets.all(Dimensions.p5),
                   child: const Icon(Icons.close, size: 20, color: Colors.black),
                 ),
               ),

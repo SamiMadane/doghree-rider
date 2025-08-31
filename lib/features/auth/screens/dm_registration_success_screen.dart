@@ -21,9 +21,9 @@ class DmRegistrationSuccessScreen extends StatelessWidget {
      
       ),
       body: Padding(
-        padding: const EdgeInsets.only(top: Dimensions.paddingSizeDefault),
+        padding: const EdgeInsets.only(top: Dimensions.p16),
         child: Container(
-          padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+          padding: const EdgeInsets.all(Dimensions.p16),
           color: Theme.of(context).cardColor,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -34,20 +34,20 @@ class DmRegistrationSuccessScreen extends StatelessWidget {
                 height: 200,
                 width: 200,
               ),
-              const SizedBox(height: Dimensions.paddingSizeLarge),
+              const SizedBox(height: Dimensions.p20),
               Text(
                 'application_submitted'.tr,
                 style: robotoSemiBold.copyWith(
-                  fontSize: Dimensions.fontSizeOverLarge,
+                  fontSize: Dimensions.fs24,
                   color: Theme.of(context).textTheme.bodyLarge!.color,
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: Dimensions.paddingSizeSmall),
+              const SizedBox(height: Dimensions.p10),
               Text(
                 'application_received_message'.tr,
                 style: robotoRegular.copyWith(
-                  fontSize: Dimensions.fontSizeLarge,
+                  fontSize: Dimensions.fs16,
                   color: Theme.of(context).hintColor,
                 ),
                 textAlign: TextAlign.center,

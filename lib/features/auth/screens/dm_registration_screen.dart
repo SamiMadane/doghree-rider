@@ -86,7 +86,7 @@ class _DmRegistrationScreenState extends State<DmRegistrationScreen> {
           return GetBuilder<AddressController>(builder: (addressController) {
             return Padding(
               padding:
-                  const EdgeInsets.only(top: Dimensions.paddingSizeDefault),
+                  const EdgeInsets.only(top: Dimensions.p16),
               child: Container(
                 color: Theme.of(context).cardColor,
                 child: Column(children: [
@@ -94,7 +94,7 @@ class _DmRegistrationScreenState extends State<DmRegistrationScreen> {
                   Expanded(
                       child: SingleChildScrollView(
                     padding:
-                        const EdgeInsets.all(Dimensions.paddingSizeDefault),
+                        const EdgeInsets.all(Dimensions.p16),
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -127,10 +127,10 @@ class _DmRegistrationScreenState extends State<DmRegistrationScreen> {
                   )),
                   Container(
                     padding: const EdgeInsets.only(
-                        top: Dimensions.paddingSizeDefault,
-                        left: Dimensions.paddingSizeDefault,
-                        right: Dimensions.paddingSizeDefault,
-                        bottom: Dimensions.paddingSizeExtraSmall),
+                        top: Dimensions.p16,
+                        left: Dimensions.p16,
+                        right: Dimensions.p16,
+                        bottom: Dimensions.p5),
                     decoration: BoxDecoration(
                       color: Theme.of(context).cardColor,
                       boxShadow: [

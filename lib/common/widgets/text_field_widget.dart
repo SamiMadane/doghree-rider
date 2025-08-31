@@ -58,17 +58,17 @@ class TextFieldWidgetState extends State<TextFieldWidget> {
       widget.title ? Row(children: [
         Text(
           widget.titleName ?? widget.hintText!,
-          style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge),
+          style: robotoMedium.copyWith(fontSize: Dimensions.fs16),
         ),
-        const SizedBox(width: Dimensions.paddingSizeExtraSmall),
+        const SizedBox(width: Dimensions.p5),
         widget.isEnabled ? const SizedBox() : Text('(${'non_changeable'.tr})', style: robotoRegular.copyWith(
-          fontSize: Dimensions.fontSizeExtraSmall, color: Theme.of(context).colorScheme.error,
+          fontSize: Dimensions.fs10, color: Theme.of(context).colorScheme.error,
         )),
 
         widget.isRequired ? Text('*', style: robotoBold.copyWith(color: Theme.of(context).primaryColor)) : const SizedBox(),
 
       ]) : const SizedBox(),
-      SizedBox(height: widget.title ? Dimensions.paddingSizeSmall : 0),
+      SizedBox(height: widget.title ? Dimensions.p10 : 0),
 
       Container(
         decoration: BoxDecoration(
@@ -92,7 +92,7 @@ class TextFieldWidgetState extends State<TextFieldWidget> {
             isDense: true,
             filled: true,
             fillColor: widget.fillColor ?? Theme.of(context).cardColor,
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(Dimensions.radiusSmall), borderSide: BorderSide.none),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(Dimensions.r4), borderSide: BorderSide.none),
             hintStyle: robotoRegular.copyWith(color: Theme.of(context).hintColor),
             suffixIcon: widget.isPassword ? IconButton(
               icon: Icon(_obscureText ? Icons.visibility_off : Icons.visibility, color: Theme.of(context).hintColor.withValues(alpha: 0.3)),

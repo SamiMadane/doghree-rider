@@ -47,7 +47,7 @@ class AvailableOrdersScreenState extends State<AvailableOrdersScreen> {
           title: 'available_orders'.tr, isBackButtonExist: false),
       body: Container(
         color: Theme.of(context).cardColor,
-        margin: EdgeInsets.only(top: Dimensions.paddingSizeDefault),
+        margin: EdgeInsets.only(top: Dimensions.p16),
         child: GetBuilder<OrderController>(builder: (orderController) {
           return orderController.latestOrderList != null
               ? orderController.latestOrderList!.isNotEmpty
@@ -58,7 +58,7 @@ class AvailableOrdersScreenState extends State<AvailableOrdersScreen> {
                       child: ListView.builder(
                         itemCount: orderController.latestOrderList!.length,
                         padding:
-                            const EdgeInsets.all(Dimensions.paddingSizeSmall),
+                            const EdgeInsets.all(Dimensions.p10),
                         physics: const AlwaysScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
                           return OrderRequestWidget(

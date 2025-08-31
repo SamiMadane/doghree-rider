@@ -53,13 +53,13 @@ class PaymentDetailsSection extends StatelessWidget {
           Text(label,
               style: style ??
                   robotoRegular.copyWith(
-                    fontSize: Dimensions.fontSizeDefault,
+                    fontSize: Dimensions.fs14,
                     color: Theme.of(context).hintColor,
                   )),
           Text(value,
               style: style ??
                   robotoRegular.copyWith(
-                    fontSize: Dimensions.fontSizeDefault,
+                    fontSize: Dimensions.fs14,
                     color: Theme.of(context).hintColor,
                   )),
         ],
@@ -70,17 +70,17 @@ class PaymentDetailsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomCard(
-      padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+      padding: const EdgeInsets.all(Dimensions.p16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'payment_details'.tr,
             style: robotoSemiBold.copyWith(
-              fontSize: Dimensions.fontSizeLarge,
+              fontSize: Dimensions.fs16,
             ),
           ),
-          const SizedBox(height: Dimensions.paddingSizeSmall),
+          const SizedBox(height: Dimensions.p10),
 
           // Item price
           if (!parcel)
@@ -160,13 +160,13 @@ class PaymentDetailsSection extends StatelessWidget {
             _buildRow('vat_tax'.tr, '${PriceConverterHelper.convertPrice(tax)}',
                 context: context),
 
-          const SizedBox(height: Dimensions.paddingSizeSmall),
+          const SizedBox(height: Dimensions.p10),
 
           _buildRow(
             'total'.tr,
             PriceConverterHelper.convertPrice(total),
             style: robotoMedium.copyWith(
-              fontSize: Dimensions.fontSizeLarge,
+              fontSize: Dimensions.fs16,
               color: Theme.of(context).textTheme.bodyMedium!.color,
             ),
             context: context,

@@ -8,7 +8,7 @@ void showCustomSnackBar(String? message, {bool isError = true}) {
     message: message,
     duration: const Duration(seconds: 3),
     snackStyle: SnackStyle.FLOATING,
-    margin: const EdgeInsets.all(Dimensions.paddingSizeSmall),
+    margin: const EdgeInsets.all(Dimensions.p10),
     borderRadius: 10,
     isDismissible: true,
     dismissDirection: DismissDirection.horizontal,

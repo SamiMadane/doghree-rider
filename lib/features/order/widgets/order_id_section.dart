@@ -18,8 +18,8 @@ class OrderIdSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomCard(
-      padding: EdgeInsets.all(Dimensions.paddingSizeDefault),
-      borderRadius: Dimensions.radiusLarge,
+      padding: EdgeInsets.all(Dimensions.p16),
+      borderRadius: Dimensions.r16,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -29,14 +29,14 @@ class OrderIdSection extends StatelessWidget {
                 TextSpan(
                   text: '${'id_label'.tr}: ', // ترجم الكلمة ID
                   style: robotoSemiBold.copyWith(
-                    fontSize: Dimensions.fontSizeDefault,
+                    fontSize: Dimensions.fs14,
                     color: Theme.of(context).hintColor,
                   ),
                 ),
                 TextSpan(
                   text: '#$orderId',
                   style: robotoSemiBold.copyWith(
-                    fontSize: Dimensions.fontSizeDefault,
+                    fontSize: Dimensions.fs14,
                     color: ManagerColors.darkGreen,
                   ),
                 ),
@@ -47,8 +47,8 @@ class OrderIdSection extends StatelessWidget {
             isBorder: false,
             width: isPaid ? 60 : 80,
             padding: EdgeInsets.symmetric(
-                horizontal: Dimensions.paddingSizeSmall,
-                vertical: Dimensions.paddingSizeSmall),
+                horizontal: Dimensions.p10,
+                vertical: Dimensions.p10),
             fillColor: isPaid
                 ? ManagerColors.darkGreen
                 : Theme.of(context).colorScheme.error,
@@ -57,7 +57,7 @@ class OrderIdSection extends StatelessWidget {
                 isPaid ? 'paid'.tr : 'unpaid'.tr,
                 style: robotoBold.copyWith(
                   color: ManagerColors.white,
-                  fontSize: Dimensions.fontSizeDefault,
+                  fontSize: Dimensions.fs14,
                 ),
               ),
             ),

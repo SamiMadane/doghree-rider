@@ -19,12 +19,12 @@ class _PaymentMethodBottomSheetWidgetState extends State<PaymentMethodBottomShee
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(top: Dimensions.paddingSizeSmall, left: Dimensions.paddingSizeDefault, right: Dimensions.paddingSizeDefault),
+      padding: const EdgeInsets.only(top: Dimensions.p10, left: Dimensions.p16, right: Dimensions.p16),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(Dimensions.radiusExtraLarge),
-          topRight: Radius.circular(Dimensions.radiusExtraLarge),
+          topLeft: Radius.circular(Dimensions.r20),
+          topRight: Radius.circular(Dimensions.r20),
         ),
       ),
       child: GetBuilder<CashInHandController>(builder: (cashInHandController) {
@@ -34,24 +34,24 @@ class _PaymentMethodBottomSheetWidgetState extends State<PaymentMethodBottomShee
             height: 5, width: 50,
             decoration: BoxDecoration(
               color: Theme.of(context).disabledColor.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
+              borderRadius: BorderRadius.circular(Dimensions.r4),
             ),
           ),
-          const SizedBox(height: Dimensions.paddingSizeDefault),
+          const SizedBox(height: Dimensions.p16),
 
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
-            Align(alignment: Alignment.center, child: Text('payment_method'.tr, style: robotoBold.copyWith(fontSize: Dimensions.fontSizeLarge))),
-            const SizedBox(height: Dimensions.paddingSizeDefault),
+            Align(alignment: Alignment.center, child: Text('payment_method'.tr, style: robotoBold.copyWith(fontSize: Dimensions.fs16))),
+            const SizedBox(height: Dimensions.p16),
 
             Row(children: [
 
-              Text('pay_via_online'.tr, style: robotoBold.copyWith(fontSize: Dimensions.fontSizeDefault)),
+              Text('pay_via_online'.tr, style: robotoBold.copyWith(fontSize: Dimensions.fs14)),
 
               Flexible(
                 child: Text(
                   '(${'faster_and_secure_way_to_pay_bill'.tr})',
-                  style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).hintColor),
+                  style: robotoRegular.copyWith(fontSize: Dimensions.fs12, color: Theme.of(context).hintColor),
                   maxLines: 1, overflow: TextOverflow.ellipsis,
                 ),
               ),
@@ -59,7 +59,7 @@ class _PaymentMethodBottomSheetWidgetState extends State<PaymentMethodBottomShee
             ]),
 
           ]),
-          const SizedBox(height: Dimensions.paddingSizeDefault),
+          const SizedBox(height: Dimensions.p16),
 
           Flexible(
             child: SingleChildScrollView(
@@ -78,13 +78,13 @@ class _PaymentMethodBottomSheetWidgetState extends State<PaymentMethodBottomShee
                       cashInHandController.changeDigitalPaymentName(Get.find<NavigationHandlerController>().configModel!.activePaymentMethodList![index].getWay!);
                     },
                     child: Container(
-                      margin: const EdgeInsets.only(bottom: Dimensions.paddingSizeSmall),
+                      margin: const EdgeInsets.only(bottom: Dimensions.p10),
                       decoration: BoxDecoration(
                         color: Theme.of(context).cardColor,
-                        borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
+                        borderRadius: BorderRadius.circular(Dimensions.r10),
                         border: Border.all(color: Theme.of(context).disabledColor.withValues(alpha: 0.4)),
                       ),
-                      padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault, vertical: Dimensions.paddingSizeLarge),
+                      padding: const EdgeInsets.symmetric(horizontal: Dimensions.p16, vertical: Dimensions.p20),
                       child: Row(children: [
                         Container(
                           height: 20, width: 20,
@@ -94,11 +94,11 @@ class _PaymentMethodBottomSheetWidgetState extends State<PaymentMethodBottomShee
                           ),
                           child: Icon(Icons.check, color: Theme.of(context).cardColor, size: 16),
                         ),
-                        const SizedBox(width: Dimensions.paddingSizeDefault),
+                        const SizedBox(width: Dimensions.p16),
 
                         Text(
                           Get.find<NavigationHandlerController>().configModel!.activePaymentMethodList![index].getWayTitle!,
-                          style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeDefault),
+                          style: robotoMedium.copyWith(fontSize: Dimensions.fs14),
                         ),
                         const Spacer(),
 
@@ -117,9 +117,9 @@ class _PaymentMethodBottomSheetWidgetState extends State<PaymentMethodBottomShee
 
           SafeArea(
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeDefault),
+              padding: const EdgeInsets.symmetric(vertical: Dimensions.p16),
               child: CustomButtonWidget(
-                radius: Dimensions.radiusDefault,
+                radius: Dimensions.r10,
                 buttonText: 'select'.tr,
                 onPressed: () {
                   double amount = Get.find<ProfileController>().profileModel!.payableBalance!;

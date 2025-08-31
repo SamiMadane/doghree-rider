@@ -23,7 +23,7 @@ class EarningsGridSection extends StatelessWidget {
 
     return Obx(
       () => Container(
-        margin: const EdgeInsets.only(top: Dimensions.paddingSizeLarge),
+        margin: const EdgeInsets.only(top: Dimensions.p20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -31,8 +31,8 @@ class EarningsGridSection extends StatelessWidget {
               crossAxisCount: 2,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              mainAxisSpacing: Dimensions.paddingSizeLarge,
-              crossAxisSpacing: Dimensions.paddingSizeLarge,
+              mainAxisSpacing: Dimensions.p20,
+              crossAxisSpacing: Dimensions.p20,
               childAspectRatio: 1.4,
               children: [
                 EarningTile(

@@ -44,7 +44,7 @@ class ProfileButtonWidget extends StatelessWidget {
           children: [
             // أيقونة داخل دائرة
             CircleAvatar(
-              radius: Dimensions.radiusLarge,
+              radius: Dimensions.r16,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               child: SizedBox(
                 width: 22,
@@ -79,14 +79,14 @@ class ProfileButtonWidget extends StatelessWidget {
                       ),
               ),
             ),
-            const SizedBox(width: Dimensions.paddingSizeSmall),
+            const SizedBox(width: Dimensions.p10),
 
             // النص
             Expanded(
               child: Text(
                 title,
                 style: robotoRegular.copyWith(
-                  fontSize: Dimensions.fontSizeLarge,
+                  fontSize: Dimensions.fs16,
                   color: titleColor ?? (isButtonActive == true ? ManagerColors.darkGreen : Theme.of(context).textTheme.bodyMedium!.color),
                 ),
               ),
@@ -95,7 +95,7 @@ class ProfileButtonWidget extends StatelessWidget {
             // المكون الاختياري قبل السهم
             if (trailingWidget != null) ...[
               trailingWidget!,
-              const SizedBox(width: Dimensions.paddingSizeSmall),
+              const SizedBox(width: Dimensions.p10),
             ],
 
             // السهم أو السويتش

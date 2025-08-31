@@ -195,7 +195,7 @@ class NavigationHandlerScreenState extends State<NavigationHandlerScreen> {
 
   Widget _buildLoadingWidget() {
     return Padding(
-      padding: const EdgeInsets.all(Dimensions.paddingSizeLarge),
+      padding: const EdgeInsets.all(Dimensions.p20),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -203,18 +203,18 @@ class NavigationHandlerScreenState extends State<NavigationHandlerScreen> {
           Image.asset(
             ManagerAssets.logo,
           ),
-          const SizedBox(height: Dimensions.paddingSizeSmall),
+          const SizedBox(height: Dimensions.p10),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
                 "delivery".tr,
                 style: robotoSemiBold.copyWith(
-                  fontSize: Dimensions.fontSizeLarge,
+                  fontSize: Dimensions.fs16,
                   color: Theme.of(context).textTheme.bodyLarge!.color,
                 ),
               ),
-              const SizedBox(width: Dimensions.paddingSizeExtraSmall),
+              const SizedBox(width: Dimensions.p5),
               LoadingDots(
                   color: Theme.of(context).textTheme.bodyMedium!.color!),
             ],
@@ -236,21 +236,21 @@ class NavigationHandlerScreenState extends State<NavigationHandlerScreen> {
                   ManagerAssets.deliveryLottie,
                   fit: BoxFit.contain,
                 ),
-                const SizedBox(height: Dimensions.paddingSizeExtraLarge),
+                const SizedBox(height: Dimensions.p25),
 
                 Text(
                   "no_connection".tr,
                   style: robotoBold.copyWith(
-                    fontSize: Dimensions.fontSizeOverLarge,
+                    fontSize: Dimensions.fs24,
                     color: Theme.of(context).textTheme.bodyLarge!.color,
                   ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: Dimensions.paddingSizeSmall),
+                const SizedBox(height: Dimensions.p10),
                 Text(
                   "please_check_your_internet_and_try_again".tr,
                   style: robotoRegular.copyWith(
-                    fontSize: Dimensions.fontSizeExtraLarge,
+                    fontSize: Dimensions.fs18,
                     color: Theme.of(context).disabledColor,
                   ),
                   textAlign: TextAlign.center,

@@ -23,12 +23,12 @@ class CashInHandSection extends StatelessWidget {
         ? profileController.profileModel!.earnings == 1
             ? CustomCard(
                 margin: const EdgeInsets.only(
-                    top: Dimensions.paddingSizeLarge),
+                    top: Dimensions.p20),
                 height: 95,
                 width: MediaQuery.of(context).size.width,
                 fillColor: Theme.of(context).scaffoldBackgroundColor,
                 padding: const EdgeInsets.all(
-                  Dimensions.paddingSizeDefault,
+                  Dimensions.p16,
                 ),
                 child: Row(
                   children: [
@@ -42,14 +42,14 @@ class CashInHandSection extends StatelessWidget {
                               profileController.profileModel!.cashInHands,
                             ),
                             style: robotoBold.copyWith(
-                              fontSize: Dimensions.fontSizeExtraLarge,
+                              fontSize: Dimensions.fs18,
                             ),
                           ),
                           Text(
                             'cash_in_your_hand'.tr,
                             style: robotoBold.copyWith(
                               color: Theme.of(context).hintColor,
-                              fontSize: Dimensions.fontSizeLarge,
+                              fontSize: Dimensions.fs16,
                             ),
                           ),
                         ],
@@ -59,7 +59,7 @@ class CashInHandSection extends StatelessWidget {
                       width: 100,
                       height: 40,
                       isBold: true,
-                      fontSize: Dimensions.fontSizeDefault,
+                      fontSize: Dimensions.fs14,
                       buttonText: 'view_details'.tr,
                       backgroundColor: Theme.of(context).primaryColor,
                       onPressed: () => Get.toNamed(
@@ -77,7 +77,7 @@ class CashInHandSection extends StatelessWidget {
               height: 85,
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
+                borderRadius: BorderRadius.circular(Dimensions.r10),
                 color: Theme.of(context).shadowColor,
               ),
             ),

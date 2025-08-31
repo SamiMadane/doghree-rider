@@ -13,11 +13,11 @@ class CameraButtonSheetWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(
-          vertical: Dimensions.paddingSizeDefault,
-          horizontal: Dimensions.paddingSizeLarge),
+          vertical: Dimensions.p16,
+          horizontal: Dimensions.p20),
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.vertical(
-            top: Radius.circular(Dimensions.radiusExtraLarge)),
+            top: Radius.circular(Dimensions.r20)),
         color: Theme.of(context).cardColor,
       ),
       child: Column(mainAxisSize: MainAxisSize.min, children: [
@@ -26,18 +26,18 @@ class CameraButtonSheetWidget extends StatelessWidget {
           height: 4,
           width: 50,
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
+              borderRadius: BorderRadius.circular(Dimensions.r10),
               color: Theme.of(context).disabledColor),
         ),
-        const SizedBox(height: Dimensions.paddingSizeLarge),
+        const SizedBox(height: Dimensions.p20),
 
         // العنوان في الوسط
         Text(
           'upload_a_photo'.tr,
-          style: robotoBold.copyWith(fontSize: Dimensions.fontSizeLarge),
+          style: robotoBold.copyWith(fontSize: Dimensions.fs16),
         ),
 
-        const SizedBox(height: Dimensions.paddingSizeLarge),
+        const SizedBox(height: Dimensions.p20),
 
         // العمود يحتوي على خيارين
         Column(
@@ -52,7 +52,7 @@ class CameraButtonSheetWidget extends StatelessWidget {
                     .pickPrescriptionImage(isRemove: false, isCamera: false);
               },
               child: Container(
-                padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+                padding: const EdgeInsets.all(Dimensions.p16),
                 child: Row(
                   children: [
                     SvgPicture.asset(
@@ -61,10 +61,10 @@ class CameraButtonSheetWidget extends StatelessWidget {
                       width: 35,
                       color: Theme.of(context).textTheme.bodyMedium?.color,
                     ),
-                    const SizedBox(width: Dimensions.paddingSizeDefault),
+                    const SizedBox(width: Dimensions.p16),
                     Text('from_gallery'.tr,
                         style: robotoMedium.copyWith(
-                            fontSize: Dimensions.fontSizeDefault)),
+                            fontSize: Dimensions.fs14)),
                   ],
                 ),
               ),
@@ -80,7 +80,7 @@ class CameraButtonSheetWidget extends StatelessWidget {
                     .pickPrescriptionImage(isRemove: false, isCamera: true);
               },
               child: Container(
-                padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+                padding: const EdgeInsets.all(Dimensions.p16),
                 child: Row(
                   children: [
                    SvgPicture.asset(
@@ -89,10 +89,10 @@ class CameraButtonSheetWidget extends StatelessWidget {
                       width: 35,
                       color: Theme.of(context).textTheme.bodyMedium?.color,
                     ),
-                    const SizedBox(width: Dimensions.paddingSizeDefault),
+                    const SizedBox(width: Dimensions.p16),
                     Text('from_camera'.tr,
                         style: robotoMedium.copyWith(
-                            fontSize: Dimensions.fontSizeDefault)),
+                            fontSize: Dimensions.fs14)),
                   ],
                 ),
               ),

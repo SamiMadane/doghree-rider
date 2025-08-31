@@ -124,8 +124,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
           child: SizedBox.expand(
             child: Container(
               color: Theme.of(context).cardColor,
-              padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
-              margin: const EdgeInsets.only(top: Dimensions.paddingSizeDefault),
+              padding: const EdgeInsets.all(Dimensions.p16),
+              margin: const EdgeInsets.only(top: Dimensions.p16),
               child: GetBuilder<OrderController>(builder: (orderController) {
                 OrderModel? controllerOrderModel = orderController.orderModel;
 
@@ -290,7 +290,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                             isPaid:
                                 controllerOrderModel.paymentStatus == 'paid',
                           ),
-                          const SizedBox(height: Dimensions.paddingSizeDefault),
+                          const SizedBox(height: Dimensions.p16),
 
                           OrderInfoSection(
                             orderController: orderController,
@@ -304,7 +304,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                             showPaymentType: false,
                           ),
                           SizedBox(
-                            height: Dimensions.paddingSizeDefault,
+                            height: Dimensions.p16,
                           ),
 
                           InfoCardSection(
@@ -358,7 +358,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                             )),
                             order: order!,
                           ),
-                          const SizedBox(height: Dimensions.paddingSizeDefault),
+                          const SizedBox(height: Dimensions.p16),
                           InfoCardSection(
                             title: parcel
                                 ? 'receiver_details'.tr
@@ -415,7 +415,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                             )),
                             order: order,
                           ),
-                          const SizedBox(height: Dimensions.paddingSizeDefault),
+                          const SizedBox(height: Dimensions.p16),
 
                           // TODO: ADD THIS SECTION FROM BACKENT TO TEST IT
                           (controllerOrderModel.orderNote != null &&
@@ -426,11 +426,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                       Text('additional_note'.tr,
                                           style: robotoRegular),
                                       const SizedBox(
-                                          height: Dimensions.paddingSizeSmall),
+                                          height: Dimensions.p10),
                                       Container(
                                         width: 1170,
                                         padding: const EdgeInsets.all(
-                                            Dimensions.paddingSizeSmall),
+                                            Dimensions.p10),
                                         decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(5),
@@ -443,7 +443,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                           controllerOrderModel.orderNote!,
                                           style: robotoRegular.copyWith(
                                               fontSize:
-                                                  Dimensions.fontSizeSmall,
+                                                  Dimensions.fs12,
                                               color: Theme.of(context)
                                                   .disabledColor),
                                         ),
@@ -454,7 +454,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                               height: (controllerOrderModel.orderNote != null &&
                                       controllerOrderModel
                                           .orderNote!.isNotEmpty)
-                                  ? Dimensions.paddingSizeLarge
+                                  ? Dimensions.p20
                                   : 0),
                           (Get.find<NavigationHandlerController>()
                                       .getModule(
@@ -470,7 +470,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                       Text('prescription'.tr,
                                           style: robotoRegular),
                                       const SizedBox(
-                                          height: Dimensions.paddingSizeSmall),
+                                          height: Dimensions.p10),
                                       GridView.builder(
                                         gridDelegate:
                                             SliverGridDelegateWithFixedCrossAxisCount(
@@ -502,7 +502,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                                   child: ClipRRect(
                                                 borderRadius:
                                                     BorderRadius.circular(
-                                                        Dimensions.radiusSmall),
+                                                        Dimensions.r4),
                                                 child: CustomImageWidget(
                                                   image: controllerOrderModel
                                                           .orderAttachmentFullUrl![
@@ -516,7 +516,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                         },
                                       ),
                                       const SizedBox(
-                                          height: Dimensions.paddingSizeLarge),
+                                          height: Dimensions.p20),
                                     ])
                               : const SizedBox(),
                           (controllerOrderModel.orderStatus == 'delivered' &&
@@ -528,11 +528,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                       const SizedBox(
-                                          height: Dimensions.paddingSizeSmall),
+                                          height: Dimensions.p10),
                                       Text('order_proof'.tr,
                                           style: robotoRegular),
                                       const SizedBox(
-                                          height: Dimensions.paddingSizeSmall),
+                                          height: Dimensions.p10),
                                       GridView.builder(
                                           gridDelegate:
                                               SliverGridDelegateWithFixedCrossAxisCount(
@@ -565,7 +565,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                                   borderRadius:
                                                       BorderRadius.circular(
                                                           Dimensions
-                                                              .radiusSmall),
+                                                              .r4),
                                                   child: CustomImageWidget(
                                                     image: controllerOrderModel
                                                             .orderProofFullUrl![
@@ -578,10 +578,10 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                             );
                                           }),
                                       const SizedBox(
-                                          height: Dimensions.paddingSizeLarge),
+                                          height: Dimensions.p20),
                                     ])
                               : const SizedBox(),
-                          const SizedBox(height: Dimensions.paddingSizeDefault),
+                          const SizedBox(height: Dimensions.p16),
 
                           PaymentDetailsSection(
                             parcel: parcel,
@@ -640,10 +640,10 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
         builder: (BuildContext context) {
           return Dialog(
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(Dimensions.radiusLarge)),
+                borderRadius: BorderRadius.circular(Dimensions.r16)),
             child: Stack(children: [
               ClipRRect(
-                borderRadius: BorderRadius.circular(Dimensions.radiusLarge),
+                borderRadius: BorderRadius.circular(Dimensions.r16),
                 child: PhotoView(
                   tightMode: true,
                   imageProvider: NetworkImage(imageUrl),

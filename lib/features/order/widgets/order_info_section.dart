@@ -32,7 +32,7 @@ class OrderInfoSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomCard(
-      padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+      padding: const EdgeInsets.all(Dimensions.p16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -46,17 +46,17 @@ class OrderInfoSection extends StatelessWidget {
                     ? controllerOrderModel.chargePayer!.tr
                     : orderController.orderDetailsModel!.length,
                     titleStyle: robotoSemiBold.copyWith(
-                      fontSize: Dimensions.fontSizeLarge,
+                      fontSize: Dimensions.fs16,
                     ),
               ),
               showPaymentType?
               CustomCard(
                 width: 50,
                 padding: const EdgeInsets.symmetric(
-                    horizontal: Dimensions.paddingSizeSmall,
-                    vertical: Dimensions.paddingSizeExtraSmall),
+                    horizontal: Dimensions.p10,
+                    vertical: Dimensions.p5),
                 fillColor: Theme.of(context).primaryColor.withOpacity(0.1),
-                borderRadius: Dimensions.radiusMedium,
+                borderRadius: Dimensions.r8,
                 child: Center(
                   child: Text(
                     cod == true
@@ -69,7 +69,7 @@ class OrderInfoSection extends StatelessWidget {
                                     ? 'offline_payment'.tr
                                     : 'digitally_paid'.tr,
                     style: robotoMedium.copyWith(
-                      fontSize: Dimensions.fontSizeExtraSmall,
+                      fontSize: Dimensions.fs10,
                       color: Theme.of(context).primaryColor,
                     ),
                   ),
@@ -96,7 +96,7 @@ class OrderInfoSection extends StatelessWidget {
 
           /// --- Unavailable item note ---
           if (controllerOrderModel.unavailableItemNote != null) ...[
-            const Divider(height: Dimensions.paddingSizeLarge),
+            const Divider(height: Dimensions.p20),
             Text('${'unavailable_item_note'.tr}: ', style: robotoMedium),
             Text(controllerOrderModel.unavailableItemNote!,
                 style: robotoRegular),
@@ -104,18 +104,18 @@ class OrderInfoSection extends StatelessWidget {
 
           /// --- Delivery instruction ---
           if (controllerOrderModel.deliveryInstruction != null) ...[
-            const Divider(height: Dimensions.paddingSizeLarge),
+            const Divider(height: Dimensions.p20),
             Text('${'delivery_instruction'.tr}: ',
                 style: robotoMedium.copyWith(
                   color: Theme.of(context).textTheme.bodyMedium!.color,
                 )),
             Text(controllerOrderModel.deliveryInstruction!,
                 style: robotoRegular.copyWith(
-                  fontSize: Dimensions.fontSizeSmall,
+                  fontSize: Dimensions.fs12,
                 )),
           ],
 
-          const SizedBox(height: Dimensions.paddingSizeLarge),
+          const SizedBox(height: Dimensions.p20),
 
           /// --- Parcel section ---
           parcel
@@ -141,10 +141,10 @@ class OrderInfoSection extends StatelessWidget {
   /// --- Widget Parcel Category ---
   Widget _buildParcelCategory(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
+      padding: const EdgeInsets.all(Dimensions.p10),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
+        borderRadius: BorderRadius.circular(Dimensions.r4),
         boxShadow: Get.isDarkMode
             ? null
             : [
@@ -166,7 +166,7 @@ class OrderInfoSection extends StatelessWidget {
                     fit: BoxFit.cover,
                   ),
                 ),
-                const SizedBox(width: Dimensions.paddingSizeSmall),
+                const SizedBox(width: Dimensions.p10),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -175,14 +175,14 @@ class OrderInfoSection extends StatelessWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: robotoRegular.copyWith(
-                            fontSize: Dimensions.fontSizeSmall,
+                            fontSize: Dimensions.fs12,
                           )),
                       Text(
                         controllerOrderModel.parcelCategory!.description!,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: robotoRegular.copyWith(
-                          fontSize: Dimensions.fontSizeSmall,
+                          fontSize: Dimensions.fs12,
                           color: Theme.of(context).disabledColor,
                         ),
                       ),

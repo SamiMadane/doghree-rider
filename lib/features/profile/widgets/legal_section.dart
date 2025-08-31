@@ -22,11 +22,11 @@ class LegalSection extends StatelessWidget {
       children: [
         Text(
           'legal'.tr,
-          style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge),
+          style: robotoMedium.copyWith(fontSize: Dimensions.fs16),
         ),
-        SizedBox(height: Dimensions.paddingSizeDefault),
+        SizedBox(height: Dimensions.p16),
         CustomCard(
-          padding: EdgeInsets.all(Dimensions.paddingSizeDefault),
+          padding: EdgeInsets.all(Dimensions.p16),
           isBorder: false,
           child: Column(
             children: [
@@ -36,7 +36,7 @@ class LegalSection extends StatelessWidget {
                   onTap: () {
                     Get.toNamed(RouteHelper.getTermsRoute());
                   }),
-              const SizedBox(height: Dimensions.paddingSizeDefault),
+              const SizedBox(height: Dimensions.p16),
               ProfileButtonWidget(
                   svgPath: ManagerAssets.privacyPolicyIcon,
                   title: 'privacy_policy'.tr,
@@ -46,9 +46,9 @@ class LegalSection extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: Dimensions.paddingSizeDefault),
+        const SizedBox(height: Dimensions.p16),
         CustomCard(
-          padding: EdgeInsets.all(Dimensions.paddingSizeDefault),
+          padding: EdgeInsets.all(Dimensions.p16),
           isBorder: false,
           child: Column(
             children: [

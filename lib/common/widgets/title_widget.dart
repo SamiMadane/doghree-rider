@@ -25,7 +25,7 @@ class TitleWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal:  Dimensions.paddingSizeExtraSmall),
+      padding: const EdgeInsets.symmetric(horizontal:  Dimensions.p5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -33,15 +33,15 @@ class TitleWidget extends StatelessWidget {
           showOrderCount 
               ? Row(
                   children: [
-                    Text(title, style: titleStyle ?? robotoSemiBold.copyWith(fontSize: Dimensions.fontSizeLarge)),
-                    const SizedBox(width: Dimensions.paddingSizeSmall),
+                    Text(title, style: titleStyle ?? robotoSemiBold.copyWith(fontSize: Dimensions.fs16)),
+                    const SizedBox(width: Dimensions.p10),
                     CircleAvatar(
-                      radius: Dimensions.radiusMedium,
+                      radius: Dimensions.r8,
                       backgroundColor: ManagerColors.darkGreen,
                       child: Text(
                         '$orderCount',
                         style: countStyle ?? robotoSemiBold.copyWith(
-                          fontSize: Dimensions.fontSizeSmall,
+                          fontSize: Dimensions.fs12,
                           color: ManagerColors.white,
                         ),
                       ),
@@ -56,7 +56,7 @@ class TitleWidget extends StatelessWidget {
                   child: Text(
                     'view_all'.tr,
                     style: robotoMedium.copyWith(
-                        fontSize: Dimensions.fontSizeSmall,
+                        fontSize: Dimensions.fs12,
                         color: ManagerColors.darkGreen,),
                   ),
                 )

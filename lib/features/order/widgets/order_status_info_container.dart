@@ -20,7 +20,7 @@ class OrderStatusInfoContainer extends StatelessWidget {
         processing ? Icons.delivery_dining : Icons.timer_outlined;
 
     return CustomCard(
-      padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+      padding: const EdgeInsets.all(Dimensions.p16),
       child: Row(
         children: [
           // أيقونة داخل دائرة ملونة
@@ -40,7 +40,7 @@ class OrderStatusInfoContainer extends StatelessWidget {
                 Text(
                   processing ? 'Processing' : 'Pending',
                   style: robotoSemiBold.copyWith(
-                    fontSize: Dimensions.fontSizeDefault,
+                    fontSize: Dimensions.fs14,
                     color: mainColor,
                   ),
                 ),
@@ -48,7 +48,7 @@ class OrderStatusInfoContainer extends StatelessWidget {
                 Text(
                   text,
                   style: robotoMedium.copyWith(
-                    fontSize: Dimensions.fontSizeSmall,
+                    fontSize: Dimensions.fs12,
                     color: Theme.of(context).hintColor
                   ),
                 ),

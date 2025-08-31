@@ -23,7 +23,7 @@ class RunningOrderScreen extends StatelessWidget {
             child: Center(child: SizedBox(
               width: 1170,
               child: ListView.builder(
-                padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
+                padding: const EdgeInsets.all(Dimensions.p10),
                 itemCount: orderController.currentOrderList!.length,
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,

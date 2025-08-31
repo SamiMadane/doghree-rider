@@ -38,17 +38,17 @@ class _AddWithDrawMethodScreenState extends State<AddWithDrawMethodScreen> {
 
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+              padding: const EdgeInsets.all(Dimensions.p16),
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
                   Text("payment_method".tr, style: robotoBold),
-                  const SizedBox(height: Dimensions.paddingSizeSmall),
+                  const SizedBox(height: Dimensions.p10),
 
                   Container(
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
+                      borderRadius: BorderRadius.circular(Dimensions.r10),
                       color: Theme.of(context).cardColor,
                       border: Border.all(color: Theme.of(context).primaryColor, width: 0.3),
                     ),
@@ -60,15 +60,15 @@ class _AddWithDrawMethodScreenState extends State<AddWithDrawMethodScreen> {
                       dropdownButtonStyle: DropdownButtonStyle(
                         height: 45,
                         padding: const EdgeInsets.symmetric(
-                          vertical: Dimensions.paddingSizeExtraSmall,
-                          horizontal: Dimensions.paddingSizeExtraSmall,
+                          vertical: Dimensions.p5,
+                          horizontal: Dimensions.p5,
                         ),
                         primaryColor: Theme.of(context).textTheme.bodyLarge!.color,
                       ),
                       dropdownStyle: DropdownStyle(
                         elevation: 10,
-                        borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
-                        padding: const EdgeInsets.all(Dimensions.paddingSizeExtraSmall),
+                        borderRadius: BorderRadius.circular(Dimensions.r10),
+                        padding: const EdgeInsets.all(Dimensions.p5),
                       ),
                       items: disbursementController.methodList,
                       child: Padding(
@@ -80,7 +80,7 @@ class _AddWithDrawMethodScreenState extends State<AddWithDrawMethodScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: Dimensions.paddingSizeExtraLarge),
+                  const SizedBox(height: Dimensions.p25),
 
                   ListView.builder(
                     physics: const BouncingScrollPhysics(),
@@ -126,7 +126,7 @@ class _AddWithDrawMethodScreenState extends State<AddWithDrawMethodScreen> {
                           ) : const SizedBox(),
 
                         ]),
-                        SizedBox(height: index != disbursementController.methodFields.length-1 ? Dimensions.paddingSizeLarge : 0),
+                        SizedBox(height: index != disbursementController.methodFields.length-1 ? Dimensions.p20 : 0),
 
                       ]);
                     }),
@@ -143,7 +143,7 @@ class _AddWithDrawMethodScreenState extends State<AddWithDrawMethodScreen> {
             ),
             child: SafeArea(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeExtraLarge, vertical: Dimensions.paddingSizeSmall),
+                padding: const EdgeInsets.symmetric(horizontal: Dimensions.p25, vertical: Dimensions.p10),
                 child: !disbursementController.isLoading ? CustomButtonWidget(
                   buttonText: 'add_method'.tr,
                   onPressed: () {

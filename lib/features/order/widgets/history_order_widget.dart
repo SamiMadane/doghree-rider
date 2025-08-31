@@ -32,21 +32,21 @@ class HistoryOrderWidget extends StatelessWidget {
                   isRunningOrder: isRunning,
                   orderIndex: index))),
       child: CustomCard(
-        borderRadius: Dimensions.radiusLarge,
-        padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
-        margin: const EdgeInsets.only(bottom: Dimensions.paddingSizeDefault),
+        borderRadius: Dimensions.r16,
+        padding: const EdgeInsets.all(Dimensions.p16),
+        margin: const EdgeInsets.only(bottom: Dimensions.p16),
         child: Row(children: [
           CustomCard(
             height: 75,
             width: 90,
             isBorder: true,
-            borderRadius: Dimensions.radiusDefault,
+            borderRadius: Dimensions.r10,
             padding: const EdgeInsets.symmetric(
-                horizontal: Dimensions.paddingSizeSmall,
+                horizontal: Dimensions.p10,
                 vertical: Dimensions
-                    .fontSizeExtraSmall), // المسافة بين الصورة والبرواز
+                    .fs10), // المسافة بين الصورة والبرواز
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
+              borderRadius: BorderRadius.circular(Dimensions.r4),
               child: CustomImageWidget(
                 image: parcel
                     ? '${orderModel.parcelCategory != null ? orderModel.parcelCategory!.imageFullUrl : ''}'
@@ -57,7 +57,7 @@ class HistoryOrderWidget extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: Dimensions.paddingSizeDefault),
+          const SizedBox(width: Dimensions.p16),
           Expanded(
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -68,14 +68,14 @@ class HistoryOrderWidget extends StatelessWidget {
                       TextSpan(
                         text: '${'id_label'.tr}: ',
                         style: robotoSemiBold.copyWith(
-                          fontSize: Dimensions.fontSizeDefault,
+                          fontSize: Dimensions.fs14,
                           color: Theme.of(context).hintColor,
                         ),
                       ),
                       TextSpan(
                         text: '#${orderModel.id}',
                         style: robotoSemiBold.copyWith(
-                          fontSize: Dimensions.fontSizeDefault,
+                          fontSize: Dimensions.fs14,
                           color: ManagerColors.darkGreen,
                         ),
                       ),
@@ -86,22 +86,22 @@ class HistoryOrderWidget extends StatelessWidget {
                     ? CustomCard(
                       width: 60,
                         padding: const EdgeInsets.all(
-                            Dimensions.paddingSizeExtraSmall),
-                        borderRadius: Dimensions.radiusDefault,
+                            Dimensions.p5),
+                        borderRadius: Dimensions.r10,
                         fillColor: Theme.of(context)
                               .primaryColor
                               .withValues(alpha: 0.1),
                         child: Center(
                           child: Text('parcel'.tr,
                               style: robotoMedium.copyWith(
-                                fontSize: Dimensions.fontSizeDefault,
+                                fontSize: Dimensions.fs14,
                                 color: Theme.of(context).textTheme.bodyMedium?.color,
                               )),
                         ),
                       )
                     : const SizedBox(),
               ]),
-              const SizedBox(height: Dimensions.paddingSizeExtraSmall),
+              const SizedBox(height: Dimensions.p5),
               Text(
                 parcel
                     ? orderModel.parcelCategory != null
@@ -109,23 +109,23 @@ class HistoryOrderWidget extends StatelessWidget {
                         : 'no_parcel_category_data_found'.tr
                     : orderModel.storeName ?? 'no_store_data_found'.tr,
                 style: robotoSemiBold.copyWith(
-                    fontSize: Dimensions.fontSizeDefault,
+                    fontSize: Dimensions.fs14,
                     color: Theme.of(context).textTheme.bodyMedium?.color),
               ),
-              const SizedBox(height: Dimensions.paddingSizeExtraSmall),
+              const SizedBox(height: Dimensions.p5),
               Row(children: [
                 Icon(
                   Icons.access_time,
                   size: 15,
                   color: Theme.of(context).disabledColor,
                 ),
-                const SizedBox(width: Dimensions.paddingSizeExtraSmall),
+                const SizedBox(width: Dimensions.p5),
                 Text(
                   DateConverterHelper.dateTimeStringToDateTime(
                       orderModel.createdAt!),
                   style: robotoMedium.copyWith(
                       color: Theme.of(context).disabledColor,
-                      fontSize: Dimensions.fontSizeSmall),
+                      fontSize: Dimensions.fs12),
                 ),
               ]),
             ]),

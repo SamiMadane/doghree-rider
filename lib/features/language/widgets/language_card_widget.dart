@@ -61,9 +61,9 @@ class LanguageCardWidget extends StatelessWidget {
       },
       child: Container(
         height: 70,
-        padding: const EdgeInsets.all(Dimensions.paddingSizeLarge),
+        padding: const EdgeInsets.all(Dimensions.p20),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(Dimensions.radiusLarge),
+          borderRadius: BorderRadius.circular(Dimensions.r16),
           border: Border.all(
             color: isSelected
                 ? Theme.of(context).textTheme.bodyMedium!.color!
@@ -96,12 +96,12 @@ class LanguageCardWidget extends StatelessWidget {
                     )
                   : null,
             ),
-            const SizedBox(width: Dimensions.paddingSizeLarge),
+            const SizedBox(width: Dimensions.p20),
             Image.asset(languageModel.imageUrl!, width: 36, height: 36),
-            const SizedBox(width: Dimensions.paddingSizeSmall),
+            const SizedBox(width: Dimensions.p10),
             Text(
               languageModel.languageName!,
-              style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeLarge),
+              style: robotoRegular.copyWith(fontSize: Dimensions.fs16),
             ),
           ],
         ),
