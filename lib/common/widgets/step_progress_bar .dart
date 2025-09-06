@@ -4,7 +4,10 @@ import 'package:sixam_mart_delivery/util/manager_colors.dart';
 
 class StepProgressBar extends StatelessWidget {
   final double status;
-  const StepProgressBar({super.key, required this.status});
+  final bool showDivider;
+  final Color? color;
+  const StepProgressBar(
+      {super.key, required this.status, this.showDivider = true, this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -19,8 +22,8 @@ class StepProgressBar extends StatelessWidget {
                 child: Container(
                   decoration: BoxDecoration(
                     color: status == 0.4
-                        ? ManagerColors.darkGreen
-                        : ManagerColors.darkGreen,
+                        ? color ?? ManagerColors.darkGreen
+                        : color ?? ManagerColors.darkGreen,
                     borderRadius: BorderRadius.circular(6),
                   ),
                 ),
@@ -30,7 +33,7 @@ class StepProgressBar extends StatelessWidget {
                 child: Container(
                   decoration: BoxDecoration(
                     color: status != 0.4
-                        ? ManagerColors.darkGreen
+                        ? color ?? ManagerColors.darkGreen
                         : Theme.of(context).disabledColor.withAlpha(128),
                     borderRadius: BorderRadius.circular(6),
                   ),
@@ -39,8 +42,10 @@ class StepProgressBar extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: Dimensions.p10),
-        Divider(),
+        if (showDivider) ...[
+          const SizedBox(height: Dimensions.p10),
+          Divider(),
+        ]
       ],
     );
   }

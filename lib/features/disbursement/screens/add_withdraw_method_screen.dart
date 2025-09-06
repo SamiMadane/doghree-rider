@@ -60,15 +60,15 @@ class _AddWithDrawMethodScreenState extends State<AddWithDrawMethodScreen> {
                       dropdownButtonStyle: DropdownButtonStyle(
                         height: 45,
                         padding: const EdgeInsets.symmetric(
-                          vertical: Dimensions.p5,
-                          horizontal: Dimensions.p5,
+                          vertical: Dimensions.p4,
+                          horizontal: Dimensions.p4,
                         ),
                         primaryColor: Theme.of(context).textTheme.bodyLarge!.color,
                       ),
                       dropdownStyle: DropdownStyle(
                         elevation: 10,
                         borderRadius: BorderRadius.circular(Dimensions.r10),
-                        padding: const EdgeInsets.all(Dimensions.p5),
+                        padding: const EdgeInsets.all(Dimensions.p4),
                       ),
                       items: disbursementController.methodList,
                       child: Padding(

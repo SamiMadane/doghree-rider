@@ -72,6 +72,13 @@ class ManagerAssets {
   static const String adjustPaymentImage = '$imagePath/adjust_payment.png';
   static const String mapPlaceholderImage = '$imagePath/map_placeholder.png';
   static const String deliveryBoyOnScooterImage = '$imagePath/delivery_boy_on_scooter.png';
+  static const String confirmedImage = '$imagePath/confirmed.png';
+  static const String totalTaskImage = '$imagePath/total_task.png';
+  static const String deliveredImage = '$imagePath/delivered.png';
+  static const String waitingImage = '$imagePath/waiting.png';
+  static const String postponedImage = '$imagePath/postponed.png';
+  static const String problemImage = '$imagePath/problem.png';
+  static const String amountToBeDeliveredImage = '$imagePath/amount_to_be_delivered.png';
 
   ///Svg Images
   static const String changePasswordBgImage =
@@ -121,6 +128,13 @@ class ManagerAssets {
   static const String taskIcon = '$iconPath/task.svg';
   static const String checkIcon = '$iconPath/check.svg';
   static const String networkCellIcon = '$iconPath/network_cell.svg';
+  static const String flagIcon = '$iconPath/flag.svg';
+  static const String downloadIcon = '$iconPath/download.svg';
+  static const String identityIcon = '$iconPath/identity.svg';
+  static const String directionIcon = '$iconPath/direction.svg';
+  static const String supportTeamIcon = '$iconPath/support_team.svg';
+  static const String confirmedIcon = '$iconPath/confirmed.svg';
+  static const String pullArrowIcon = '$iconPath/pull_arrow.svg';
 
 // Lottie 
   static const String deliveryLottie = '$lottiePath/delivery.json';

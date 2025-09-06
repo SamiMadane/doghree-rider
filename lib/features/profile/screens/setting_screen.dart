@@ -43,7 +43,7 @@ class SettingScreen extends StatelessWidget {
                   Get.find<ThemeController>().toggleTheme();
                 },
               ),
-              SizedBox(height: Dimensions.p5),
+              SizedBox(height: Dimensions.p4),
               Divider(),
               GetBuilder<AuthController>(builder: (authController) {
                 return ProfileButtonWidget(
@@ -77,7 +77,7 @@ class SettingScreen extends StatelessWidget {
                   },
                 );
               }),
-              SizedBox(height: Dimensions.p5),
+              SizedBox(height: Dimensions.p4),
               Divider(),
               GetBuilder<ProfileController>(builder: (profileController) {
                 return ProfileButtonWidget(
@@ -90,7 +90,7 @@ class SettingScreen extends StatelessWidget {
                   },
                 );
               }),
-              SizedBox(height: Dimensions.p5),
+              SizedBox(height: Dimensions.p4),
               Divider(),
               SizedBox(height: Dimensions.p10),
               ProfileButtonWidget(
@@ -152,147 +152,122 @@ void checkBatteryPermission() async {
 }
 
 void showBgNotificationBottomSheet(bool allow) {
-  Get.bottomSheet(
-          Container(
-            padding: EdgeInsets.symmetric(
-                horizontal: Dimensions.p30,
-                vertical: Dimensions.p16),
-            decoration: BoxDecoration(
-              color: Theme.of(Get.context!).cardColor,
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(Dimensions.r20),
-                topRight: Radius.circular(Dimensions.r20),
-              ),
-            ),
-            child: SafeArea(
-              child: Column(mainAxisSize: MainAxisSize.min, children: [
-                Container(
-                  height: 5,
-                  width: 50,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(Dimensions.r16),
-                    color: Theme.of(Get.context!).disabledColor,
+  showCustomBottomSheet(
+    showCloseButton: false, // 👈 ما نريد زر إغلاق، نريد الخط الرمادي
+    child: SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+            horizontal: Dimensions.p30, vertical: Dimensions.p16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Image.asset(
+                  ManagerAssets.logo,
+                  width: 70,
+                  height: 70,
+                ),
+                SizedBox(width: Dimensions.p16),
+                Expanded(
+                  child: Text(
+                    '${!allow ? 'allow'.tr : 'disable'.tr} ${AppConstants.appName} ${!allow ? 'to_run_notification_in_background'.tr : 'from_running_notification_in_background'.tr}',
+                    textAlign: TextAlign.start,
+                    style: robotoBold.copyWith(fontSize: Dimensions.fs16),
+                    maxLines: 3,
                   ),
                 ),
-                const SizedBox(height: Dimensions.p20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Image.asset(
-                      ManagerAssets.logo,
-                      width: 70,
-                      height: 70,
-                    ),
-                    SizedBox(width: Dimensions.p16),
-                    Expanded(
-                      child: Text(
-                        '${!allow ? 'allow'.tr : 'disable'.tr} ${AppConstants.appName} ${!allow ? 'to_run_notification_in_background'.tr : 'from_running_notification_in_background'.tr}',
-                        textAlign: TextAlign.start,
+              ],
+            ),
+            allow
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: Dimensions.p16),
+                      Text(
+                        "Follow these steps:",
                         style: robotoBold.copyWith(
-                            fontSize: Dimensions.fs16),
-                        maxLines: 3,
-                      ),
-                    ),
-                  ],
-                ),
-                allow
-                    ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: Dimensions.p16),
-                          Text(
-                            "Follow these steps:",
-                            style: robotoBold.copyWith(
-                              fontSize: Dimensions.fs15,
-                            ),
-                          ),
-                          const SizedBox(height: Dimensions.p10),
-                          _buildStep("1", "${AppConstants.appName}"),
-                          _buildStep("2", "Battery"),
-                          _buildStep("3", "Select Optimized"),
-                        ],
-                      )
-                    : const SizedBox(),
-                const SizedBox(height: Dimensions.p20),
-                _buildInfoText(
-                    "you_will_be_able_to_get_order_notification_even_if_you_are_not_in_the_app"
-                        .tr),
-                _buildInfoText(
-                    "${AppConstants.appName} ${!allow ? 'will_run_notification_service_in_the_background_always'.tr : 'will_not_run_notification_service_in_the_background_always'.tr}"),
-                _buildInfoText(!allow
-                    ? "notification_will_always_send_alert_from_the_background"
-                        .tr
-                    : 'notification_will_not_always_send_alert_from_the_background'
-                        .tr),
-                const SizedBox(height: Dimensions.p20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(Get.context!),
-                      child: Text("cancel".tr, style: robotoMedium),
-                    ),
-                    const SizedBox(width: Dimensions.p10),
-                    ElevatedButton(
-                      onPressed: () async {
-                        final profileController = Get.find<ProfileController>();
-
-                        if (allow) {
-                          openAppSettings();
-                          if (await Permission
-                              .ignoreBatteryOptimizations.status.isGranted) {
-                            profileController
-                                .setBackgroundNotificationActive(true);
-                          } else {
-                            profileController
-                                .setBackgroundNotificationActive(false);
-                          }
-                          Get.back();
-                        } else {
-                          // إذا الإذن موجود، نفتح الإعدادات وننتظر العودة
-                          if (await Permission
-                              .ignoreBatteryOptimizations.status.isGranted) {
-                            await openAppSettings();
-                          } else {
-                            await Permission.ignoreBatteryOptimizations
-                                .request();
-                          }
-
-                          // بعد العودة من الإعدادات، نتأكد من الحالة الحقيقية
-                          if (await Permission
-                              .ignoreBatteryOptimizations.status.isGranted) {
-                            profileController
-                                .setBackgroundNotificationActive(true);
-                          } else {
-                            profileController
-                                .setBackgroundNotificationActive(false);
-                          }
-
-                          Get.back();
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(Get.context!).primaryColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
+                          fontSize: Dimensions.fs15,
                         ),
                       ),
-                      child: Text(
-                        "okay".tr,
-                        style: robotoMedium.copyWith(
-                            color: Theme.of(Get.context!).cardColor),
-                      ),
-                    ),
-                  ],
+                      const SizedBox(height: Dimensions.p10),
+                      _buildStep("1", "${AppConstants.appName}"),
+                      _buildStep("2", "Battery"),
+                      _buildStep("3", "Select Optimized"),
+                    ],
+                  )
+                : const SizedBox(),
+            const SizedBox(height: Dimensions.p20),
+            _buildInfoText(
+                "you_will_be_able_to_get_order_notification_even_if_you_are_not_in_the_app"
+                    .tr),
+            _buildInfoText(
+                "${AppConstants.appName} ${!allow ? 'will_run_notification_service_in_the_background_always'.tr : 'will_not_run_notification_service_in_the_background_always'.tr}"),
+            _buildInfoText(!allow
+                ? "notification_will_always_send_alert_from_the_background".tr
+                : 'notification_will_not_always_send_alert_from_the_background'
+                    .tr),
+            const SizedBox(height: Dimensions.p20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  onPressed: () => Navigator.pop(Get.context!),
+                  child: Text("cancel".tr, style: robotoMedium),
                 ),
-              ]),
+                const SizedBox(width: Dimensions.p10),
+                ElevatedButton(
+                  onPressed: () async {
+                    final profileController = Get.find<ProfileController>();
+
+                    if (allow) {
+                      openAppSettings();
+                      if (await Permission.ignoreBatteryOptimizations.status.isGranted) {
+                        profileController.setBackgroundNotificationActive(true);
+                      } else {
+                        profileController.setBackgroundNotificationActive(false);
+                      }
+                      Get.back();
+                    } else {
+                      if (await Permission.ignoreBatteryOptimizations.status.isGranted) {
+                        await openAppSettings();
+                      } else {
+                        await Permission.ignoreBatteryOptimizations.request();
+                      }
+
+                      if (await Permission.ignoreBatteryOptimizations.status.isGranted) {
+                        profileController.setBackgroundNotificationActive(true);
+                      } else {
+                        profileController.setBackgroundNotificationActive(false);
+                      }
+
+                      Get.back();
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(Get.context!).primaryColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                  child: Text(
+                    "okay".tr,
+                    style: robotoMedium.copyWith(
+                        color: Theme.of(Get.context!).cardColor),
+                  ),
+                ),
+              ],
             ),
-          ),
-          isScrollControlled: true)
-      .then((value) {
+          ],
+        ),
+      ),
+    ),
+  ).then((value) {
     checkBatteryPermission();
   });
 }
+
 
 Widget _buildInfoText(String text) {
   return Container(
@@ -311,7 +286,7 @@ Widget _buildInfoText(String text) {
 
 Widget _buildStep(String number, String text) {
   return Padding(
-    padding: const EdgeInsets.symmetric(vertical: Dimensions.p5),
+    padding: const EdgeInsets.symmetric(vertical: Dimensions.p4),
     child: Row(
       children: [
         CircleAvatar(

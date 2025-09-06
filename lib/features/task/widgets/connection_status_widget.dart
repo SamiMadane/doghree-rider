@@ -6,7 +6,6 @@ import 'package:sixam_mart_delivery/features/task/controllers/task_controller.da
 import 'package:sixam_mart_delivery/features/task/widgets/connection_bottom_sheet.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
-import 'package:sixam_mart_delivery/util/manager_colors.dart';
 
 
 class ConnectionStatusWidget extends StatelessWidget {
@@ -24,14 +23,14 @@ class ConnectionStatusWidget extends StatelessWidget {
                 vertical: Dimensions.p8),
                 margin: EdgeInsets.symmetric(horizontal: Dimensions.p10),
             decoration: BoxDecoration(
-              color: ManagerColors.gray,
+              color: Theme.of(context).scaffoldBackgroundColor,
               borderRadius: BorderRadius.circular(Dimensions.r8),
             ),
             child: Row(
               children: [
                 Container(
-                  width: 12,
-                  height: 12,
+                  width: 10,
+                  height: 10,
                   decoration: BoxDecoration(
                     color: controller.connectionColor.value,
                     shape: BoxShape.circle,

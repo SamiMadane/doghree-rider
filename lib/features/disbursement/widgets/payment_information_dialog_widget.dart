@@ -81,7 +81,7 @@ class PaymentInformationDialogWidget extends StatelessWidget {
                   Text('status'.tr, style: robotoMedium.copyWith(fontSize: Dimensions.fs12)),
 
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: Dimensions.p16, vertical: Dimensions.p5),
+                    padding: const EdgeInsets.symmetric(horizontal: Dimensions.p16, vertical: Dimensions.p4),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(Dimensions.r4),
                       color: disbursement.status == 'pending' ? Colors.blue.withValues(alpha: 0.1) : disbursement.status == 'completed' ? Colors.green.withValues(alpha: 0.1) : Colors.red.withValues(alpha: 0.1),

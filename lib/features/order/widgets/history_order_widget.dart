@@ -86,7 +86,7 @@ class HistoryOrderWidget extends StatelessWidget {
                     ? CustomCard(
                       width: 60,
                         padding: const EdgeInsets.all(
-                            Dimensions.p5),
+                            Dimensions.p4),
                         borderRadius: Dimensions.r10,
                         fillColor: Theme.of(context)
                               .primaryColor
@@ -101,7 +101,7 @@ class HistoryOrderWidget extends StatelessWidget {
                       )
                     : const SizedBox(),
               ]),
-              const SizedBox(height: Dimensions.p5),
+              const SizedBox(height: Dimensions.p4),
               Text(
                 parcel
                     ? orderModel.parcelCategory != null
@@ -112,14 +112,14 @@ class HistoryOrderWidget extends StatelessWidget {
                     fontSize: Dimensions.fs14,
                     color: Theme.of(context).textTheme.bodyMedium?.color),
               ),
-              const SizedBox(height: Dimensions.p5),
+              const SizedBox(height: Dimensions.p4),
               Row(children: [
                 Icon(
                   Icons.access_time,
                   size: 15,
                   color: Theme.of(context).disabledColor,
                 ),
-                const SizedBox(width: Dimensions.p5),
+                const SizedBox(width: Dimensions.p4),
                 Text(
                   DateConverterHelper.dateTimeStringToDateTime(
                       orderModel.createdAt!),

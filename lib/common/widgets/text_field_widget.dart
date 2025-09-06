@@ -60,7 +60,7 @@ class TextFieldWidgetState extends State<TextFieldWidget> {
           widget.titleName ?? widget.hintText!,
           style: robotoMedium.copyWith(fontSize: Dimensions.fs16),
         ),
-        const SizedBox(width: Dimensions.p5),
+        const SizedBox(width: Dimensions.p4),
         widget.isEnabled ? const SizedBox() : Text('(${'non_changeable'.tr})', style: robotoRegular.copyWith(
           fontSize: Dimensions.fs10, color: Theme.of(context).colorScheme.error,
         )),

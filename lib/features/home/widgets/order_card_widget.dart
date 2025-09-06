@@ -69,7 +69,7 @@ class OrderCardWidget extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                 fillColor: order.paymentStatus == 'paid'
-                    ? ManagerColors.success
+                    ? ManagerColors.greenLightMode
                     : Theme.of(context).colorScheme.error,
                 borderRadius: Dimensions.r20,
                 child: Center(
@@ -119,11 +119,11 @@ class OrderCardWidget extends StatelessWidget {
                         style: robotoRegular.copyWith(
                             fontSize: Dimensions.fs14,
                             color: Theme.of(context).hintColor)),
-                    const SizedBox(height: Dimensions.p5),
+                    const SizedBox(height: Dimensions.p4),
                     if (parcel)
                       Container(
                         padding: const EdgeInsets.all(
-                            Dimensions.p5),
+                            Dimensions.p4),
                         decoration: BoxDecoration(
                           borderRadius:
                               BorderRadius.circular(Dimensions.r4),

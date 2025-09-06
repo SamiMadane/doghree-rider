@@ -38,7 +38,7 @@ class ChooseLanguageScreen extends StatelessWidget {
             child: Text('choose_your_language'.tr,
                 style: robotoBold.copyWith(fontSize: Dimensions.fs16)),
           ),
-          const SizedBox(height: Dimensions.p5),
+          const SizedBox(height: Dimensions.p4),
           Padding(
             padding: const EdgeInsets.symmetric(
                 horizontal: Dimensions.p20),

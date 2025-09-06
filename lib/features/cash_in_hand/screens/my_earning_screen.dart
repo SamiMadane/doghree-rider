@@ -73,7 +73,7 @@ class _MyEarningScreenState extends State<MyEarningScreen> {
                     dmId: Get.find<ProfileController>().profileModel!.id!);
               },
               child: Container(
-                padding: const EdgeInsets.all(Dimensions.p5),
+                padding: const EdgeInsets.all(Dimensions.p4),
                 decoration: BoxDecoration(
                   color: Theme.of(context).primaryColor,
                   borderRadius: BorderRadius.circular(Dimensions.r4),
@@ -106,7 +106,7 @@ class _MyEarningScreenState extends State<MyEarningScreen> {
                 children: [
                   Container(
                     padding:
-                        const EdgeInsets.all(Dimensions.p5),
+                        const EdgeInsets.all(Dimensions.p4),
                     decoration: BoxDecoration(
                       color: Theme.of(context).primaryColor,
                       borderRadius:
@@ -190,7 +190,7 @@ class _MyEarningScreenState extends State<MyEarningScreen> {
                                                   .fs18)),
                                       const SizedBox(
                                           height:
-                                              Dimensions.p5 -
+                                              Dimensions.p4 -
                                                   2),
                                       Text('total_earning'.tr,
                                           style: robotoMedium.copyWith(
@@ -222,7 +222,7 @@ class _MyEarningScreenState extends State<MyEarningScreen> {
                                                   .fs18)),
                                       const SizedBox(
                                           height:
-                                              Dimensions.p5 -
+                                              Dimensions.p4 -
                                                   2),
                                       Text('delivery_fee_earned'.tr,
                                           style: robotoMedium.copyWith(
@@ -252,7 +252,7 @@ class _MyEarningScreenState extends State<MyEarningScreen> {
                                                   .fs18)),
                                       const SizedBox(
                                           height:
-                                              Dimensions.p5 -
+                                              Dimensions.p4 -
                                                   2),
                                       Text('delivery_tips_earned'.tr,
                                           style: robotoMedium.copyWith(
@@ -436,7 +436,7 @@ class _MyEarningScreenState extends State<MyEarningScreen> {
                                                   Container(
                                                     padding: const EdgeInsets
                                                         .all(Dimensions
-                                                            .p5),
+                                                            .p4),
                                                     decoration: BoxDecoration(
                                                       color: Theme.of(context)
                                                           .hintColor

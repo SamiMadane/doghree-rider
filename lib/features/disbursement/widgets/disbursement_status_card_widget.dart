@@ -75,7 +75,7 @@ class DisbursementStatusCardWidget extends StatelessWidget {
 
               Container(
                 height: 50, width: 50,
-                padding: const EdgeInsets.all(Dimensions.p5),
+                padding: const EdgeInsets.all(Dimensions.p4),
                 decoration: BoxDecoration(color: isPending ? Colors.blue : isCompleted ? Colors.green : Colors.red, shape: BoxShape.circle),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(100),

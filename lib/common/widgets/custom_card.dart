@@ -11,6 +11,8 @@ class CustomCard extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
   final Color? fillColor;
   final bool isBorder;
+  final Color? borderColor;
+  final double? borderwidth;
   const CustomCard(
       {super.key,
       this.child,
@@ -20,6 +22,8 @@ class CustomCard extends StatelessWidget {
       this.margin,
       this.padding,
       this.isBorder = true,
+      this.borderColor,
+      this.borderwidth,
       this.fillColor});
 
   @override
@@ -33,10 +37,12 @@ class CustomCard extends StatelessWidget {
       padding: padding,
       decoration: BoxDecoration(
         color: fillColor ?? Theme.of(context).cardColor,
-        borderRadius:
-            BorderRadius.circular(borderRadius ?? Dimensions.r20),
-        border:
-            isBorder ? Border.all(color: customColor.strock2, width: 1) : null,
+        borderRadius: BorderRadius.circular(borderRadius ?? Dimensions.r20),
+        border: isBorder
+            ? Border.all(
+                color: borderColor ?? customColor.strock2,
+                width: borderwidth ?? 1)
+            : null,
       ),
       child: child,
     );

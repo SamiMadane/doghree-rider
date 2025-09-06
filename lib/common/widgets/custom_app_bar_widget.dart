@@ -18,17 +18,20 @@ class CustomAppBarWidget extends StatelessWidget
   final Widget? actionWidget;
   final double? elevation;
   final bool? centerTitle;
+  final PreferredSizeWidget? bottom;
+  final Color? backGroundColor;
 
-  const CustomAppBarWidget({
-    super.key,
-    this.title,
-    this.titleWidget,
-    this.isBackButtonExist = true,
-    this.onBackPressed,
-    this.actionWidget,
-    this.elevation,
-    this.centerTitle = true,
-  });
+  const CustomAppBarWidget(
+      {super.key,
+      this.title,
+      this.titleWidget,
+      this.isBackButtonExist = true,
+      this.onBackPressed,
+      this.actionWidget,
+      this.elevation,
+      this.centerTitle = true,
+      this.backGroundColor,
+      this.bottom});
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +46,7 @@ class CustomAppBarWidget extends StatelessWidget
                   ),
                 )
               : null),
+      bottom: bottom,
       centerTitle: centerTitle,
       leadingWidth: 50,
       leading: (isBackButtonExist
@@ -68,7 +72,7 @@ class CustomAppBarWidget extends StatelessWidget
               },
             )
           : null),
-      backgroundColor: Theme.of(context).cardColor,
+      backgroundColor: backGroundColor ??Theme.of(context).cardColor,
       surfaceTintColor: Theme.of(context).cardColor,
       shadowColor: Theme.of(context).disabledColor.withAlpha(128),
       elevation: elevation ?? 0,
@@ -83,5 +87,9 @@ class CustomAppBarWidget extends StatelessWidget
   }
 
   @override
-  Size get preferredSize => Size(1170, GetPlatform.isDesktop ? 70 : 50);
+Size get preferredSize {
+  final double baseHeight = GetPlatform.isDesktop ? 70 : kToolbarHeight; 
+  final double bottomHeight = bottom?.preferredSize.height ?? 0;
+  return Size.fromHeight(baseHeight + bottomHeight);
+}
 }

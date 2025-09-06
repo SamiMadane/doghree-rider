@@ -29,6 +29,13 @@ import 'package:sixam_mart_delivery/features/order/screens/running_order_screen.
 import 'package:sixam_mart_delivery/features/profile/screens/setting_screen.dart';
 import 'package:sixam_mart_delivery/features/profile/screens/update_profile_screen.dart';
 import 'package:sixam_mart_delivery/features/navigation_handler/screens/navigation_handler_screen.dart';
+import 'package:sixam_mart_delivery/features/task/screens/capture_id_screen.dart';
+import 'package:sixam_mart_delivery/features/task/screens/client_screen.dart';
+import 'package:sixam_mart_delivery/features/task/screens/detailed_operation_history_screen.dart';
+import 'package:sixam_mart_delivery/features/task/screens/details_statistics_screen.dart';
+import 'package:sixam_mart_delivery/features/task/screens/finish_shift_screen.dart';
+import 'package:sixam_mart_delivery/features/task/screens/preview_id_screen.dart';
+import 'package:sixam_mart_delivery/features/task/screens/support_team_screen.dart';
 import 'package:sixam_mart_delivery/features/update/screens/update_screen.dart';
 import 'package:get/get.dart';
 
@@ -65,7 +72,21 @@ class RouteHelper {
   static const String taskScreen = '/task';
   static const String settingScreen = '/setting';
   static String languageInit = '/language-init';
+  static const String detailsStatistics = '/details-statistics';
+  static const String clientScreen = '/client-screen';
+  static const String supportTeamScreen = '/support-team-screen';
+  static const String finishShiftScreen = '/finish-shift-screen';
+  static const String captureIdScreen = '/capture-id-screen';
+  static const String previewIdScreen = '/preview-id-screen';
+  static const String detailedOperationHistoryScreen = '/detailed-operation-history-screen';
 
+  static String getDetailedOperationHistoryRoute() => detailedOperationHistoryScreen;
+  static String getDetailsStatisticsRoute() => detailsStatistics;
+  static String getClientScreenRoute() => clientScreen;
+  static String getCaptureIdRoute() => captureIdScreen;
+  static String getPreviewIdRoute() => previewIdScreen;
+  static String getSupportTeamRoute() => supportTeamScreen;
+  static String getFinishShiftRoute() => finishShiftScreen;
 
   static String getInitialRoute({bool? fromOrderDetails}) =>
       '$initial?from_order_details=${fromOrderDetails.toString()}';
@@ -144,10 +165,20 @@ class RouteHelper {
   static String getSettingRoute() => settingScreen;
   static String getLanguageInitRoute() => languageInit;
 
-
-
   static List<GetPage> routes = [
-     GetPage(name: languageInit, page: () => const LanguageInitScreen()),
+    GetPage(
+        name: detailsStatistics, page: () => const DetailsStatisticsScreen()),
+        
+    GetPage(name: detailedOperationHistoryScreen, page: () => const DetailedOperationHistoryScreen()),
+    GetPage(name: clientScreen, page: () => const ClientScreen()),
+    GetPage(name: captureIdScreen, page: () => CaptureIdScreen()),
+    GetPage(
+      name: previewIdScreen,
+      page: () => PreviewIdScreen(image: Get.arguments),
+    ),
+    GetPage(name: supportTeamScreen, page: () => const SupportTeamScreen()),
+    GetPage(name: finishShiftScreen, page: () => const FinishShiftScreen()),
+    GetPage(name: languageInit, page: () => const LanguageInitScreen()),
     GetPage(
         name: initial,
         page: () => DashboardScreen(
@@ -287,6 +318,5 @@ class RouteHelper {
         name: dmRegistrationSuccess,
         page: () => const DmRegistrationSuccessScreen()),
     GetPage(name: settingScreen, page: () => const SettingScreen()),
-
   ];
 }

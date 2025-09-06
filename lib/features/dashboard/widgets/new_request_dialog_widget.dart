@@ -79,7 +79,7 @@ class _NewRequestDialogWidgetState extends State<NewRequestDialogWidget> {
               padding: const EdgeInsets.symmetric(vertical: Dimensions.p10),
               itemBuilder: (context,index){
                 return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: Dimensions.p5),
+                  padding: const EdgeInsets.symmetric(vertical: Dimensions.p4),
                   child: Row(children: [
                     Text('${'item'.tr} ${index + 1}: ', style: robotoMedium.copyWith(fontSize: Dimensions.fs12)),
                     Flexible(child: Text(

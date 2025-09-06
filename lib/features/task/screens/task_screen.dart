@@ -7,6 +7,7 @@ import 'package:sixam_mart_delivery/features/task/widgets/no_task_section.dart';
 import 'package:sixam_mart_delivery/features/task/widgets/statistics_section.dart';
 import 'package:sixam_mart_delivery/features/task/widgets/exist_task_section.dart';
 import 'package:sixam_mart_delivery/helper/price_converter_helper.dart';
+import 'package:sixam_mart_delivery/helper/route_helper.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
 
 class TaskScreen extends StatelessWidget {
@@ -14,7 +15,7 @@ class TaskScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool existTransaction = false;
+    bool existTransaction = true;
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -45,7 +46,7 @@ class TaskScreen extends StatelessWidget {
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Theme.of(context).cardColor,
                   boxShadow: [
                     BoxShadow(
                       color: Theme.of(context).shadowColor,
@@ -54,12 +55,14 @@ class TaskScreen extends StatelessWidget {
                       offset: const Offset(0, -3), // ظل لأعلى
                     ),
                   ],
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(Dimensions.r8),
+                      topRight: Radius.circular(Dimensions.r8)),
                 ),
                 child: CustomButtonWidget(
                   radius: Dimensions.r8,
                   onPressed: () {
-                    print("Finish the shift");
+                    Get.toNamed(RouteHelper.getFinishShiftRoute());
                   },
                   buttonText:
                       '${'finish_the_shift'.tr} ${PriceConverterHelper.convertPrice(590)}',

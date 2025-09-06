@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
+import 'package:sixam_mart_delivery/util/manager_colors.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
 import 'package:sixam_mart_delivery/util/theme_extension.dart';
 
@@ -45,7 +46,7 @@ class CustomButtonWidget extends StatelessWidget {
 
     final ButtonStyle flatButtonStyle = TextButton.styleFrom(
       backgroundColor: onPressed == null
-          ? Theme.of(context).disabledColor
+          ? Theme.of(context).hintColor
           : transparent
               ? Colors.transparent
               : backgroundColor ?? Theme.of(context).primaryColor,
@@ -53,7 +54,7 @@ class CustomButtonWidget extends StatelessWidget {
           height != null ? height! : 50),
       padding: EdgeInsets.symmetric(
           horizontal: Dimensions.p10,
-          vertical: Dimensions.p5),
+          vertical: Dimensions.p4),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(radius),
         side:
@@ -97,7 +98,7 @@ class CustomButtonWidget extends StatelessWidget {
                                 ? Padding(
                                     padding: const EdgeInsets.only(
                                         right:
-                                            Dimensions.p5),
+                                            Dimensions.p4),
                                     child: icon
                                   )
                                 : const SizedBox(),
@@ -108,7 +109,7 @@ class CustomButtonWidget extends StatelessWidget {
                                         color: fontColor ??
                                             (transparent
                                                 ? Theme.of(context).primaryColor
-                                                : Colors.white),
+                                                : onPressed == null ? Theme.of(context).cardColor : ManagerColors.white),
                                         fontSize: fontSize ??
                                             Dimensions.fs16,
                                       )

@@ -7,12 +7,15 @@ import 'package:sixam_mart_delivery/util/dimensions.dart';
 import 'package:sixam_mart_delivery/util/manager_assets.dart';
 import 'package:sixam_mart_delivery/util/manager_colors.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
+import 'package:sixam_mart_delivery/util/theme_extension.dart';
 
 class NoTaskSection extends StatelessWidget {
   const NoTaskSection({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final customColor = Theme.of(context).extension<CustomColorsExtension>()!;
+
     return Column(
       children: [
         CustomCard(
@@ -45,18 +48,12 @@ class NoTaskSection extends StatelessWidget {
         const SizedBox(height: Dimensions.p16),
         TipCardWidget(
           title: 'tips_getting_ready'.tr,
-          titleColor: ManagerColors.darkBlue,
-          backgroundColor: ManagerColors.blueBg, // اختياري
+          titleColor: ManagerColors.darkBlueLightMode,
+          backgroundColor: customColor.blueBg, // اختياري
           tips: [
-            Tip(
-                text: 'tip_phone_charged'.tr,
-                color: ManagerColors.blue),
-            Tip(
-                text: 'tip_check_map'.tr,
-                color: ManagerColors.blue),
-            Tip(
-                text: 'tip_contact_supervisor'.tr,
-                color: ManagerColors.blue),
+            Tip(text: 'tip_phone_charged'.tr, color: ManagerColors.blueLightMode),
+            Tip(text: 'tip_check_map'.tr, color: ManagerColors.blueLightMode),
+            Tip(text: 'tip_contact_supervisor'.tr, color: ManagerColors.blueLightMode),
           ],
         ),
         const SizedBox(height: Dimensions.p16),
@@ -65,15 +62,9 @@ class NoTaskSection extends StatelessWidget {
           titleColor: ManagerColors.yallow,
           backgroundColor: ManagerColors.yallowBg,
           tips: [
-            Tip(
-                text: 'tip_phone_charged'.tr,
-                color: ManagerColors.yallow),
-            Tip(
-                text: 'tip_check_map'.tr,
-                color: ManagerColors.yallow),
-            Tip(
-                text: 'tip_contact_supervisor'.tr,
-                color: ManagerColors.yallow),
+            Tip(text: 'tip_phone_charged'.tr, color: ManagerColors.yallow),
+            Tip(text: 'tip_check_map'.tr, color: ManagerColors.yallow),
+            Tip(text: 'tip_contact_supervisor'.tr, color: ManagerColors.yallow),
           ],
         ),
       ],

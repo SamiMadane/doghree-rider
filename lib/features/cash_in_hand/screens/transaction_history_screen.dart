@@ -41,7 +41,7 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
                   Expanded(
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       Text(PriceConverterHelper.convertPrice(cashInHandController.transactions![index].amount), style: robotoMedium.copyWith(fontSize: Dimensions.fs14)),
-                      const SizedBox(height: Dimensions.p5),
+                      const SizedBox(height: Dimensions.p4),
 
                       Text('${'paid_via'.tr} ${cashInHandController.transactions![index].method?.replaceAll('_', ' ').capitalize??''}', style: robotoRegular.copyWith(
                         fontSize: Dimensions.fs10, color: Theme.of(context).disabledColor,

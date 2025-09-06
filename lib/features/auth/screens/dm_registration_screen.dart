@@ -8,7 +8,7 @@ import 'package:sixam_mart_delivery/features/auth/controllers/auth_controller.da
 import 'package:sixam_mart_delivery/features/address/controllers/address_controller.dart';
 import 'package:sixam_mart_delivery/features/auth/widgets/dm_registration_step1.dart';
 import 'package:sixam_mart_delivery/features/auth/widgets/dm_registration_step2.dart';
-import 'package:sixam_mart_delivery/features/auth/widgets/step_progress_bar%20.dart';
+import 'package:sixam_mart_delivery/common/widgets/step_progress_bar%20.dart';
 import 'package:sixam_mart_delivery/features/navigation_handler/controllers/navigation_handler_controller.dart';
 import 'package:sixam_mart_delivery/features/auth/domain/models/delivery_man_body_model.dart';
 import 'package:sixam_mart_delivery/helper/custom_validator_helper.dart';
@@ -130,7 +130,7 @@ class _DmRegistrationScreenState extends State<DmRegistrationScreen> {
                         top: Dimensions.p16,
                         left: Dimensions.p16,
                         right: Dimensions.p16,
-                        bottom: Dimensions.p5),
+                        bottom: Dimensions.p4),
                     decoration: BoxDecoration(
                       color: Theme.of(context).cardColor,
                       boxShadow: [

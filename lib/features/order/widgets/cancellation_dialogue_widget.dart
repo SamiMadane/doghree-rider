@@ -34,7 +34,7 @@ class CancellationDialogueWidget extends StatelessWidget {
               ),
               child: Column(children: [
                 Text('select_cancellation_reasons'.tr, style: robotoMedium.copyWith(color: Theme.of(context).primaryColor, fontSize: Dimensions.fs16)),
-                const SizedBox(height: Dimensions.p5),
+                const SizedBox(height: Dimensions.p4),
               ]),
             ),
 
@@ -52,7 +52,7 @@ class CancellationDialogueWidget extends StatelessWidget {
                       title: Row(children: [
 
                         Icon(orderController.orderCancelReasons![index].reason == orderController.cancelReason ? Icons.radio_button_checked : Icons.radio_button_off, color: Theme.of(context).primaryColor, size: 18),
-                        const SizedBox(width: Dimensions.p5),
+                        const SizedBox(width: Dimensions.p4),
 
                         Flexible(child: Text(orderController.orderCancelReasons![index].reason!, style: robotoRegular, maxLines: 3, overflow: TextOverflow.ellipsis)),
 
@@ -62,7 +62,7 @@ class CancellationDialogueWidget extends StatelessWidget {
                 },
               ) : Center(child: Text('no_reasons_available'.tr)) : const Center(child: CircularProgressIndicator()),
             ),
-            const SizedBox(height: Dimensions.p5),
+            const SizedBox(height: Dimensions.p4),
 
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: Dimensions.fs14, vertical: Dimensions.p10),

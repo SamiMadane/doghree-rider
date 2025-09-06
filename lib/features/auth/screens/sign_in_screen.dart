@@ -70,7 +70,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   style: robotoBold.copyWith(
                       fontSize: Dimensions.fs18)),
               SizedBox(
-                height: Dimensions.p5,
+                height: Dimensions.p4,
               ),
               Text('enter_details_continue'.tr,
                   style: robotoRegular.copyWith(

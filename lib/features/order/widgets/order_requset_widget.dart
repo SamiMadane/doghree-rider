@@ -209,7 +209,7 @@ class OrderRequestWidget extends StatelessWidget {
                                   ],
                                 ),
                                 const SizedBox(
-                                    height: Dimensions.p5),
+                                    height: Dimensions.p4),
                                 Text(
                                   parcel
                                       ? 'parcel'.tr
@@ -259,7 +259,7 @@ class OrderRequestWidget extends StatelessWidget {
                                     fontSize: Dimensions.fs12,
                                   ),
                                 ),
-                                const SizedBox(height: 4),
+                                const SizedBox(height: Dimensions.p4),
                                 Text(
                                   'delivery_location'.tr,
                                   maxLines: 1,
@@ -278,9 +278,10 @@ class OrderRequestWidget extends StatelessWidget {
                           Expanded(
                             child: CustomButtonWidget(
                               buttonText: 'view_on_map'.tr,
+                              fontSize: Dimensions.fs15,
                               radius: Dimensions.r24,
                               fontColor:
-                                  Theme.of(context).textTheme.bodyMedium?.color,
+                              Theme.of(context).textTheme.bodyMedium?.color,
                               onPressed: () => Get.to(() => OrderLocationScreen(
                                     orderModel: orderModel,
                                     orderController: orderController,

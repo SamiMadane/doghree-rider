@@ -8,21 +8,29 @@ class Dimensions {
   static const double fs17 = 17.0;
   static const double fs18 = 18.0;
   static const double fs20 = 20.0;
+  static const double fs22 = 22.0;
   static const double fs24 = 24.0;
   static const double fs28 = 28.0;
+  static const double fs32 = 32.0;
 
   static const double p2 = 2.0;
-  static const double p5 = 5.0;
+  static const double p4 = 4.0;
+  static const double p6 = 6.0;
   static const double p8 = 8.0;
   static const double p10 = 10.0;
   static const double p12 = 12.0;
   static const double p16 = 16.0;
   static const double p20 = 20.0;
+  static const double p23 = 23.0;
   static const double p25 = 25.0;
   static const double p30 = 30.0;
+  static const double p40 = 40.0;
   static const double p50 = 50.0;
+  static const double p56 = 56.0;
   static const double p80 = 80.0;
 
+  static const double r0 = 0.0;
+  static const double r2 = 2.0;
   static const double r4 = 4.0;
   static const double r8 = 8.0;
   static const double r10 = 10.0;

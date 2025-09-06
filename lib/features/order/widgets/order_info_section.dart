@@ -54,7 +54,7 @@ class OrderInfoSection extends StatelessWidget {
                 width: 50,
                 padding: const EdgeInsets.symmetric(
                     horizontal: Dimensions.p10,
-                    vertical: Dimensions.p5),
+                    vertical: Dimensions.p4),
                 fillColor: Theme.of(context).primaryColor.withOpacity(0.1),
                 borderRadius: Dimensions.r8,
                 child: Center(
