@@ -4,8 +4,7 @@ import 'package:sixam_mart_delivery/util/theme_extension.dart';
 
 ThemeData dark = ThemeData(
   fontFamily: 'Roboto',
-  primaryColor: ManagerColors.primary,
-  secondaryHeaderColor: ManagerColors.secondary,
+  primaryColor: ManagerColors.primaryDark,
   disabledColor: ManagerColors.disabledDark,
   brightness: Brightness.dark,
   hintColor: ManagerColors.hintDark,
@@ -44,9 +43,21 @@ ThemeData dark = ThemeData(
   ),
   extensions: <ThemeExtension<dynamic>>[
     CustomColorsExtension(
-        strock1: ManagerColors.Strock1Dark,
-        strock2: ManagerColors.Strock2Dark,
-        senderMessageBg: ManagerColors.senderMessageBgDark,
-        receiverMessageBg: ManagerColors.receiverMessageBgDark),
+      strock1: ManagerColors.Strock1Dark,
+      strock2: ManagerColors.Strock2Dark,
+      senderMessageBg: ManagerColors.senderMessageBgDark,
+      receiverMessageBg: ManagerColors.receiverMessageBgDark,
+      grayBg: ManagerColors.grayBgDarkMode,
+      primaryBg: ManagerColors.primaryBgDark,
+      blueBg: ManagerColors.blueBgDarkMode,
+      naturalBlue: ManagerColors.naturalBlueDarkMode,
+      darkBlue: ManagerColors.darkBlueDarkMode,
+      blue: ManagerColors.blueDarkMode,
+      gray: ManagerColors.grayDarkMode,
+      green: ManagerColors.greenDarkMode,
+      greenBg: ManagerColors.greenBgDarkMode,
+      disabledButton:ManagerColors.disabledButtonDarkMode,
+      orangeBg: ManagerColors.orangeBgDarkMode,
+    ),
   ],
 );

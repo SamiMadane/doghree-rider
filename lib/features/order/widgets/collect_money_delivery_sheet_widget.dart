@@ -58,7 +58,7 @@ class CollectMoneyDeliverySheetWidget extends StatelessWidget {
                   '${'order_amount'.tr}:', textAlign: TextAlign.center,
                   style: robotoBold.copyWith(fontSize: Dimensions.fs16),
                 ),
-                const SizedBox(width: Dimensions.p5),
+                const SizedBox(width: Dimensions.p4),
                 Text(
                   PriceConverterHelper.convertPrice(orderAmount), textAlign: TextAlign.center,
                   style: robotoBold.copyWith(fontSize: Dimensions.fs16, color: Theme.of(context).primaryColor),

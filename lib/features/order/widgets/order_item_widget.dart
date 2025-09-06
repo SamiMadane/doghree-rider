@@ -112,7 +112,7 @@ class OrderItemWidget extends StatelessWidget {
                     || (Get.find<NavigationHandlerController>().configModel!.toggleVegNonVeg! && Get.find<NavigationHandlerController>().getModule(order.moduleType).vegNonVeg!))
                   )
                     Container(
-                      padding: const EdgeInsets.symmetric(vertical: Dimensions.p5, horizontal: Dimensions.p10),
+                      padding: const EdgeInsets.symmetric(vertical: Dimensions.p4, horizontal: Dimensions.p10),
                       decoration: BoxDecoration(
                         color: Theme.of(context).primaryColor.withAlpha(25),
                         borderRadius: BorderRadius.circular(Dimensions.r4),
@@ -132,7 +132,7 @@ class OrderItemWidget extends StatelessWidget {
 
         if(showAddons && addOnText.isNotEmpty)
           Padding(
-            padding: const EdgeInsets.only(left: 60, top: Dimensions.p5),
+            padding: const EdgeInsets.only(left: 60, top: Dimensions.p4),
             child: Text('addons'.tr + ': ' + addOnText,
               style: robotoRegular.copyWith(fontSize: Dimensions.fs12, color: Theme.of(context).disabledColor),
             ),
@@ -140,7 +140,7 @@ class OrderItemWidget extends StatelessWidget {
 
         if(showVariations && variationText.isNotEmpty)
           Padding(
-            padding: const EdgeInsets.only(left: 60, top: Dimensions.p5),
+            padding: const EdgeInsets.only(left: 60, top: Dimensions.p4),
             child: Text('variations'.tr + ': ' + variationText,
               style: robotoRegular.copyWith(fontSize: Dimensions.fs12, color: Theme.of(context).disabledColor),
             ),

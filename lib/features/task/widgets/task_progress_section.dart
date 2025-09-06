@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
 import 'package:sixam_mart_delivery/util/manager_colors.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
+import 'package:sixam_mart_delivery/util/theme_extension.dart';
 
 class TaskProgressSection extends StatelessWidget {
   final int completed;
@@ -20,6 +21,8 @@ class TaskProgressSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final int total = completed + remaining + issue;
     final double progress = total > 0 ? completed / total : 0;
+    final customColor = Theme.of(context).extension<CustomColorsExtension>()!;
+
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -39,7 +42,7 @@ class TaskProgressSection extends StatelessWidget {
                       text: '$completed', // الرقم الأول
                       style: robotoBold.copyWith(
                           fontSize: Dimensions.fs18,
-                          color: ManagerColors.textBlue)),
+                          color: customColor.naturalBlue)),
                   TextSpan(
                       text: '/', // الفاصل
                       style: robotoBold.copyWith(
@@ -66,7 +69,7 @@ class TaskProgressSection extends StatelessWidget {
             value: progress,
             minHeight: 8,
             color: ManagerColors.lightGreen,
-            backgroundColor: ManagerColors.grayBg,
+            backgroundColor: customColor.gray,
           ),
         ),
         SizedBox(
@@ -74,7 +77,7 @@ class TaskProgressSection extends StatelessWidget {
         ),
         Row(
           children: [
-            _legendCircle(ManagerColors.green, '$completed ${'completed'.tr}'),
+            _legendCircle(ManagerColors.oliveGreen, '$completed ${'completed'.tr}'),
             _legendCircle(ManagerColors.orange, '$remaining ${'remaining'.tr}'),
             _legendCircle(ManagerColors.red, '$issue ${'issue'.tr}'),
           ],
@@ -92,7 +95,7 @@ class TaskProgressSection extends StatelessWidget {
             height: 12,
             decoration: BoxDecoration(color: color, shape: BoxShape.circle),
           ),
-          const SizedBox(width: Dimensions.p5),
+          const SizedBox(width: Dimensions.p4),
           Text(
             text,
             style: robotoMedium,

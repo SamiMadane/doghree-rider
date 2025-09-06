@@ -33,7 +33,7 @@ class PassViewWidget extends StatelessWidget {
 
   Widget view(String title, bool done){
     return Padding(
-      padding: const EdgeInsets.only(right: Dimensions.p5),
+      padding: const EdgeInsets.only(right: Dimensions.p4),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
         Icon(done ? Icons.check : Icons.clear, color: done ? Colors.green : Colors.red, size: 12),
         Text(title, style: robotoRegular.copyWith(color: done ? Colors.green : Colors.red, fontSize: 12))

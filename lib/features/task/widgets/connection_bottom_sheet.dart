@@ -9,6 +9,7 @@ import 'package:sixam_mart_delivery/util/dimensions.dart';
 import 'package:sixam_mart_delivery/util/manager_assets.dart';
 import 'package:sixam_mart_delivery/util/manager_colors.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
+import 'package:sixam_mart_delivery/util/theme_extension.dart';
 
 class ConnectionBottomSheet extends StatelessWidget {
   final TaskController controller;
@@ -17,6 +18,8 @@ class ConnectionBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final customColor = Theme.of(context).extension<CustomColorsExtension>()!;
+
     return Obx(() => Padding(
           padding: const EdgeInsets.all(Dimensions.p16),
           child: Column(
@@ -24,8 +27,7 @@ class ConnectionBottomSheet extends StatelessWidget {
             children: [
               SizedBox(height: Dimensions.p16),
               Text('data_management'.tr,
-                  style: robotoSemiBold.copyWith(
-                      fontSize: Dimensions.fs18)),
+                  style: robotoSemiBold.copyWith(fontSize: Dimensions.fs18)),
               const SizedBox(height: 16),
               CustomCard(
                 fillColor: Theme.of(context).scaffoldBackgroundColor,
@@ -42,8 +44,8 @@ class ConnectionBottomSheet extends StatelessWidget {
                                 fontSize: Dimensions.fs16)),
                         const Spacer(),
                         Container(
-                          width: 12,
-                          height: 12,
+                          width: 10,
+                          height: 10,
                           decoration: BoxDecoration(
                             color: controller.connectionColor.value,
                             shape: BoxShape.circle,
@@ -51,7 +53,8 @@ class ConnectionBottomSheet extends StatelessWidget {
                         ),
                         const SizedBox(width: Dimensions.p8),
                         Text(controller.connectionStatusText,
-                            style: robotoSemiBold),
+                            style: robotoSemiBold.copyWith(
+                                color: controller.connectionColor.value)),
                       ],
                     ),
                     SizedBox(height: Dimensions.p16),
@@ -83,8 +86,8 @@ class ConnectionBottomSheet extends StatelessWidget {
                       children: [
                         _connectionOption(context,
                             label: 'wifi'.tr,
-                            circleColor: ManagerColors.green,
-                            selectedBg: ManagerColors.green,
+                            circleColor: ManagerColors.oliveGreen,
+                            selectedBg: ManagerColors.oliveGreen,
                             selectedCircleColor: ManagerColors.greenCircle),
                         _connectionOption(context,
                             label: '2g'.tr,
@@ -94,7 +97,7 @@ class ConnectionBottomSheet extends StatelessWidget {
                         _connectionOption(context,
                             label: 'without'.tr,
                             circleColor: ManagerColors.grayCirule,
-                            selectedBg: ManagerColors.grayBgSelected,
+                            selectedBg: ManagerColors.darkGray,
                             selectedCircleColor:
                                 ManagerColors.grayCiruleSelected),
                       ],
@@ -108,12 +111,11 @@ class ConnectionBottomSheet extends StatelessWidget {
                 children: [
                   Text(
                     'pending_data'.tr,
-                    style:
-                        robotoBold.copyWith(fontSize: Dimensions.fs16),
+                    style: robotoBold.copyWith(fontSize: Dimensions.fs17),
                   ),
                   const Spacer(),
                   CustomCard(
-                    fillColor: Theme.of(context).primaryColor.withAlpha(8),
+                    fillColor: customColor.primaryBg,
                     padding: EdgeInsets.all(Dimensions.p16),
                     borderRadius: Dimensions.r8,
                     isBorder: false,
@@ -138,13 +140,13 @@ class ConnectionBottomSheet extends StatelessWidget {
                     ManagerAssets.checkIcon,
                     height: 22,
                     width: 22,
-                    color: ManagerColors.green,
+                    color: ManagerColors.oliveGreen,
                   ),
                   SizedBox(width: Dimensions.p8),
                   Text(
                     'all_data_up_to_date'.tr,
                     style: robotoBold.copyWith(
-                        color: ManagerColors.green,
+                        color: ManagerColors.oliveGreen,
                         fontSize: Dimensions.fs16),
                   )
                 ],
@@ -153,18 +155,16 @@ class ConnectionBottomSheet extends StatelessWidget {
               // --- Data Saving Tips ---
               TipCardWidget(
                 title: 'data_saving_tips'.tr,
-                titleColor: ManagerColors.darkBlue,
-                backgroundColor: ManagerColors.blueBg,
+                titleColor: customColor.darkBlue,
+                backgroundColor: customColor.blueBg,
                 tips: [
                   Tip(
                       text: 'use_wifi_upload_photos'.tr,
-                      color: ManagerColors.blue),
+                      color: customColor.blue),
                   Tip(
                       text: 'packages_emergency_texts'.tr,
-                      color: ManagerColors.blue),
-                  Tip(
-                      text: 'data_saved_locally'.tr,
-                      color: ManagerColors.blue),
+                      color: customColor.blue),
+                  Tip(text: 'data_saved_locally'.tr, color: customColor.blue),
                 ],
               ),
             ],
@@ -178,6 +178,7 @@ class ConnectionBottomSheet extends StatelessWidget {
       required Color selectedBg,
       required Color selectedCircleColor}) {
     final bool isSelected = controller.connectionLabel.value == label;
+    final customColor = Theme.of(context).extension<CustomColorsExtension>()!;
 
     return Expanded(
       child: InkWell(
@@ -186,11 +187,10 @@ class ConnectionBottomSheet extends StatelessWidget {
           Get.back();
         },
         child: Container(
-          margin: const EdgeInsets.symmetric(
-              horizontal: Dimensions.p5),
+          margin: const EdgeInsets.symmetric(horizontal: Dimensions.p4),
           padding: EdgeInsets.all(Dimensions.p10),
           decoration: BoxDecoration(
-            color: isSelected ? selectedBg : ManagerColors.gray,
+            color: isSelected ? selectedBg : customColor.grayBg,
             borderRadius: BorderRadius.circular(Dimensions.r8),
           ),
           child: Row(
@@ -205,13 +205,16 @@ class ConnectionBottomSheet extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: Dimensions.p8),
-              Text(
-                label,
-                style: robotoRegular.copyWith(
-                  fontSize: Dimensions.fs16,
-                  color: isSelected ? ManagerColors.white : Colors.black,
-                ),
-              ),
+              Text(label,
+                  style: isSelected
+                      ? robotoMedium.copyWith(
+                          fontSize: Dimensions.fs16,
+                          color: ManagerColors.white,
+                        )
+                      : robotoRegular.copyWith(
+                          fontSize: Dimensions.fs16,
+                          color: Theme.of(context).textTheme.bodyMedium?.color,
+                        )),
             ],
           ),
         ),

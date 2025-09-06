@@ -41,7 +41,7 @@ class _DisbursementScreenState extends State<DisbursementScreen> {
         isBackButtonExist: true,
         actionWidget: GetBuilder<ProfileController>(builder: (profileController) {
           return Container(
-            margin: const EdgeInsets.symmetric(vertical: Dimensions.p5),
+            margin: const EdgeInsets.symmetric(vertical: Dimensions.p4),
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(200), border: Border.all(width: 1.5, color: Theme.of(context).primaryColor)),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(200),
@@ -135,10 +135,10 @@ class _DisbursementScreenState extends State<DisbursementScreen> {
                           DateConverterHelper.dateTimeStringForDisbursement(disbursement.createdAt!),
                           style: robotoRegular.copyWith(fontSize: Dimensions.fs12, color: Theme.of(context).disabledColor),
                         ),
-                        const SizedBox(height: Dimensions.p5),
+                        const SizedBox(height: Dimensions.p4),
 
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: Dimensions.p16, vertical: Dimensions.p5),
+                          padding: const EdgeInsets.symmetric(horizontal: Dimensions.p16, vertical: Dimensions.p4),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(Dimensions.r4),
                             color: disbursement.status == 'pending' ? Colors.blue.withValues(alpha: 0.1) : disbursement.status == 'completed' ? Colors.green.withValues(alpha: 0.1) : Colors.red.withValues(alpha: 0.1),

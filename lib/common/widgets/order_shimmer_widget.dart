@@ -24,21 +24,21 @@ class OrderShimmerWidget extends StatelessWidget {
           Shimmer(child: Container(height: 15, width: 100, color: ManagerColors.shimmer)),
           const Expanded(child: SizedBox()),
           Shimmer(child: Container(width: 7, height: 7, decoration: BoxDecoration(color: Theme.of(context).primaryColor, shape: BoxShape.circle))),
-          const SizedBox(width: Dimensions.p5),
+          const SizedBox(width: Dimensions.p4),
           Shimmer(child: Container(height: 15, width: 70, color: ManagerColors.shimmer)),
         ]),
         const SizedBox(height: Dimensions.p16),
 
         Row(crossAxisAlignment: CrossAxisAlignment.center, mainAxisAlignment: MainAxisAlignment.start, children: [
           Image.asset(ManagerAssets.house, width: 20, height: 15, color: Theme.of(context).disabledColor),
-          const SizedBox(width: Dimensions.p5),
+          const SizedBox(width: Dimensions.p4),
           Shimmer(child: Container(height: 15, width: 200, color: ManagerColors.shimmer)),
         ]),
         const SizedBox(height: Dimensions.p10),
 
         Row(crossAxisAlignment: CrossAxisAlignment.center, mainAxisAlignment: MainAxisAlignment.start, children: [
           Icon(Icons.location_on, size: 20, color: Theme.of(context).disabledColor),
-          const SizedBox(width: Dimensions.p5),
+          const SizedBox(width: Dimensions.p4),
           Shimmer(child: Container(height: 15, width: 200, color: ManagerColors.shimmer)),
         ]),
         const SizedBox(height: Dimensions.p16),

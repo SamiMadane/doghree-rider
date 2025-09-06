@@ -8,6 +8,7 @@ import 'package:sixam_mart_delivery/util/dimensions.dart';
 import 'package:sixam_mart_delivery/util/manager_assets.dart';
 import 'package:sixam_mart_delivery/util/manager_colors.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
+import 'package:sixam_mart_delivery/util/theme_extension.dart';
 
 class TaskCard extends StatelessWidget {
   final int taskNumber;
@@ -37,6 +38,8 @@ class TaskCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final customColor = Theme.of(context).extension<CustomColorsExtension>()!;
+
     return CustomCard(
       padding: EdgeInsets.all(Dimensions.p16),
       isBorder: false,
@@ -64,7 +67,7 @@ class TaskCard extends StatelessWidget {
                 child: Text(PriceConverterHelper.convertPrice(amount),
                     style: robotoSemiBold.copyWith(
                         fontSize: Dimensions.fs18,
-                        color: ManagerColors.darkGreen)),
+                        color: ManagerColors.greenLightMode)),
               ),
             ],
           ),
@@ -84,7 +87,7 @@ class TaskCard extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    SvgPicture.asset(ManagerAssets.taskIcon),
+                    SvgPicture.asset(ManagerAssets.taskIcon,color: Theme.of(context).textTheme.bodyMedium?.color,),
                     const SizedBox(width: Dimensions.p12),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -94,7 +97,7 @@ class TaskCard extends StatelessWidget {
                               fontSize: Dimensions.fs16,
                             )),
                         SizedBox(
-                          height: Dimensions.p5,
+                          height: Dimensions.p4,
                         ),
                         Text(itemSubtitle,
                             style: robotoSemiBold.copyWith(
@@ -109,23 +112,24 @@ class TaskCard extends StatelessWidget {
           ),
           // Note box (اختياري)
           if (note != null) ...[
+            
             const SizedBox(height: Dimensions.p12),
             CustomCard(
               width: double.infinity,
               padding: const EdgeInsets.all(Dimensions.p16),
-              fillColor: ManagerColors.blueBg,
+              fillColor: customColor.blueBg,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('updated_from_support'.tr,
                       style: robotoBold.copyWith(
                           fontSize: Dimensions.fs16,
-                          color: ManagerColors.blue)),
-                  const SizedBox(height: Dimensions.p5),
+                          color: customColor.blue)),
+                  const SizedBox(height: Dimensions.p4),
                   Text(note!,
                       style: robotoMedium.copyWith(
                           fontSize: Dimensions.fs15,
-                          color: ManagerColors.blue)),
+                          color: customColor.blue)),
                 ],
               ),
             ),
@@ -134,13 +138,13 @@ class TaskCard extends StatelessWidget {
 
           // Buttons
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
                 child: CustomButtonWidget(
                   onPressed: onDelivered,
                   backgroundColor: ManagerColors.lightGreen,
                   buttonText: 'delivered'.tr,
+                  fontSize: Dimensions.fs15,
                 ),
               ),
               const SizedBox(width: Dimensions.p8),
@@ -149,14 +153,16 @@ class TaskCard extends StatelessWidget {
                   onPressed: onReschedule,
                   backgroundColor: ManagerColors.orange,
                   buttonText: 'reschedule'.tr,
+                  fontSize: Dimensions.fs15,
                 ),
               ),
               const SizedBox(width: Dimensions.p8),
               Expanded(
                 child: CustomButtonWidget(
                   onPressed: onSupport,
-                  backgroundColor: ManagerColors.textBlue,
+                  backgroundColor: ManagerColors.naturalBlueLightMode,
                   buttonText: 'support'.tr,
+                  fontSize: Dimensions.fs15,
                 ),
               ),
             ],

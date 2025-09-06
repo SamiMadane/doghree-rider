@@ -167,7 +167,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                       ),
                                       const SizedBox(
                                           height:
-                                              Dimensions.p5),
+                                              Dimensions.p4),
                                       Text(
                                         notification.description ?? '',
                                         style: robotoRegular.copyWith(

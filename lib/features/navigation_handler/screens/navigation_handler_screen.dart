@@ -214,7 +214,7 @@ class NavigationHandlerScreenState extends State<NavigationHandlerScreen> {
                   color: Theme.of(context).textTheme.bodyLarge!.color,
                 ),
               ),
-              const SizedBox(width: Dimensions.p5),
+              const SizedBox(width: Dimensions.p4),
               LoadingDots(
                   color: Theme.of(context).textTheme.bodyMedium!.color!),
             ],

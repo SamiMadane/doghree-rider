@@ -192,7 +192,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               top: Dimensions.p16,
                               left: Dimensions.p16,
                               right: Dimensions.p16,
-                              bottom: Dimensions.p5),
+                              bottom: Dimensions.p4),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [

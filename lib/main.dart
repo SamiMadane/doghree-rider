@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:camera/camera.dart';
 import 'package:flutter/services.dart';
 import 'package:sixam_mart_delivery/features/auth/controllers/auth_controller.dart';
 import 'package:sixam_mart_delivery/features/language/controllers/language_controller.dart';
@@ -23,6 +24,7 @@ import 'helper/get_di.dart' as di;
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
+late List<CameraDescription> cameras;
 
 Future<void> main() async {
   if (!GetPlatform.isWeb) {
@@ -59,7 +61,7 @@ Future<void> main() async {
     }
   } catch (_) {}
   await DateConverterHelper.initLocaleDateFormatting();
-
+  cameras = await availableCameras();
   runApp(MyApp(languages: languages, body: body));
 }
 

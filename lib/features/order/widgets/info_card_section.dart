@@ -83,7 +83,7 @@ class InfoCardSection extends StatelessWidget {
                           fontSize: Dimensions.fs14,
                         ),
                       ),
-                    const SizedBox(height: Dimensions.p5),
+                    const SizedBox(height: Dimensions.p4),
                     if (address != null)
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -99,7 +99,7 @@ class InfoCardSection extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                           ),
                           const SizedBox(
-                              height: Dimensions.p5),
+                              height: Dimensions.p4),
 
                           // التفاصيل الأخرى
                           Wrap(

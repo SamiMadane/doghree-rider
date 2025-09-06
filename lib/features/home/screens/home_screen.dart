@@ -280,7 +280,7 @@ class _HomeScreenState extends State<HomeScreen> {
         titleWidget: Row(
           children: [
             Padding(
-              padding: const EdgeInsets.all(Dimensions.p5),
+              padding: const EdgeInsets.all(Dimensions.p4),
               child: ClipOval(
                 child: CustomImageWidget(
                   width: 40,
@@ -399,7 +399,7 @@ class _HomeScreenState extends State<HomeScreen> {
       width: double.infinity,
       margin: EdgeInsets.symmetric(
           horizontal: Dimensions.p10,
-          vertical: Dimensions.p5),
+          vertical: Dimensions.p4),
       decoration: BoxDecoration(
         color: bgColor,
         boxShadow: [
@@ -421,7 +421,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Container(
                       padding: const EdgeInsets.all(
-                          Dimensions.p5),
+                          Dimensions.p4),
                       decoration: BoxDecoration(
                         color: ManagerColors.orange
                             .withOpacity(0.2), // أصفر فاتح شفاف

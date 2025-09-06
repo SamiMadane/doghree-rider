@@ -52,6 +52,8 @@ dependencies:
   dotted_line: ^3.2.3
   phone_numbers_parser: ^9.0.3
   lottie: ^3.3.1
+  camera: ^0.11.2
+  syncfusion_flutter_gauges: ^30.2.7
 
 dependency_overrides:
   collection: ^1.19.0

@@ -216,7 +216,7 @@ class OrderSliderButton extends StatelessWidget {
                         : '',
         style: robotoMedium.copyWith(
           fontSize: Dimensions.fs16,
-          color: Theme.of(context).primaryColor,
+          color: Theme.of(context).textTheme.bodyMedium?.color,
         ),
       ),
       dismissThresholds: 0.5,
@@ -236,8 +236,7 @@ class OrderSliderButton extends StatelessWidget {
       isLtr: isLtr,
       boxShadow: const BoxShadow(blurRadius: 0),
       buttonColor: Theme.of(context).primaryColor,
-      backgroundColor: Theme.of(context).primaryColor.withAlpha(20),
-      baseColor: Theme.of(context).primaryColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     );
   }
 }

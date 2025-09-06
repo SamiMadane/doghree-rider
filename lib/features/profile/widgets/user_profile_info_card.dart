@@ -55,7 +55,7 @@ class UserProfileInfoCard extends StatelessWidget {
                       style: robotoSemiBold.copyWith(
                           fontSize: Dimensions.fs16),
                     ),
-                    const SizedBox(height: Dimensions.p5),
+                    const SizedBox(height: Dimensions.p4),
                     Text(
                       profile?.phone ?? "",
                       style: robotoRegular.copyWith(

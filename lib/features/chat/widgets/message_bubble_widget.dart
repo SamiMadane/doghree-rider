@@ -127,7 +127,7 @@ class MessageBubbleWidget extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(width: Dimensions.p5),
+                  SizedBox(width: Dimensions.p4),
                 ],
                 Text(
                   DateConverterHelper.isoStringToLocalTimeOnly(

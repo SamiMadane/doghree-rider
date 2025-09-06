@@ -95,7 +95,7 @@ class CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
           ? Text(widget.hintText,
               style: robotoRegular.copyWith(fontSize: Dimensions.fs12))
           : const SizedBox(),
-      SizedBox(height: widget.showTitle ? Dimensions.p5 : 0),
+      SizedBox(height: widget.showTitle ? Dimensions.p4 : 0),
       TextField(
         maxLines: widget.maxLines,
         controller: widget.controller,

@@ -63,7 +63,7 @@ class _WithdrawMethodScreenState extends State<WithdrawMethodScreen> {
               child: Column(children: [
 
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: Dimensions.p16, vertical: Dimensions.p5),
+                  padding: const EdgeInsets.symmetric(horizontal: Dimensions.p16, vertical: Dimensions.p4),
                   child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
 
                     Flexible(

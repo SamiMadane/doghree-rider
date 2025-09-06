@@ -44,7 +44,7 @@ class ProfileOrderCardWidget extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: Dimensions.p5),
+          const SizedBox(height: Dimensions.p4),
           value != null
               ? Text(
                   value!,

@@ -209,7 +209,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                           top: Dimensions.p16,
                           left: Dimensions.p16,
                           right: Dimensions.p16,
-                          bottom: Dimensions.p5,
+                          bottom: Dimensions.p4,
                         ),
                         decoration: BoxDecoration(
                           color: Theme.of(context).cardColor,

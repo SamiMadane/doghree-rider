@@ -59,7 +59,7 @@ class EmptyStateBottomSheet extends StatelessWidget {
                 style: robotoRegular.copyWith(fontSize: Dimensions.fs14, color: Theme.of(context).textTheme.bodyLarge!.color?.withValues(alpha: 0.5)),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: noPaymentMethod ? Dimensions.p5 : 0),
+              SizedBox(height: noPaymentMethod ? Dimensions.p4 : 0),
 
               noPaymentMethod ? Text(
                 'please_contact_the_admin'.tr,

@@ -289,7 +289,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                                                     ? Container(
                                                                         padding: EdgeInsets.all((conversation.lastMessage!.senderId ==
                                                                                 user?.id)
-                                                                            ? Dimensions.p5
+                                                                            ? Dimensions.p4
                                                                             : 0.0),
                                                                         decoration: BoxDecoration(
                                                                             color:

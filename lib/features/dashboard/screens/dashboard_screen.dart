@@ -184,7 +184,7 @@ class DashboardScreenState extends State<DashboardScreen> {
                   shape: const CircularNotchedRectangle(),
                   child: Padding(
                     padding:
-                        const EdgeInsets.all(Dimensions.p5),
+                        const EdgeInsets.all(Dimensions.p4),
                     child: Row(
                       children: [
                         BottomNavItemWidget(
