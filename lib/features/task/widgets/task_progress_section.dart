@@ -78,7 +78,7 @@ class TaskProgressSection extends StatelessWidget {
         Row(
           children: [
             _legendCircle(ManagerColors.oliveGreen, '$completed ${'completed'.tr}'),
-            _legendCircle(ManagerColors.orange, '$remaining ${'remaining'.tr}'),
+            _legendCircle(ManagerColors.orangeLightMode, '$remaining ${'remaining'.tr}'),
             _legendCircle(ManagerColors.red, '$issue ${'issue'.tr}'),
           ],
         ),

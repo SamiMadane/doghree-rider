@@ -58,6 +58,8 @@ ThemeData dark = ThemeData(
       greenBg: ManagerColors.greenBgDarkMode,
       disabledButton:ManagerColors.disabledButtonDarkMode,
       orangeBg: ManagerColors.orangeBgDarkMode,
+      orange:ManagerColors.orangeDarkMode,
+
     ),
   ],
 );

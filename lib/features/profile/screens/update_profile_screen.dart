@@ -72,10 +72,8 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   children: [
                     Expanded(
                       child: Container(
-                        padding:
-                            const EdgeInsets.all(Dimensions.p16),
-                        margin: const EdgeInsets.only(
-                            top: Dimensions.p16),
+                        padding: const EdgeInsets.all(Dimensions.p16),
+                        margin: const EdgeInsets.only(top: Dimensions.p16),
                         color: Theme.of(context).cardColor,
                         child: SingleChildScrollView(
                           physics: const BouncingScrollPhysics(),
@@ -135,7 +133,8 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                             child: Center(
                                                 child: SvgPicture.asset(
                                               ManagerAssets.editIcon,
-                                              color: ManagerColors.orange,
+                                              color:
+                                                  ManagerColors.orangeLightMode,
                                             )),
                                           ),
                                         ),
@@ -144,8 +143,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                   ),
                                 ],
                               ),
-                              const SizedBox(
-                                  height: Dimensions.p25),
+                              const SizedBox(height: Dimensions.p25),
 
                               // Full Name
                               WidgetWithLabel(
@@ -161,8 +159,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                   nextFocus: _phoneFocus,
                                 ),
                               ),
-                              const SizedBox(
-                                  height: Dimensions.p16),
+                              const SizedBox(height: Dimensions.p16),
                               // Email
                               WidgetWithLabel(
                                 label: 'email'.tr,
@@ -175,8 +172,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                   focusNode: _emailFocus,
                                 ),
                               ),
-                              const SizedBox(
-                                  height: Dimensions.p16),
+                              const SizedBox(height: Dimensions.p16),
 
                               // Phone
                               WidgetWithLabel(
@@ -205,21 +201,16 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     // زر التعديل
                     SafeArea(
                       child: Container(
-                        padding: const EdgeInsets.only(
-                          top: Dimensions.p16,
-                          left: Dimensions.p16,
-                          right: Dimensions.p16,
-                          bottom: Dimensions.p4,
-                        ),
+                        padding: const EdgeInsets.all(Dimensions.p16),
                         decoration: BoxDecoration(
                           color: Theme.of(context).cardColor,
-                          boxShadow:  [
+                          boxShadow: [
                             BoxShadow(
-                                  color: Theme.of(context).shadowColor,
-                                  blurRadius: 5,
-                                  spreadRadius: 2,
-                                  offset: const Offset(0, -3),
-                                  )
+                              color: Theme.of(context).shadowColor,
+                              blurRadius: 5,
+                              spreadRadius: 2,
+                              offset: const Offset(0, -3),
+                            )
                           ],
                         ),
                         child: !profileController.isLoading
@@ -276,7 +267,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
         fName: firstName,
         lName: lastName,
         email: email,
-        phone: fullPhoneNumber, 
+        phone: fullPhoneNumber,
       );
       profileController
           .updateUserInfo(

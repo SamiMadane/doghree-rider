@@ -40,7 +40,7 @@ class DetailedOperationHistoryScreen extends StatelessWidget {
         body: TabBarView(
           children: [
             _operationsTab('Delivered', ManagerColors.darkGreen, context),
-            _operationsTab('Postponed', ManagerColors.orange, context),
+            _operationsTab('Postponed', ManagerColors.orangeLightMode, context),
             _operationsTab('Waiting', customColor.naturalBlue, context),
             _operationsTab('Problem', Theme.of(context).primaryColor, context),
           ],

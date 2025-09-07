@@ -151,7 +151,7 @@ class TaskCard extends StatelessWidget {
               Expanded(
                 child: CustomButtonWidget(
                   onPressed: onReschedule,
-                  backgroundColor: ManagerColors.orange,
+                  backgroundColor: ManagerColors.orangeLightMode,
                   buttonText: 'reschedule'.tr,
                   fontSize: Dimensions.fs15,
                 ),

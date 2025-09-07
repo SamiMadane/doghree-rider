@@ -9,7 +9,8 @@ class ManagerColors {
   static const Color white = Colors.white;
   static const Color black = Colors.black;
 
-  static const Color orange = Color(0xFFE28D00);
+  static const Color orangeLightMode = Color(0xFFE28D00);
+  static const Color orangeDarkMode = Color(0xFFFFFfE5);
   static const Color orangeBgLightMode = Color(0x1FE28D00);
   static const Color orangeBgDarkMode = Color(0x1FFFFFFF);
 

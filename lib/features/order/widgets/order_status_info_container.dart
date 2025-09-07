@@ -13,7 +13,7 @@ class OrderStatusInfoContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final Color mainColor = processing ? ManagerColors.darkGreen : ManagerColors.orange;
+    final Color mainColor = processing ? ManagerColors.darkGreen : ManagerColors.orangeLightMode;
     final String text =
         processing ? 'order_is_preparing'.tr : 'order_waiting_for_process'.tr;
     final IconData icon =

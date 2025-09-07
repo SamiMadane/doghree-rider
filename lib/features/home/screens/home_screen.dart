@@ -423,13 +423,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: const EdgeInsets.all(
                           Dimensions.p4),
                       decoration: BoxDecoration(
-                        color: ManagerColors.orange
+                        color: ManagerColors.orangeLightMode
                             .withOpacity(0.2), // أصفر فاتح شفاف
                         shape: BoxShape.circle,
                       ),
                       child: SvgPicture.asset(
                         ManagerAssets.warningIcon,
-                        color: ManagerColors.orange,
+                        color: ManagerColors.orangeLightMode,
                       )),
                   const SizedBox(width: 10),
                   // النص + السهم

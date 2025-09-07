@@ -152,7 +152,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       Get.toNamed(RouteHelper.getForgotPassRoute()),
                   child: Text(
                     '${'forgot_password'.tr}?',
-                    style: robotoMedium,
+                    style: robotoMedium.copyWith(color: Theme.of(context).primaryColor),
                   ),
                 ),
               ]),

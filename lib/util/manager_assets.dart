@@ -79,6 +79,7 @@ class ManagerAssets {
   static const String postponedImage = '$imagePath/postponed.png';
   static const String problemImage = '$imagePath/problem.png';
   static const String amountToBeDeliveredImage = '$imagePath/amount_to_be_delivered.png';
+  static const String noInternetImage = '$imagePath/no_internet.svg';
 
   ///Svg Images
   static const String changePasswordBgImage =

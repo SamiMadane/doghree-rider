@@ -137,11 +137,8 @@ class _NewPassScreenState extends State<NewPassScreen> {
                 builder: (forgotPasswordController) {
                   return SafeArea(
                     child: Container(
-                      padding: const EdgeInsets.only(
-                        top: Dimensions.p16,
-                        left: Dimensions.p16,
-                        right: Dimensions.p16,
-                      bottom: Dimensions.p4
+                      padding: const EdgeInsets.all(
+                        Dimensions.p16,
 
                       ),
                       decoration: BoxDecoration(

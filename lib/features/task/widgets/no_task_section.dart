@@ -21,13 +21,26 @@ class NoTaskSection extends StatelessWidget {
         CustomCard(
           padding: const EdgeInsets.all(Dimensions.p16),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
                 'hello'.tr,
                 style: robotoBold.copyWith(fontSize: Dimensions.fs24),
               ),
               const SizedBox(height: Dimensions.p12),
-              Image.asset(ManagerAssets.deliveryBoyOnScooterImage),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.3,
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: FractionallySizedBox(
+                    widthFactor: 0.8,
+                    child: Image.asset(
+                      ManagerAssets.deliveryBoyOnScooterImage,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ),
+              ),
               const SizedBox(height: Dimensions.p12),
               Text(
                 'no_tasks_message'.tr,
@@ -48,23 +61,32 @@ class NoTaskSection extends StatelessWidget {
         const SizedBox(height: Dimensions.p16),
         TipCardWidget(
           title: 'tips_getting_ready'.tr,
-          titleColor: ManagerColors.darkBlueLightMode,
+          titleColor: customColor.darkBlue,
           backgroundColor: customColor.blueBg, // اختياري
           tips: [
-            Tip(text: 'tip_phone_charged'.tr, color: ManagerColors.blueLightMode),
-            Tip(text: 'tip_check_map'.tr, color: ManagerColors.blueLightMode),
-            Tip(text: 'tip_contact_supervisor'.tr, color: ManagerColors.blueLightMode),
+            Tip(text: 'tip_phone_charged'.tr, color: customColor.blue),
+            Tip(text: 'tip_check_map'.tr, color: customColor.blue),
+            Tip(text: 'tip_contact_supervisor'.tr, color: customColor.blue),
           ],
         ),
         const SizedBox(height: Dimensions.p16),
         TipCardWidget(
           title: 'tips_getting_ready'.tr,
-          titleColor: ManagerColors.yallow,
-          backgroundColor: ManagerColors.yallowBg,
+          titleColor: customColor.orange,
+          backgroundColor: customColor.orangeBg,
           tips: [
-            Tip(text: 'tip_phone_charged'.tr, color: ManagerColors.yallow),
-            Tip(text: 'tip_check_map'.tr, color: ManagerColors.yallow),
-            Tip(text: 'tip_contact_supervisor'.tr, color: ManagerColors.yallow),
+            Tip(
+              text: 'tip_phone_charged'.tr,
+              color: customColor.orange,
+            ),
+            Tip(
+              text: 'tip_check_map'.tr,
+              color: customColor.orange,
+            ),
+            Tip(
+              text: 'tip_contact_supervisor'.tr,
+              color: customColor.orange,
+            ),
           ],
         ),
       ],

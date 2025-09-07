@@ -16,7 +16,7 @@ class SupportTeamScreen extends StatefulWidget {
 }
 
 class _SupportTeamScreenState extends State<SupportTeamScreen> {
-  String? selectedIssue; // مبدئياً ما في اختيار
+  String? selectedIssue;
 
   final List<String> issues = [
     "the_title_still_wrong",
@@ -32,13 +32,12 @@ class _SupportTeamScreenState extends State<SupportTeamScreen> {
     final customColor = Theme.of(context).extension<CustomColorsExtension>()!;
 
     return Scaffold(
-      appBar: CustomAppBarWidget(
-        title: 'inform_support_team'.tr,
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
+      appBar: CustomAppBarWidget(title: 'inform_support_team'.tr),
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            padding: const EdgeInsets.only(bottom: 120), // مساحة للزر الثابت + مسافة
+            child: Padding(
               padding: const EdgeInsets.all(Dimensions.p16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,7 +82,7 @@ class _SupportTeamScreenState extends State<SupportTeamScreen> {
                     ),
                   ),
 
-                  const SizedBox(height: Dimensions.p12),
+                  const SizedBox(height: Dimensions.p16),
 
                   /// Issue Type
                   CustomCard(
@@ -129,21 +128,18 @@ class _SupportTeamScreenState extends State<SupportTeamScreen> {
                             hintStyle: robotoRegular.copyWith(
                                 color: Theme.of(context).hintColor),
                             border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.circular(Dimensions.r12),
+                              borderRadius: BorderRadius.circular(Dimensions.r12),
                               borderSide: BorderSide.none,
                             ),
                             enabledBorder: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.circular(Dimensions.r12),
+                              borderRadius: BorderRadius.circular(Dimensions.r12),
                               borderSide: BorderSide(
                                 color: customColor.strock2,
                                 width: 1,
                               ),
                             ),
                             focusedBorder: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.circular(Dimensions.r12),
+                              borderRadius: BorderRadius.circular(Dimensions.r12),
                               borderSide: BorderSide(
                                 color: Theme.of(context).primaryColor,
                                 width: 1.5,
@@ -179,8 +175,14 @@ class _SupportTeamScreenState extends State<SupportTeamScreen> {
                 ],
               ),
             ),
-            Container(
-              width: double.infinity,
+          ),
+
+          /// زر ثابت أسفل الشاشة
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Theme.of(context).cardColor,
@@ -192,7 +194,7 @@ class _SupportTeamScreenState extends State<SupportTeamScreen> {
                     offset: const Offset(0, -3),
                   ),
                 ],
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(Dimensions.r8),
                   topRight: Radius.circular(Dimensions.r8),
                 ),
@@ -218,7 +220,8 @@ class _SupportTeamScreenState extends State<SupportTeamScreen> {
                         Navigator.pop(context);
                       },
                       buttonText: 'cancel'.tr,
-                      fontColor: Theme.of(context).textTheme.bodyMedium?.color,
+                      fontColor: Theme.of(context)
+                          .textTheme.bodyMedium?.color,
                       backgroundColor: customColor.disabledButton,
                       radius: Dimensions.r12,
                     ),
@@ -226,8 +229,8 @@ class _SupportTeamScreenState extends State<SupportTeamScreen> {
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -251,8 +254,8 @@ class _SupportTeamScreenState extends State<SupportTeamScreen> {
           Expanded(
             child: Text(
               text,
-              style:
-                  robotoSemiBold.copyWith(fontSize: Dimensions.fs14, color: customColor.blue),
+              style: robotoSemiBold.copyWith(
+                  fontSize: Dimensions.fs14, color: customColor.blue),
             ),
           ),
         ],
@@ -292,16 +295,7 @@ Widget selectableCard({
               ),
             ),
             child: isSelected
-                ? Center(
-                    child: Container(
-                      width: 10,
-                      height: 10,
-                      decoration: BoxDecoration(
-                        color: Colors.transparent,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                  )
+                ? const SizedBox.shrink()
                 : null,
           ),
           const SizedBox(width: Dimensions.p10),
