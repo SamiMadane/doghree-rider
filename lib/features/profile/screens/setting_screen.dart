@@ -5,6 +5,7 @@ import 'package:sixam_mart_delivery/common/controllers/theme_controller.dart';
 import 'package:sixam_mart_delivery/common/widgets/confirmation_bottom_sheet.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_app_bar_widget.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_bottom_sheet_widget.dart';
+import 'package:sixam_mart_delivery/common/widgets/custom_button_widget.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_snackbar_widget.dart';
 import 'package:sixam_mart_delivery/features/auth/controllers/auth_controller.dart';
 import 'package:sixam_mart_delivery/features/profile/controllers/profile_controller.dart';
@@ -214,13 +215,14 @@ void showBgNotificationBottomSheet(bool allow) {
               children: [
                 TextButton(
                   onPressed: () => Navigator.pop(Get.context!),
-                  child: Text("cancel".tr, style: robotoMedium),
+                  child: Text("cancel".tr, style: robotoMedium.copyWith(color: Theme.of(Get.context!).primaryColor)),
                 ),
                 const SizedBox(width: Dimensions.p10),
-                ElevatedButton(
+                CustomButtonWidget(
+                  width: 100,
                   onPressed: () async {
                     final profileController = Get.find<ProfileController>();
-
+                
                     if (allow) {
                       openAppSettings();
                       if (await Permission.ignoreBatteryOptimizations.status.isGranted) {
@@ -235,27 +237,19 @@ void showBgNotificationBottomSheet(bool allow) {
                       } else {
                         await Permission.ignoreBatteryOptimizations.request();
                       }
-
+                
                       if (await Permission.ignoreBatteryOptimizations.status.isGranted) {
                         profileController.setBackgroundNotificationActive(true);
                       } else {
                         profileController.setBackgroundNotificationActive(false);
                       }
-
+                
                       Get.back();
                     }
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(Get.context!).primaryColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                  ),
-                  child: Text(
-                    "okay".tr,
-                    style: robotoMedium.copyWith(
-                        color: Theme.of(Get.context!).cardColor),
-                  ),
+                
+                  buttonText: 'okay',
+                  
                 ),
               ],
             ),

@@ -182,7 +182,10 @@ class _ClientScreenState extends State<ClientScreen> {
                           height: 250,
                           margin: const EdgeInsets.all(8),
                           child: currentLocation == null
-                              ? const Center(child: CircularProgressIndicator())
+                              ? Center(
+                                  child: CircularProgressIndicator(
+                                  color: Theme.of(context).textTheme.bodyMedium?.color,
+                                ))
                               : GoogleMap(
                                   onMapCreated: (controller) {
                                     mapController = controller;
@@ -530,7 +533,7 @@ class _ClientScreenState extends State<ClientScreen> {
                                 child: RescheduleBottomSheet(),
                                 showCloseButton: false);
                           },
-                          backgroundColor: ManagerColors.orange,
+                          backgroundColor: ManagerColors.orangeLightMode,
                           buttonText: 'reschedule'.tr,
                           fontSize: Dimensions.fs15,
                         ),

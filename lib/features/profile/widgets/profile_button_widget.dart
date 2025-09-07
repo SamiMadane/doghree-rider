@@ -1,11 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:sixam_mart_delivery/util/app_constants.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
 import 'package:sixam_mart_delivery/util/manager_assets.dart';
 import 'package:sixam_mart_delivery/util/manager_colors.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
 import 'package:sixam_mart_delivery/util/theme_extension.dart';
+
 class ProfileButtonWidget extends StatelessWidget {
   final IconData? iconData;
   final String? svgPath;
@@ -33,6 +37,8 @@ class ProfileButtonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final customColor = Theme.of(context).extension<CustomColorsExtension>()!;
+    var isArabic =
+        Get.locale?.languageCode == AppConstants.languages[1].languageCode;
 
     return InkWell(
       onTap: isButtonActive == null ? onTap : null,
@@ -87,7 +93,10 @@ class ProfileButtonWidget extends StatelessWidget {
                 title,
                 style: robotoRegular.copyWith(
                   fontSize: Dimensions.fs16,
-                  color: titleColor ?? (isButtonActive == true ? ManagerColors.darkGreen : Theme.of(context).textTheme.bodyMedium!.color),
+                  color: titleColor ??
+                      (isButtonActive == true
+                          ? ManagerColors.darkGreen
+                          : Theme.of(context).textTheme.bodyMedium!.color),
                 ),
               ),
             ),
@@ -107,16 +116,22 @@ class ProfileButtonWidget extends StatelessWidget {
                         value: isButtonActive!,
                         onChanged: (bool? value) => onTap(),
                         activeTrackColor: ManagerColors.darkGreen,
-                        inactiveTrackColor:
-                            customColor.strock2,
+                        inactiveTrackColor: customColor.strock2,
                       ),
                     )
-                  : SvgPicture.asset(
-                      ManagerAssets.arrowRightIcon,
-                      height: 22,
-                      width: 22,
-                      color: Theme.of(context).textTheme.bodyMedium!.color,
-                    ),
+                  : isArabic
+                      ? SvgPicture.asset(
+                          ManagerAssets.arrowBackIcon,
+                          height: 22,
+                          width: 22,
+                          color: Theme.of(context).textTheme.bodyMedium!.color,
+                        )
+                      : SvgPicture.asset(
+                          ManagerAssets.arrowRightIcon,
+                          height: 22,
+                          width: 22,
+                          color: Theme.of(context).textTheme.bodyMedium!.color,
+                        ),
           ],
         ),
       ),

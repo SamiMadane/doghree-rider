@@ -44,7 +44,7 @@ class AccountSection extends StatelessWidget {
                 ),
               ProfileButtonWidget(
                 svgPath: ManagerAssets.settingIcon,
-                title: 'Account Setting'.tr,
+                title: 'account_setting'.tr,
                 onTap: () {
                   Get.toNamed(RouteHelper.getSettingRoute());
                 },

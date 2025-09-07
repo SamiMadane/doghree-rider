@@ -57,7 +57,7 @@ ThemeData light = ThemeData(
       greenBg: ManagerColors.greenBgLightMode,
       disabledButton: ManagerColors.disabledButtonLightMode,
       orangeBg: ManagerColors.orangeBgLightMode,
-
+      orange: ManagerColors.orangeLightMode,
     ),
   ],
 );

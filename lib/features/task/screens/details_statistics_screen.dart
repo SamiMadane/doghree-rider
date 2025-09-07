@@ -22,17 +22,18 @@ class DetailsStatisticsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: CustomAppBarWidget(title: 'detailed_statistics'.tr),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.all(Dimensions.p16),
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            padding: const EdgeInsets.only(bottom: 100), // مساحة للزر + مسافة
+            child: Padding(
+              padding: const EdgeInsets.all(Dimensions.p16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   /// Total tasks
                   CustomCard(
-                    padding: EdgeInsets.all(Dimensions.p16),
+                    padding: const EdgeInsets.all(Dimensions.p16),
                     isBorder: false,
                     borderRadius: Dimensions.r8,
                     child: Center(
@@ -47,19 +48,18 @@ class DetailsStatisticsScreen extends StatelessWidget {
                                   Text('total_tasks_today'.tr,
                                       style: robotoBold.copyWith(
                                           fontSize: Dimensions.fs16,
-                                          color:
-                                              Theme.of(context).primaryColor)),
+                                          color: Theme.of(context).primaryColor)),
                                   SizedBox(height: Dimensions.p12),
                                   Text('8',
                                       style: robotoBold.copyWith(
                                           fontSize: Dimensions.fs32,
-                                          color:
-                                              Theme.of(context).primaryColor)),
+                                          color: Theme.of(context).primaryColor)),
                                 ],
                               ),
                               Spacer(),
                               Image.asset(
                                 ManagerAssets.totalTaskImage,
+                                height: 120,width: 120,
                                 fit: BoxFit.cover,
                               )
                             ],
@@ -69,13 +69,13 @@ class DetailsStatisticsScreen extends StatelessWidget {
                             text: TextSpan(
                               children: [
                                 TextSpan(
-                                  text: '${'reminder'.tr} ', // السطر الأول
+                                  text: '${'reminder'.tr} ',
                                   style: robotoSemiBold.copyWith(
                                       fontSize: Dimensions.fs14,
-                                      color: ManagerColors.orange),
+                                      color: ManagerColors.orangeLightMode),
                                 ),
                                 TextSpan(
-                                  text: 'reminder_message'.tr, // السطر الثاني
+                                  text: 'reminder_message'.tr,
                                   style: robotoMedium.copyWith(
                                       fontSize: Dimensions.fs14,
                                       color: Theme.of(context)
@@ -95,11 +95,11 @@ class DetailsStatisticsScreen extends StatelessWidget {
 
                   /// List of beneficiaries
                   CustomCard(
-                    padding: EdgeInsets.all(Dimensions.p16),
+                    padding: const EdgeInsets.all(Dimensions.p16),
                     isBorder: false,
                     borderRadius: Dimensions.r8,
                     child: Padding(
-                      padding: EdgeInsets.all(Dimensions.p16),
+                      padding: const EdgeInsets.all(Dimensions.p16),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -114,14 +114,17 @@ class DetailsStatisticsScreen extends StatelessWidget {
                                       fontSize: Dimensions.fs17)),
                               Spacer(),
                               InkWell(
-                                onTap: (){
-                                  Get.toNamed(RouteHelper.getDetailedOperationHistoryRoute());
+                                onTap: () {
+                                  Get.toNamed(RouteHelper
+                                      .getDetailedOperationHistoryRoute());
                                 },
                                 child: Text(
                                   'see_all'.tr,
                                   style: robotoRegular.copyWith(
-                                      fontSize: Dimensions.fs14,
-                                      decoration: TextDecoration.underline),
+                                    decoration: TextDecoration.underline,
+                                    decorationColor: customColor.naturalBlue,
+                                    color: customColor.naturalBlue,
+                                  ),
                                 ),
                               )
                             ],
@@ -180,19 +183,17 @@ class DetailsStatisticsScreen extends StatelessWidget {
                               ],
                             ),
                           ),
-                          SizedBox(
-                            height: Dimensions.p16,
-                          ),
+                          SizedBox(height: Dimensions.p16),
 
-                          /// ----- Grid العناصر الأربعة -----
+                          /// Grid العناصر الأربعة
                           GridView.count(
                             shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
+                            physics: const NeverScrollableScrollPhysics(),
                             padding: EdgeInsets.zero,
                             crossAxisCount: 2,
                             crossAxisSpacing: Dimensions.p8,
                             mainAxisSpacing: Dimensions.p8,
-                            childAspectRatio: 1.6,
+                            childAspectRatio: 1.4,
                             children: [
                               _statusBox(
                                   "23",
@@ -204,7 +205,7 @@ class DetailsStatisticsScreen extends StatelessWidget {
                                   "3",
                                   "Postponed",
                                   customColor.orangeBg,
-                                  ManagerColors.orange,
+                                  ManagerColors.orangeLightMode,
                                   ManagerAssets.postponedImage),
                               _statusBox(
                                   "1",
@@ -229,7 +230,7 @@ class DetailsStatisticsScreen extends StatelessWidget {
 
                   /// Amount to be delivered
                   CustomCard(
-                    padding: EdgeInsets.all(Dimensions.p16),
+                    padding: const EdgeInsets.all(Dimensions.p16),
                     isBorder: false,
                     borderRadius: Dimensions.r8,
                     child: Column(
@@ -241,7 +242,6 @@ class DetailsStatisticsScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     SvgPicture.asset(
                                       ManagerAssets.flagIcon,
@@ -263,7 +263,7 @@ class DetailsStatisticsScreen extends StatelessWidget {
                               ],
                             ),
                             Spacer(),
-                            Image.asset(ManagerAssets.amountToBeDeliveredImage)
+                            Image.asset(ManagerAssets.amountToBeDeliveredImage,height: 100,width: 100,fit: BoxFit.cover,)
                           ],
                         ),
                         SizedBox(height: Dimensions.p8),
@@ -274,7 +274,7 @@ class DetailsStatisticsScreen extends StatelessWidget {
                         ),
                         SizedBox(height: Dimensions.p16),
                         CustomCard(
-                          padding: EdgeInsets.all(Dimensions.p16),
+                          padding: const EdgeInsets.all(Dimensions.p16),
                           isBorder: false,
                           borderRadius: Dimensions.r8,
                           fillColor: customColor.primaryBg,
@@ -291,8 +291,14 @@ class DetailsStatisticsScreen extends StatelessWidget {
                 ],
               ),
             ),
-            Container(
-              width: double.infinity,
+          ),
+
+          /// زر التحميل أسفل الشاشة
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Theme.of(context).cardColor,
@@ -311,42 +317,62 @@ class DetailsStatisticsScreen extends StatelessWidget {
               child: CustomButtonWidget(
                 width: double.infinity,
                 onPressed: () {},
-                icon: SvgPicture.asset(ManagerAssets.downloadIcon),
+                icon: SvgPicture.asset(ManagerAssets.downloadIcon,height: 30,width: 30,),
                 buttonText: 'download_payment_statement'.tr,
               ),
             ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _statusBox(String count, String title, Color bgColor, Color textColor,
-      String image) {
-    return CustomCard(
-      padding: EdgeInsets.all(Dimensions.p12),
-      fillColor: bgColor, // خلفية فاتحة
-      isBorder: false,
-      borderRadius: Dimensions.r12,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          /// النصوص
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(title,
-                  style: robotoBold.copyWith(
-                      color: textColor, fontSize: Dimensions.fs15)),
-              Text(count,
-                  style: robotoBold.copyWith(
-                      color: textColor, fontSize: Dimensions.fs16)),
-            ],
           ),
-          Image.asset(image),
         ],
       ),
     );
   }
+
+Widget _statusBox(String count, String title, Color bgColor, Color textColor,
+    String image) {
+  return CustomCard(
+    padding: const EdgeInsets.all(Dimensions.p12),
+    fillColor: bgColor,
+    isBorder: false,
+    borderRadius: Dimensions.r12,
+    child: SizedBox(
+      height: 80, // ارتفاع ثابت لكل البوكسات
+      child: Row(
+        children: [
+          // نص مرن مع تقليم
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  maxLines: 1, // سطر واحد فقط
+                  overflow: TextOverflow.ellipsis, // يظهر ... إذا طويل
+                  style: robotoBold.copyWith(
+                      color: textColor, fontSize: Dimensions.fs14),
+                ),
+                SizedBox(height: Dimensions.p4),
+                Text(
+                  count,
+                  style: robotoBold.copyWith(
+                      color: textColor, fontSize: Dimensions.fs15),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(width: Dimensions.p8),
+          // الصورة ثابتة الحجم
+          Image.asset(
+            image,
+            width: 65,
+            height: 65,
+            fit: BoxFit.contain,
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+
 }

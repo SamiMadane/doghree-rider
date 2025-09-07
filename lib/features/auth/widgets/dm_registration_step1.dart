@@ -94,7 +94,7 @@ class DmRegistrationStep1 extends StatelessWidget {
                       child: Center(
                           child: SvgPicture.asset(
                         ManagerAssets.editIcon,
-                        color: ManagerColors.orange,
+                        color: ManagerColors.orangeLightMode,
                       )),
                     ),
                   ),

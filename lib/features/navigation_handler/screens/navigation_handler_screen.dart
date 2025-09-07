@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:lottie/lottie.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_button_widget.dart';
 import 'package:sixam_mart_delivery/features/auth/controllers/auth_controller.dart';
 import 'package:sixam_mart_delivery/features/dashboard/screens/dashboard_screen.dart';
 import 'package:sixam_mart_delivery/features/language/controllers/language_controller.dart';
-import 'package:sixam_mart_delivery/features/navigation_handler/widgets/loading_dots.dart';
+import 'package:sixam_mart_delivery/features/navigation_handler/widgets/build_loading_widget.dart';
 import 'package:sixam_mart_delivery/features/profile/controllers/profile_controller.dart';
 import 'package:sixam_mart_delivery/features/navigation_handler/controllers/navigation_handler_controller.dart';
 import 'package:sixam_mart_delivery/features/notification/domain/models/notification_body_model.dart';
@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
 import 'package:sixam_mart_delivery/util/manager_assets.dart';
+import 'package:sixam_mart_delivery/util/manager_colors.dart';
 import 'package:sixam_mart_delivery/util/styles.dart';
 
 class NavigationHandlerScreen extends StatefulWidget {
@@ -114,10 +115,17 @@ class NavigationHandlerScreenState extends State<NavigationHandlerScreen> {
     print("NavigationHandler: Starting _route()");
 
     Timer(const Duration(seconds: 1), () async {
+      final config = Get.find<NavigationHandlerController>().configModel;
+
+      if (config == null) {
+        // إذا الـ config مش موجود → رجع المستخدم لتسجيل الدخول
+        Get.offAllNamed(RouteHelper.getSignInRoute());
+        return;
+      }
+
       double? minimumVersion = _getMinimumVersion();
-      bool isMaintenanceMode =
-          Get.find<NavigationHandlerController>().configModel!.maintenanceMode!;
-      bool needsUpdate = AppConstants.appVersion < minimumVersion!;
+      bool isMaintenanceMode = config.maintenanceMode ?? false;
+      bool needsUpdate = AppConstants.appVersion < (minimumVersion ?? 0);
 
       if (needsUpdate || isMaintenanceMode) {
         Get.offNamed(RouteHelper.getUpdateRoute(needsUpdate));
@@ -188,38 +196,7 @@ class NavigationHandlerScreenState extends State<NavigationHandlerScreen> {
       backgroundColor: Theme.of(context).cardColor,
       key: _globalKey,
       body: Center(
-        child: _loadFailed ? _buildErrorWidget() : _buildLoadingWidget(),
-      ),
-    );
-  }
-
-  Widget _buildLoadingWidget() {
-    return Padding(
-      padding: const EdgeInsets.all(Dimensions.p20),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const SizedBox(height: 50),
-          Image.asset(
-            ManagerAssets.logo,
-          ),
-          const SizedBox(height: Dimensions.p10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "delivery".tr,
-                style: robotoSemiBold.copyWith(
-                  fontSize: Dimensions.fs16,
-                  color: Theme.of(context).textTheme.bodyLarge!.color,
-                ),
-              ),
-              const SizedBox(width: Dimensions.p4),
-              LoadingDots(
-                  color: Theme.of(context).textTheme.bodyMedium!.color!),
-            ],
-          ),
-        ],
+        child: _loadFailed ? _buildErrorWidget() : buildLoadingWidget(context),
       ),
     );
   }
@@ -232,12 +209,22 @@ class NavigationHandlerScreenState extends State<NavigationHandlerScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Lottie.asset(
-                  ManagerAssets.deliveryLottie,
+                Text(
+                  "opps".tr,
+                  style: robotoBold.copyWith(
+                    fontSize: Dimensions.fs28,
+                    color: Theme.of(context).textTheme.bodyLarge!.color,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(
+                  height: Dimensions.p16,
+                ),
+                SvgPicture.asset(
+                  ManagerAssets.noInternetImage,
                   fit: BoxFit.contain,
                 ),
                 const SizedBox(height: Dimensions.p25),
-
                 Text(
                   "no_connection".tr,
                   style: robotoBold.copyWith(
@@ -279,6 +266,7 @@ class NavigationHandlerScreenState extends State<NavigationHandlerScreen> {
             onPressed: () {
               _loadConfig();
             },
+            backgroundColor: ManagerColors.primary,
             buttonText: "retry".tr,
           ),
         ),

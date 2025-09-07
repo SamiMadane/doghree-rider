@@ -62,7 +62,7 @@ class StatisticsSection extends StatelessWidget {
               child: _StatisticsCard(
                 amount: 0,
                 title: 'expected_amount'.tr,
-                color: ManagerColors.orange,
+                color: ManagerColors.orangeLightMode,
               ),
             ),
           ],

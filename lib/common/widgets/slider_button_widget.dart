@@ -68,15 +68,39 @@ class SliderButton extends StatefulWidget {
   SliderButtonState createState() => SliderButtonState();
 }
 
-class SliderButtonState extends State<SliderButton> {
+class SliderButtonState extends State<SliderButton>
+    with SingleTickerProviderStateMixin {
   bool? flag;
   Widget? _child;
+  late AnimationController _controller;
+  late Animation<Offset> _offsetAnimation;
+  Key _dismissibleKey = UniqueKey(); // مفتاح فريد للـ Dismissible
 
   @override
   void initState() {
     super.initState();
     flag = true;
     _child = widget.child;
+    
+    // تهيئة الـ AnimationController للتحكم في الرجوع للوضع الأساسي
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+    
+    _offsetAnimation = Tween<Offset>(
+      begin: Offset.zero,
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOut,
+    ));
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   Widget _buildLabel() {
@@ -91,6 +115,14 @@ class SliderButtonState extends State<SliderButton> {
       return widget.label as Widget;
     }
     return const SizedBox();
+  }
+
+  // دالة لإعادة تعيين الزر بعد السحب
+  void _resetButton() {
+    setState(() {
+      _dismissibleKey = UniqueKey(); // إنشاء مفتاح جديد
+    });
+    _controller.reset();
   }
 
   @override
@@ -131,24 +163,24 @@ class SliderButtonState extends State<SliderButton> {
                   child: _buildButtonContainer(),
                 )
               : Dismissible(
-                  key: const Key("cancel"),
-                  direction: DismissDirection.horizontal, // بدل startToEnd
-                  movementDuration:
-                      const Duration(milliseconds: 0), // لجعل السحب سلس
+                  key: _dismissibleKey, // استخدام المفتاح الفريد
+                  direction: DismissDirection.startToEnd, // السحب من اليسار لليمين دائماً
+                  movementDuration: const Duration(milliseconds: 300),
                   confirmDismiss: (direction) async {
-                    bool isValidSwipe = (Get.locale?.languageCode == 'ar' &&
-                            direction == DismissDirection.endToStart) ||
-                        (Get.locale?.languageCode != 'ar' &&
-                            direction == DismissDirection.startToEnd);
-
-                    if (isValidSwipe) {
-                      widget.action();
-                      if (widget.vibrationFlag &&
-                          await Vibration.hasVibrator()) {
-                        Vibration.vibrate(duration: 200);
-                      }
-                      return true;
+                    // تنفيذ الإجراء
+                    widget.action();
+                    
+                    // تفعيل الاهتزاز إن أردت
+                    if (widget.vibrationFlag && await Vibration.hasVibrator()) {
+                      Vibration.vibrate(duration: 200);
                     }
+                    
+                    // إعادة تعيين الزر بعد تأخير قصير
+                    Future.delayed(const Duration(milliseconds: 100), () {
+                      _resetButton();
+                    });
+                    
+                    // إرجاع false لمنع الإزالة الفعلية للـ widget
                     return false;
                   },
                   child: _buildButtonContainer(),

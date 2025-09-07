@@ -57,7 +57,7 @@ class _FinishShiftScreenState extends State<FinishShiftScreen> {
                           customColor.naturalBlue),
                       SizedBox(width: Dimensions.p12),
                       _statusBox('3', 'remaining'.tr, customColor.orangeBg,
-                          ManagerColors.orange),
+                          ManagerColors.orangeLightMode),
                       SizedBox(width: Dimensions.p12),
                       _statusBox('1', 'problem'.tr, customColor.primaryBg,
                           Theme.of(context).primaryColor),

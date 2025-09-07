@@ -223,7 +223,7 @@ class LocationCardWidget extends StatelessWidget {
                 style: robotoSemiBold.copyWith(
                   fontSize: Dimensions.fs14,
                   color: orderModel.paymentMethod == 'cash_on_delivery'
-                      ? ManagerColors.orange
+                      ? ManagerColors.orangeLightMode
                       : orderModel.paymentMethod == 'wallet'
                           ? ManagerColors.darkGreen
                           : ManagerColors.darkGreen,

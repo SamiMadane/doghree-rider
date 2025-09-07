@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_app_bar_widget.dart';
 import 'package:sixam_mart_delivery/common/widgets/custom_button_widget.dart';
 import 'package:sixam_mart_delivery/util/dimensions.dart';
@@ -114,10 +115,21 @@ class _PreviewIdScreenState extends State<PreviewIdScreen>
                                   BorderRadius.circular(Dimensions.r12),
                               child: Container(
                                 color: customColor.grayBg,
-                                child: Image.file(
-                                  File(widget.image),
-                                  fit: BoxFit.contain,
-                                  width: double.infinity,
+                                child: Shimmer(
+                                  // لمعة خفيفة تمشي من اليسار لليمين
+                                  duration: const Duration(seconds: 3),
+                                  interval: const Duration(
+                                      milliseconds:
+                                          300), // فاصل بسيط بين اللفات (اختياري)
+                                  color: ManagerColors.shimmer,
+                                  colorOpacity: 0.12, // خفّتها هنا
+                                  direction:
+                                      const ShimmerDirection.fromLTRB(),
+                                  child: Image.file(
+                                    File(widget.image),
+                                    fit: BoxFit.contain,
+                                    width: double.infinity,
+                                  ),
                                 ),
                               ),
                             ),
@@ -137,8 +149,7 @@ class _PreviewIdScreenState extends State<PreviewIdScreen>
                           color: customColor.greenBg,
                           borderRadius: BorderRadius.circular(Dimensions.r20),
                           border: Border.all(
-                            color:
-                                customColor.green.withOpacity(0.3),
+                            color: customColor.green.withOpacity(0.3),
                             width: 1,
                           ),
                         ),
@@ -171,7 +182,7 @@ class _PreviewIdScreenState extends State<PreviewIdScreen>
                           Expanded(
                             child: CustomButtonWidget(
                               buttonText: 'preview_id_retake'.tr,
-                              backgroundColor: ManagerColors.grayCirule,
+                              backgroundColor: Colors.grey,
                               onPressed: _retakePhoto,
                               height: Dimensions.p56,
                               radius: Dimensions.r16,
