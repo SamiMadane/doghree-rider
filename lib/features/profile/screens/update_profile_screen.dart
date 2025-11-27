@@ -3,17 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:phone_numbers_parser/phone_numbers_parser.dart'; // ✅ جديد
-import 'package:sixam_mart_delivery/common/widgets/custom_app_bar_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_button_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_snackbar_widget.dart';
-import 'package:sixam_mart_delivery/features/auth/controllers/auth_controller.dart';
-import 'package:sixam_mart_delivery/features/profile/controllers/profile_controller.dart';
-import 'package:sixam_mart_delivery/features/profile/domain/models/profile_model.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_text_field_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/field_with_label.dart';
-import 'package:sixam_mart_delivery/util/manager_assets.dart';
-import 'package:sixam_mart_delivery/util/manager_colors.dart';
+import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
+import 'package:wefrh_rider/features/auth/controllers/auth_controller.dart';
+import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
+import 'package:wefrh_rider/features/profile/domain/models/profile_model.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/common/widgets/custom_text_field_widget.dart';
+import 'package:wefrh_rider/common/widgets/widget_with_label.dart';
+import 'package:wefrh_rider/util/manager_assets.dart';
+import 'package:wefrh_rider/util/manager_colors.dart';
 
 class UpdateProfileScreen extends StatefulWidget {
   const UpdateProfileScreen({super.key});
@@ -109,7 +109,13 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                                     .profileModel!
                                                     .imageFullUrl!)
                                                 : null),
-                                    child: profileController.pickedFile == null
+                                    child: (profileController.pickedFile ==
+                                                null &&
+                                            (profileController.profileModel
+                                                        ?.imageFullUrl ==
+                                                    null ||
+                                                profileController.profileModel!
+                                                    .imageFullUrl!.isEmpty))
                                         ? Icon(Icons.person,
                                             size: 60,
                                             color: Theme.of(context).hintColor)

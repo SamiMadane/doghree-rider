@@ -1,17 +1,17 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_app_bar_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_bottom_sheet_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_card.dart';
-import 'package:sixam_mart_delivery/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
-import 'package:sixam_mart_delivery/features/cash_in_hand/widgets/earning_history_bottom_sheet.dart';
-import 'package:sixam_mart_delivery/features/profile/controllers/profile_controller.dart';
-import 'package:sixam_mart_delivery/helper/date_converter_helper.dart';
-import 'package:sixam_mart_delivery/helper/price_converter_helper.dart';
-import 'package:sixam_mart_delivery/helper/route_helper.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/styles.dart';
+import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_bottom_sheet_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_card.dart';
+import 'package:wefrh_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
+import 'package:wefrh_rider/features/cash_in_hand/widgets/earning_history_bottom_sheet.dart';
+import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
+import 'package:wefrh_rider/helper/date_converter_helper.dart';
+import 'package:wefrh_rider/helper/price_converter_helper.dart';
+import 'package:wefrh_rider/helper/route_helper.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/util/styles.dart';
 
 class MyEarningScreen extends StatefulWidget {
   const MyEarningScreen({super.key});

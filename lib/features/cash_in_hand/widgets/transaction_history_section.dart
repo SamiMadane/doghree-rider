@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_button_widget.dart';
-import 'package:sixam_mart_delivery/helper/price_converter_helper.dart';
-import 'package:sixam_mart_delivery/helper/route_helper.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/styles.dart';
-import 'package:sixam_mart_delivery/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
+import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
+import 'package:wefrh_rider/helper/price_converter_helper.dart';
+import 'package:wefrh_rider/helper/route_helper.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/util/manager_colors.dart';
+import 'package:wefrh_rider/util/styles.dart';
+import 'package:wefrh_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
 
 class TransactionHistorySection extends StatelessWidget {
   final CashInHandController cashInHandController;
 
-  const TransactionHistorySection({Key? key, required this.cashInHandController})
+  const TransactionHistorySection(
+      {Key? key, required this.cashInHandController})
       : super(key: key);
 
   @override
@@ -58,14 +60,16 @@ class TransactionHistorySection extends StatelessWidget {
             (cashInHandController.selectedIndex == 0 &&
                         cashInHandController.transactions!.isEmpty) ||
                     (cashInHandController.selectedIndex == 1 &&
-                        cashInHandController.walletProvidedTransactions!.isEmpty)
+                        cashInHandController
+                            .walletProvidedTransactions!.isEmpty)
                 ? const SizedBox()
                 : InkWell(
                     onTap: () {
                       if (cashInHandController.selectedIndex == 0) {
                         Get.toNamed(RouteHelper.getTransactionHistoryRoute());
                       } else {
-                        Get.toNamed(RouteHelper.getWalletProvidedEarningRoute());
+                        Get.toNamed(
+                            RouteHelper.getWalletProvidedEarningRoute());
                       }
                     },
                     child: Text(
@@ -132,7 +136,8 @@ class _TransactionList extends StatelessWidget {
   final List? transactions;
   final bool isWallet;
 
-  const _TransactionList({Key? key, required this.transactions, required this.isWallet})
+  const _TransactionList(
+      {Key? key, required this.transactions, required this.isWallet})
       : super(key: key);
 
   @override
@@ -157,11 +162,14 @@ class _TransactionList extends StatelessWidget {
       itemBuilder: (context, index) {
         final item = transactions![index];
         final status = item.status ?? '';
-        final statusColor = status == 'approved'
-            ? Theme.of(context).primaryColor
-            : status == 'denied'
+        final statusColor = status == 'approved' || status == 'Approved'
+            ? ManagerColors.darkGreen
+            : status == 'denied' ||
+                    status == 'Denied' ||
+                    status == 'pending' ||
+                    status == 'Pending'
                 ? Theme.of(context).colorScheme.error
-                : Colors.blue;
+                : Theme.of(context).primaryColor;
 
         return Column(
           children: [
@@ -173,16 +181,17 @@ class _TransactionList extends StatelessWidget {
                     children: [
                       Text(
                         PriceConverterHelper.convertPrice(item.amount),
-                        style: robotoSemiBold.copyWith(fontSize: Dimensions.fs14),
+                        style:
+                            robotoSemiBold.copyWith(fontSize: Dimensions.fs15),
                         textDirection: TextDirection.ltr,
                       ),
                       const SizedBox(height: Dimensions.p8),
                       Text(
                         isWallet
-                            ? '${'wallet'.tr} ${item.method?.replaceAll('_', ' ').capitalize ?? ''}'
-                            : '${'paid_via'.tr} ${item.method?.replaceAll('_', ' ').capitalize ?? ''}',
+                            ? '${'wallet'.tr} ${_capitalize(item.method?.replaceAll('_', ' '))}'
+                            : '${'paid_via'.tr} ${_capitalize(item.method?.replaceAll('_', ' '))}',
                         style: robotoRegular.copyWith(
-                          fontSize: Dimensions.fs10,
+                          fontSize: Dimensions.fs12,
                           color: Theme.of(context).disabledColor,
                         ),
                       ),
@@ -195,15 +204,15 @@ class _TransactionList extends StatelessWidget {
                     Text(
                       item.paymentTime.toString(),
                       style: robotoRegular.copyWith(
-                        fontSize: Dimensions.fs10,
+                        fontSize: Dimensions.fs12,
                         color: Theme.of(context).disabledColor,
                       ),
                     ),
                     const SizedBox(height: Dimensions.p8),
                     Text(
-                      status.tr,
+                      _capitalize(status.toString().tr),
                       style: robotoSemiBold.copyWith(
-                        fontSize: Dimensions.fs10,
+                        fontSize: Dimensions.fs12,
                         color: statusColor,
                       ),
                     ),
@@ -211,10 +220,15 @@ class _TransactionList extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: Dimensions.p10),
+            const SizedBox(height: Dimensions.p16),
           ],
         );
       },
     );
   }
+}
+
+String _capitalize(String? value) {
+  if (value == null || value.isEmpty) return '';
+  return value[0].toUpperCase() + value.substring(1);
 }

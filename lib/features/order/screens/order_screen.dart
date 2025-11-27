@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:sixam_mart_delivery/features/order/controllers/order_controller.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_app_bar_widget.dart';
-import 'package:sixam_mart_delivery/features/order/widgets/history_order_widget.dart';
+import 'package:wefrh_rider/features/order/controllers/order_controller.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
+import 'package:wefrh_rider/features/order/widgets/history_order_widget.dart';
 import 'package:get/get.dart';
 
 class OrderScreen extends StatefulWidget {
@@ -52,8 +52,8 @@ class _OrderScreenState extends State<OrderScreen> {
                     },
                     child: Container(
                       color: Theme.of(context).cardColor,
-                      padding:
-                          const EdgeInsets.all(Dimensions.p16),
+                      padding: const EdgeInsets.all(Dimensions.p16),
+                      margin: EdgeInsets.only(top: Dimensions.p16),
                       child: ConstrainedBox(
                         constraints: BoxConstraints(
                           minHeight: MediaQuery.of(context).size.height -
@@ -80,8 +80,7 @@ class _OrderScreenState extends State<OrderScreen> {
                             orderController.paginate
                                 ? const Center(
                                     child: Padding(
-                                    padding: EdgeInsets.all(
-                                        Dimensions.p10),
+                                    padding: EdgeInsets.all(Dimensions.p10),
                                     child: CircularProgressIndicator(),
                                   ))
                                 : const SizedBox(),

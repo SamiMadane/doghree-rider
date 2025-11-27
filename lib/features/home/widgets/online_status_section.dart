@@ -3,16 +3,16 @@ import 'package:flutter_switch/flutter_switch.dart';
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_card.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_bottom_sheet_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_confirmation_bottom_sheet.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_button_widget.dart';
-import 'package:sixam_mart_delivery/features/order/controllers/order_controller.dart';
-import 'package:sixam_mart_delivery/features/profile/controllers/profile_controller.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/manager_assets.dart';
-import 'package:sixam_mart_delivery/util/manager_colors.dart';
-import 'package:sixam_mart_delivery/util/styles.dart';
+import 'package:wefrh_rider/common/widgets/custom_card.dart';
+import 'package:wefrh_rider/common/widgets/custom_bottom_sheet_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_confirmation_bottom_sheet.dart';
+import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
+import 'package:wefrh_rider/features/order/controllers/order_controller.dart';
+import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/util/manager_assets.dart';
+import 'package:wefrh_rider/util/manager_colors.dart';
+import 'package:wefrh_rider/util/styles.dart';
 
 class StatusSwitchSection extends StatelessWidget {
   const StatusSwitchSection({super.key});
@@ -31,19 +31,15 @@ class StatusSwitchSection extends StatelessWidget {
           title: 'location_access_needed'.tr,
           description: 'you_denied'.tr,
           image: ManagerAssets.locationAccessIcon,
-          buttonWidget: Padding(
-            padding:
-                const EdgeInsets.only(bottom: 20, top: 10, left: 30, right: 30),
-            child: CustomButtonWidget(
-              onPressed: () async {
-                Get.back();
-                final perm = await Geolocator.requestPermission();
-                if (perm == LocationPermission.deniedForever)
-                  await Geolocator.openAppSettings();
-                if (GetPlatform.isAndroid) _checkPermission(callback);
-              },
-              buttonText: 'allow_location_permission'.tr,
-            ),
+          buttonWidget: CustomButtonWidget(
+            onPressed: () async {
+              Get.back();
+              final perm = await Geolocator.requestPermission();
+              if (perm == LocationPermission.deniedForever)
+                await Geolocator.openAppSettings();
+              if (GetPlatform.isAndroid) _checkPermission(callback);
+            },
+            buttonText: 'allow_location_permission'.tr,
           ),
         ),
       );
@@ -169,8 +165,7 @@ class StatusSwitchSection extends StatelessWidget {
                                 buttonText: 'yes_proceed'.tr,
                               ),
                             ),
-                            const SizedBox(
-                                width: Dimensions.p16),
+                            const SizedBox(width: Dimensions.p16),
                             Expanded(
                               child: CustomButtonWidget(
                                 onPressed: () => Get.back(),

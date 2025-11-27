@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_app_bar_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_button_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_card.dart';
-import 'package:sixam_mart_delivery/helper/price_converter_helper.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/manager_assets.dart';
-import 'package:sixam_mart_delivery/util/manager_colors.dart';
-import 'package:sixam_mart_delivery/util/styles.dart';
-import 'package:sixam_mart_delivery/util/theme_extension.dart';
+import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_card.dart';
+import 'package:wefrh_rider/helper/price_converter_helper.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/util/manager_assets.dart';
+import 'package:wefrh_rider/util/manager_colors.dart';
+import 'package:wefrh_rider/util/styles.dart';
+import 'package:wefrh_rider/util/theme_extension.dart';
 
 class FinishShiftScreen extends StatefulWidget {
   const FinishShiftScreen({super.key});
@@ -34,158 +34,166 @@ class _FinishShiftScreenState extends State<FinishShiftScreen> {
       appBar: CustomAppBarWidget(
         title: 'finish_shift'.tr,
       ),
-      body: SingleChildScrollView(
+      body: Container(
         padding: EdgeInsets.all(Dimensions.p16),
-        child: Column(
-          children: [
-            // ملخص الشفت
-            CustomCard(
-              padding: EdgeInsets.all(Dimensions.p16),
-              borderRadius: Dimensions.r12,
-              isBorder: false,
-              child: Column(
-                children: [
-                  SizedBox(height: Dimensions.p4),
-                  Text(
-                    'shift_summary'.tr,
-                    style: robotoBold.copyWith(fontSize: Dimensions.fs18),
-                  ),
-                  SizedBox(height: Dimensions.p20),
-                  Row(
-                    children: [
-                      _statusBox('3', 'delivered'.tr, customColor.blueBg,
-                          customColor.naturalBlue),
-                      SizedBox(width: Dimensions.p12),
-                      _statusBox('3', 'remaining'.tr, customColor.orangeBg,
-                          ManagerColors.orangeLightMode),
-                      SizedBox(width: Dimensions.p12),
-                      _statusBox('1', 'problem'.tr, customColor.primaryBg,
-                          Theme.of(context).primaryColor),
-                    ],
-                  ),
-                  SizedBox(height: Dimensions.p30),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SvgPicture.asset(
-                            ManagerAssets.flagIcon,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                          SizedBox(width: Dimensions.p4),
-                          Text(
-                            'amount_to_be_delivered'.tr,
-                            style: robotoBold.copyWith(
-                                fontSize: Dimensions.fs16,
-                                color: Theme.of(context).primaryColor),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: Dimensions.p8),
-                      Text(PriceConverterHelper.convertPrice(47),
-                          style: robotoSemiBold.copyWith(
-                              fontSize: Dimensions.fs24,
-                              color: Theme.of(context).primaryColor)),
-                      SizedBox(height: Dimensions.p8),
-                      Text(
-                        'handover_message'.tr,
-                        textAlign: TextAlign.center,
-                        style:
-                            robotoRegular.copyWith(fontSize: Dimensions.fs14),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-
-            SizedBox(height: Dimensions.p16),
-
-            // خيارات التأكيد
-            CustomCard(
-              padding: EdgeInsets.all(Dimensions.p16),
-              borderRadius: Dimensions.r0,
-              isBorder: false,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'confirmation_shift_termination'.tr,
-                    style: robotoBold.copyWith(fontSize: Dimensions.fs18),
-                  ),
-                  SizedBox(height: Dimensions.p12),
-                  selectableRow(
-                    text: 'handover_funds'.tr,
-                    isSelected: isOption1Selected,
-                    onChanged: (val) {
-                      setState(() {
-                        isOption1Selected = val ?? false;
-                      });
-                    },
-                    context: context,
-                  ),
-                  selectableRow(
-                    text: 'reviewed_beneficiaries'.tr,
-                    isSelected: isOption2Selected,
-                    onChanged: (val) {
-                      setState(() {
-                        isOption2Selected = val ?? false;
-                      });
-                    },
-                    context: context,
-                  ),
-                  selectableRow(
-                    text: 'report_saved_sent'.tr,
-                    isSelected: isOption3Selected,
-                    onChanged: (val) {
-                      setState(() {
-                        isOption3Selected = val ?? false;
-                      });
-                    },
-                    context: context,
-                  ),
-                  SizedBox(height: Dimensions.p30),
-
-                  // زر التأكيد مع تفعيل/تعطيل
-                  CustomButtonWidget(
-                    buttonText: 'confirmation_shift_termination'.tr,
-                    onPressed: isAnyOptionSelected
-                        ? () {
-                            // المنطق عند التأكيد
-                          }
-                        : null,
-                    backgroundColor: isAnyOptionSelected
-                        ? Theme.of(context).primaryColor
-                        : Theme.of(context).disabledColor,
-                  ),
-
-                  SizedBox(height: Dimensions.p16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SvgPicture.asset(
-                        ManagerAssets.downloadIcon,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                      SizedBox(width: Dimensions.p8),
-                      Text(
-                        'download_final_report'.tr,
-                        style: robotoRegular.copyWith(
-                          fontSize: Dimensions.fs15,
-                          color: Theme.of(context).primaryColor,
-                          decoration: TextDecoration.underline,
-                          decorationColor: Theme.of(context).primaryColor,
+        margin: EdgeInsets.only(
+          top: Dimensions.p16,
+        ),
+        height: double.infinity,
+        color: Theme.of(context).cardColor,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              // ملخص الشفت
+              CustomCard(
+                padding: EdgeInsets.all(Dimensions.p16),
+                isBorder: false,
+                fillColor:Theme.of(context).scaffoldBackgroundColor,
+                child: Column(
+                  children: [
+                    SizedBox(height: Dimensions.p4),
+                    Text(
+                      'shift_summary'.tr,
+                      style: robotoBold.copyWith(fontSize: Dimensions.fs18),
+                    ),
+                    SizedBox(height: Dimensions.p20),
+                    Row(
+                      children: [
+                        _statusBox('3', 'delivered'.tr, customColor.primaryBg,
+                            Theme.of(context).primaryColor),
+                        SizedBox(width: Dimensions.p12),
+                        _statusBox('3', 'remaining'.tr, customColor.orangeBg,
+                            ManagerColors.orangeLightMode),
+                        SizedBox(width: Dimensions.p12),
+                        _statusBox('1', 'problem'.tr, customColor.redBg,
+                            customColor.red),
+                      ],
+                    ),
+                    SizedBox(height: Dimensions.p30),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(
+                              ManagerAssets.flagIcon,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                            SizedBox(width: Dimensions.p4),
+                            Text(
+                              'amount_to_be_delivered'.tr,
+                              style: robotoBold.copyWith(
+                                  fontSize: Dimensions.fs16,
+                                  color: Theme.of(context).primaryColor),
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: Dimensions.p10),
-                ],
+                        SizedBox(height: Dimensions.p8),
+                        Text(PriceConverterHelper.convertPrice(47),
+                            style: robotoSemiBold.copyWith(
+                                fontSize: Dimensions.fs24,
+                                color: Theme.of(context).primaryColor)),
+                        SizedBox(height: Dimensions.p8),
+                        Text(
+                          'handover_message'.tr,
+                          textAlign: TextAlign.center,
+                          style:
+                              robotoRegular.copyWith(fontSize: Dimensions.fs14),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+
+              SizedBox(height: Dimensions.p16),
+
+              // خيارات التأكيد
+              CustomCard(
+                padding: EdgeInsets.all(Dimensions.p16),
+                isBorder: false,
+                fillColor:Theme.of(context).scaffoldBackgroundColor,
+
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'confirmation_shift_termination'.tr,
+                      style: robotoBold.copyWith(fontSize: Dimensions.fs18),
+                    ),
+                    SizedBox(height: Dimensions.p12),
+                    selectableRow(
+                      text: 'handover_funds'.tr,
+                      isSelected: isOption1Selected,
+                      onChanged: (val) {
+                        setState(() {
+                          isOption1Selected = val ?? false;
+                        });
+                      },
+                      context: context,
+                    ),
+                    selectableRow(
+                      text: 'reviewed_beneficiaries'.tr,
+                      isSelected: isOption2Selected,
+                      onChanged: (val) {
+                        setState(() {
+                          isOption2Selected = val ?? false;
+                        });
+                      },
+                      context: context,
+                    ),
+                    selectableRow(
+                      text: 'report_saved_sent'.tr,
+                      isSelected: isOption3Selected,
+                      onChanged: (val) {
+                        setState(() {
+                          isOption3Selected = val ?? false;
+                        });
+                      },
+                      context: context,
+                    ),
+                    SizedBox(height: Dimensions.p30),
+
+                    // زر التأكيد مع تفعيل/تعطيل
+                    CustomButtonWidget(
+                      buttonText: 'confirmation_shift_termination'.tr,
+                      onPressed: isAnyOptionSelected
+                          ? () {
+                              // المنطق عند التأكيد
+                            }
+                          : null,
+                      backgroundColor: isAnyOptionSelected
+                          ? Theme.of(context).primaryColor
+                          : Theme.of(context).disabledColor,
+                    ),
+
+                    SizedBox(height: Dimensions.p16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SvgPicture.asset(
+                          ManagerAssets.downloadIcon,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        SizedBox(width: Dimensions.p8),
+                        Text(
+                          'download_final_report'.tr,
+                          style: robotoRegular.copyWith(
+                            fontSize: Dimensions.fs15,
+                            color: Theme.of(context).primaryColor,
+                            decoration: TextDecoration.underline,
+                            decorationColor: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: Dimensions.p10),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

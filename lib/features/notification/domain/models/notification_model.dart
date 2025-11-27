@@ -44,16 +44,34 @@ class NotificationModel {
 
 class Data {
   String? type;
+  int? orderId;
+  int? customerId;
+  int? vendorId;
+  int? conversationId;
 
-  Data({this.type});
+  Data({
+    this.type,
+    this.orderId,
+    this.customerId,
+    this.vendorId,
+    this.conversationId,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     type = json['type'];
+    orderId = json['order_id'];
+    customerId = json['customer_id'];
+    vendorId = json['vendor_id'];
+    conversationId = json['conversation_id'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['type'] = type;
+    data['order_id'] = orderId;
+    data['customer_id'] = customerId;
+    data['vendor_id'] = vendorId;
+    data['conversation_id'] = conversationId;
     return data;
   }
 }

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_button_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/step_progress_bar%20.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/manager_assets.dart';
-import 'package:sixam_mart_delivery/util/manager_colors.dart';
-import 'package:sixam_mart_delivery/util/styles.dart';
-import 'package:sixam_mart_delivery/util/theme_extension.dart';
+import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
+import 'package:wefrh_rider/common/widgets/step_progress_bar%20.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/util/manager_assets.dart';
+import 'package:wefrh_rider/util/manager_colors.dart';
+import 'package:wefrh_rider/util/styles.dart';
+import 'package:wefrh_rider/util/theme_extension.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 
 class RescheduleBottomSheet extends StatefulWidget {

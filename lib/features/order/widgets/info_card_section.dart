@@ -1,13 +1,13 @@
 import 'package:flutter_svg/svg.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_button_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_card.dart';
-import 'package:sixam_mart_delivery/features/order/domain/models/order_model.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/manager_assets.dart';
-import 'package:sixam_mart_delivery/util/manager_colors.dart';
-import 'package:sixam_mart_delivery/util/styles.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_image_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_snackbar_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_card.dart';
+import 'package:wefrh_rider/features/order/domain/models/order_model.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/util/manager_assets.dart';
+import 'package:wefrh_rider/util/manager_colors.dart';
+import 'package:wefrh_rider/util/styles.dart';
+import 'package:wefrh_rider/common/widgets/custom_image_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -42,7 +42,6 @@ class InfoCardSection extends StatelessWidget {
     required this.isChatAllow,
   });
 
-
   @override
   Widget build(BuildContext context) {
     return CustomCard(
@@ -68,7 +67,7 @@ class InfoCardSection extends StatelessWidget {
                   width: 50,
                   height: 50,
                   fit: BoxFit.cover,
-                  image: image.isNotEmpty ? image : '',
+                  image: image.isNotEmpty ? image : ManagerAssets.storeImage,
                 ),
               ),
               const SizedBox(width: Dimensions.p16),
@@ -89,17 +88,18 @@ class InfoCardSection extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           // العنوان الرئيسي
-                          Text(
-                            address!.address ?? '',
-                            style: robotoMedium.copyWith(
-                              fontSize: Dimensions.fs12,
-                              color: Theme.of(context).disabledColor,
+                          if (address!.address != null &&
+                              address!.address!.isNotEmpty)
+                            Text(
+                              address!.address!,
+                              style: robotoMedium.copyWith(
+                                fontSize: Dimensions.fs12,
+                                color: Theme.of(context).disabledColor,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(
-                              height: Dimensions.p4),
+                          const SizedBox(height: Dimensions.p4),
 
                           // التفاصيل الأخرى
                           Wrap(
@@ -191,18 +191,15 @@ class InfoCardSection extends StatelessWidget {
                   ),
               ],
             ),
-          if (!showButton)
-            const SizedBox(height: Dimensions.p16),
+          if (!showButton) const SizedBox(height: Dimensions.p16),
 
           // رسالة عند عدم وجود بيانات
           if ((name == null || name!.isEmpty) && (address == null))
             Center(
               child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    vertical: Dimensions.p10),
+                padding: const EdgeInsets.symmetric(vertical: Dimensions.p10),
                 child: Text('no_store_data_found'.tr,
-                    style: robotoRegular.copyWith(
-                        fontSize: Dimensions.fs12)),
+                    style: robotoRegular.copyWith(fontSize: Dimensions.fs12)),
               ),
             ),
         ],

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_card.dart';
-import 'package:sixam_mart_delivery/features/profile/controllers/profile_controller.dart';
-import 'package:sixam_mart_delivery/features/profile/widgets/profile_button_widget.dart';
-import 'package:sixam_mart_delivery/features/navigation_handler/controllers/navigation_handler_controller.dart';
-import 'package:sixam_mart_delivery/helper/route_helper.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/styles.dart';
+import 'package:wefrh_rider/common/widgets/custom_card.dart';
+import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
+import 'package:wefrh_rider/features/profile/widgets/profile_button_widget.dart';
+import 'package:wefrh_rider/features/splash/controllers/splash_controller.dart';
+import 'package:wefrh_rider/helper/route_helper.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/util/styles.dart';
 
 class EarningsSection extends StatelessWidget {
   final ProfileController profileController;
@@ -16,7 +16,7 @@ class EarningsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = profileController.profileModel;
-    final navController = Get.find<NavigationHandlerController>();
+    final navController = Get.find<SplashController>();
 
     // نتأكد أن المستخدم لديه أرباح
     if (profile == null || profile.earnings == 0) return const SizedBox();

@@ -1,22 +1,17 @@
-import 'dart:io';
-
-import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_drop_down_button.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_snackbar_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_text_field_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/field_with_label.dart';
-import 'package:sixam_mart_delivery/features/address/controllers/address_controller.dart';
-import 'package:sixam_mart_delivery/features/auth/controllers/auth_controller.dart';
-import 'package:sixam_mart_delivery/features/auth/widgets/condition_check_box_widget.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/manager_assets.dart';
-import 'package:sixam_mart_delivery/util/styles.dart';
-import 'package:sixam_mart_delivery/util/theme_extension.dart';
+import 'package:wefrh_rider/common/widgets/custom_drop_down_button.dart';
+import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_text_field_widget.dart';
+import 'package:wefrh_rider/common/widgets/image_picker_widget.dart';
+import 'package:wefrh_rider/common/widgets/widget_with_label.dart';
+import 'package:wefrh_rider/features/address/controllers/address_controller.dart';
+import 'package:wefrh_rider/features/auth/controllers/auth_controller.dart';
+import 'package:wefrh_rider/features/auth/widgets/condition_check_box_widget.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/util/styles.dart';
 
 class DmRegistrationStep2 extends StatelessWidget {
   final TextEditingController identityNumberController;
@@ -31,7 +26,6 @@ class DmRegistrationStep2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authController = Get.find<AuthController>();
-    final customColor = Theme.of(context).extension<CustomColorsExtension>()!;
     final addressController = Get.find<AddressController>();
 
     return Visibility(
@@ -44,8 +38,7 @@ class DmRegistrationStep2 extends StatelessWidget {
             children: [
               Text(
                 'identity_information'.tr,
-                style:
-                    robotoSemiBold.copyWith(fontSize: Dimensions.fs16),
+                style: robotoSemiBold.copyWith(fontSize: Dimensions.fs16),
               ),
               SizedBox(
                 height: Dimensions.p16,
@@ -187,7 +180,7 @@ class DmRegistrationStep2 extends StatelessWidget {
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 1,
-                        mainAxisExtent: 130,
+                        mainAxisExtent: 200,
                         mainAxisSpacing: 10,
                         crossAxisSpacing: 10,
                       ),
@@ -200,102 +193,25 @@ class DmRegistrationStep2 extends StatelessWidget {
                                 ? null
                                 : authController.pickedIdentities[index];
 
-                        // زر رفع الصورة
-                        if (file == null) {
-                          return InkWell(
-                            onTap: () {
-                              if (authController.pickedIdentities.length < 6) {
-                                authController.pickDmImageForRegistration(
-                                    false, false);
-                              } else {
-                                showCustomSnackBar(
-                                    'maximum_image_limit_is_6'.tr);
-                              }
-                            },
-                            child: DottedBorder(
-                              options: RoundedRectDottedBorderOptions(
-                                color: Get.isDarkMode
-                                    ? Colors.white.withOpacity(0.2)
-                                    : Theme.of(context).dividerTheme.color!,
-                                strokeWidth: 1,
-                                strokeCap: StrokeCap.butt,
-                                dashPattern: const [8, 4],
-                                padding: const EdgeInsets.all(5),
-                                radius: const Radius.circular(
-                                    Dimensions.r20),
-                              ),
-                              child: Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    SvgPicture.asset(ManagerAssets.uploadIcon),
-                                    const SizedBox(
-                                        height: Dimensions.p16),
-                                    Text(
-                                      'upload_id_picture'.tr,
-                                      style: robotoBold.copyWith(
-                                        fontSize: Dimensions.fs12,
-                                        color: Theme.of(context).hintColor,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          );
-                        }
-
-                        // عرض الصور المرفوعة
-                        return DottedBorder(
-                          options: RoundedRectDottedBorderOptions(
-                            color: customColor.strock1,
-                            strokeWidth: 1,
-                            strokeCap: StrokeCap.butt,
-                            dashPattern: const [8, 5],
-                            padding: const EdgeInsets.all(5),
-                            radius:
-                                const Radius.circular(Dimensions.r10),
-                          ),
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: Stack(
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(
-                                      Dimensions.r10),
-                                  child: GetPlatform.isWeb
-                                      ? Image.network(
-                                          file.path,
-                                          height: 130,
-                                          width: double.infinity,
-                                          fit: BoxFit.cover,
-                                        )
-                                      : Image.file(
-                                          File(file.path),
-                                          height: 130,
-                                          width: double.infinity,
-                                          fit: BoxFit.cover,
-                                        ),
-                                ),
-                                Positioned(
-                                  right: 0,
-                                  top: 0,
-                                  child: InkWell(
-                                    onTap: () {
-                                      authController.removeIdentityImage(index);
-                                    },
-                                    child: const Padding(
-                                      padding: EdgeInsets.all(
-                                          Dimensions.p10),
-                                      child: Icon(Icons.delete_forever,
-                                          color: Colors.red),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                        // استخدام ImagePickerWidget
+                        return ImagePickerWidget(
+                          pickedImagePath: file?.path,
+                          placeholderText: 'upload_id_picture'.tr,
+                          height: 180,
+                          onPickImage: () {
+                            if (authController.pickedIdentities.length < 6) {
+                              authController.pickDmImageForRegistration(
+                                  false, false);
+                            } else {
+                              showCustomSnackBar('maximum_image_limit_is_6'.tr);
+                            }
+                          },
+                          onRemoveImage: () {
+                            if (file != null) {
+                              authController.removeIdentityImage(index);
+                            }
+                          },
+                          showErrorBorder: false,
                         );
                       },
                     ),

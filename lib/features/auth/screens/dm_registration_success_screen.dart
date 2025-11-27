@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_app_bar_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_asset_image_widget.dart';
-import 'package:sixam_mart_delivery/helper/route_helper.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/manager_assets.dart';
-import 'package:sixam_mart_delivery/util/styles.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_button_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_asset_image_widget.dart';
+import 'package:wefrh_rider/helper/route_helper.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/util/manager_assets.dart';
+import 'package:wefrh_rider/util/styles.dart';
+import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
 
 class DmRegistrationSuccessScreen extends StatelessWidget {
   const DmRegistrationSuccessScreen({super.key});

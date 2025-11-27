@@ -1,107 +1,129 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:sixam_mart_delivery/features/order/controllers/order_controller.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/styles.dart';
+import 'package:wefrh_rider/features/order/controllers/order_controller.dart';
+import 'package:wefrh_rider/util/styles.dart';
 
 class BottomNavItemWidget extends StatelessWidget {
-  final IconData? iconData;
-  final String? svgPath;
+  final String selectedIcon;
+  final String unSelectedIcon;
   final String? label;
   final Function? onTap;
   final bool isSelected;
   final int? pageIndex;
-  final bool showBadge; 
+  final bool showBadge;
 
   const BottomNavItemWidget({
     super.key,
-    this.iconData,
-    this.svgPath,
+    required this.selectedIcon,
+    required this.unSelectedIcon,
     this.label,
     this.onTap,
     this.isSelected = false,
     this.pageIndex,
-    this.showBadge = false, 
-  }) : assert(iconData != null || svgPath != null,
-            'Either iconData or svgPath must be provided');
-
+    this.showBadge = false,
+  });
   @override
   Widget build(BuildContext context) {
-    Widget displayedIcon = svgPath != null
-        ? SvgPicture.asset(
-            svgPath!,
-            height: isSelected ? 25 : 24,
-            width: isSelected ? 25 : 24,
-            color: isSelected
-                ? Theme.of(context).primaryColor
-                : Theme.of(context).hintColor,
-          )
-        : Icon(
-            iconData,
-            size: isSelected ? 25 : 24,
-            color: isSelected
-                ? Theme.of(context).primaryColor
-                : Theme.of(context).hintColor,
-          );
+    // حساب حجم الأيقونة بناءً على حجم الشاشة
+    final iconSize = Get.width < 360 ? 20.0 : (isSelected ? 24.0 : 22.0);
+    final String iconPath = isSelected ? selectedIcon : unSelectedIcon;
+    final Color iconColor = isSelected
+        ? Theme.of(context).primaryColor
+        : Theme.of(context).textTheme.bodyMedium!.color!;
 
-    return Flexible(
-      fit: FlexFit.tight,
-      child: GestureDetector(
+    return Expanded(
+      child: InkWell(
         onTap: onTap as void Function()?,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Stack فقط حول الأيقونة
-            Stack(
-              clipBehavior: Clip.none,
-              children: [
-                displayedIcon,
-                if (showBadge && pageIndex == 1)
-                  Positioned(
-                    top: -5,
-                    right: -5, // ثابت بالنسبة للأيقونة
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 4),
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius:
-                            BorderRadius.circular(Dimensions.r10),
-                      ),
-                      child: GetBuilder<OrderController>(
-                        builder: (orderController) {
-                          return Text(
-                            orderController.latestOrderList?.length
-                                    .toString() ??
-                                '0',
-                            style: robotoRegular.copyWith(
-                              fontSize: Dimensions.fs10,
-                              color: Colors.white,
+        splashColor: Theme.of(context).primaryColor.withOpacity(0.1),
+        highlightColor: Colors.transparent,
+        child: Container(
+          constraints: const BoxConstraints(
+            minHeight: 56, // الحد الأدنى للارتفاع
+          ),
+          padding: EdgeInsets.symmetric(
+            vertical: Get.width < 360 ? 6 : 8,
+            horizontal: 2,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // الأيقونة مع Badge
+              SizedBox(
+                height: iconSize + 4,
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  alignment: Alignment.center,
+                  children: [
+                    SvgPicture.asset(iconPath,
+                        height: iconSize, width: iconSize, color: iconColor),
+                    if (showBadge && pageIndex == 1)
+                      Positioned(
+                        top: -4,
+                        right: -6,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 4,
+                            vertical: 1,
+                          ),
+                          constraints: const BoxConstraints(
+                            minWidth: 16,
+                            minHeight: 16,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              width: 1.5,
                             ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-            if (label != null) SizedBox(height: isSelected ? 2 : 3),
-            if (label != null)
-              Flexible(
-                child: Text(
-                  label!,
-                  style: isSelected
-                      ? robotoSemiBold.copyWith(
-                          fontSize: Dimensions.fs12,
-                          color: Theme.of(context).primaryColor,
-                        )
-                      : robotoRegular.copyWith(
-                          fontSize: Dimensions.fs10,
-                          color: Theme.of(context).hintColor,
+                          ),
+                          child: GetBuilder<OrderController>(
+                            builder: (orderController) {
+                              return Text(
+                                orderController.latestOrderList?.length
+                                        .toString() ??
+                                    '0',
+                                textAlign: TextAlign.center,
+                                style: robotoRegular.copyWith(
+                                  fontSize: 9,
+                                  color: Colors.white,
+                                  height: 1.2,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              );
+                            },
+                          ),
                         ),
+                      ),
+                  ],
                 ),
               ),
-          ],
+              // النص
+              if (label != null) SizedBox(height: Get.width < 360 ? 2 : 3),
+              if (label != null)
+                Flexible(
+                  child: Text(
+                    label!,
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: isSelected
+                        ? robotoSemiBold.copyWith(
+                            fontSize: Get.width < 360 ? 9.5 : 10.5,
+                            color: Theme.of(context).primaryColor,
+                            height: 1.1,
+                          )
+                        : robotoRegular.copyWith(
+                            fontSize: Get.width < 360 ? 9 : 10,
+                            color: Theme.of(context).hintColor,
+                            height: 1.1,
+                          ),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );

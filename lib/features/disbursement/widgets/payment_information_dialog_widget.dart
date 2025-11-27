@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sixam_mart_delivery/features/disbursement/domain/models/disbursement_report_model.dart';
-import 'package:sixam_mart_delivery/helper/price_converter_helper.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/styles.dart';
+import 'package:wefrh_rider/features/disbursement/domain/models/disbursement_report_model.dart';
+import 'package:wefrh_rider/helper/price_converter_helper.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/util/styles.dart';
 
 class PaymentInformationDialogWidget extends StatelessWidget {
   final Disbursements disbursement;

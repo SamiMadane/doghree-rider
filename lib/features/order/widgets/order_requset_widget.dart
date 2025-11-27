@@ -3,26 +3,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:sixam_mart_delivery/common/widgets/confirmation_bottom_sheet.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_bottom_sheet_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_button_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_card.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_image_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_snackbar_widget.dart';
-import 'package:sixam_mart_delivery/features/address/controllers/address_controller.dart';
-import 'package:sixam_mart_delivery/features/navigation_handler/controllers/navigation_handler_controller.dart';
-import 'package:sixam_mart_delivery/features/order/controllers/order_controller.dart';
-import 'package:sixam_mart_delivery/features/order/domain/models/order_model.dart';
-import 'package:sixam_mart_delivery/features/order/screens/order_details_screen.dart';
-import 'package:sixam_mart_delivery/features/order/screens/order_location_screen.dart';
-import 'package:sixam_mart_delivery/features/profile/controllers/profile_controller.dart';
-import 'package:sixam_mart_delivery/helper/date_converter_helper.dart';
-import 'package:sixam_mart_delivery/helper/price_converter_helper.dart';
-import 'package:sixam_mart_delivery/helper/route_helper.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/manager_assets.dart';
-import 'package:sixam_mart_delivery/util/manager_colors.dart';
-import 'package:sixam_mart_delivery/util/styles.dart';
+import 'package:wefrh_rider/common/widgets/confirmation_bottom_sheet.dart';
+import 'package:wefrh_rider/common/widgets/custom_bottom_sheet_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_card.dart';
+import 'package:wefrh_rider/common/widgets/custom_image_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
+import 'package:wefrh_rider/features/address/controllers/address_controller.dart';
+import 'package:wefrh_rider/features/splash/controllers/splash_controller.dart';
+import 'package:wefrh_rider/features/order/controllers/order_controller.dart';
+import 'package:wefrh_rider/features/order/domain/models/order_model.dart';
+import 'package:wefrh_rider/features/order/screens/order_details_screen.dart';
+import 'package:wefrh_rider/features/order/screens/order_location_screen.dart';
+import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
+import 'package:wefrh_rider/helper/date_converter_helper.dart';
+import 'package:wefrh_rider/helper/price_converter_helper.dart';
+import 'package:wefrh_rider/helper/route_helper.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/util/manager_assets.dart';
+import 'package:wefrh_rider/util/manager_colors.dart';
+import 'package:wefrh_rider/util/styles.dart';
 
 class OrderRequestWidget extends StatelessWidget {
   final OrderModel orderModel;
@@ -41,7 +41,9 @@ class OrderRequestWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool parcel = orderModel.orderType == 'parcel';
-
+    final String? address = parcel
+        ? orderModel.receiverDetails?.address
+        : orderModel.deliveryAddress?.address;
     double distance = Get.find<AddressController>().getRestaurantDistance(
       LatLng(
         double.parse(parcel
@@ -55,6 +57,7 @@ class OrderRequestWidget extends StatelessWidget {
 
     return CustomCard(
       padding: const EdgeInsets.all(Dimensions.p16),
+      margin: const EdgeInsets.only(bottom: Dimensions.p16),
       child: GetBuilder<OrderController>(builder: (orderController) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -89,7 +92,7 @@ class OrderRequestWidget extends StatelessWidget {
                   width: Dimensions.p8,
                 ),
                 Text(
-                  '${DateConverterHelper.timeDistanceInMin(orderModel.createdAt!)} ${'mins_ago'.tr}',
+                  DateConverterHelper.timeAgo(orderModel.createdAt!),
                   style: robotoRegular.copyWith(
                       color: ManagerColors.darkGreen,
                       fontSize: Dimensions.fs10),
@@ -97,9 +100,7 @@ class OrderRequestWidget extends StatelessWidget {
                 Spacer(),
                 Row(
                   children: [
-                    (Get.find<NavigationHandlerController>()
-                                .configModel!
-                                .showDmEarning! &&
+                    (Get.find<SplashController>().configModel!.showDmEarning! &&
                             Get.find<ProfileController>().profileModel !=
                                 null &&
                             Get.find<ProfileController>()
@@ -201,15 +202,13 @@ class OrderRequestWidget extends StatelessWidget {
                                     Text(
                                       '${distance > 1000 ? '1000+' : distance.toStringAsFixed(2)} ${'km_away'.tr}',
                                       style: robotoRegular.copyWith(
-                                          fontSize:
-                                              Dimensions.fs10,
+                                          fontSize: Dimensions.fs10,
                                           color: ManagerColors.darkGreen),
                                       textAlign: TextAlign.center,
                                     ),
                                   ],
                                 ),
-                                const SizedBox(
-                                    height: Dimensions.p4),
+                                const SizedBox(height: Dimensions.p4),
                                 Text(
                                   parcel
                                       ? 'parcel'.tr
@@ -249,31 +248,34 @@ class OrderRequestWidget extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  parcel
-                                      ? orderModel.receiverDetails?.address ??
-                                          ''
-                                      : orderModel.deliveryAddress?.address ??
-                                          '',
-                                  style: robotoSemiBold.copyWith(
-                                    fontSize: Dimensions.fs12,
+                                if (address != null && address.isNotEmpty) ...[
+                                  Text(
+                                    address,
+                                    style: robotoSemiBold.copyWith(
+                                      fontSize: Dimensions.fs12,
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(height: Dimensions.p4),
-                                Text(
-                                  'delivery_location'.tr,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: robotoRegular.copyWith(
-                                    fontSize: Dimensions.fs12,
-                                    color: Theme.of(context).disabledColor,
+                                  Text(
+                                    'delivery_location'.tr,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: robotoRegular.copyWith(
+                                      fontSize: Dimensions.fs12,
+                                      color: Theme.of(context).disabledColor,
+                                    ),
                                   ),
-                                ),
+                                ] else
+                                  Text(
+                                    'delivery_location'.tr,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: robotoRegular.copyWith(
+                                      fontSize: Dimensions.fs12,
+                                      color: Theme.of(context).disabledColor,
+                                    ),
+                                  ),
                               ],
                             ),
-                          ),
-                          SizedBox(
-                            width: Dimensions.p50,
                           ),
                           Expanded(
                             child: CustomButtonWidget(
@@ -281,7 +283,7 @@ class OrderRequestWidget extends StatelessWidget {
                               fontSize: Dimensions.fs15,
                               radius: Dimensions.r24,
                               fontColor:
-                              Theme.of(context).textTheme.bodyMedium?.color,
+                                  Theme.of(context).textTheme.bodyMedium?.color,
                               onPressed: () => Get.to(() => OrderLocationScreen(
                                     orderModel: orderModel,
                                     orderController: orderController,
@@ -290,6 +292,7 @@ class OrderRequestWidget extends StatelessWidget {
                                   )),
                               transparent: true,
                               isBorder: true,
+                              autoWidth: true,
                               borderColor:
                                   Theme.of(context).textTheme.bodyMedium?.color,
                               height: 40,
@@ -320,7 +323,8 @@ class OrderRequestWidget extends StatelessWidget {
                       borderColor: Theme.of(context).textTheme.bodyLarge!.color,
                       onPressed: () => showCustomBottomSheet(
                             child: ConfirmationBottomSheet(
-                              title: 'are_you_sure_you_want_to_ignor_this_order'.tr,
+                              title: 'are_you_sure_you_want_to_ignor_this_order'
+                                  .tr,
                               acceptText: 'yes_ignore'.tr,
                               cancelText: 'no_cancel'.tr,
                               acceptColor: ManagerColors.error,
@@ -345,8 +349,9 @@ class OrderRequestWidget extends StatelessWidget {
                       fontSize: Dimensions.fs16,
                       onPressed: () => showCustomBottomSheet(
                             child: ConfirmationBottomSheet(
-                              title: 'are_you_sure_you_want_to_accept_this_order'.tr,
-                            
+                              title:
+                                  'are_you_sure_you_want_to_accept_this_order'
+                                      .tr,
                               acceptText: 'yes_accept'.tr,
                               cancelText: 'no_cancel'.tr,
                               acceptColor: Theme.of(Get.context!).primaryColor,

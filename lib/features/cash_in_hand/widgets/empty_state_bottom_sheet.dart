@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_asset_image_widget.dart';
-import 'package:sixam_mart_delivery/features/navigation_handler/controllers/navigation_handler_controller.dart';
-import 'package:sixam_mart_delivery/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
-import 'package:sixam_mart_delivery/helper/price_converter_helper.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/manager_assets.dart';
-import 'package:sixam_mart_delivery/util/styles.dart';
+import 'package:wefrh_rider/common/widgets/custom_asset_image_widget.dart';
+import 'package:wefrh_rider/features/splash/controllers/splash_controller.dart';
+import 'package:wefrh_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
+import 'package:wefrh_rider/helper/price_converter_helper.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/util/manager_assets.dart';
+import 'package:wefrh_rider/util/styles.dart';
 
 class EmptyStateBottomSheet extends StatelessWidget {
   final bool noPaymentMethod;
@@ -27,14 +27,7 @@ class EmptyStateBottomSheet extends StatelessWidget {
       child: GetBuilder<CashInHandController>(builder: (cashInHandController) {
         return Column(mainAxisSize: MainAxisSize.min, children: [
 
-          Container(
-            height: 5, width: 50,
-            decoration: BoxDecoration(
-              color: Theme.of(context).disabledColor.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(Dimensions.r4),
-            ),
-          ),
-          const SizedBox(height: Dimensions.p16),
+         
 
           Text(noPaymentMethod ? 'payment_method'.tr : 'insufficient_balance'.tr, style: robotoBold.copyWith(fontSize: Dimensions.fs16)),
           const SizedBox(height: Dimensions.p20),
@@ -55,7 +48,7 @@ class EmptyStateBottomSheet extends StatelessWidget {
               const SizedBox(height: Dimensions.p10),
 
               Text(
-                noPaymentMethod ? 'no_payment_method_is_available'.tr : '${'you_do_not_have_sufficient_balance_to_pay_the_minimum_payable_balance_is'.tr} ${PriceConverterHelper.convertPrice(Get.find<NavigationHandlerController>().configModel!.minAmountToPayDm)}',
+                noPaymentMethod ? 'no_payment_method_is_available'.tr : '${'you_do_not_have_sufficient_balance_to_pay_the_minimum_payable_balance_is'.tr} ${PriceConverterHelper.convertPrice(Get.find<SplashController>().configModel!.minAmountToPayDm)}',
                 style: robotoRegular.copyWith(fontSize: Dimensions.fs14, color: Theme.of(context).textTheme.bodyLarge!.color?.withValues(alpha: 0.5)),
                 textAlign: TextAlign.center,
               ),

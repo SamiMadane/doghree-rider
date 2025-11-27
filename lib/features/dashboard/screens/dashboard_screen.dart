@@ -1,26 +1,28 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:sixam_mart_delivery/features/auth/controllers/auth_controller.dart';
-import 'package:sixam_mart_delivery/features/order/controllers/order_controller.dart';
-import 'package:sixam_mart_delivery/features/disbursement/helper/disbursement_helper.dart';
-import 'package:sixam_mart_delivery/features/profile/controllers/profile_controller.dart';
-import 'package:sixam_mart_delivery/features/task/screens/task_screen.dart';
-import 'package:sixam_mart_delivery/helper/notification_helper.dart';
-import 'package:sixam_mart_delivery/helper/route_helper.dart';
-import 'package:sixam_mart_delivery/main.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_alert_dialog_widget.dart';
-import 'package:sixam_mart_delivery/features/dashboard/widgets/bottom_nav_item_widget.dart';
-import 'package:sixam_mart_delivery/features/dashboard/widgets/new_request_dialog_widget.dart';
-import 'package:sixam_mart_delivery/features/home/screens/home_screen.dart';
-import 'package:sixam_mart_delivery/features/profile/screens/profile_screen.dart';
-import 'package:sixam_mart_delivery/features/order/screens/available_orders_screen.dart';
-import 'package:sixam_mart_delivery/features/order/screens/order_screen.dart';
+import 'package:wefrh_rider/common/widgets/custom_bottom_sheet_widget.dart';
+import 'package:wefrh_rider/features/auth/controllers/auth_controller.dart';
+import 'package:wefrh_rider/features/dashboard/widgets/lottie_bottom_sheet_order_request.dart';
+import 'package:wefrh_rider/features/order/controllers/order_controller.dart';
+import 'package:wefrh_rider/features/disbursement/helper/disbursement_helper.dart';
+import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
+import 'package:wefrh_rider/features/task/screens/task_screen.dart';
+import 'package:wefrh_rider/helper/notification_helper.dart';
+import 'package:wefrh_rider/helper/route_helper.dart';
+import 'package:wefrh_rider/main.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/common/widgets/custom_alert_dialog_widget.dart';
+import 'package:wefrh_rider/features/dashboard/widgets/bottom_nav_item_widget.dart';
+import 'package:wefrh_rider/features/home/screens/home_screen.dart';
+import 'package:wefrh_rider/features/profile/screens/profile_screen.dart';
+import 'package:wefrh_rider/features/order/screens/available_orders_screen.dart';
+import 'package:wefrh_rider/features/order/screens/order_screen.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:sixam_mart_delivery/util/manager_assets.dart';
+import 'package:wefrh_rider/util/manager_assets.dart';
+import 'package:wefrh_rider/util/session_checker.dart';
 
 class DashboardScreen extends StatefulWidget {
   final int pageIndex;
@@ -58,6 +60,10 @@ class DashboardScreenState extends State<DashboardScreen> {
 
     showDisbursementWarningMessage();
     Get.find<OrderController>().getLatestOrders();
+    // ✅ إضافة: بدء فحص الجلسة
+    if (Get.find<AuthController>().isLoggedIn()) {
+      Get.find<SessionChecker>().startSessionCheck();
+    }
 
     _stream = FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       String? type = message.data['body_loc_key'] ?? message.data['type'];
@@ -75,23 +81,32 @@ class DashboardScreenState extends State<DashboardScreen> {
       if (type == 'new_order' || type == 'order_request') {
         Get.find<OrderController>().getCurrentOrders();
         Get.find<OrderController>().getLatestOrders();
-        Get.dialog(NewRequestDialogWidget(
+
+        showCustomBottomSheet(
+          child: LottieBottomSheetOrderRequest(
             isRequest: true,
-            onTap: () => _navigateRequestPage(),
+            onAccept: () => _navigateRequestPage(),
+            onReject: () {}, 
             orderId: int.parse(message.data['order_id'].toString()),
-            isParcel: isParcel));
+            isParcel: isParcel,
+          ),
+        );
       } else if (type == 'assign' && orderID != null && orderID.isNotEmpty) {
         Get.find<OrderController>().getCurrentOrders();
         Get.find<OrderController>().getLatestOrders();
-        Get.dialog(NewRequestDialogWidget(
+        showCustomBottomSheet(
+          child: LottieBottomSheetOrderRequest(
             isRequest: false,
-            orderId: int.parse(message.data['order_id'].toString()),
-            isParcel: isParcel,
-            onTap: () {
+            onAccept: () {
               Get.offAllNamed(RouteHelper.getOrderDetailsRoute(
                   int.parse(orderID),
                   fromNotification: true));
-            }));
+            },
+            onReject: () {},
+            orderId: int.parse(message.data['order_id'].toString()),
+            isParcel: isParcel,
+          ),
+        );
       } else if (type == 'block') {
         Get.find<AuthController>().clearSharedData();
         Get.find<ProfileController>().stopLocationRecord();
@@ -127,8 +142,8 @@ class DashboardScreenState extends State<DashboardScreen> {
   @override
   void dispose() {
     super.dispose();
-
     _stream.cancel();
+    Get.find<SessionChecker>().stopSessionCheck();
   }
 
   @override
@@ -165,63 +180,83 @@ class DashboardScreenState extends State<DashboardScreen> {
         }
       },
       child: Scaffold(
+        // إضافة resizeToAvoidBottomInset لمنع دفع Bottom Nav عند ظهور الكيبورد
+        resizeToAvoidBottomInset: false,
         bottomNavigationBar: GetPlatform.isDesktop
             ? const SizedBox()
-            : Container(
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      color: Theme.of(context).shadowColor,
-                      blurRadius: 5,
-                      spreadRadius: 2,
-                      offset: const Offset(0, -3),
+            : SafeArea(
+                // SafeArea لحماية Bottom Nav من الدخول تحت شاشة الجهاز
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).cardColor,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Theme.of(context).shadowColor.withOpacity(0.1),
+                        blurRadius: 10,
+                        spreadRadius: 0,
+                        offset: const Offset(0, -2),
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(0),
+                      topRight: Radius.circular(0),
                     ),
-                  ],
-                ),
-                child: BottomAppBar(
-                  elevation: 0,
-                  notchMargin: 5,
-                  shape: const CircularNotchedRectangle(),
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.all(Dimensions.p4),
-                    child: Row(
-                      children: [
-                        BottomNavItemWidget(
-                          label: 'home'.tr,
-                          svgPath: ManagerAssets.homeIcon,
-                          isSelected: _pageIndex == 0,
-                          onTap: () => _setPage(0),
+                    child: BottomAppBar(
+                      elevation: 0,
+                      height: 65, // ارتفاع ثابت مناسب
+                      padding: EdgeInsets.zero,
+                      color: Theme.of(context).cardColor,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
                         ),
-                        BottomNavItemWidget(
-                          label: 'orders'.tr,
-                          svgPath: ManagerAssets.orderIcon,
-                          isSelected: _pageIndex == 1,
-                          pageIndex: 1,
-                          onTap: () {
-                            _navigateRequestPage();
-                          },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            BottomNavItemWidget(
+                              label: 'home'.tr,
+                              isSelected: _pageIndex == 0,
+                              onTap: () => _setPage(0),
+                              selectedIcon: ManagerAssets.homeSelectedIcon,
+                              unSelectedIcon: ManagerAssets.homeIcon,
+                            ),
+                            BottomNavItemWidget(
+                              label: 'orders'.tr,
+                              isSelected: _pageIndex == 1,
+                              pageIndex: 1,
+                              onTap: () {
+                                _navigateRequestPage();
+                              },
+                              selectedIcon: ManagerAssets.orderSelectedIcon,
+                              unSelectedIcon: ManagerAssets.orderIcon,
+                            ),
+                            BottomNavItemWidget(
+                              label: 'my_orders'.tr,
+                              isSelected: _pageIndex == 2,
+                              onTap: () => _setPage(2),
+                              selectedIcon: ManagerAssets.myOrderSelectedIcon,
+                              unSelectedIcon: ManagerAssets.myOrderIcon,
+                            ),
+                            BottomNavItemWidget(
+                              label: 'task'.tr,
+                              isSelected: _pageIndex == 3,
+                              onTap: () => _setPage(3),
+                              selectedIcon: ManagerAssets.taskSelectedIcon,
+                              unSelectedIcon: ManagerAssets.taskIcon,
+                            ),
+                            BottomNavItemWidget(
+                              label: 'profile'.tr,
+                              isSelected: _pageIndex == 4,
+                              onTap: () => _setPage(4),
+                              selectedIcon: ManagerAssets.profileSelectedIcon,
+                              unSelectedIcon: ManagerAssets.userIcon,
+                            ),
+                          ],
                         ),
-                        BottomNavItemWidget(
-                          label: 'my_orders'.tr,
-                          svgPath: ManagerAssets.myOrderIcon,
-                          isSelected: _pageIndex == 2,
-                          onTap: () => _setPage(2),
-                        ),
-                        BottomNavItemWidget(
-                          label: 'task'.tr,
-                          svgPath:
-                              ManagerAssets.taskIcon, // ضع أيقونة جديدة للتاب
-                          isSelected: _pageIndex == 3,
-                          onTap: () => _setPage(3),
-                        ),
-                        BottomNavItemWidget(
-                          label: 'profile'.tr,
-                          svgPath: ManagerAssets.userIcon,
-                          isSelected: _pageIndex == 4,
-                          onTap: () => _setPage(4),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ),

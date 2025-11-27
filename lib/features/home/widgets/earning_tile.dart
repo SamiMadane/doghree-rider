@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:sixam_mart_delivery/helper/price_converter_helper.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/styles.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_card.dart';
+import 'package:get/get.dart';
+import 'package:wefrh_rider/helper/price_converter_helper.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/util/styles.dart';
+import 'package:wefrh_rider/common/widgets/custom_card.dart';
 
 class EarningTile extends StatelessWidget {
   final String title;
@@ -28,7 +29,6 @@ class EarningTile extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // الصف الأول: العنوان + أيقونة العين
           Row(
             children: [
               Text(
@@ -37,7 +37,7 @@ class EarningTile extends StatelessWidget {
                   fontSize: Dimensions.fs16,
                 ),
               ),
-              if (title == 'Total Earnings') ...[
+              if (title == 'total_earnings'.tr) ...[
                 const Spacer(),
                 GestureDetector(
                   onTap: onEyeTap,

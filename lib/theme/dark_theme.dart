@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sixam_mart_delivery/util/manager_colors.dart';
-import 'package:sixam_mart_delivery/util/theme_extension.dart';
+import 'package:wefrh_rider/util/manager_colors.dart';
+import 'package:wefrh_rider/util/theme_extension.dart';
 
 ThemeData dark = ThemeData(
   fontFamily: 'Roboto',
@@ -15,8 +15,8 @@ ThemeData dark = ThemeData(
     style: TextButton.styleFrom(foregroundColor: ManagerColors.textButtonDark),
   ),
   colorScheme: const ColorScheme.dark(
-    primary: ManagerColors.primary,
-    secondary: ManagerColors.primary,
+    primary: ManagerColors.primaryDark,
+    secondary: ManagerColors.primaryDark,
   ).copyWith(error: ManagerColors.error),
   popupMenuTheme: const PopupMenuThemeData(
     color: ManagerColors.cardDark,
@@ -56,10 +56,11 @@ ThemeData dark = ThemeData(
       gray: ManagerColors.grayDarkMode,
       green: ManagerColors.greenDarkMode,
       greenBg: ManagerColors.greenBgDarkMode,
-      disabledButton:ManagerColors.disabledButtonDarkMode,
+      disabledButton: ManagerColors.disabledButtonDarkMode,
       orangeBg: ManagerColors.orangeBgDarkMode,
-      orange:ManagerColors.orangeDarkMode,
-
+      orange: ManagerColors.orangeDarkMode,
+      red: ManagerColors.redDarkMode,
+      redBg: ManagerColors.redBgDarkMode,
     ),
   ],
 );

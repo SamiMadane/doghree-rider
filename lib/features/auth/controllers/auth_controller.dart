@@ -1,12 +1,12 @@
 import 'dart:async';
-import 'package:sixam_mart_delivery/api/api_client.dart';
-import 'package:sixam_mart_delivery/features/auth/domain/models/delivery_man_body_model.dart';
-import 'package:sixam_mart_delivery/common/models/response_model.dart';
-import 'package:sixam_mart_delivery/features/auth/domain/models/vehicle_model.dart';
-import 'package:sixam_mart_delivery/helper/route_helper.dart';
+import 'package:wefrh_rider/api/api_client.dart';
+import 'package:wefrh_rider/features/auth/domain/models/delivery_man_body_model.dart';
+import 'package:wefrh_rider/common/models/response_model.dart';
+import 'package:wefrh_rider/features/auth/domain/models/vehicle_model.dart';
+import 'package:wefrh_rider/helper/route_helper.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:sixam_mart_delivery/features/auth/domain/services/auth_service_interface.dart';
+import 'package:wefrh_rider/features/auth/domain/services/auth_service_interface.dart';
 
 class AuthController extends GetxController implements GetxService {
   final AuthServiceInterface authServiceInterface;
@@ -79,6 +79,8 @@ class AuthController extends GetxController implements GetxService {
 
   bool _notificationLoading = false;
   bool get notificationLoading => _notificationLoading;
+
+  
 
   Future<ResponseModel> login(String phone, String password) async {
     _isLoading = true;
@@ -231,6 +233,17 @@ class AuthController extends GetxController implements GetxService {
       update();
     }
   }
+  Future<void> setLogoutReason(String reason) async {
+  await authServiceInterface.setLogoutReason(reason);
+}
+
+Future<String?> getLogoutReason() async {
+  return await authServiceInterface.getLogoutReason();
+}
+
+Future<void> clearLogoutReason() async {
+  await authServiceInterface.clearLogoutReason();
+}
 
   void validPassCheck(String pass, {bool isUpdate = true}){
     _lengthCheck = false;

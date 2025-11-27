@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:sixam_mart_delivery/common/models/response_model.dart';
-import 'package:sixam_mart_delivery/features/profile/controllers/profile_controller.dart';
-import 'package:sixam_mart_delivery/features/navigation_handler/controllers/navigation_handler_controller.dart';
-import 'package:sixam_mart_delivery/api/api_client.dart';
-import 'package:sixam_mart_delivery/features/order/domain/models/order_details_model.dart';
-import 'package:sixam_mart_delivery/features/order/domain/models/order_model.dart';
-import 'package:sixam_mart_delivery/features/order/domain/models/update_status_body_model.dart';
-import 'package:sixam_mart_delivery/features/order/domain/models/ignore_model.dart';
-import 'package:sixam_mart_delivery/features/order/domain/models/order_cancellation_body.dart';
-import 'package:sixam_mart_delivery/helper/route_helper.dart';
-import 'package:sixam_mart_delivery/util/app_constants.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_snackbar_widget.dart';
+import 'package:wefrh_rider/common/models/response_model.dart';
+import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
+import 'package:wefrh_rider/features/splash/controllers/splash_controller.dart';
+import 'package:wefrh_rider/api/api_client.dart';
+import 'package:wefrh_rider/features/order/domain/models/order_details_model.dart';
+import 'package:wefrh_rider/features/order/domain/models/order_model.dart';
+import 'package:wefrh_rider/features/order/domain/models/update_status_body_model.dart';
+import 'package:wefrh_rider/features/order/domain/models/ignore_model.dart';
+import 'package:wefrh_rider/features/order/domain/models/order_cancellation_body.dart';
+import 'package:wefrh_rider/helper/route_helper.dart';
+import 'package:wefrh_rider/util/app_constants.dart';
+import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
 import 'package:get/get.dart';
-import 'package:sixam_mart_delivery/features/order/domain/services/order_service_interface.dart';
+import 'package:wefrh_rider/features/order/domain/services/order_service_interface.dart';
 
 class OrderController extends GetxController implements GetxService {
   final OrderServiceInterface orderServiceInterface;
@@ -141,7 +141,11 @@ class OrderController extends GetxController implements GetxService {
         if (offset == 1) {
           _completedOrderList = [];
         }
-        _completedOrderList!.addAll(paginatedOrderModel.orders!);
+        
+        // ✅ فلترة Orders بدون items
+        List<OrderModel> validOrders = paginatedOrderModel.orders!.where(_isValidOrder).toList();
+        
+        _completedOrderList!.addAll(validOrders);
         _pageSize = paginatedOrderModel.totalSize;
         _paginate = false;
         update();
@@ -168,9 +172,23 @@ class OrderController extends GetxController implements GetxService {
         await orderServiceInterface.getCurrentOrders();
     if (currentOrderList != null) {
       _currentOrderList = [];
-      _currentOrderList!.addAll(currentOrderList);
+      
+      // ✅ فلترة Orders بدون items
+      List<OrderModel> validOrders = currentOrderList.where(_isValidOrder).toList();
+      
+      _currentOrderList!.addAll(validOrders);
     }
     update();
+  }
+
+  /// ✅ فلترة Orders: استبعاد orders بدون items
+  bool _isValidOrder(OrderModel order) {
+    // للـ parcel orders: نقبلها دائماً
+    if (order.orderType == 'parcel') {
+      return true;
+    }
+    // للـ delivery orders: نتأكد من وجود items
+    return order.detailsCount != null && order.detailsCount! > 0;
   }
 
   Future<void> getLatestOrders() async {
@@ -180,8 +198,15 @@ class OrderController extends GetxController implements GetxService {
       _latestOrderList = [];
       List<int?> ignoredIdList =
           orderServiceInterface.prepareIgnoreIdList(_ignoredRequests);
-      _latestOrderList!.addAll(orderServiceInterface.processLatestOrders(
-          latestOrderList, ignoredIdList));
+      
+      // معالجة Orders + فلترة Orders الفاضية
+      List<OrderModel> processedOrders = orderServiceInterface.processLatestOrders(
+          latestOrderList, ignoredIdList);
+      
+      // ✅ فلترة Orders بدون items
+      List<OrderModel> validOrders = processedOrders.where(_isValidOrder).toList();
+      
+      _latestOrderList!.addAll(validOrders);
     }
     update();
   }
@@ -231,18 +256,36 @@ class OrderController extends GetxController implements GetxService {
       _orderDetailsModel = [];
     } else {
       _orderDetailsModel = null;
-      List<OrderDetailsModel>? orderDetailsModel =
-          await orderServiceInterface.getOrderDetails(orderID);
-      if (orderDetailsModel != null) {
-        _orderDetailsModel = [];
-        _orderDetailsModel!.addAll(orderDetailsModel);
+      
+      try {
+        List<OrderDetailsModel>? orderDetailsModel =
+            await orderServiceInterface.getOrderDetails(orderID);
+        
+        if (orderDetailsModel != null) {
+          _orderDetailsModel = [];
+          _orderDetailsModel!.addAll(orderDetailsModel);
+        } else {
+          // ✅ معالجة حالة order details = null
+          showCustomSnackBar('order_details_not_found'.tr, isError: true);
+        }
+      } catch (e) {
+        // ✅ معالجة خطأ 404
+        showCustomSnackBar('failed_to_load_order_details'.tr, isError: true);
+        debugPrint('🔴 Error loading order details: $e');
       }
+      
       update();
     }
   }
 
   Future<bool> acceptOrder(
       int? orderID, int index, OrderModel orderModel) async {
+    // ✅ التحقق من صحة Order قبل القبول
+    if (!_isValidOrder(orderModel)) {
+      showCustomSnackBar('cannot_accept_order_without_items'.tr, isError: true);
+      return false;
+    }
+
     _isLoading = true;
     update();
     ResponseModel responseModel =
@@ -279,7 +322,7 @@ class OrderController extends GetxController implements GetxService {
 
   void removeFromIgnoreList() {
     List<IgnoreModel> tempList = orderServiceInterface.tempList(
-        Get.find<NavigationHandlerController>().currentTime, _ignoredRequests);
+        Get.find<SplashController>().currentTime, _ignoredRequests);
     _ignoredRequests = [];
     _ignoredRequests.addAll(tempList);
     orderServiceInterface.setIgnoreList(_ignoredRequests);

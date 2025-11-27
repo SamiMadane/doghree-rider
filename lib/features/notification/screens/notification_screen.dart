@@ -1,10 +1,10 @@
-import 'package:sixam_mart_delivery/features/notification/controllers/notification_controller.dart';
-import 'package:sixam_mart_delivery/helper/date_converter_helper.dart';
-import 'package:sixam_mart_delivery/helper/route_helper.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/styles.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_app_bar_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_image_widget.dart';
+import 'package:wefrh_rider/features/notification/controllers/notification_controller.dart';
+import 'package:wefrh_rider/helper/date_converter_helper.dart';
+import 'package:wefrh_rider/helper/route_helper.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/util/styles.dart';
+import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_image_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -81,8 +81,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   children: [
                     if (addTitle)
                       Padding(
-                        padding:
-                            const EdgeInsets.all(Dimensions.p16),
+                        padding: const EdgeInsets.all(Dimensions.p16),
                         child: Text(
                           DateConverterHelper.convertTodayYesterdayDate(
                               notification.createdAt!),
@@ -96,13 +95,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
                       ),
                     InkWell(
                       onTap: () {
-                        controller.addSeenNotificationId(notification.id!);
+                        controller.handleNotificationTap(notification);
                       },
                       child: Column(
                         children: [
                           Container(
-                            padding: const EdgeInsets.all(
-                                Dimensions.p16),
+                            padding: const EdgeInsets.all(Dimensions.p16),
                             color: isSeen
                                 ? null
                                 : Theme.of(context).primaryColor.withAlpha(10),
@@ -131,8 +129,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                   )
                                 else
                                   const SizedBox(width: 12),
-                                const SizedBox(
-                                    width: Dimensions.p16),
+                                const SizedBox(width: Dimensions.p16),
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment:
@@ -144,35 +141,28 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                             child: Text(
                                               notification.title ?? '',
                                               style: robotoSemiBold.copyWith(
-                                                  fontSize: Dimensions
-                                                      .fs14),
+                                                  fontSize: Dimensions.fs14),
                                               maxLines: 2,
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                           ),
-                                          const SizedBox(
-                                              width:
-                                                  Dimensions.p10),
+                                          const SizedBox(width: Dimensions.p10),
                                           Text(
                                             DateConverterHelper
                                                 .convertTimeDifference(
                                                     notification.createdAt!),
                                             style: robotoMedium.copyWith(
-                                                fontSize:
-                                                    Dimensions.fs12,
+                                                fontSize: Dimensions.fs12,
                                                 color: Theme.of(context)
                                                     .hintColor),
                                           ),
                                         ],
                                       ),
-                                      const SizedBox(
-                                          height:
-                                              Dimensions.p4),
+                                      const SizedBox(height: Dimensions.p4),
                                       Text(
                                         notification.description ?? '',
                                         style: robotoRegular.copyWith(
-                                            fontSize:
-                                                Dimensions.fs14),
+                                            fontSize: Dimensions.fs14),
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                       ),

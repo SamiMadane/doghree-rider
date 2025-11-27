@@ -2,20 +2,20 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'package:sixam_mart_delivery/common/widgets/custom_app_bar_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
 
-import 'package:sixam_mart_delivery/features/auth/controllers/auth_controller.dart';
-import 'package:sixam_mart_delivery/features/address/controllers/address_controller.dart';
-import 'package:sixam_mart_delivery/features/auth/widgets/dm_registration_step1.dart';
-import 'package:sixam_mart_delivery/features/auth/widgets/dm_registration_step2.dart';
-import 'package:sixam_mart_delivery/common/widgets/step_progress_bar%20.dart';
-import 'package:sixam_mart_delivery/features/navigation_handler/controllers/navigation_handler_controller.dart';
-import 'package:sixam_mart_delivery/features/auth/domain/models/delivery_man_body_model.dart';
-import 'package:sixam_mart_delivery/helper/custom_validator_helper.dart';
-import 'package:sixam_mart_delivery/helper/route_helper.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_button_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_snackbar_widget.dart';
+import 'package:wefrh_rider/features/auth/controllers/auth_controller.dart';
+import 'package:wefrh_rider/features/address/controllers/address_controller.dart';
+import 'package:wefrh_rider/features/auth/widgets/dm_registration_step1.dart';
+import 'package:wefrh_rider/features/auth/widgets/dm_registration_step2.dart';
+import 'package:wefrh_rider/common/widgets/step_progress_bar%20.dart';
+import 'package:wefrh_rider/features/splash/controllers/splash_controller.dart';
+import 'package:wefrh_rider/features/auth/domain/models/delivery_man_body_model.dart';
+import 'package:wefrh_rider/helper/custom_validator_helper.dart';
+import 'package:wefrh_rider/helper/route_helper.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
 
 class DmRegistrationScreen extends StatefulWidget {
   const DmRegistrationScreen({super.key});
@@ -49,7 +49,7 @@ class _DmRegistrationScreenState extends State<DmRegistrationScreen> {
   void initState() {
     super.initState();
     _countryDialCode = CountryCode.fromCountryCode(
-            Get.find<NavigationHandlerController>().configModel!.country!)
+            Get.find<SplashController>().configModel!.country!)
         .dialCode;
     Get.find<AuthController>().resetDmRegistrationData();
     Get.find<AddressController>().resetSelectedDeliveryZone();

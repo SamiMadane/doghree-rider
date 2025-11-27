@@ -1,9 +1,9 @@
-import 'package:sixam_mart_delivery/features/navigation_handler/controllers/navigation_handler_controller.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/manager_assets.dart';
-import 'package:sixam_mart_delivery/util/styles.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_button_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_snackbar_widget.dart';
+import 'package:wefrh_rider/features/splash/controllers/splash_controller.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/util/manager_assets.dart';
+import 'package:wefrh_rider/util/styles.dart';
+import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -45,9 +45,9 @@ class UpdateScreen extends StatelessWidget {
               String? appUrl = 'https://google.com';
 
               if(GetPlatform.isAndroid) {
-                appUrl = Get.find<NavigationHandlerController>().configModel!.appUrlAndroid;
+                appUrl = Get.find<SplashController>().configModel!.appUrlAndroid;
               }else if(GetPlatform.isIOS) {
-                appUrl = Get.find<NavigationHandlerController>().configModel!.appUrlIos;
+                appUrl = Get.find<SplashController>().configModel!.appUrlIos;
               }
               if(await canLaunchUrlString(appUrl!)) {
                 launchUrlString(appUrl, mode: LaunchMode.externalApplication);

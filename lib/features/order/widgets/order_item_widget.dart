@@ -1,58 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sixam_mart_delivery/features/navigation_handler/controllers/navigation_handler_controller.dart';
-import 'package:sixam_mart_delivery/features/order/domain/models/order_details_model.dart';
-import 'package:sixam_mart_delivery/features/order/domain/models/order_model.dart';
-import 'package:sixam_mart_delivery/helper/price_converter_helper.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/styles.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_image_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/title_widget.dart';
+import 'package:wefrh_rider/features/splash/controllers/splash_controller.dart';
+import 'package:wefrh_rider/features/order/domain/models/order_details_model.dart';
+import 'package:wefrh_rider/features/order/domain/models/order_model.dart';
+import 'package:wefrh_rider/helper/price_converter_helper.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/util/manager_colors.dart';
+import 'package:wefrh_rider/util/styles.dart';
+import 'package:wefrh_rider/common/widgets/custom_image_widget.dart';
 
 class OrderItemWidget extends StatelessWidget {
   final OrderModel order;
   final OrderDetailsModel orderDetails;
-  
-  // Flags to control what is visible
-  final bool showImage;
-  final bool showAddons;
-  final bool showVariations;
-  final bool showDiscount;
-  final bool showUnitOrVeg;
 
   const OrderItemWidget({
     super.key,
     required this.order,
     required this.orderDetails,
-    this.showImage = true,
-    this.showAddons = true,
-    this.showVariations = true,
-    this.showDiscount = true,
-    this.showUnitOrVeg = true,
   });
 
   @override
   Widget build(BuildContext context) {
     String addOnText = '';
     for (var addOn in orderDetails.addOns ?? []) {
-      addOnText = '$addOnText${(addOnText.isEmpty) ? '' : ', '}${addOn.name} (${addOn.quantity})';
+      addOnText =
+          '$addOnText${(addOnText.isEmpty) ? '' : ', '}${addOn.name} (${addOn.quantity})';
     }
 
     String variationText = '';
-    if(orderDetails.variation!.isNotEmpty) {
+    if (orderDetails.variation!.isNotEmpty) {
       List<String> types = orderDetails.variation![0].type!.split('-');
-      if(types.length == orderDetails.itemDetails!.choiceOptions!.length) {
-        for(int i=0; i<types.length; i++) {
-          variationText += '${i==0?'':' ,'}${orderDetails.itemDetails!.choiceOptions![i].title} - ${types[i]}';
+      if (types.length == orderDetails.itemDetails!.choiceOptions!.length) {
+        for (int i = 0; i < types.length; i++) {
+          variationText +=
+              '${i == 0 ? '' : ' ,'}${orderDetails.itemDetails!.choiceOptions![i].title} - ${types[i]}';
         }
       } else {
         variationText = orderDetails.itemDetails!.variations![0].type!;
       }
-    } else if(orderDetails.foodVariation!.isNotEmpty) {
-      for(var varObj in orderDetails.foodVariation!) {
-        variationText += '${variationText.isEmpty?'':' ,'}${varObj.name}(';
-        for(int i=0; i<varObj.variationValues!.length; i++) {
-          variationText += '${i==0?'':' ,'}${varObj.variationValues![i].level}';
+    } else if (orderDetails.foodVariation!.isNotEmpty) {
+      for (var varObj in orderDetails.foodVariation!) {
+        variationText += '${variationText.isEmpty ? '' : ' ,'}${varObj.name}(';
+        for (int i = 0; i < varObj.variationValues!.length; i++) {
+          variationText +=
+              '${i == 0 ? '' : ' ,'}${varObj.variationValues![i].level}';
         }
         variationText += ')';
       }
@@ -63,89 +54,115 @@ class OrderItemWidget extends StatelessWidget {
       children: [
         Row(
           children: [
-            if(showImage && orderDetails.itemDetails!.imageFullUrl != null)
+            if (orderDetails.itemDetails!.imageFullUrl != null)
               ClipRRect(
-                borderRadius: BorderRadius.circular(Dimensions.r4),
+                borderRadius: BorderRadius.circular(Dimensions.r8),
                 child: CustomImageWidget(
-                  image: orderDetails.itemDetails!.imageFullUrl!,
-                  width: 50,
-                  height: 50,
+                  height: 70,
+                  width: 70,
                   fit: BoxFit.cover,
+                  image: '${orderDetails.itemDetails!.imageFullUrl}',
                 ),
               ),
-            if(showImage) SizedBox(width: Dimensions.p10),
-            
+            SizedBox(
+                width: orderDetails.itemDetails!.imageFullUrl != null
+                    ? Dimensions.p12
+                    : 0),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      TitleWidget(
-                        title: orderDetails.itemDetails!.name!,
-                        titleStyle: robotoMedium.copyWith(
-                          fontSize: Dimensions.fs14,
-                        ),
-                        showOrderCount: true,
-                        orderCount: orderDetails.quantity!,
+                  Text(
+                    orderDetails.itemDetails!.name!,
+                    style: robotoRegular.copyWith(
+                      fontSize: Dimensions.fs14,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: Dimensions.p4),
+                  if (((Get.find<SplashController>()
+                              .getModule(order.moduleType)
+                              .unit! &&
+                          orderDetails.itemDetails!.unitType != null) ||
+                      (Get.find<SplashController>()
+                              .configModel!
+                              .toggleVegNonVeg! &&
+                          Get.find<SplashController>()
+                              .getModule(order.moduleType)
+                              .vegNonVeg!))) ...[
+                    Text(
+                      Get.find<SplashController>()
+                              .getModule(order.moduleType)
+                              .unit!
+                          ? orderDetails.itemDetails!.unitType ?? ''
+                          : orderDetails.itemDetails!.veg == 0
+                              ? 'non_veg'.tr
+                              : 'veg'.tr,
+                      style: robotoRegular.copyWith(
+                        fontSize: Dimensions.fs13,
+                        color: ManagerColors.darkGreen,
                       ),
+                    ),
+                    SizedBox(
+                      height: Dimensions.p4,
+                    ),
+                  ],
+                  Row(
+                    children: [
                       Text(
-                        PriceConverterHelper.convertPrice(orderDetails.price! - (showDiscount ? orderDetails.discountOnItem! : 0)),
+                        PriceConverterHelper.convertPrice(orderDetails.price! -
+                            (orderDetails.discountOnItem!)),
                         style: robotoMedium.copyWith(
                           fontSize: Dimensions.fs14,
                         ),
                       ),
+                      if (orderDetails.discountOnItem! > 0) ...[
+                        SizedBox(width: Dimensions.p8),
+                        Text(
+                          PriceConverterHelper.convertPrice(orderDetails.price),
+                          style: robotoMedium.copyWith(
+                            decoration: TextDecoration.lineThrough,
+                            fontSize: Dimensions.fs12,
+                            color: Theme.of(context).disabledColor,
+                          ),
+                        ),
+                      ],
+                      Spacer(),
+                      Text(
+                        '${orderDetails.quantity} ${orderDetails.quantity! > 1 ? 'items'.tr : 'item'.tr}',
+                        style: robotoMedium.copyWith(
+                          fontSize: Dimensions.fs12,
+                          color: ManagerColors.darkGreen,
+                        ),
+                      ),
                     ],
                   ),
-                  if(showDiscount && orderDetails.discountOnItem! > 0)
-                    Text(
-                      PriceConverterHelper.convertPrice(orderDetails.price),
-                      style: robotoMedium.copyWith(
-                        decoration: TextDecoration.lineThrough,
-                        fontSize: Dimensions.fs12,
-                        color: Theme.of(context).disabledColor,
-                      ),
-                    ),
-                  if(showUnitOrVeg &&
-                    ((Get.find<NavigationHandlerController>().getModule(order.moduleType).unit! && orderDetails.itemDetails!.unitType != null)
-                    || (Get.find<NavigationHandlerController>().configModel!.toggleVegNonVeg! && Get.find<NavigationHandlerController>().getModule(order.moduleType).vegNonVeg!))
-                  )
-                    Container(
-                      padding: const EdgeInsets.symmetric(vertical: Dimensions.p4, horizontal: Dimensions.p10),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor.withAlpha(25),
-                        borderRadius: BorderRadius.circular(Dimensions.r4),
-                      ),
-                      child: Text(
-                        Get.find<NavigationHandlerController>().getModule(order.moduleType).unit!
-                          ? orderDetails.itemDetails!.unitType ?? ''
-                          : orderDetails.itemDetails!.veg == 0 ? 'non_veg'.tr : 'veg'.tr,
-                        style: robotoRegular.copyWith(fontSize: Dimensions.fs10, color: Theme.of(context).primaryColor),
-                      ),
-                    ),
                 ],
               ),
             ),
           ],
         ),
-
-        if(showAddons && addOnText.isNotEmpty)
+        if (addOnText.isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(left: 60, top: Dimensions.p4),
-            child: Text('addons'.tr + ': ' + addOnText,
-              style: robotoRegular.copyWith(fontSize: Dimensions.fs12, color: Theme.of(context).disabledColor),
+            child: Text(
+              'addons'.tr + ': ' + addOnText,
+              style: robotoRegular.copyWith(
+                  fontSize: Dimensions.fs12,
+                  color: Theme.of(context).disabledColor),
             ),
           ),
-
-        if(showVariations && variationText.isNotEmpty)
+        if (variationText.isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(left: 60, top: Dimensions.p4),
-            child: Text('variations'.tr + ': ' + variationText,
-              style: robotoRegular.copyWith(fontSize: Dimensions.fs12, color: Theme.of(context).disabledColor),
+            child: Text(
+              'variations'.tr + ': ' + variationText,
+              style: robotoRegular.copyWith(
+                  fontSize: Dimensions.fs12,
+                  color: Theme.of(context).disabledColor),
             ),
           ),
-
       ],
     );
   }

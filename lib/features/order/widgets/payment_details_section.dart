@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:sixam_mart_delivery/helper/price_converter_helper.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/styles.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_card.dart';
+import 'package:wefrh_rider/helper/price_converter_helper.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/util/styles.dart';
+import 'package:wefrh_rider/common/widgets/custom_card.dart';
 import 'package:get/get.dart';
 
 class PaymentDetailsSection extends StatelessWidget {
@@ -45,25 +45,22 @@ class PaymentDetailsSection extends StatelessWidget {
 
   Widget _buildRow(String label, String value,
       {TextStyle? style, required BuildContext context}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(label,
-              style: style ??
-                  robotoRegular.copyWith(
-                    fontSize: Dimensions.fs14,
-                    color: Theme.of(context).hintColor,
-                  )),
-          Text(value,
-              style: style ??
-                  robotoRegular.copyWith(
-                    fontSize: Dimensions.fs14,
-                    color: Theme.of(context).hintColor,
-                  )),
-        ],
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(label,
+            style: style ??
+                robotoRegular.copyWith(
+                  fontSize: Dimensions.fs14,
+                  color: Theme.of(context).hintColor,
+                )),
+        Text(value,
+            style: style ??
+                robotoRegular.copyWith(
+                  fontSize: Dimensions.fs14,
+                  color: Theme.of(context).hintColor,
+                )),
+      ],
     );
   }
 
@@ -84,8 +81,8 @@ class PaymentDetailsSection extends StatelessWidget {
 
           // Item price
           if (!parcel)
-            _buildRow(
-                'product_price'.tr, PriceConverterHelper.convertPrice(itemsPrice),
+            _buildRow('product_price'.tr,
+                PriceConverterHelper.convertPrice(itemsPrice),
                 context: context),
 
           // Addons

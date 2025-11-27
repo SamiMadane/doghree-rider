@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sixam_mart_delivery/api/api_client.dart';
-import 'package:sixam_mart_delivery/features/language/domain/repositories/language_repository_interface.dart';
-import 'package:sixam_mart_delivery/util/app_constants.dart';
+import 'package:wefrh_rider/api/api_client.dart';
+import 'package:wefrh_rider/features/language/domain/repositories/language_repository_interface.dart';
+import 'package:wefrh_rider/util/app_constants.dart';
 
 class LanguageRepository implements LanguageRepositoryInterface {
   final ApiClient apiClient;
@@ -20,10 +20,8 @@ class LanguageRepository implements LanguageRepositoryInterface {
   String? countryCode = sharedPreferences.getString(AppConstants.countryCode);
 
   if (langCode != null && countryCode != null) {
-    // لغة محفوظة مسبقًا
     return Locale(langCode, countryCode);
   } else {
-    // مافي لغة محفوظة → نخليها null
     return null;
   }
 }

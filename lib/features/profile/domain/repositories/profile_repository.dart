@@ -3,13 +3,13 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sixam_mart_delivery/api/api_client.dart';
-import 'package:sixam_mart_delivery/common/models/response_model.dart';
-import 'package:sixam_mart_delivery/features/address/domain/models/record_location_body_model.dart';
-import 'package:sixam_mart_delivery/features/profile/domain/models/profile_model.dart';
-import 'package:sixam_mart_delivery/features/profile/domain/repositories/profile_repository_interface.dart';
-import 'package:sixam_mart_delivery/util/app_constants.dart';
-import 'package:sixam_mart_delivery/features/navigation_handler/controllers/navigation_handler_controller.dart';
+import 'package:wefrh_rider/api/api_client.dart';
+import 'package:wefrh_rider/common/models/response_model.dart';
+import 'package:wefrh_rider/features/address/domain/models/record_location_body_model.dart';
+import 'package:wefrh_rider/features/splash/controllers/splash_controller.dart';
+import 'package:wefrh_rider/features/profile/domain/models/profile_model.dart';
+import 'package:wefrh_rider/features/profile/domain/repositories/profile_repository_interface.dart';
+import 'package:wefrh_rider/util/app_constants.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/status.dart' as status;
 
@@ -18,15 +18,22 @@ class ProfileRepository implements ProfileRepositoryInterface {
   final SharedPreferences sharedPreferences;
   ProfileRepository({required this.apiClient, required this.sharedPreferences});
 
-  @override
-  Future<ProfileModel?> getProfileInfo() async {
-    ProfileModel? profileModel;
-    Response response = await apiClient.getData(AppConstants.profileUri + _getUserToken());
-    if (response.statusCode == 200) {
-      profileModel = ProfileModel.fromJson(response.body);
-    }
-    return profileModel;
+ @override
+Future<ProfileModel?> getProfileInfo() async {
+  ProfileModel? profileModel;
+  Response response = await apiClient.getData(
+    AppConstants.profileUri + _getUserToken(),
+    handleError: false, 
+  );
+  
+  if (response.statusCode == 200) {
+    profileModel = ProfileModel.fromJson(response.body);
+  } else if (response.statusCode == 401) {
+    return null;
   }
+  
+  return profileModel;
+}
 
   @override
   Future<ResponseModel> updateProfile(ProfileModel userInfoModel, XFile? data, String token) async {
@@ -60,7 +67,7 @@ class ProfileRepository implements ProfileRepositoryInterface {
   @override
   Future<void> recordWebSocketLocation(RecordLocationBodyModel recordLocationBody) async {
     recordLocationBody.token = _getUserToken();
-    String uri = '${Get.find<NavigationHandlerController>().configModel!.webSocketUri!}:${Get.find<NavigationHandlerController>().configModel!.webSocketPort!}/delivery-man/live-location?appKey=${Get.find<NavigationHandlerController>().configModel!.webSocketKey!}';
+    String uri = '${Get.find<SplashController>().configModel!.webSocketUri!}:${Get.find<SplashController>().configModel!.webSocketPort!}/delivery-man/live-location?appKey=${Get.find<SplashController>().configModel!.webSocketKey!}';
     final wsUrl = Uri.parse(uri);
     var channel = WebSocketChannel.connect(wsUrl);
 

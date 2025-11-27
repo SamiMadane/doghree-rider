@@ -1,23 +1,24 @@
 import 'package:flutter_svg/svg.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_app_bar_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_button_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_image_widget.dart';
-import 'package:sixam_mart_delivery/features/auth/controllers/auth_controller.dart';
-import 'package:sixam_mart_delivery/features/home/widgets/active_order_section.dart';
-import 'package:sixam_mart_delivery/features/home/widgets/cash_in_hand_section.dart';
-import 'package:sixam_mart_delivery/features/home/widgets/earning_grid_section.dart';
-import 'package:sixam_mart_delivery/features/home/widgets/online_status_section.dart';
-import 'package:sixam_mart_delivery/features/home/widgets/profile_order_section.dart';
-import 'package:sixam_mart_delivery/features/notification/controllers/notification_controller.dart';
-import 'package:sixam_mart_delivery/features/order/controllers/order_controller.dart';
-import 'package:sixam_mart_delivery/features/profile/controllers/profile_controller.dart';
-import 'package:sixam_mart_delivery/helper/route_helper.dart';
-import 'package:sixam_mart_delivery/util/app_constants.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/manager_assets.dart';
-import 'package:sixam_mart_delivery/util/manager_colors.dart';
-import 'package:sixam_mart_delivery/util/styles.dart';
+import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_image_widget.dart';
+import 'package:wefrh_rider/features/auth/controllers/auth_controller.dart';
+import 'package:wefrh_rider/features/dashboard/widgets/lottie_bottom_sheet_order_request.dart';
+import 'package:wefrh_rider/features/home/widgets/active_order_section.dart';
+import 'package:wefrh_rider/features/home/widgets/cash_in_hand_section.dart';
+import 'package:wefrh_rider/features/home/widgets/earning_grid_section.dart';
+import 'package:wefrh_rider/features/home/widgets/online_status_section.dart';
+import 'package:wefrh_rider/features/home/widgets/profile_order_section.dart';
+import 'package:wefrh_rider/features/notification/controllers/notification_controller.dart';
+import 'package:wefrh_rider/features/order/controllers/order_controller.dart';
+import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
+import 'package:wefrh_rider/helper/route_helper.dart';
+import 'package:wefrh_rider/util/app_constants.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/util/manager_assets.dart';
+import 'package:wefrh_rider/util/manager_colors.dart';
+import 'package:wefrh_rider/util/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -178,8 +179,7 @@ class _HomeScreenState extends State<HomeScreen> {
               // Description
               Text(
                 'Enable notifications to get new orders instantly and stay updated on every step.',
-                style: robotoRegular.copyWith(
-                    fontSize: Dimensions.fs14),
+                style: robotoRegular.copyWith(fontSize: Dimensions.fs14),
                 maxLines: 2,
               ),
 
@@ -188,8 +188,7 @@ class _HomeScreenState extends State<HomeScreen> {
               // Subheading
               Text(
                 'Why enable notifications?',
-                style: robotoBold.copyWith(
-                    fontSize: Dimensions.fs18),
+                style: robotoBold.copyWith(fontSize: Dimensions.fs18),
               ),
 
               SizedBox(height: Dimensions.p16),
@@ -336,48 +335,57 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: const EdgeInsets.only(top: Dimensions.p16),
           child: Container(
             color: Theme.of(context).cardColor,
-            child: Column(children: [
-              if (!_isNotificationPermissionGranted)
-                permissionWarning(
-                    isBatteryPermission: false,
-                    onTap: showNotificationPermissionBottomSheet,
-                    closeOnTap: () {
-                      setState(() {
-                        _isNotificationPermissionGranted = true;
-                      });
-                    }),
-              if (!_isBatteryOptimizationGranted)
-                permissionWarning(
-                    isBatteryPermission: true,
-                    onTap: requestBatteryOptimization,
-                    closeOnTap: () {
-                      setState(() {
-                        _isBatteryOptimizationGranted = true;
-                      });
-                    }),
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(Dimensions.p16),
-                  child: GetBuilder<ProfileController>(
-                      builder: (profileController) {
-                    return Column(children: [
-                      const StatusSwitchSection(),
-                      EarningsGridSection(
-                        profileController: profileController,
-                        showEarnings: showTotalEarnings,
-                      ),
-                      ActiveOrderSection(),
-                      ProfileOrdersSection(
-                        profileController: profileController,
-                      ),
-                      CashInHandSection(
-                        profileController: profileController,
-                      ),
-                    ]);
-                  }),
-                ),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  // نقل التحذيرات هنا داخل الـ SingleChildScrollView
+                  if (!_isNotificationPermissionGranted)
+                    permissionWarning(
+                      isBatteryPermission: false,
+                      onTap: showNotificationPermissionBottomSheet,
+                      closeOnTap: () {
+                        setState(() {
+                          _isNotificationPermissionGranted = true;
+                        });
+                      },
+                    ),
+                  if (!_isBatteryOptimizationGranted)
+                    permissionWarning(
+                      isBatteryPermission: true,
+                      onTap: requestBatteryOptimization,
+                      closeOnTap: () {
+                        setState(() {
+                          _isBatteryOptimizationGranted = true;
+                        });
+                      },
+                    ),
+
+                  GetBuilder<ProfileController>(
+                    builder: (profileController) {
+                      return Padding(
+                        padding: const EdgeInsets.all(Dimensions.p16),
+                        child: Column(
+                          children: [
+                            const StatusSwitchSection(),
+                            EarningsGridSection(
+                              profileController: profileController,
+                              showEarnings: showTotalEarnings,
+                            ),
+                            ActiveOrderSection(),
+                            ProfileOrdersSection(
+                              profileController: profileController,
+                            ),
+                            CashInHandSection(
+                              profileController: profileController,
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
-            ]),
+            ),
           ),
         ),
       ),
@@ -397,9 +405,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Container(
       width: double.infinity,
-      margin: EdgeInsets.symmetric(
-          horizontal: Dimensions.p10,
-          vertical: Dimensions.p4),
+      margin: EdgeInsets.all(Dimensions.p4),
       decoration: BoxDecoration(
         color: bgColor,
         boxShadow: [
@@ -420,8 +426,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Row(
                 children: [
                   Container(
-                      padding: const EdgeInsets.all(
-                          Dimensions.p4),
+                      padding: const EdgeInsets.all(Dimensions.p4),
                       decoration: BoxDecoration(
                         color: ManagerColors.orangeLightMode
                             .withOpacity(0.2), // أصفر فاتح شفاف

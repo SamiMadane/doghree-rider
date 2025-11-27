@@ -1,11 +1,11 @@
 import 'package:get/get.dart';
-import 'package:sixam_mart_delivery/features/language/domain/models/language_model.dart';
-import 'package:sixam_mart_delivery/features/navigation_handler/screens/navigation_handler_screen.dart';
-import 'package:sixam_mart_delivery/util/styles.dart';
+import 'package:wefrh_rider/features/language/domain/models/language_model.dart';
+import 'package:wefrh_rider/features/splash/screens/splash_screen.dart';
+import 'package:wefrh_rider/util/styles.dart';
 import 'package:flutter/material.dart';
-import 'package:sixam_mart_delivery/features/language/controllers/language_controller.dart';
-import 'package:sixam_mart_delivery/util/app_constants.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
+import 'package:wefrh_rider/features/language/controllers/language_controller.dart';
+import 'package:wefrh_rider/util/app_constants.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
 
 class LanguageCardWidget extends StatelessWidget {
   final LanguageModel languageModel;
@@ -43,7 +43,7 @@ class LanguageCardWidget extends StatelessWidget {
 
           // تأجيل التوجيه بعد اكتمال إطار البناء
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            Get.offAll(() => const NavigationHandlerScreen(body: null));
+            Get.offAll(() => const SplashScreen(body: null));
           });
         }
 

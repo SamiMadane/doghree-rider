@@ -1,9 +1,9 @@
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sixam_mart_delivery/api/api_client.dart';
-import 'package:sixam_mart_delivery/features/address/domain/models/zone_model.dart';
-import 'package:sixam_mart_delivery/features/address/domain/repositories/address_repository_interface.dart';
-import 'package:sixam_mart_delivery/util/app_constants.dart';
+import 'package:wefrh_rider/api/api_client.dart';
+import 'package:wefrh_rider/features/address/domain/models/zone_model.dart';
+import 'package:wefrh_rider/features/address/domain/repositories/address_repository_interface.dart';
+import 'package:wefrh_rider/util/app_constants.dart';
 
 class AddressRepository implements AddressRepositoryInterface {
   final ApiClient apiClient;

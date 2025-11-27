@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sixam_mart_delivery/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
-import 'package:sixam_mart_delivery/helper/price_converter_helper.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/styles.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_app_bar_widget.dart';
+import 'package:wefrh_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
+import 'package:wefrh_rider/helper/price_converter_helper.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/util/manager_colors.dart';
+import 'package:wefrh_rider/util/styles.dart';
+import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
 
 class WalletProvidedHistoryScreen extends StatefulWidget {
   const WalletProvidedHistoryScreen({super.key});
 
   @override
-  State<WalletProvidedHistoryScreen> createState() => _WalletProvidedHistoryScreenState();
+  State<WalletProvidedHistoryScreen> createState() =>
+      _WalletProvidedHistoryScreenState();
 }
 
-class _WalletProvidedHistoryScreenState extends State<WalletProvidedHistoryScreen> {
-
+class _WalletProvidedHistoryScreenState
+    extends State<WalletProvidedHistoryScreen> {
   @override
   void initState() {
     Get.find<CashInHandController>().getWalletProvidedEarningList();
@@ -25,55 +27,92 @@ class _WalletProvidedHistoryScreenState extends State<WalletProvidedHistoryScree
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBarWidget(title: 'wallet_provided_earning_history'.tr),
+      body: Container(
+        padding: const EdgeInsets.all(Dimensions.p16),
+        margin: const EdgeInsets.only(top: Dimensions.p16),
+        color: Theme.of(context).cardColor,
+        height: double.maxFinite,
+        child:
+            GetBuilder<CashInHandController>(builder: (cashInHandController) {
+          return cashInHandController.walletProvidedTransactions != null
+              ? cashInHandController.walletProvidedTransactions!.isNotEmpty
+                  ? ListView.builder(
+                      itemCount: cashInHandController.transactions!.length,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        final item = cashInHandController.transactions![index];
+                        final status = item.status ?? '';
+                        final statusColor = status == 'approved' || status == 'Approved'
+                            ? ManagerColors.darkGreen
+                            : status == 'denied'
+                                ? Theme.of(context).colorScheme.error
+                                : Theme.of(context).primaryColor;
 
-      body: GetBuilder<CashInHandController>(builder: (cashInHandController) {
-        return cashInHandController.walletProvidedTransactions != null ? cashInHandController.walletProvidedTransactions!.isNotEmpty ? ListView.builder(
-          itemCount: cashInHandController.walletProvidedTransactions!.length,
-          shrinkWrap: true,
-          padding: const EdgeInsets.only(bottom: Dimensions.p16, left: Dimensions.p16, right: Dimensions.p16),
-          physics: const BouncingScrollPhysics(),
-          itemBuilder: (context, index) {
-            return Column(children: [
-
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: Dimensions.p20),
-                child: Row(children: [
-
-                  Expanded(
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-
-                      Text(PriceConverterHelper.convertPrice(cashInHandController.walletProvidedTransactions![index].amount), style: robotoMedium.copyWith(fontSize: Dimensions.fs14)),
-                      const SizedBox(height: Dimensions.p4),
-
-                      Text('${'wallet'.tr} ${cashInHandController.walletProvidedTransactions![index].method?.replaceAll('_', ' ').capitalize??''}', style: robotoRegular.copyWith(
-                        fontSize: Dimensions.fs10, color: Theme.of(context).disabledColor,
-                      )),
-
-                    ]),
-                  ),
-
-                  Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-
-                    Text(cashInHandController.walletProvidedTransactions![index].paymentTime.toString(),
-                      style: robotoRegular.copyWith(fontSize: Dimensions.fs12, color: Theme.of(context).disabledColor),
-                    ),
-                    const SizedBox(height: Dimensions.p4),
-
-                    Text(cashInHandController.walletProvidedTransactions![index].status!.tr, style: robotoRegular.copyWith(
-                      fontSize: Dimensions.fs12,
-                      color: cashInHandController.walletProvidedTransactions![index].status == 'approved' ? Theme.of(context).primaryColor : cashInHandController.walletProvidedTransactions![index].status == 'denied'
-                          ? Theme.of(context).colorScheme.error : Colors.blue,
-                    )),
-
-                  ]),
-                ]),
-              ),
-              const Divider(height: 1),
-
-            ]);
-          },
-        ) : Center(child: Text('no_transaction_found'.tr)) : const Center(child: CircularProgressIndicator());
-      }),
+                        return Column(
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        PriceConverterHelper.convertPrice(
+                                            item.amount),
+                                        style: robotoSemiBold.copyWith(
+                                            fontSize: Dimensions.fs15),
+                                        textDirection: TextDirection.ltr,
+                                      ),
+                                      const SizedBox(height: Dimensions.p8),
+                                      Text(
+                                        '${'wallet'.tr} ${_capitalize(item.method?.replaceAll('_', ' '))}',
+                                        style: robotoRegular.copyWith(
+                                          fontSize: Dimensions.fs12,
+                                          color:
+                                              Theme.of(context).disabledColor,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      item.paymentTime.toString(),
+                                      style: robotoRegular.copyWith(
+                                        fontSize: Dimensions.fs12,
+                                        color: Theme.of(context).disabledColor,
+                                      ),
+                                    ),
+                                    const SizedBox(height: Dimensions.p8),
+                                    Text(
+                                      _capitalize(status),
+                                      style: robotoSemiBold.copyWith(
+                                        fontSize: Dimensions.fs12,
+                                        color: statusColor,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: Dimensions.p16),
+                          ],
+                        );
+                      },
+                    )
+                  : Center(child: Text('no_transaction_found'.tr))
+              : const Center(child: CircularProgressIndicator());
+        }),
+      ),
     );
   }
+}
+
+String _capitalize(String? value) {
+  if (value == null || value.isEmpty) return '';
+  return value[0].toUpperCase() + value.substring(1);
 }

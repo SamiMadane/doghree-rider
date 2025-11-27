@@ -1,29 +1,35 @@
 import 'dart:async';
 import 'package:photo_view/photo_view.dart';
+import 'package:wefrh_rider/common/widgets/custom_bottom_sheet_widget.dart';
 
-import 'package:sixam_mart_delivery/features/order/controllers/order_controller.dart';
-import 'package:sixam_mart_delivery/features/order/widgets/delivery_images_section.dart';
-import 'package:sixam_mart_delivery/features/order/widgets/map_preview_section.dart';
-import 'package:sixam_mart_delivery/features/order/widgets/order_action_buttons_section.dart';
-import 'package:sixam_mart_delivery/features/order/widgets/order_id_section.dart';
-import 'package:sixam_mart_delivery/features/order/widgets/order_info_section.dart';
-import 'package:sixam_mart_delivery/features/order/widgets/payment_details_section.dart';
-import 'package:sixam_mart_delivery/features/profile/controllers/profile_controller.dart';
-import 'package:sixam_mart_delivery/features/navigation_handler/controllers/navigation_handler_controller.dart';
-import 'package:sixam_mart_delivery/features/notification/domain/models/notification_body_model.dart';
-import 'package:sixam_mart_delivery/features/chat/domain/models/conversation_model.dart';
-import 'package:sixam_mart_delivery/features/order/domain/models/order_details_model.dart';
-import 'package:sixam_mart_delivery/features/order/domain/models/order_model.dart';
-import 'package:sixam_mart_delivery/helper/responsive_helper.dart';
-import 'package:sixam_mart_delivery/helper/route_helper.dart';
-import 'package:sixam_mart_delivery/util/app_constants.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/styles.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_app_bar_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_image_widget.dart';
-import 'package:sixam_mart_delivery/features/order/widgets/info_card_section.dart';
+import 'package:wefrh_rider/features/order/controllers/order_controller.dart';
+import 'package:wefrh_rider/features/order/widgets/additional_note_section.dart';
+import 'package:wefrh_rider/features/order/widgets/delivery_images_section.dart';
+import 'package:wefrh_rider/features/order/widgets/map_preview_section.dart';
+import 'package:wefrh_rider/features/order/widgets/order_action_buttons_section.dart';
+import 'package:wefrh_rider/features/order/widgets/order_id_section.dart';
+import 'package:wefrh_rider/features/order/widgets/order_info_section.dart';
+import 'package:wefrh_rider/features/order/widgets/order_item_widget.dart';
+import 'package:wefrh_rider/features/order/widgets/order_proof_section.dart';
+import 'package:wefrh_rider/features/order/widgets/order_summary_widget.dart';
+import 'package:wefrh_rider/features/order/widgets/payment_details_section.dart';
+import 'package:wefrh_rider/features/order/widgets/prescription_section.dart';
+import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
+import 'package:wefrh_rider/features/splash/controllers/splash_controller.dart';
+import 'package:wefrh_rider/features/notification/domain/models/notification_body_model.dart';
+import 'package:wefrh_rider/features/chat/domain/models/conversation_model.dart';
+import 'package:wefrh_rider/features/order/domain/models/order_details_model.dart';
+import 'package:wefrh_rider/features/order/domain/models/order_model.dart';
+import 'package:wefrh_rider/helper/route_helper.dart';
+import 'package:wefrh_rider/util/app_constants.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/util/manager_assets.dart';
+import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
+import 'package:wefrh_rider/features/order/widgets/info_card_section.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wefrh_rider/util/styles.dart';
+import 'package:wefrh_rider/util/theme_extension.dart';
 
 class OrderDetailsScreen extends StatefulWidget {
   final int? orderId;
@@ -92,9 +98,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
 
   @override
   Widget build(BuildContext context) {
-    bool? cancelPermission = Get.find<NavigationHandlerController>()
-        .configModel!
-        .canceledByDeliveryman;
+    bool? cancelPermission =
+        Get.find<SplashController>().configModel!.canceledByDeliveryman;
     bool selfDelivery =
         Get.find<ProfileController>().profileModel!.type != 'zone_wise';
 
@@ -129,7 +134,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
               child: GetBuilder<OrderController>(builder: (orderController) {
                 OrderModel? controllerOrderModel = orderController.orderModel;
 
-                bool restConfModel = Get.find<NavigationHandlerController>()
+                bool restConfModel = Get.find<SplashController>()
                         .configModel!
                         .orderConfirmationModel !=
                     'deliveryman';
@@ -145,11 +150,10 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                     partialPay,
                     offlinePay;
 
-                bool orderVerificationActive =
-                    Get.find<NavigationHandlerController>()
-                            .configModel
-                            ?.orderDeliveryVerification ??
-                        false;
+                bool orderVerificationActive = Get.find<SplashController>()
+                        .configModel
+                        ?.orderDeliveryVerification ??
+                    false;
 
                 late bool showBottomView;
                 late bool showSlider;
@@ -242,10 +246,10 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                       controllerOrderModel.paymentMethod == 'offline_payment';
 
                   showDeliveryConfirmImage = pickedUp &&
-                      Get.find<NavigationHandlerController>()
+                      Get.find<SplashController>()
                           .configModel!
                           .dmPictureUploadStatus!;
-                  bool restConfModel = Get.find<NavigationHandlerController>()
+                  bool restConfModel = Get.find<SplashController>()
                           .configModel!
                           .orderConfirmationModel !=
                       'deliveryman';
@@ -262,6 +266,14 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                           pickedUp ||
                           (parcel && accepted);
                 }
+
+                bool showSummarySection = controllerOrderModel != null &&
+                    controllerOrderModel.orderStatus != 'delivered' &&
+                    controllerOrderModel.orderStatus != 'failed' &&
+                    controllerOrderModel.orderStatus != 'canceled' &&
+                    controllerOrderModel.orderStatus != 'refunded';
+                final customColor =
+                    Theme.of(context).extension<CustomColorsExtension>()!;
 
                 return (orderController.orderDetailsModel != null &&
                         controllerOrderModel != null)
@@ -284,29 +296,109 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                     'canceled' &&
                                 controllerOrderModel.orderStatus != 'refunded'),
                           ),
-
-                          OrderIdSection(
-                            orderId: widget.orderId.toString(),
-                            isPaid:
-                                controllerOrderModel.paymentStatus == 'paid',
-                          ),
-                          const SizedBox(height: Dimensions.p16),
-
-                          OrderInfoSection(
-                            orderController: orderController,
-                            controllerOrderModel: controllerOrderModel,
-                            parcel: parcel,
-                            cod: cod,
-                            wallet: wallet,
-                            partialPay: partialPay,
-                            offlinePay: offlinePay,
-                            showOrderCount: true,
-                            showPaymentType: false,
-                          ),
+                          if (showSummarySection) ...[
+                            OrderSummaryWidget(
+                              order: controllerOrderModel,
+                              itemCount:
+                                  orderController.orderDetailsModel!.length,
+                              onShowItems: () {
+                                showCustomBottomSheet(
+                                  maxHeight:
+                                      MediaQuery.of(context).size.height * 0.8,
+                                  child: Container(
+                                    padding: EdgeInsets.all(
+                                      Dimensions.p16,
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          'order_items'.tr,
+                                          style: robotoSemiBold.copyWith(
+                                              fontSize: Dimensions.fs16),
+                                        ),
+                                        SizedBox(
+                                          height: Dimensions.p16,
+                                        ),
+                                        ListView.builder(
+                                          padding: const EdgeInsets.all(
+                                              Dimensions.p16),
+                                          shrinkWrap: true,
+                                          itemCount: orderController
+                                              .orderDetailsModel!.length,
+                                          itemBuilder: (context, index) {
+                                            final details = orderController
+                                                .orderDetailsModel![index];
+                                            return Column(
+                                              children: [
+                                                OrderItemWidget(
+                                                  order: controllerOrderModel,
+                                                  orderDetails: details,
+                                                ),
+                                                if (index !=
+                                                    orderController
+                                                            .orderDetailsModel!
+                                                            .length -
+                                                        1) ...[
+                                                  const SizedBox(
+                                                      height: Dimensions.p16),
+                                                  LayoutBuilder(
+                                                    builder: (context,
+                                                        constraints) {
+                                                      final dashCount =
+                                                          (constraints.maxWidth /
+                                                                  9)
+                                                              .floor();
+                                                      return Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children:
+                                                            List.generate(
+                                                          dashCount,
+                                                          (_) => Container(
+                                                              width: 5,
+                                                              height: 2,
+                                                              color: customColor
+                                                                  .strock2),
+                                                        ),
+                                                      );
+                                                    },
+                                                  ),
+                                                  const SizedBox(
+                                                      height: Dimensions.p16),
+                                                ]
+                                              ],
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ] else ...[
+                            OrderIdSection(
+                              orderId: widget.orderId.toString(),
+                              isPaid:
+                                  controllerOrderModel.paymentStatus == 'paid',
+                            ),
+                            const SizedBox(height: Dimensions.p16),
+                            OrderInfoSection(
+                              orderController: orderController,
+                              controllerOrderModel: controllerOrderModel,
+                              parcel: parcel,
+                              cod: cod,
+                              wallet: wallet,
+                              partialPay: partialPay,
+                              offlinePay: offlinePay,
+                              showOrderCount: true,
+                              showPaymentType: false,
+                            ),
+                          ],
                           SizedBox(
                             height: Dimensions.p16,
                           ),
-
                           InfoCardSection(
                             title: parcel
                                 ? 'sender_details'.tr
@@ -315,9 +407,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                 ? controllerOrderModel.deliveryAddress
                                 : DeliveryAddress(
                                     address: controllerOrderModel.storeAddress),
-                            // TODO: PARCEL ORDER NOT HAVE IMAGE
                             image: parcel
-                                ? 'controllerOrderModel.deliveryAddress.image'
+                                ? ManagerAssets.storeImage
                                 : '${controllerOrderModel.storeLogoFullUrl}',
                             name: parcel
                                 ? controllerOrderModel
@@ -365,12 +456,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                 : 'customer_details'.tr,
                             address: parcel
                                 ? controllerOrderModel.receiverDetails
-                                : controllerOrderModel.deliveryAddress, 
+                                : controllerOrderModel.deliveryAddress,
                             image: parcel
                                 ? ''
-                                : controllerOrderModel.customer != null
-                                    ? '${controllerOrderModel.customer!.imageFullUrl}'
-                                    : '',
+                                : controllerOrderModel.customer?.imageFullUrl ??
+                                    '',
                             name: parcel
                                 ? controllerOrderModel
                                     .receiverDetails!.contactPersonName
@@ -407,8 +497,10 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                               // TODO: THIS CODE PASS CUSTOMAR INFO FOR CHAT , NOT DELIVARY ADDRESS INFO
                               user: User(
                                 id: controllerOrderModel.customer!.id,
-                                fName: controllerOrderModel.customer!.fName, // yousef
-                                lName: controllerOrderModel.customer!.lName, // iwadi
+                                fName: controllerOrderModel
+                                    .customer!.fName, // yousef
+                                lName: controllerOrderModel
+                                    .customer!.lName, // iwadi
                                 imageFullUrl:
                                     controllerOrderModel.customer!.imageFullUrl,
                               ),
@@ -417,38 +509,10 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                           ),
                           const SizedBox(height: Dimensions.p16),
 
-                          // TODO: ADD THIS SECTION FROM BACKENT TO TEST IT
                           (controllerOrderModel.orderNote != null &&
                                   controllerOrderModel.orderNote!.isNotEmpty)
-                              ? Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                      Text('additional_note'.tr,
-                                          style: robotoRegular),
-                                      const SizedBox(
-                                          height: Dimensions.p10),
-                                      Container(
-                                        width: 1170,
-                                        padding: const EdgeInsets.all(
-                                            Dimensions.p10),
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                          border: Border.all(
-                                              width: 1,
-                                              color: Theme.of(context)
-                                                  .disabledColor),
-                                        ),
-                                        child: Text(
-                                          controllerOrderModel.orderNote!,
-                                          style: robotoRegular.copyWith(
-                                              fontSize:
-                                                  Dimensions.fs12,
-                                              color: Theme.of(context)
-                                                  .disabledColor),
-                                        ),
-                                      ),
-                                    ])
+                              ? AdditionalNoteSection(
+                                  note: controllerOrderModel.orderNote!)
                               : const SizedBox(),
                           SizedBox(
                               height: (controllerOrderModel.orderNote != null &&
@@ -456,7 +520,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                           .orderNote!.isNotEmpty)
                                   ? Dimensions.p20
                                   : 0),
-                          (Get.find<NavigationHandlerController>()
+                          (Get.find<SplashController>()
                                       .getModule(
                                           controllerOrderModel.moduleType)
                                       .orderAttachment! &&
@@ -464,125 +528,23 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                       null &&
                                   controllerOrderModel
                                       .orderAttachmentFullUrl!.isNotEmpty)
-                              ? Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                      Text('prescription'.tr,
-                                          style: robotoRegular),
-                                      const SizedBox(
-                                          height: Dimensions.p10),
-                                      GridView.builder(
-                                        gridDelegate:
-                                            SliverGridDelegateWithFixedCrossAxisCount(
-                                          childAspectRatio: 1.5,
-                                          crossAxisCount:
-                                              ResponsiveHelper.isTab(context)
-                                                  ? 5
-                                                  : 3,
-                                          mainAxisSpacing: 10,
-                                          crossAxisSpacing: 5,
-                                        ),
-                                        shrinkWrap: true,
-                                        physics:
-                                            const NeverScrollableScrollPhysics(),
-                                        itemCount: controllerOrderModel
-                                            .orderAttachmentFullUrl!.length,
-                                        itemBuilder:
-                                            (BuildContext context, index) {
-                                          return Padding(
-                                            padding:
-                                                const EdgeInsets.only(right: 8),
-                                            child: InkWell(
-                                              onTap: () => openDialog(
-                                                  context,
-                                                  controllerOrderModel
-                                                          .orderAttachmentFullUrl![
-                                                      index]),
-                                              child: Center(
-                                                  child: ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        Dimensions.r4),
-                                                child: CustomImageWidget(
-                                                  image: controllerOrderModel
-                                                          .orderAttachmentFullUrl![
-                                                      index],
-                                                  width: 100,
-                                                  height: 100,
-                                                ),
-                                              )),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                      const SizedBox(
-                                          height: Dimensions.p20),
-                                    ])
+                              ? PrescriptionSection(
+                                  attachments: controllerOrderModel
+                                      .orderAttachmentFullUrl!)
                               : const SizedBox(),
                           (controllerOrderModel.orderStatus == 'delivered' &&
                                   controllerOrderModel.orderProofFullUrl !=
                                       null &&
                                   controllerOrderModel
                                       .orderProofFullUrl!.isNotEmpty)
-                              ? Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                      const SizedBox(
-                                          height: Dimensions.p10),
-                                      Text('order_proof'.tr,
-                                          style: robotoRegular),
-                                      const SizedBox(
-                                          height: Dimensions.p10),
-                                      GridView.builder(
-                                          gridDelegate:
-                                              SliverGridDelegateWithFixedCrossAxisCount(
-                                            childAspectRatio: 1.5,
-                                            crossAxisCount:
-                                                ResponsiveHelper.isTab(context)
-                                                    ? 5
-                                                    : 3,
-                                            mainAxisSpacing: 10,
-                                            crossAxisSpacing: 5,
-                                          ),
-                                          shrinkWrap: true,
-                                          physics:
-                                              const NeverScrollableScrollPhysics(),
-                                          itemCount: controllerOrderModel
-                                              .orderProofFullUrl!.length,
-                                          itemBuilder:
-                                              (BuildContext context, index) {
-                                            return Padding(
-                                              padding: const EdgeInsets.only(
-                                                  right: 8),
-                                              child: InkWell(
-                                                onTap: () => openDialog(
-                                                    context,
-                                                    controllerOrderModel
-                                                            .orderProofFullUrl![
-                                                        index]),
-                                                child: Center(
-                                                    child: ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          Dimensions
-                                                              .r4),
-                                                  child: CustomImageWidget(
-                                                    image: controllerOrderModel
-                                                            .orderProofFullUrl![
-                                                        index],
-                                                    width: 100,
-                                                    height: 100,
-                                                  ),
-                                                )),
-                                              ),
-                                            );
-                                          }),
-                                      const SizedBox(
-                                          height: Dimensions.p20),
-                                    ])
+                              ? OrderProofSection(
+                                  proofImages:
+                                      controllerOrderModel.orderProofFullUrl ??
+                                          [],
+                                  orderStatus:
+                                      controllerOrderModel.orderStatus ?? '',
+                                )
                               : const SizedBox(),
-                          const SizedBox(height: Dimensions.p16),
-
                           PaymentDetailsSection(
                             parcel: parcel,
                             itemsPrice: itemsPrice,

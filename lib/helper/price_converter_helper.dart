@@ -1,4 +1,4 @@
-import 'package:sixam_mart_delivery/features/navigation_handler/controllers/navigation_handler_controller.dart';
+import 'package:wefrh_rider/features/splash/controllers/splash_controller.dart';
 import 'package:get/get.dart';
 
 class PriceConverterHelper {
@@ -14,7 +14,7 @@ class PriceConverterHelper {
 
     int fixedDigits = asFixed ?? 2;
 
-    return '${Get.find<NavigationHandlerController>().configModel!.currencySymbol} '
+    return '${Get.find<SplashController>().configModel!.currencySymbol} '
         '${price!.toStringAsFixed(fixedDigits).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}';
   }
 
@@ -41,6 +41,6 @@ class PriceConverterHelper {
 
   static String percentageCalculation(
       String price, String discount, String discountType) {
-    return '$discount${discountType == 'percent' ? '%' : Get.find<NavigationHandlerController>().configModel!.currencySymbol} OFF';
+    return '$discount${discountType == 'percent' ? '%' : Get.find<SplashController>().configModel!.currencySymbol} OFF';
   }
 }

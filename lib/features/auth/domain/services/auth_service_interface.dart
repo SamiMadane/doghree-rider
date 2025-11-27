@@ -1,17 +1,19 @@
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:sixam_mart_delivery/api/api_client.dart';
-import 'package:sixam_mart_delivery/features/auth/domain/models/delivery_man_body_model.dart';
-import 'package:sixam_mart_delivery/features/auth/domain/models/vehicle_model.dart';
+import 'package:wefrh_rider/api/api_client.dart';
+import 'package:wefrh_rider/features/auth/domain/models/delivery_man_body_model.dart';
+import 'package:wefrh_rider/features/auth/domain/models/vehicle_model.dart';
 
 abstract class AuthServiceInterface {
   Future<Response> login(String phone, String password);
   Future<Response> updateToken();
-  Future<bool> saveUserToken(String token, String zoneTopic, String vehicleWiseTopic);
+  Future<bool> saveUserToken(
+      String token, String zoneTopic, String vehicleWiseTopic);
   String getUserToken();
   bool isLoggedIn();
   Future<bool> clearSharedData();
-  Future<void> saveUserNumberAndPassword(String number, String password, String countryDialCode, String countryCode);
+  Future<void> saveUserNumberAndPassword(String number, String password,
+      String countryDialCode, String countryCode);
   String getUserNumber();
   String getUserCountryDialCode();
   String getUserCountryCode();
@@ -19,9 +21,14 @@ abstract class AuthServiceInterface {
   bool isNotificationActive();
   void setNotificationActive(bool isActive);
   Future<bool> clearUserNumberAndPassword();
-  Future<bool> registerDeliveryMan(DeliveryManBodyModel deliveryManBody, List<MultipartBody> multiParts);
+  Future<bool> registerDeliveryMan(
+      DeliveryManBodyModel deliveryManBody, List<MultipartBody> multiParts);
   Future<List<VehicleModel>?> getVehicleList();
-  List<MultipartBody> prepareMultiPartsBody(XFile? pickedImage, List<XFile> pickedIdentities);
-  List<int?> vehicleIds (List<VehicleModel>? vehicles);
+  List<MultipartBody> prepareMultiPartsBody(
+      XFile? pickedImage, List<XFile> pickedIdentities);
+  List<int?> vehicleIds(List<VehicleModel>? vehicles);
   Future<XFile?> pickImageFromGallery();
+  Future<void> setLogoutReason(String reason);
+  Future<String?> getLogoutReason();
+  Future<void> clearLogoutReason();
 }

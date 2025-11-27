@@ -3,19 +3,19 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_app_bar_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_bottom_sheet_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_button_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_card.dart';
-import 'package:sixam_mart_delivery/features/task/widgets/delivered_bottom_sheet.dart';
-import 'package:sixam_mart_delivery/features/task/widgets/reschedule_bottom_sheet.dart';
-import 'package:sixam_mart_delivery/helper/price_converter_helper.dart';
-import 'package:sixam_mart_delivery/helper/route_helper.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/manager_assets.dart';
-import 'package:sixam_mart_delivery/util/manager_colors.dart';
-import 'package:sixam_mart_delivery/util/styles.dart';
-import 'package:sixam_mart_delivery/util/theme_extension.dart';
+import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_bottom_sheet_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_card.dart';
+import 'package:wefrh_rider/features/task/widgets/delivered_bottom_sheet.dart';
+import 'package:wefrh_rider/features/task/widgets/reschedule_bottom_sheet.dart';
+import 'package:wefrh_rider/helper/price_converter_helper.dart';
+import 'package:wefrh_rider/helper/route_helper.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/util/manager_assets.dart';
+import 'package:wefrh_rider/util/manager_colors.dart';
+import 'package:wefrh_rider/util/styles.dart';
+import 'package:wefrh_rider/util/theme_extension.dart';
 
 class ClientScreen extends StatefulWidget {
   const ClientScreen({super.key});
@@ -73,13 +73,18 @@ class _ClientScreenState extends State<ClientScreen> {
           children: [
             Container(
               padding: EdgeInsets.all(Dimensions.p16),
+              margin: EdgeInsets.only(
+                top: Dimensions.p16,
+              ),
+              color: Theme.of(context).cardColor,
               child: Column(
                 children: [
                   // بطاقة المنتج (النصوص تجي من API لاحقاً)
                   CustomCard(
-                    padding: const EdgeInsets.all(16),
+                    padding: EdgeInsets.all(Dimensions.p16),
                     isBorder: false,
                     borderRadius: Dimensions.r8,
+                    fillColor: Theme.of(context).scaffoldBackgroundColor,
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -127,6 +132,7 @@ class _ClientScreenState extends State<ClientScreen> {
                     padding: const EdgeInsets.all(16),
                     isBorder: false,
                     borderRadius: Dimensions.r8,
+                    fillColor: Theme.of(context).scaffoldBackgroundColor,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -139,13 +145,12 @@ class _ClientScreenState extends State<ClientScreen> {
                         CustomCard(
                           padding: const EdgeInsets.all(16),
                           borderRadius: Dimensions.r8,
-                          fillColor: Theme.of(context).scaffoldBackgroundColor,
+                          fillColor: Theme.of(context).cardColor,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text("original_titles".tr,
-                                  style: robotoBold.copyWith(
-                                      color: Theme.of(context).disabledColor)),
+                                  style: robotoBold),
                               SizedBox(
                                 height: Dimensions.p8,
                               ),
@@ -184,7 +189,10 @@ class _ClientScreenState extends State<ClientScreen> {
                           child: currentLocation == null
                               ? Center(
                                   child: CircularProgressIndicator(
-                                  color: Theme.of(context).textTheme.bodyMedium?.color,
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.color,
                                 ))
                               : GoogleMap(
                                   onMapCreated: (controller) {
@@ -266,6 +274,8 @@ class _ClientScreenState extends State<ClientScreen> {
                     isBorder: false,
                     borderRadius: Dimensions.r8,
                     padding: const EdgeInsets.all(16),
+                    fillColor: Theme.of(context).scaffoldBackgroundColor,
+
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -294,7 +304,7 @@ class _ClientScreenState extends State<ClientScreen> {
                                 borderRadius: Dimensions.r8,
                                 padding: const EdgeInsets.all(16),
                                 fillColor:
-                                    Theme.of(context).scaffoldBackgroundColor,
+                                    Theme.of(context).cardColor,
                                 height: 100,
                                 child: Column(
                                   children: [

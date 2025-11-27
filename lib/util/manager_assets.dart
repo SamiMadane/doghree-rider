@@ -10,6 +10,7 @@ class ManagerAssets {
   static const String arabic = '$imagePath/arabic.png';
   static const String spanish = '$imagePath/spanish.png';
   static const String bengali = '$imagePath/bengali.png';
+  static const String psFlag = '$imagePath/ps_flag.png';
   static const String mail = '$imagePath/mail.png';
   static const String checked = '$imagePath/checked.png';
   static const String deliveryManMarker = '$imagePath/delivery_man_marker.png';
@@ -79,13 +80,14 @@ class ManagerAssets {
   static const String postponedImage = '$imagePath/postponed.png';
   static const String problemImage = '$imagePath/problem.png';
   static const String amountToBeDeliveredImage = '$imagePath/amount_to_be_delivered.png';
-  static const String noInternetImage = '$imagePath/no_internet.svg';
+  static const String sessionExpiredImage = '$imagePath/session_expired.png';
 
   ///Svg Images
   static const String changePasswordBgImage =
       '$imagePath/change_password_bg_image.svg';
   static const String orderOnTheWayIcon =
       '$imagePath/order_on_the_way_icon.svg';
+  static const String noInternetImage = '$imagePath/no_internet.svg';
 
   // icons
   static const String arrowBackIcon = '$iconPath/arrow_left.svg';
@@ -136,9 +138,16 @@ class ManagerAssets {
   static const String supportTeamIcon = '$iconPath/support_team.svg';
   static const String confirmedIcon = '$iconPath/confirmed.svg';
   static const String pullArrowIcon = '$iconPath/pull_arrow.svg';
+  static const String clockIcon = '$iconPath/clock.svg';
+  static const String homeSelectedIcon = '$iconPath/home_selected.svg';
+  static const String orderSelectedIcon = '$iconPath/order_selected.svg';
+  static const String myOrderSelectedIcon = '$iconPath/my_order_selected.svg';
+  static const String profileSelectedIcon = '$iconPath/profile_selected.svg';
+  static const String taskSelectedIcon = '$iconPath/task_selected.svg';
 
 // Lottie 
   static const String deliveryLottie = '$lottiePath/delivery.json';
+  static const String deliveryBusLottie = '$lottiePath/deliver_bus.json';
 
 }
 

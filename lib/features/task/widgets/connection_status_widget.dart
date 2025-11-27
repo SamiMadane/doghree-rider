@@ -1,11 +1,11 @@
 // file: widgets/connection_status_widget.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_bottom_sheet_widget.dart';
-import 'package:sixam_mart_delivery/features/task/controllers/task_controller.dart';
-import 'package:sixam_mart_delivery/features/task/widgets/connection_bottom_sheet.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/styles.dart';
+import 'package:wefrh_rider/common/widgets/custom_bottom_sheet_widget.dart';
+import 'package:wefrh_rider/features/task/controllers/task_controller.dart';
+import 'package:wefrh_rider/features/task/widgets/connection_bottom_sheet.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/util/styles.dart';
 
 
 class ConnectionStatusWidget extends StatelessWidget {

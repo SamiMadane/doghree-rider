@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.sixamtech.sixam_mart_delivery_app"
+    package="com.wefrh.Rider"
     xmlns:tools="http://schemas.android.com/tools">
 
     <!-- الصلاحيات -->
@@ -36,7 +36,7 @@
 
     <application
         tools:replace="android:label"
-        android:label="6amMart Delivery"
+        android:label="Wefrh Rider"
         android:name="${applicationName}"
         android:extractNativeLibs="true"
         android:requestLegacyExternalStorage="true"
@@ -76,7 +76,7 @@
         </activity>
 
         <service
-            android:name="com.sixamtech.sixam_mart_delivery_app.BackgroundService"
+            android:name="com.wefrh.Rider.BackgroundService"
             android:enabled="true"
             android:exported="false" />
 

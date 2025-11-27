@@ -1,10 +1,10 @@
 import 'package:permission_handler/permission_handler.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_app_bar_widget.dart';
-import 'package:sixam_mart_delivery/features/profile/controllers/profile_controller.dart';
-import 'package:sixam_mart_delivery/features/profile/widgets/account_section.dart';
-import 'package:sixam_mart_delivery/features/profile/widgets/legal_section.dart';
-import 'package:sixam_mart_delivery/features/profile/widgets/user_profile_info_card.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
+import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
+import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
+import 'package:wefrh_rider/features/profile/widgets/account_section.dart';
+import 'package:wefrh_rider/features/profile/widgets/legal_section.dart';
+import 'package:wefrh_rider/features/profile/widgets/user_profile_info_card.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

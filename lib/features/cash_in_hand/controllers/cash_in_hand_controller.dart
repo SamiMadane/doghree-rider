@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:sixam_mart_delivery/api/api_checker.dart';
+import 'package:wefrh_rider/api/api_checker.dart';
 import 'dart:async';
-import 'package:sixam_mart_delivery/common/models/response_model.dart';
-import 'package:sixam_mart_delivery/features/cash_in_hand/domain/models/earning_report_model.dart';
-import 'package:sixam_mart_delivery/features/cash_in_hand/domain/models/wallet_payment_model.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_snackbar_widget.dart';
-import 'package:sixam_mart_delivery/features/cash_in_hand/domain/services/cash_in_hand_service_interface.dart';
-import 'package:sixam_mart_delivery/features/profile/controllers/profile_controller.dart';
+import 'package:wefrh_rider/common/models/response_model.dart';
+import 'package:wefrh_rider/features/cash_in_hand/domain/models/earning_report_model.dart';
+import 'package:wefrh_rider/features/cash_in_hand/domain/models/wallet_payment_model.dart';
+import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
+import 'package:wefrh_rider/features/cash_in_hand/domain/services/cash_in_hand_service_interface.dart';
+import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
 
 class CashInHandController extends GetxController implements GetxService {
   final CashInHandServiceInterface cashInHandServiceInterface;

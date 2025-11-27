@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sixam_mart_delivery/features/disbursement/controllers/disbursement_controller.dart';
-import 'package:sixam_mart_delivery/features/profile/controllers/profile_controller.dart';
-import 'package:sixam_mart_delivery/features/navigation_handler/controllers/navigation_handler_controller.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/features/disbursement/widgets/withdraw_method_attention_dialog_widget.dart';
+import 'package:wefrh_rider/features/disbursement/controllers/disbursement_controller.dart';
+import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
+import 'package:wefrh_rider/features/splash/controllers/splash_controller.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/features/disbursement/widgets/withdraw_method_attention_dialog_widget.dart';
 
 class DisbursementHelper {
 
@@ -12,10 +12,10 @@ class DisbursementHelper {
 
     bool showWarning = false;
 
-    Get.find<NavigationHandlerController>().configModel!.disbursementType == 'automated' && (Get.find<ProfileController>().profileModel!.type! != 'store_wise' && Get.find<ProfileController>().profileModel!.earnings != 0)
+    Get.find<SplashController>().configModel!.disbursementType == 'automated' && (Get.find<ProfileController>().profileModel!.type! != 'store_wise' && Get.find<ProfileController>().profileModel!.earnings != 0)
         ? showWarning = true : showWarning = false;
 
-    if(Get.find<NavigationHandlerController>().configModel!.disbursementType == 'automated' && (Get.find<ProfileController>().profileModel!.type! != 'store_wise' && Get.find<ProfileController>().profileModel!.earnings != 0)){
+    if(Get.find<SplashController>().configModel!.disbursementType == 'automated' && (Get.find<ProfileController>().profileModel!.type! != 'store_wise' && Get.find<ProfileController>().profileModel!.earnings != 0)){
       await Get.find<DisbursementController>().getDisbursementMethodList().then((success) {
         if(success){
           if(Get.find<DisbursementController>().disbursementMethodBody!.methods!.isNotEmpty) {

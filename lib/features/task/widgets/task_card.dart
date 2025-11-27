@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_button_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_card.dart';
-import 'package:sixam_mart_delivery/helper/price_converter_helper.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/manager_assets.dart';
-import 'package:sixam_mart_delivery/util/manager_colors.dart';
-import 'package:sixam_mart_delivery/util/styles.dart';
-import 'package:sixam_mart_delivery/util/theme_extension.dart';
+import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_card.dart';
+import 'package:wefrh_rider/helper/price_converter_helper.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/util/manager_assets.dart';
+import 'package:wefrh_rider/util/manager_colors.dart';
+import 'package:wefrh_rider/util/styles.dart';
+import 'package:wefrh_rider/util/theme_extension.dart';
 
 class TaskCard extends StatelessWidget {
   final int taskNumber;
@@ -43,13 +43,14 @@ class TaskCard extends StatelessWidget {
     return CustomCard(
       padding: EdgeInsets.all(Dimensions.p16),
       isBorder: false,
+        fillColor: Theme.of(context).scaffoldBackgroundColor,
+
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('${'task'.tr} : $taskNumber',
               style: robotoBold.copyWith(
                 fontSize: Dimensions.fs16,
-                color: Theme.of(context).disabledColor,
               )),
 
           const SizedBox(height: Dimensions.p8),
@@ -59,7 +60,7 @@ class TaskCard extends StatelessWidget {
                 flex: 2,
                 child: Text(name,
                     maxLines: 2,
-                    style: robotoBold.copyWith(fontSize: Dimensions.fs18)),
+                    style: robotoSemiBold.copyWith(fontSize: Dimensions.fs18)),
               ),
               Spacer(),
               Expanded(
@@ -81,7 +82,7 @@ class TaskCard extends StatelessWidget {
           CustomCard(
             padding: const EdgeInsets.all(Dimensions.p16),
             borderRadius: Dimensions.r16,
-            fillColor: Theme.of(context).scaffoldBackgroundColor,
+            fillColor: Theme.of(context).cardColor,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

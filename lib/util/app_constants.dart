@@ -1,8 +1,8 @@
-import 'package:sixam_mart_delivery/features/language/domain/models/language_model.dart';
-import 'package:sixam_mart_delivery/util/manager_assets.dart';
+import 'package:wefrh_rider/features/language/domain/models/language_model.dart';
+import 'package:wefrh_rider/util/manager_assets.dart';
 
 class AppConstants {
-  static const String appName = '6amMart Delivery';
+  static const String appName = 'Wefrh Rider';
   static const double appVersion = 3.3; ///Flutter sdk 3.32.8
 
   static const String baseUrl = 'https://www.wefrh.com';
@@ -58,26 +58,27 @@ class AppConstants {
   static const String searchConversationListUri = '/api/v1/delivery-man/message/search-list';
 
   /// Shared Key
-  static const String theme = 'sixam_mart_delivery_theme';
-  static const String token = 'sixam_mart_delivery_token';
-  static const String countryCode = 'sixam_mart_delivery_country_code';
-  static const String languageCode = 'sixam_mart_delivery_language_code';
+  static const String theme = 'wefrh_rider_theme';
+  static const String token = 'wefrh_rider_token';
+  static const String countryCode = 'wefrh_rider_country_code';
+  static const String languageCode = 'wefrh_rider_language_code';
   static const String cacheCountryCode = 'cache_country_code';
   static const String cacheLanguageCode = 'cache_language_code';
-  static const String userPassword = 'sixam_mart_delivery_user_password';
-  static const String userAddress = 'sixam_mart_delivery_user_address';
-  static const String userNumber = 'sixam_mart_delivery_user_number';
-  static const String userCountryDialCode = 'sixam_mart_delivery_user_country_dial_code';
-  static const String userCountryCode = 'sixam_mart_delivery_user_country_code';
-  static const String notification = 'sixam_mart_delivery_notification';
-  static const String notificationCount = 'sixam_mart_delivery_notification_count';
-  static const String ignoreList = 'sixam_mart_delivery_ignore_list';
+  static const String userPassword = 'wefrh_rider_user_password';
+  static const String userAddress = 'wefrh_rider_user_address';
+  static const String userNumber = 'wefrh_rider_user_number';
+  static const String userCountryDialCode = 'wefrh_rider_user_country_dial_code';
+  static const String userCountryCode = 'wefrh_rider_user_country_code';
+  static const String notification = 'wefrh_rider_notification';
+  static const String notificationCount = 'wefrh_rider_notification_count';
+  static const String ignoreList = 'wefrh_rider_ignore_list';
   static const String topic = 'all_zone_delivery_man';
   static const String zoneTopic = 'zone_topic';
   static const String vehicleWiseTopic = 'vehicle_wise_topic';
   static const String localizationKey = 'X-localization';
   static const String langIntro = 'language_intro';
   static const String notificationIdList = 'notification_id_list';
+  static const String logoutReason = 'logout_reason';
 
   /// Order Status
   static const String pending = 'pending';

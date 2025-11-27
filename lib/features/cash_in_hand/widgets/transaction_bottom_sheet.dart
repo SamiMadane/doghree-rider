@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dotted_border/dotted_border.dart';
-import 'package:sixam_mart_delivery/common/widgets/confirmation_bottom_sheet.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_bottom_sheet_widget.dart';
-import 'package:sixam_mart_delivery/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
-import 'package:sixam_mart_delivery/features/cash_in_hand/widgets/empty_state_bottom_sheet.dart';
-import 'package:sixam_mart_delivery/features/cash_in_hand/widgets/payment_method_bottom_sheet_widget.dart';
-import 'package:sixam_mart_delivery/features/navigation_handler/controllers/navigation_handler_controller.dart';
-import 'package:sixam_mart_delivery/features/profile/controllers/profile_controller.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/manager_assets.dart';
-import 'package:sixam_mart_delivery/util/styles.dart';
+import 'package:wefrh_rider/common/widgets/confirmation_bottom_sheet.dart';
+import 'package:wefrh_rider/common/widgets/custom_bottom_sheet_widget.dart';
+import 'package:wefrh_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
+import 'package:wefrh_rider/features/cash_in_hand/widgets/empty_state_bottom_sheet.dart';
+import 'package:wefrh_rider/features/cash_in_hand/widgets/payment_method_bottom_sheet_widget.dart';
+import 'package:wefrh_rider/features/splash/controllers/splash_controller.dart';
+import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/util/manager_assets.dart';
+import 'package:wefrh_rider/util/styles.dart';
 
 class TransactionBottomSheet extends StatelessWidget {
   const TransactionBottomSheet({super.key});
@@ -25,14 +25,11 @@ class TransactionBottomSheet extends StatelessWidget {
     final buttons = <Widget>[];
 
     if (showAdjust) {
-      buttons.add(const Expanded(child: AdjustPaymentButton()));
+      buttons.add(const AdjustPaymentButton());
     }
 
     if (showPayNow) {
-      if (showAdjust) {
-        buttons.add(const SizedBox(width: Dimensions.p20));
-      }
-      buttons.add(const Expanded(child: PayNowButton()));
+      buttons.add(const PayNowButton());
     }
 
     return Padding(
@@ -49,8 +46,9 @@ class TransactionBottomSheet extends StatelessWidget {
                     fontSize: Dimensions.fs18,
                   ),
                 )
-              : SizedBox(),
-          const SizedBox(height: Dimensions.p20),
+              : const SizedBox(),
+
+          SizedBox(height: buttons.length > 1 ? Dimensions.p20 : 0),
 
           // الأزرار
           buttons.length == 1
@@ -60,7 +58,11 @@ class TransactionBottomSheet extends StatelessWidget {
                 )
               : Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: buttons,
+                  children: [
+                    Expanded(child: buttons[0]),
+                    const SizedBox(width: Dimensions.p20),
+                    Expanded(child: buttons[1]),
+                  ],
                 ),
         ],
       ),
@@ -144,19 +146,17 @@ class PayNowButton extends StatelessWidget {
         if (profileController.profileModel!.showPayNowButton!) {
           showCustomBottomSheet(child: PaymentMethodBottomSheetWidget());
         } else {
-          if (Get.find<NavigationHandlerController>()
+          if (Get.find<SplashController>()
                   .configModel!
                   .activePaymentMethodList!
                   .isEmpty ||
-              !Get.find<NavigationHandlerController>()
-                  .configModel!
-                  .digitalPayment!) {
+              !Get.find<SplashController>().configModel!.digitalPayment!) {
             showCustomBottomSheet(
               child: EmptyStateBottomSheet(
                 noPaymentMethod: true,
               ),
             );
-          } else if (Get.find<NavigationHandlerController>()
+          } else if (Get.find<SplashController>()
                   .configModel!
                   .minAmountToPayDm! >
               profileController.profileModel!.payableBalance!) {

@@ -3,23 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_card.dart';
-import 'package:sixam_mart_delivery/features/chat/controllers/chat_controller.dart';
-import 'package:sixam_mart_delivery/features/notification/domain/models/notification_body_model.dart';
-import 'package:sixam_mart_delivery/features/chat/domain/models/conversation_model.dart';
-import 'package:sixam_mart_delivery/helper/date_converter_helper.dart';
-import 'package:sixam_mart_delivery/helper/route_helper.dart';
-import 'package:sixam_mart_delivery/util/app_constants.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/manager_assets.dart';
-import 'package:sixam_mart_delivery/util/manager_colors.dart';
-import 'package:sixam_mart_delivery/util/styles.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_app_bar_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_image_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_ink_well_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_snackbar_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/paginated_list_view_widget.dart';
-import 'package:sixam_mart_delivery/features/chat/widgets/search_field_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_card.dart';
+import 'package:wefrh_rider/features/chat/controllers/chat_controller.dart';
+import 'package:wefrh_rider/features/notification/domain/models/notification_body_model.dart';
+import 'package:wefrh_rider/features/chat/domain/models/conversation_model.dart';
+import 'package:wefrh_rider/helper/date_converter_helper.dart';
+import 'package:wefrh_rider/helper/route_helper.dart';
+import 'package:wefrh_rider/util/app_constants.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/util/manager_assets.dart';
+import 'package:wefrh_rider/util/manager_colors.dart';
+import 'package:wefrh_rider/util/styles.dart';
+import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_image_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_ink_well_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
+import 'package:wefrh_rider/common/widgets/paginated_list_view_widget.dart';
+import 'package:wefrh_rider/features/chat/widgets/search_field_widget.dart';
 
 class ConversationScreen extends StatefulWidget {
   const ConversationScreen({super.key});
@@ -146,10 +146,10 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                               }
 
                                               return CustomCard(
-                                                margin: const EdgeInsets
-                                                    .symmetric(
-                                                    vertical: Dimensions
-                                                        .p16),
+                                                margin:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical:
+                                                            Dimensions.p16),
                                                 isBorder: false,
                                                 child: CustomInkWellWidget(
                                                   onTap: () {
@@ -192,8 +192,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                                           .surface
                                                           .withValues(
                                                               alpha: 0.1),
-                                                  radius:
-                                                      Dimensions.r8,
+                                                  radius: Dimensions.r8,
                                                   child: Stack(children: [
                                                     Row(children: [
                                                       ClipOval(
@@ -207,8 +206,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                                         ),
                                                       ),
                                                       const SizedBox(
-                                                          width: Dimensions
-                                                              .p10),
+                                                          width:
+                                                              Dimensions.p10),
                                                       Expanded(
                                                           child: Column(
                                                               mainAxisAlignment:
@@ -284,30 +283,39 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                                                       TextOverflow
                                                                           .ellipsis,
                                                                 ),
-                                                                conversation.unreadMessageCount! >
-                                                                        0
-                                                                    ? Container(
-                                                                        padding: EdgeInsets.all((conversation.lastMessage!.senderId ==
-                                                                                user?.id)
-                                                                            ? Dimensions.p4
-                                                                            : 0.0),
-                                                                        decoration: BoxDecoration(
-                                                                            color:
-                                                                                ManagerColors.darkGreen,
-                                                                            shape: BoxShape.circle),
-                                                                        child:
-                                                                            Text(
-                                                                          conversation.lastMessage != null
-                                                                              ? (conversation.lastMessage!.senderId == user?.id)
-                                                                                  ? conversation.unreadMessageCount.toString()
-                                                                                  : ''
-                                                                              : conversation.unreadMessageCount.toString(),
-                                                                          style: robotoMedium.copyWith(
-                                                                              color: Theme.of(context).cardColor,
-                                                                              fontSize: Dimensions.fs10),
-                                                                        ),
-                                                                      )
-                                                                    : const SizedBox(),
+                                                                if (conversation
+                                                                            .unreadMessageCount! >
+                                                                        0 &&
+                                                                    conversation
+                                                                            .lastMessage!
+                                                                            .senderId ==
+                                                                        user?.id)
+                                                                  Container(
+                                                                    padding: EdgeInsets.all((conversation.lastMessage!.senderId ==
+                                                                            user
+                                                                                ?.id)
+                                                                        ? Dimensions
+                                                                            .p4
+                                                                        : 0.0),
+                                                                    decoration: BoxDecoration(
+                                                                        color: ManagerColors
+                                                                            .darkGreen,
+                                                                        shape: BoxShape
+                                                                            .circle),
+                                                                    child: Text(
+                                                                      conversation.lastMessage !=
+                                                                              null
+                                                                          ? (conversation.lastMessage!.senderId == user?.id)
+                                                                              ? conversation.unreadMessageCount.toString()
+                                                                              : ''
+                                                                          : conversation.unreadMessageCount.toString(),
+                                                                      style: robotoMedium.copyWith(
+                                                                          color: Theme.of(context)
+                                                                              .cardColor,
+                                                                          fontSize:
+                                                                              Dimensions.fs10),
+                                                                    ),
+                                                                  )
                                                               ],
                                                             ),
                                                           ])),

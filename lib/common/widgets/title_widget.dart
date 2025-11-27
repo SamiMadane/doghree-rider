@@ -1,9 +1,9 @@
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/manager_colors.dart';
-import 'package:sixam_mart_delivery/util/styles.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/util/manager_colors.dart';
+import 'package:wefrh_rider/util/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sixam_mart_delivery/util/theme_extension.dart';
+import 'package:wefrh_rider/util/theme_extension.dart';
 
 class TitleWidget extends StatelessWidget {
   final String title;
@@ -12,6 +12,7 @@ class TitleWidget extends StatelessWidget {
   final int? orderCount;
   final TextStyle? titleStyle;
   final TextStyle? countStyle;
+  final Color? backGroundColorOfCount;
 
   const TitleWidget({
     super.key,
@@ -21,6 +22,7 @@ class TitleWidget extends StatelessWidget {
     this.orderCount,
     this.titleStyle,
     this.countStyle,
+    this.backGroundColorOfCount,
   });
 
   @override
@@ -38,10 +40,11 @@ class TitleWidget extends StatelessWidget {
                     Text(title,
                         style: titleStyle ??
                             robotoSemiBold.copyWith(fontSize: Dimensions.fs16)),
-                    const SizedBox(width: Dimensions.p10),
+                    const SizedBox(width: Dimensions.p8),
                     CircleAvatar(
                       radius: Dimensions.r8,
-                      backgroundColor: ManagerColors.darkGreen,
+                      backgroundColor:
+                          backGroundColorOfCount ?? ManagerColors.darkGreen,
                       child: Text(
                         '$orderCount',
                         style: countStyle ??
@@ -61,7 +64,7 @@ class TitleWidget extends StatelessWidget {
                     'view_all'.tr,
                     style: robotoRegular.copyWith(
                       color: customColor.naturalBlue,
-                       decoration: TextDecoration.underline,
+                      decoration: TextDecoration.underline,
                       decorationColor: customColor.naturalBlue,
                     ),
                   ),

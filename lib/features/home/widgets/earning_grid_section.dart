@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sixam_mart_delivery/features/home/widgets/earning_tile.dart';
-import 'package:sixam_mart_delivery/features/profile/controllers/profile_controller.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
+import 'package:wefrh_rider/features/home/widgets/earning_tile.dart';
+import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
 
 
 class EarningsGridSection extends StatelessWidget {
@@ -31,28 +31,28 @@ class EarningsGridSection extends StatelessWidget {
               crossAxisCount: 2,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              mainAxisSpacing: Dimensions.p20,
-              crossAxisSpacing: Dimensions.p20,
+              mainAxisSpacing: Dimensions.p16,
+              crossAxisSpacing: Dimensions.p16,
               childAspectRatio: 1.4,
               children: [
                 EarningTile(
-                  title: 'Total Earnings',
+                  title: 'total_earnings'.tr,
                   amount: profile.balance,
                   showAmount: showEarnings.value,
                   onEyeTap: () => showEarnings.value = !showEarnings.value,
                 ),
                 EarningTile(
-                  title: 'Today',
+                  title: 'today'.tr,
                   amount: profile.todaysEarning,
                   showAmount: showEarnings.value,
                 ),
                 EarningTile(
-                  title: 'This Week',
+                  title: 'this_week'.tr,
                   amount: profile.thisWeekEarning,
                   showAmount: showEarnings.value,
                 ),
                 EarningTile(
-                  title: 'This Month',
+                  title: 'this_month'.tr,
                   amount: profile.thisMonthEarning,
                   showAmount: showEarnings.value,
                 ),

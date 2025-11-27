@@ -1,15 +1,15 @@
 import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sixam_mart_delivery/api/api_client.dart';
-import 'package:sixam_mart_delivery/common/models/response_model.dart';
-import 'package:sixam_mart_delivery/features/order/domain/models/ignore_model.dart';
-import 'package:sixam_mart_delivery/features/order/domain/models/order_cancellation_body.dart';
-import 'package:sixam_mart_delivery/features/order/domain/models/order_details_model.dart';
-import 'package:sixam_mart_delivery/features/order/domain/models/order_model.dart';
-import 'package:sixam_mart_delivery/features/order/domain/models/update_status_body_model.dart';
-import 'package:sixam_mart_delivery/features/order/domain/repositories/order_repository_interface.dart';
-import 'package:sixam_mart_delivery/util/app_constants.dart';
+import 'package:wefrh_rider/api/api_client.dart';
+import 'package:wefrh_rider/common/models/response_model.dart';
+import 'package:wefrh_rider/features/order/domain/models/ignore_model.dart';
+import 'package:wefrh_rider/features/order/domain/models/order_cancellation_body.dart';
+import 'package:wefrh_rider/features/order/domain/models/order_details_model.dart';
+import 'package:wefrh_rider/features/order/domain/models/order_model.dart';
+import 'package:wefrh_rider/features/order/domain/models/update_status_body_model.dart';
+import 'package:wefrh_rider/features/order/domain/repositories/order_repository_interface.dart';
+import 'package:wefrh_rider/util/app_constants.dart';
 
 class OrderRepository implements OrderRepositoryInterface {
   final ApiClient apiClient;

@@ -1,0 +1,86 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:wefrh_rider/common/widgets/custom_card.dart';
+import 'package:wefrh_rider/common/widgets/custom_image_widget.dart';
+import 'package:wefrh_rider/common/widgets/image_diaglog_widget.dart';
+import 'package:wefrh_rider/helper/responsive_helper.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/util/styles.dart';
+
+class OrderProofSection extends StatelessWidget {
+  final List<String> proofImages;
+  final String orderStatus;
+
+  const OrderProofSection({
+    super.key,
+    required this.proofImages,
+    required this.orderStatus,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (orderStatus.toLowerCase() != 'delivered' || proofImages.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return CustomCard(
+      padding: const EdgeInsets.all(Dimensions.p16),
+      margin: const EdgeInsets.only(bottom: Dimensions.p16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header
+          Row(
+            children: [
+              Text(
+                'order_proof'.tr,
+                style: robotoSemiBold.copyWith(
+                  fontSize: Dimensions.fs16,
+                ),
+              ),
+              const SizedBox(width: Dimensions.p8),
+              Icon(
+                Icons.verified,
+                color: Theme.of(context).primaryColor,
+                size: 20,
+              ),
+            ],
+          ),
+          const SizedBox(height: Dimensions.p12),
+
+          // Images Grid
+          GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              childAspectRatio: 1.5,
+              crossAxisCount: ResponsiveHelper.isTab(context) ? 5 : 3,
+              mainAxisSpacing: Dimensions.p8,
+              crossAxisSpacing: Dimensions.p8,
+            ),
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: proofImages.length,
+            itemBuilder: (BuildContext context, index) {
+              return InkWell(
+                onTap: () => showDialog(
+                  context: context,
+                  builder: (ctx) =>
+                      ImageDialogWidget(imageUrl: proofImages[index]),
+                ),
+                borderRadius: BorderRadius.circular(Dimensions.r8),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(Dimensions.r8),
+                  child: CustomImageWidget(
+                    image: proofImages[index],
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  
+}

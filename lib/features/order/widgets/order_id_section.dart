@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_card.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/manager_colors.dart';
-import 'package:sixam_mart_delivery/util/styles.dart';
+import 'package:wefrh_rider/common/widgets/custom_card.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/util/manager_colors.dart';
+import 'package:wefrh_rider/util/styles.dart';
 
 class OrderIdSection extends StatelessWidget {
   final String orderId;
@@ -45,13 +45,12 @@ class OrderIdSection extends StatelessWidget {
           ),
           CustomCard(
             isBorder: false,
-            width: isPaid ? 60 : 80,
             padding: EdgeInsets.symmetric(
-                horizontal: Dimensions.p10,
-                vertical: Dimensions.p10),
+                horizontal: Dimensions.p10, vertical: Dimensions.p10),
             fillColor: isPaid
                 ? ManagerColors.darkGreen
                 : Theme.of(context).colorScheme.error,
+            autoWidth: true,
             child: Center(
               child: Text(
                 isPaid ? 'paid'.tr : 'unpaid'.tr,

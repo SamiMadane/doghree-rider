@@ -1,42 +1,42 @@
 import 'dart:convert';
-import 'package:sixam_mart_delivery/features/auth/screens/dm_registration_success_screen.dart';
-import 'package:sixam_mart_delivery/features/cash_in_hand/screens/my_earning_filter_screen.dart';
-import 'package:sixam_mart_delivery/features/cash_in_hand/screens/my_earning_screen.dart';
-import 'package:sixam_mart_delivery/features/navigation_handler/screens/language_init_screen.dart';
-import 'package:sixam_mart_delivery/features/notification/domain/models/notification_body_model.dart';
-import 'package:sixam_mart_delivery/features/chat/domain/models/conversation_model.dart';
-import 'package:sixam_mart_delivery/features/auth/screens/sign_in_screen.dart';
-import 'package:sixam_mart_delivery/features/auth/screens/dm_registration_screen.dart';
-import 'package:sixam_mart_delivery/features/cash_in_hand/screens/cash_in_hand_screen.dart';
-import 'package:sixam_mart_delivery/features/cash_in_hand/screens/transaction_history_screen.dart';
-import 'package:sixam_mart_delivery/features/cash_in_hand/screens/wallet_provided_earning_history_screen.dart';
-import 'package:sixam_mart_delivery/features/cash_in_hand/screens/payment_screen.dart';
-import 'package:sixam_mart_delivery/features/cash_in_hand/widgets/payment_successful_widget.dart';
-import 'package:sixam_mart_delivery/features/chat/screens/chat_screen.dart';
-import 'package:sixam_mart_delivery/features/chat/screens/conversation_screen.dart';
-import 'package:sixam_mart_delivery/features/dashboard/screens/dashboard_screen.dart';
-import 'package:sixam_mart_delivery/features/disbursement/screens/add_withdraw_method_screen.dart';
-import 'package:sixam_mart_delivery/features/disbursement/screens/disbursement_screen.dart';
-import 'package:sixam_mart_delivery/features/disbursement/screens/withdraw_method_screen.dart';
-import 'package:sixam_mart_delivery/features/forgot_password/screens/forget_pass_screen.dart';
-import 'package:sixam_mart_delivery/features/forgot_password/screens/new_pass_screen.dart';
-import 'package:sixam_mart_delivery/features/forgot_password/screens/verification_screen.dart';
-import 'package:sixam_mart_delivery/features/html/screens/html_viewer_screen.dart';
-import 'package:sixam_mart_delivery/features/language/screens/language_screen.dart';
-import 'package:sixam_mart_delivery/features/notification/screens/notification_screen.dart';
-import 'package:sixam_mart_delivery/features/order/screens/order_details_screen.dart';
-import 'package:sixam_mart_delivery/features/order/screens/running_order_screen.dart';
-import 'package:sixam_mart_delivery/features/profile/screens/setting_screen.dart';
-import 'package:sixam_mart_delivery/features/profile/screens/update_profile_screen.dart';
-import 'package:sixam_mart_delivery/features/navigation_handler/screens/navigation_handler_screen.dart';
-import 'package:sixam_mart_delivery/features/task/screens/capture_id_screen.dart';
-import 'package:sixam_mart_delivery/features/task/screens/client_screen.dart';
-import 'package:sixam_mart_delivery/features/task/screens/detailed_operation_history_screen.dart';
-import 'package:sixam_mart_delivery/features/task/screens/details_statistics_screen.dart';
-import 'package:sixam_mart_delivery/features/task/screens/finish_shift_screen.dart';
-import 'package:sixam_mart_delivery/features/task/screens/preview_id_screen.dart';
-import 'package:sixam_mart_delivery/features/task/screens/support_team_screen.dart';
-import 'package:sixam_mart_delivery/features/update/screens/update_screen.dart';
+import 'package:wefrh_rider/features/auth/screens/dm_registration_success_screen.dart';
+import 'package:wefrh_rider/features/cash_in_hand/screens/my_earning_filter_screen.dart';
+import 'package:wefrh_rider/features/cash_in_hand/screens/my_earning_screen.dart';
+import 'package:wefrh_rider/features/splash/screens/language_init_screen.dart';
+import 'package:wefrh_rider/features/notification/domain/models/notification_body_model.dart';
+import 'package:wefrh_rider/features/chat/domain/models/conversation_model.dart';
+import 'package:wefrh_rider/features/auth/screens/sign_in_screen.dart';
+import 'package:wefrh_rider/features/auth/screens/dm_registration_screen.dart';
+import 'package:wefrh_rider/features/cash_in_hand/screens/cash_in_hand_screen.dart';
+import 'package:wefrh_rider/features/cash_in_hand/screens/transaction_history_screen.dart';
+import 'package:wefrh_rider/features/cash_in_hand/screens/wallet_provided_earning_history_screen.dart';
+import 'package:wefrh_rider/features/cash_in_hand/screens/payment_screen.dart';
+import 'package:wefrh_rider/features/cash_in_hand/widgets/payment_successful_widget.dart';
+import 'package:wefrh_rider/features/chat/screens/chat_screen.dart';
+import 'package:wefrh_rider/features/chat/screens/conversation_screen.dart';
+import 'package:wefrh_rider/features/dashboard/screens/dashboard_screen.dart';
+import 'package:wefrh_rider/features/disbursement/screens/add_withdraw_method_screen.dart';
+import 'package:wefrh_rider/features/disbursement/screens/disbursement_screen.dart';
+import 'package:wefrh_rider/features/disbursement/screens/withdraw_method_screen.dart';
+import 'package:wefrh_rider/features/forgot_password/screens/forget_pass_screen.dart';
+import 'package:wefrh_rider/features/forgot_password/screens/new_pass_screen.dart';
+import 'package:wefrh_rider/features/forgot_password/screens/verification_screen.dart';
+import 'package:wefrh_rider/features/html/screens/html_viewer_screen.dart';
+import 'package:wefrh_rider/features/language/screens/language_screen.dart';
+import 'package:wefrh_rider/features/notification/screens/notification_screen.dart';
+import 'package:wefrh_rider/features/order/screens/order_details_screen.dart';
+import 'package:wefrh_rider/features/order/screens/running_order_screen.dart';
+import 'package:wefrh_rider/features/profile/screens/setting_screen.dart';
+import 'package:wefrh_rider/features/profile/screens/update_profile_screen.dart';
+import 'package:wefrh_rider/features/splash/screens/splash_screen.dart';
+import 'package:wefrh_rider/features/task/screens/capture_id_screen.dart';
+import 'package:wefrh_rider/features/task/screens/client_screen.dart';
+import 'package:wefrh_rider/features/task/screens/operation_history_screen.dart';
+import 'package:wefrh_rider/features/task/screens/details_statistics_screen.dart';
+import 'package:wefrh_rider/features/task/screens/finish_shift_screen.dart';
+import 'package:wefrh_rider/features/task/screens/preview_id_screen.dart';
+import 'package:wefrh_rider/features/task/screens/support_team_screen.dart';
+import 'package:wefrh_rider/features/update/screens/update_screen.dart';
 import 'package:get/get.dart';
 
 class RouteHelper {
@@ -194,7 +194,7 @@ class RouteHelper {
             data =
                 NotificationBodyModel.fromJson(jsonDecode(utf8.decode(decode)));
           }
-          return NavigationHandlerScreen(body: data);
+          return SplashScreen(body: data);
         }),
     GetPage(name: signIn, page: () => const SignInScreen()),
     GetPage(

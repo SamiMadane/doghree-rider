@@ -1,41 +1,59 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
 
 Future<T?> showCustomBottomSheet<T>({
   required Widget child,
   double? maxHeight,
   VoidCallback? onClose,
+  bool isDismissible = true,
   bool showCloseButton = true,
+
+  // الألوان الجديدة
+  Color? sheetBackgroundColor,
+  Color? handleColor,
+  Color? closeButtonBackgroundColor,
+  Color? closeIconColor,
+  Color? overlayColor,
 }) {
   return showModalBottomSheet<T>(
     context: Get.context!,
     isScrollControlled: true,
-    backgroundColor: Colors.transparent, // مهم عشان نشوف الضبابية
-    barrierColor: Colors.transparent, // نخلي التحكم بإيدنا
+    backgroundColor: Colors.transparent,
+    barrierColor: Colors.transparent,
+    isDismissible: isDismissible,
+    enableDrag: isDismissible,
     builder: (context) {
+      final Color resolvedSheetBg =
+          sheetBackgroundColor ?? Theme.of(context).cardColor;
+
+      final Color resolvedHandleColor =
+          handleColor ?? Theme.of(context).disabledColor;
+
+      final Color resolvedCloseBg =
+          closeButtonBackgroundColor ?? Theme.of(context).cardColor;
+
+      final Color resolvedCloseIcon =
+          closeIconColor ?? Theme.of(context).textTheme.bodyMedium!.color!;
+
+      final Color resolvedOverlay = overlayColor ??
+          Theme.of(context).textTheme.bodyMedium!.color!.withOpacity(0.1);
+
       return Stack(
         children: [
           GestureDetector(
-            onTap: () => Navigator.of(context).pop(),
+            onTap: isDismissible ? () => Navigator.of(context).pop() : null,
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
-              child: Container(
-                  color: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.color
-                      ?.withOpacity(0.1)),
+              child: Container(color: resolvedOverlay),
             ),
           ),
-
-          // ✅ البوتوم شيت نفسه
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
               decoration: BoxDecoration(
-                color: Theme.of(context).cardColor,
+                color: resolvedSheetBg,
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(Dimensions.r20),
                   topRight: Radius.circular(Dimensions.r20),
@@ -51,19 +69,22 @@ Future<T?> showCustomBottomSheet<T>({
                   Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      if (!showCloseButton)
-                        Padding(
-                          padding: const EdgeInsets.all(Dimensions.p12),
-                          child: Container(
-                            height: 5,
-                            width: 50,
-                            decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.circular(Dimensions.r16),
-                              color: Theme.of(context).disabledColor,
-                            ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          bottom: Dimensions.p6,
+                          left: Dimensions.p12,
+                          right: Dimensions.p12,
+                          top: Dimensions.p12,
+                        ),
+                        child: Container(
+                          height: 5,
+                          width: 50,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(Dimensions.r16),
+                            color: resolvedHandleColor,
                           ),
                         ),
+                      ),
                       child,
                     ],
                   ),
@@ -77,22 +98,23 @@ Future<T?> showCustomBottomSheet<T>({
                           padding: const EdgeInsets.all(Dimensions.p10),
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Theme.of(context).cardColor,
+                            color: resolvedCloseBg,
                           ),
                           child: Container(
+                            padding: EdgeInsets.all(Dimensions.p4),
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: Theme.of(context).cardColor,
-                              border:
-                                  Border.all(color:(Theme.of(context).textTheme.bodyMedium?.color)! , width: 1.5),
+                              color: resolvedCloseBg,
+                              border: Border.all(
+                                color: resolvedCloseIcon,
+                                width: 1.5,
+                              ),
                             ),
-                            padding: EdgeInsets.all(Dimensions.p4),
-                            child: Icon(Icons.close,
-                                size: 20,
-                                color: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .color),
+                            child: Icon(
+                              Icons.close,
+                              size: 20,
+                              color: resolvedCloseIcon,
+                            ),
                           ),
                         ),
                       ),

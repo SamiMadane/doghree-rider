@@ -1,16 +1,16 @@
 import 'package:country_code_picker/country_code_picker.dart';
-import 'package:sixam_mart_delivery/common/widgets/field_with_label.dart';
-import 'package:sixam_mart_delivery/features/navigation_handler/controllers/navigation_handler_controller.dart';
-import 'package:sixam_mart_delivery/features/forgot_password/controllers/forgot_password_controller.dart';
-import 'package:sixam_mart_delivery/helper/custom_validator_helper.dart';
-import 'package:sixam_mart_delivery/helper/route_helper.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/manager_assets.dart';
-import 'package:sixam_mart_delivery/util/styles.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_app_bar_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_button_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_snackbar_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_text_field_widget.dart';
+import 'package:wefrh_rider/common/widgets/widget_with_label.dart';
+import 'package:wefrh_rider/features/splash/controllers/splash_controller.dart';
+import 'package:wefrh_rider/features/forgot_password/controllers/forgot_password_controller.dart';
+import 'package:wefrh_rider/helper/custom_validator_helper.dart';
+import 'package:wefrh_rider/helper/route_helper.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/util/manager_assets.dart';
+import 'package:wefrh_rider/util/styles.dart';
+import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_text_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -26,10 +26,10 @@ class _ForgetPassScreenState extends State<ForgetPassScreen> {
 
   final TextEditingController _numberController = TextEditingController();
   String? _countryDialCode = CountryCode.fromCountryCode(
-          Get.find<NavigationHandlerController>().configModel!.country!)
+          Get.find<SplashController>().configModel!.country!)
       .dialCode;
   String? _countryCode = CountryCode.fromCountryCode(
-          Get.find<NavigationHandlerController>().configModel!.country!)
+          Get.find<SplashController>().configModel!.country!)
       .code;
 
   @override
@@ -80,7 +80,7 @@ class _ForgetPassScreenState extends State<ForgetPassScreen> {
                 },
                 countryDialCode: _countryCode ??
                     CountryCode.fromCountryCode(
-                            Get.find<NavigationHandlerController>()
+                            Get.find<SplashController>()
                                 .configModel!
                                 .country!)
                         .code,
@@ -89,7 +89,7 @@ class _ForgetPassScreenState extends State<ForgetPassScreen> {
                     GetPlatform.isWeb ? _forgetPass(_countryDialCode!) : null,
               ),
             ),
-            const SizedBox(height: Dimensions.p25),
+            const SizedBox(height: Dimensions.p20),
             GetBuilder<ForgotPasswordController>(
                 builder: (forgotPasswordController) {
               return !forgotPasswordController.isLoading
@@ -122,7 +122,7 @@ class _ForgetPassScreenState extends State<ForgetPassScreen> {
           .forgetPassword(numberWithCountryCode)
           .then((status) async {
         if (status.isSuccess) {
-          if (Get.find<NavigationHandlerController>()
+          if (Get.find<SplashController>()
               .configModel!
               .firebaseOtpVerification!) {
             Get.find<ForgotPasswordController>()

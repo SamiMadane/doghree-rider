@@ -15,7 +15,7 @@ plugins {
 }
 
 android {
-    namespace = "com.sixamtech.sixam_mart_delivery_app"
+    namespace = "com.wefrh.Rider"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = "27.0.12077973"
 
@@ -38,7 +38,7 @@ android {
         }
     }
     defaultConfig {
-        applicationId = "com.sixamtech.sixam_mart_delivery_app"
+        applicationId = "com.wefrh.Rider"
         minSdk = 23
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

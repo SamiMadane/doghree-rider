@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_utils/src/platform/platform.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_text_field_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/field_with_label.dart';
-import 'package:sixam_mart_delivery/features/auth/controllers/auth_controller.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/manager_assets.dart';
-import 'package:sixam_mart_delivery/util/manager_colors.dart';
+import 'package:wefrh_rider/common/widgets/custom_text_field_widget.dart';
+import 'package:wefrh_rider/common/widgets/widget_with_label.dart';
+import 'package:wefrh_rider/features/auth/controllers/auth_controller.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/util/manager_assets.dart';
+import 'package:wefrh_rider/util/manager_colors.dart';
 
 class DmRegistrationStep1 extends StatelessWidget {
   final TextEditingController fNameController;
@@ -137,7 +137,6 @@ class DmRegistrationStep1 extends StatelessWidget {
           label: 'mobile_number'.tr,
           textField: CustomTextFieldWidget(
             labelText: 'phone_number'.tr,
-
             hintText: 'xxx-xxx-xxxxx'.tr,
             isRequired: true,
             controller: phoneController,

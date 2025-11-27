@@ -1,6 +1,6 @@
-import 'package:sixam_mart_delivery/api/api_client.dart';
-import 'package:sixam_mart_delivery/features/auth/domain/models/delivery_man_body_model.dart';
-import 'package:sixam_mart_delivery/interface/repository_interface.dart';
+import 'package:wefrh_rider/api/api_client.dart';
+import 'package:wefrh_rider/features/auth/domain/models/delivery_man_body_model.dart';
+import 'package:wefrh_rider/interface/repository_interface.dart';
 
 abstract class AuthRepositoryInterface implements RepositoryInterface {
   Future<dynamic> login(String phone, String password);
@@ -18,4 +18,7 @@ abstract class AuthRepositoryInterface implements RepositoryInterface {
   void setNotificationActive(bool isActive);
   Future<bool> clearUserNumberAndPassword();
   Future<dynamic> registerDeliveryMan(DeliveryManBodyModel deliveryManBody, List<MultipartBody> multiParts);
+  Future<void> setLogoutReason(String reason);
+  Future<String?> getLogoutReason();
+  Future<void> clearLogoutReason();
 }

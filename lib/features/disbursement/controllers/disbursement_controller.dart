@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sixam_mart_delivery/features/cash_in_hand/domain/models/withdraw_method_model.dart';
-import 'package:sixam_mart_delivery/features/disbursement/domain/models/disbursement_method_model.dart' as disburse;
-import 'package:sixam_mart_delivery/features/disbursement/domain/models/disbursement_report_model.dart' as report;
-import 'package:sixam_mart_delivery/common/widgets/custom_dropdown_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_snackbar_widget.dart';
-import 'package:sixam_mart_delivery/features/disbursement/domain/services/disbursement_service_interface.dart';
+import 'package:wefrh_rider/features/cash_in_hand/domain/models/withdraw_method_model.dart';
+import 'package:wefrh_rider/features/disbursement/domain/models/disbursement_method_model.dart' as disburse;
+import 'package:wefrh_rider/features/disbursement/domain/models/disbursement_report_model.dart' as report;
+import 'package:wefrh_rider/common/widgets/custom_dropdown_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
+import 'package:wefrh_rider/features/disbursement/domain/services/disbursement_service_interface.dart';
 
 class DisbursementController extends GetxController implements GetxService {
   final DisbursementServiceInterface disbursementServiceInterface;

@@ -1,15 +1,15 @@
 import 'dart:async';
-import 'package:sixam_mart_delivery/common/models/response_model.dart';
-import 'package:sixam_mart_delivery/features/auth/controllers/auth_controller.dart';
-import 'package:sixam_mart_delivery/features/navigation_handler/controllers/navigation_handler_controller.dart';
-import 'package:sixam_mart_delivery/features/address/domain/models/record_location_body_model.dart';
-import 'package:sixam_mart_delivery/features/profile/domain/models/profile_model.dart';
-import 'package:sixam_mart_delivery/helper/route_helper.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_snackbar_widget.dart';
+import 'package:wefrh_rider/common/models/response_model.dart';
+import 'package:wefrh_rider/features/auth/controllers/auth_controller.dart';
+import 'package:wefrh_rider/features/address/domain/models/record_location_body_model.dart';
+import 'package:wefrh_rider/features/splash/controllers/splash_controller.dart';
+import 'package:wefrh_rider/features/profile/domain/models/profile_model.dart';
+import 'package:wefrh_rider/helper/route_helper.dart';
+import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:sixam_mart_delivery/features/profile/domain/services/profile_service_interface.dart';
+import 'package:wefrh_rider/features/profile/domain/services/profile_service_interface.dart';
 
 class ProfileController extends GetxController implements GetxService {
   final ProfileServiceInterface profileServiceInterface;
@@ -40,18 +40,18 @@ Future<void> pickProfileImage() async {
   }
 }
 
-  Future<void> getProfile() async {
-    ProfileModel? profileModel = await profileServiceInterface.getProfileInfo();
-    if (profileModel != null) {
-      _profileModel = profileModel;
-      if (_profileModel!.active == 1) {
-        profileServiceInterface.checkPermission(() => startLocationRecord());
-      } else {
-        stopLocationRecord();
-      }
+ Future<void> getProfile({bool isFromSplash = false}) async {
+  ProfileModel? profileModel = await profileServiceInterface.getProfileInfo();
+  if (profileModel != null) {
+    _profileModel = profileModel;
+    if (_profileModel!.active == 1) {
+      profileServiceInterface.checkPermission(() => startLocationRecord());
+    } else {
+      stopLocationRecord();
     }
-    update();
   }
+  update();
+}
 
   Future<bool> updateUserInfo(
       ProfileModel updateUserModel, String token) async {
@@ -137,7 +137,7 @@ Future<void> pickProfileImage() async {
       longitude: locationResult.longitude,
     );
 
-    if (Get.find<NavigationHandlerController>().configModel!.webSocketStatus!) {
+    if (Get.find<SplashController>().configModel!.webSocketStatus!) {
       await profileServiceInterface.recordWebSocketLocation(_recordLocation!);
     } else {
       await profileServiceInterface.recordLocation(_recordLocation!);

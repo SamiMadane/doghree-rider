@@ -1,128 +1,154 @@
-import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/manager_colors.dart';
-import 'package:sixam_mart_delivery/util/styles.dart';
-import 'package:sixam_mart_delivery/util/theme_extension.dart';
+import 'package:get/get.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
 
 class CustomButtonWidget extends StatelessWidget {
   final Function? onPressed;
   final String buttonText;
   final bool transparent;
-  final EdgeInsets? margin;
+  final bool isBorder;
+  final bool isBold;
+  final bool isViewReply;
+  final bool isLoading;
+  final Color? backgroundColor;
+  final Color? fontColor;
+  final Color? borderColor;
+  final Color? iconColor;
+  final Color? textColor;
+  final Color? color;
+  final IconData? iconData;
+  final Widget? icon;
+  final EdgeInsetsGeometry? margin;
   final double? height;
   final double? width;
   final double? fontSize;
   final double radius;
-  final Widget? icon;
-  final Color? backgroundColor;
-  final Color? fontColor;
-  final bool isLoading;
-  final bool isBold;
-  final bool isBorder;
-  final Color? borderColor;
-  const CustomButtonWidget(
-      {super.key,
-      this.onPressed,
-      required this.buttonText,
-      this.transparent = false,
-      this.margin,
-      this.width,
-      this.height,
-      this.fontSize,
-      this.radius = Dimensions.r16,
-      this.icon,
-      this.backgroundColor,
-      this.fontColor,
-      this.isLoading = false,
-      this.isBold = true,
-      this.isBorder = false,
-      this.borderColor
-      });
+  final FontWeight? fontWeight;
+  final bool autoWidth;
+
+  const CustomButtonWidget({
+    super.key,
+    this.onPressed,
+    required this.buttonText,
+    this.transparent = false,
+    this.margin,
+    this.width,
+    this.height,
+    this.fontSize,
+    this.radius = 16,
+    this.backgroundColor,
+    this.fontColor,
+    this.borderColor,
+    this.iconColor,
+    this.textColor,
+    this.color,
+    this.icon,
+    this.iconData,
+    this.isLoading = false,
+    this.isBold = true,
+    this.isBorder = false,
+    this.isViewReply = false,
+    this.fontWeight,
+    this.autoWidth = false,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final customColor = Theme.of(context).extension<CustomColorsExtension>()!;
+    final Color effectiveBgColor = onPressed == null
+        ? Theme.of(context).disabledColor
+        : transparent
+            ? Colors.transparent
+            : backgroundColor ?? color ?? Theme.of(context).primaryColor;
 
-    final ButtonStyle flatButtonStyle = TextButton.styleFrom(
-      backgroundColor: onPressed == null
-          ? Theme.of(context).hintColor
-          : transparent
-              ? Colors.transparent
-              : backgroundColor ?? Theme.of(context).primaryColor,
-      minimumSize: Size(width != null ? width! : Dimensions.webMaxWidth,
-          height != null ? height! : 50),
-      padding: EdgeInsets.symmetric(
-          horizontal: Dimensions.p10,
-          vertical: Dimensions.p4),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(radius),
-        side:
-            isBorder ? BorderSide(color: borderColor ?? customColor.strock2 ,width: 0.5) : BorderSide.none,
+    final Color effectiveTextColor = textColor ??
+        fontColor ??
+        (transparent || isViewReply
+            ? Theme.of(context).primaryColor
+            : onPressed == null
+                ? Theme.of(context).cardColor
+                : Colors.white);
+
+    Widget buttonContent;
+
+    if (isLoading) {
+      buttonContent = Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            height: 15,
+            width: 15,
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(
+                  textColor ?? Colors.white),
+              strokeWidth: 2,
+            ),
+          ),
+          const SizedBox(width: 10),
+          Text(
+            'loading'.tr,
+            style: TextStyle(
+                color: textColor ?? Colors.white, fontWeight: FontWeight.w500),
+          ),
+        ],
+      );
+    } else {
+      buttonContent = Row(
+        mainAxisSize: autoWidth ? MainAxisSize.min : MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
+          textDirection: TextDirection.ltr,
+        children: [
+          if (icon != null)
+            Padding(
+              padding: const EdgeInsetsDirectional.symmetric(horizontal: Dimensions.p8),
+              child: icon!,
+            ),
+          if (icon == null && iconData != null)
+            Padding(
+              padding: const EdgeInsetsDirectional.symmetric(horizontal: Dimensions.p8),
+              child: Icon(
+                iconData,
+                color: iconColor ??
+                    (transparent ? Theme.of(context).primaryColor : Colors.white),
+              ),
+            ),
+          Flexible(
+            fit: FlexFit.loose,
+            child: Text(
+              buttonText,
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: effectiveTextColor,
+                fontSize: fontSize ?? 16,
+                fontWeight: fontWeight ?? (isBold ? FontWeight.w600 : FontWeight.normal),
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+
+    return Padding(
+      padding: margin ?? EdgeInsets.zero,
+      child: SizedBox(
+        width: autoWidth ? null : width ?? double.infinity,
+        height: height ?? 50,
+        child: TextButton(
+          onPressed: isLoading ? null : onPressed as void Function()?,
+          style: TextButton.styleFrom(
+            backgroundColor: effectiveBgColor,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(radius),
+              side: isBorder
+                  ? BorderSide(color: borderColor ?? Colors.grey, width: 1)
+                  : BorderSide.none,
+            ),
+          ),
+          child: buttonContent,
+        ),
       ),
     );
-
-    return Center(
-        child: SizedBox(
-            width: width ?? Dimensions.webMaxWidth,
-            child: Padding(
-              padding: margin == null ? const EdgeInsets.all(0) : margin!,
-              child: TextButton(
-                onPressed: isLoading ? null : onPressed as void Function()?,
-                style: flatButtonStyle,
-                child: isLoading
-                    ? Center(
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const SizedBox(
-                                height: 15,
-                                width: 15,
-                                child: CircularProgressIndicator(
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                      Colors.white),
-                                  strokeWidth: 2,
-                                ),
-                              ),
-                              const SizedBox(
-                                  width: Dimensions.p10),
-                              Text('loading'.tr,
-                                  style: robotoMedium.copyWith(
-                                      color: Colors.white)),
-                            ]),
-                      )
-                    : Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                            icon != null
-                                ? Padding(
-                                    padding: const EdgeInsets.only(
-                                        right:
-                                            Dimensions.p4),
-                                    child: icon
-                                  )
-                                : const SizedBox(),
-                            Text(buttonText,
-                                textAlign: TextAlign.center,
-                                style: isBold
-                                    ? robotoSemiBold.copyWith(
-                                        color: fontColor ??
-                                            (transparent
-                                                ? Theme.of(context).primaryColor
-                                                : onPressed == null ? Theme.of(context).cardColor : ManagerColors.white),
-                                        fontSize: fontSize ??
-                                            Dimensions.fs16,
-                                      )
-                                    : robotoRegular.copyWith(
-                                        color: fontColor ??
-                                            (transparent
-                                                ? Theme.of(context).primaryColor
-                                                : Colors.white),
-                                        fontSize: fontSize ??
-                                            Dimensions.fs16,
-                                      )),
-                          ]),
-              ),
-            )));
   }
 }

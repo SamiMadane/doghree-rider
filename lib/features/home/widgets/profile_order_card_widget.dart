@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sixam_mart_delivery/util/styles.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
+import 'package:wefrh_rider/util/styles.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 
 class ProfileOrderCardWidget extends StatelessWidget {

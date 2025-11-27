@@ -1,31 +1,51 @@
 import 'dart:async';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:sixam_mart_delivery/api/api_client.dart';
-import 'package:sixam_mart_delivery/common/models/response_model.dart';
-import 'package:sixam_mart_delivery/features/profile/domain/models/profile_model.dart';
-import 'package:sixam_mart_delivery/util/app_constants.dart';
+import 'package:wefrh_rider/api/api_client.dart';
+import 'package:wefrh_rider/common/models/response_model.dart';
+import 'package:wefrh_rider/features/profile/domain/models/profile_model.dart';
+import 'package:wefrh_rider/util/app_constants.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sixam_mart_delivery/features/forgot_password/domain/repositories/forgot_password_repository_interface.dart';
+import 'package:wefrh_rider/features/forgot_password/domain/repositories/forgot_password_repository_interface.dart';
 
 class ForgotPasswordRepository implements ForgotPasswordRepositoryInterface {
   final ApiClient apiClient;
   final SharedPreferences sharedPreferences;
   ForgotPasswordRepository({required this.apiClient, required this.sharedPreferences});
+@override
+Future<ResponseModel> changePassword(
+  ProfileModel userInfoModel,
+  String currentPassword,
+  String newPassword,
+) async {
+  ResponseModel responseModel;
 
-  @override
-  Future<ResponseModel> changePassword(ProfileModel userInfoModel, String password) async {
-    ResponseModel responseModel;
-    Response response = await apiClient.postData(AppConstants.updateProfileUri, {'_method': 'put', 'f_name': userInfoModel.fName,
-      'l_name': userInfoModel.lName, 'email': userInfoModel.email, 'password': password, 'token': _getUserToken()}, handleError: false);
-    if(response.statusCode == 200) {
-      responseModel = ResponseModel(true, response.body["message"]);
-    }else{
-      responseModel = ResponseModel(false, response.statusText);
-    }
-    return responseModel;
+  // تجهيز body مع كلمة المرور الحالية والجديدة
+  Map<String, dynamic> body = {
+    '_method': 'put',
+    'f_name': userInfoModel.fName,
+    'l_name': userInfoModel.lName,
+    'email': userInfoModel.email,
+    'current_password': currentPassword, // كلمة المرور الحالية
+    'password': newPassword, // كلمة المرور الجديدة
+    'token': _getUserToken(),
+  };
+
+  Response response = await apiClient.postData(
+    AppConstants.updateProfileUri,
+    body,
+    handleError: false,
+  );
+  if (response.statusCode == 200) {
+    responseModel = ResponseModel(true, response.body["message"]);
+  } else {
+    responseModel = ResponseModel(false, response.statusText);
   }
+
+  return responseModel;
+}
+
 
   @override
   Future<ResponseModel> forgetPassword(String? phone) async {

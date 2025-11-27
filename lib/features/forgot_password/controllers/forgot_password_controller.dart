@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:sixam_mart_delivery/features/profile/domain/models/profile_model.dart';
-import 'package:sixam_mart_delivery/common/models/response_model.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_snackbar_widget.dart';
+import 'package:wefrh_rider/features/profile/domain/models/profile_model.dart';
+import 'package:wefrh_rider/common/models/response_model.dart';
+import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
 import 'package:get/get.dart';
-import 'package:sixam_mart_delivery/features/forgot_password/domain/services/forgot_password_service_interface.dart';
-import 'package:sixam_mart_delivery/helper/route_helper.dart';
+import 'package:wefrh_rider/features/forgot_password/domain/services/forgot_password_service_interface.dart';
+import 'package:wefrh_rider/helper/route_helper.dart';
 
 class ForgotPasswordController extends GetxController implements GetxService {
   final ForgotPasswordServiceInterface forgotPasswordServiceInterface;
@@ -17,10 +17,10 @@ class ForgotPasswordController extends GetxController implements GetxService {
   String _verificationCode = '';
   String get verificationCode => _verificationCode;
 
-  Future<bool> changePassword(ProfileModel updatedUserModel, String password) async {
+  Future<bool> changePassword(ProfileModel updatedUserModel, String currentPassword, String password) async {
     _isLoading = true;
     update();
-    ResponseModel responseModel = await forgotPasswordServiceInterface.changePassword(updatedUserModel, password);
+    ResponseModel responseModel = await forgotPasswordServiceInterface.changePassword(updatedUserModel, currentPassword, password);
     _isLoading = false;
     if (responseModel.isSuccess) {
       Get.back();
@@ -32,10 +32,10 @@ class ForgotPasswordController extends GetxController implements GetxService {
     return responseModel.isSuccess;
   }
 
-  Future<ResponseModel> forgetPassword(String? email) async {
+  Future<ResponseModel> forgetPassword(String? phone) async {
     _isLoading = true;
     update();
-    ResponseModel responseModel = await forgotPasswordServiceInterface.forgetPassword(email);
+    ResponseModel responseModel = await forgotPasswordServiceInterface.forgetPassword(phone);
     _isLoading = false;
     update();
     return responseModel;

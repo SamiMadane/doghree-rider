@@ -1,9 +1,9 @@
-import 'package:sixam_mart_delivery/features/order/controllers/order_controller.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/styles.dart';
+import 'package:wefrh_rider/features/order/controllers/order_controller.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/util/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sixam_mart_delivery/features/order/widgets/camera_button_sheet_widget.dart';
+import 'package:wefrh_rider/features/order/widgets/camera_button_sheet_widget.dart';
 
 class DialogImageWidget extends StatelessWidget {
   const DialogImageWidget({super.key});

@@ -1,9 +1,9 @@
 import 'package:get/get.dart';
-import 'package:sixam_mart_delivery/common/models/response_model.dart';
-import 'package:sixam_mart_delivery/features/cash_in_hand/domain/models/earning_report_model.dart';
-import 'package:sixam_mart_delivery/features/cash_in_hand/domain/models/wallet_payment_model.dart';
-import 'package:sixam_mart_delivery/features/cash_in_hand/domain/repositories/cash_in_hand_repository_interface.dart';
-import 'package:sixam_mart_delivery/features/cash_in_hand/domain/services/cash_in_hand_service_interface.dart';
+import 'package:wefrh_rider/common/models/response_model.dart';
+import 'package:wefrh_rider/features/cash_in_hand/domain/models/earning_report_model.dart';
+import 'package:wefrh_rider/features/cash_in_hand/domain/models/wallet_payment_model.dart';
+import 'package:wefrh_rider/features/cash_in_hand/domain/repositories/cash_in_hand_repository_interface.dart';
+import 'package:wefrh_rider/features/cash_in_hand/domain/services/cash_in_hand_service_interface.dart';
 
 class CashInHandService implements CashInHandServiceInterface {
   final CashInHandRepositoryInterface cashInHandRepositoryInterface;

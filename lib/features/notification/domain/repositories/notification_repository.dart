@@ -1,27 +1,33 @@
 import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sixam_mart_delivery/api/api_client.dart';
-import 'package:sixam_mart_delivery/features/notification/domain/models/notification_model.dart';
-import 'package:sixam_mart_delivery/features/notification/domain/repositories/notification_repository_interface.dart';
-import 'package:sixam_mart_delivery/util/app_constants.dart';
+import 'package:wefrh_rider/api/api_client.dart';
+import 'package:wefrh_rider/features/notification/domain/models/notification_model.dart';
+import 'package:wefrh_rider/features/notification/domain/repositories/notification_repository_interface.dart';
+import 'package:wefrh_rider/util/app_constants.dart';
 
 class NotificationRepository implements NotificationRepositoryInterface {
   final ApiClient apiClient;
   final SharedPreferences sharedPreferences;
-  NotificationRepository({required this.apiClient, required this.sharedPreferences});
+  NotificationRepository(
+      {required this.apiClient, required this.sharedPreferences});
 
   @override
   Future<List<NotificationModel>?> getList() async {
     List<NotificationModel>? notificationList;
-    Response response = await apiClient.getData('${AppConstants.notificationUri}${_getUserToken()}');
-    if(response.statusCode == 200){
+    Response response = await apiClient
+        .getData('${AppConstants.notificationUri}${_getUserToken()}');
+    if (response.statusCode == 200) {
       notificationList = [];
       response.body.forEach((notification) {
         NotificationModel notify = NotificationModel.fromJson(notification);
         notify.title = notification['data']['title'];
         notify.description = notification['data']['description'];
         notify.imageFullUrl = notification['image_full_url'];
+        // هذا السطر مهم جداً - استخراج data كـ Map كامل
+        if (notification['data'] != null) {
+          notify.data = Data.fromJson(notification['data']);
+        }
         notificationList!.add(notify);
       });
     }
@@ -30,7 +36,9 @@ class NotificationRepository implements NotificationRepositoryInterface {
 
   @override
   Future<bool> sendDeliveredNotification(int? orderID) async {
-    Response response = await apiClient.postData(AppConstants.deliveredOrderNotificationUri, {"_method": "put", 'token': _getUserToken(), 'order_id': orderID});
+    Response response = await apiClient.postData(
+        AppConstants.deliveredOrderNotificationUri,
+        {"_method": "put", 'token': _getUserToken(), 'order_id': orderID});
     return (response.statusCode == 200);
   }
 
@@ -51,7 +59,7 @@ class NotificationRepository implements NotificationRepositoryInterface {
   @override
   List<int> getNotificationIdList() {
     List<String>? list = [];
-    if(sharedPreferences.containsKey(AppConstants.notificationIdList)) {
+    if (sharedPreferences.containsKey(AppConstants.notificationIdList)) {
       list = sharedPreferences.getStringList(AppConstants.notificationIdList);
     }
     List<int> notificationIdList = [];
@@ -89,5 +97,4 @@ class NotificationRepository implements NotificationRepositoryInterface {
   Future update(Map<String, dynamic> body) {
     throw UnimplementedError();
   }
-
 }

@@ -2,18 +2,18 @@ import 'dart:async';
 import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/services.dart';
-import 'package:sixam_mart_delivery/features/auth/controllers/auth_controller.dart';
-import 'package:sixam_mart_delivery/features/language/controllers/language_controller.dart';
-import 'package:sixam_mart_delivery/features/navigation_handler/controllers/navigation_handler_controller.dart';
-import 'package:sixam_mart_delivery/common/controllers/theme_controller.dart';
-import 'package:sixam_mart_delivery/features/notification/domain/models/notification_body_model.dart';
-import 'package:sixam_mart_delivery/helper/date_converter_helper.dart';
-import 'package:sixam_mart_delivery/helper/notification_helper.dart';
-import 'package:sixam_mart_delivery/helper/route_helper.dart';
-import 'package:sixam_mart_delivery/theme/dark_theme.dart';
-import 'package:sixam_mart_delivery/theme/light_theme.dart';
-import 'package:sixam_mart_delivery/util/app_constants.dart';
-import 'package:sixam_mart_delivery/util/messages.dart';
+import 'package:wefrh_rider/features/auth/controllers/auth_controller.dart';
+import 'package:wefrh_rider/features/language/controllers/language_controller.dart';
+import 'package:wefrh_rider/features/splash/controllers/splash_controller.dart';
+import 'package:wefrh_rider/common/controllers/theme_controller.dart';
+import 'package:wefrh_rider/features/notification/domain/models/notification_body_model.dart';
+import 'package:wefrh_rider/helper/date_converter_helper.dart';
+import 'package:wefrh_rider/helper/notification_helper.dart';
+import 'package:wefrh_rider/helper/route_helper.dart';
+import 'package:wefrh_rider/theme/dark_theme.dart';
+import 'package:wefrh_rider/theme/light_theme.dart';
+import 'package:wefrh_rider/util/app_constants.dart';
+import 'package:wefrh_rider/util/messages.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -36,10 +36,10 @@ Future<void> main() async {
   if (GetPlatform.isAndroid) {
     await Firebase.initializeApp(
       options: const FirebaseOptions(
-        apiKey: "AIzaSyCc3OCd5I2xSlnftZ4bFAbuCzMhgQHLivA",
-        appId: "1:491987943015:android:fe79b69339834d5c8f1ec2",
-        messagingSenderId: "491987943015",
-        projectId: "stackmart-500c7",
+        apiKey: "AIzaSyA9r4E873RMreR9D-60tDHjz9No57fAbNk",
+        appId: "1:696479427007:android:5c22bd1037d746be0cd90a",
+        messagingSenderId: "696479427007",
+        projectId: "serious-venture-434014-q3",
       ),
     );
   } else {
@@ -71,7 +71,7 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key, required this.languages, this.body});
 
   void _route() {
-    Get.find<NavigationHandlerController>()
+    Get.find<SplashController>()
         .getConfigData()
         .then((bool isSuccess) async {
       if (isSuccess) {
@@ -85,7 +85,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (GetPlatform.isWeb) {
-      Get.find<NavigationHandlerController>().initSharedData();
+      Get.find<SplashController>().initSharedData();
       _route();
     }
 
@@ -99,7 +99,7 @@ class MyApp extends StatelessWidget {
 
     return GetBuilder<ThemeController>(builder: (themeController) {
       return GetBuilder<LocalizationController>(builder: (localizeController) {
-        return GetBuilder<NavigationHandlerController>(
+        return GetBuilder<SplashController>(
             builder: (splashController) {
           return (GetPlatform.isWeb && splashController.configModel == null)
               ? const SizedBox()

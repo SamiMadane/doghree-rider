@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_button_widget.dart';
-import 'package:sixam_mart_delivery/features/notification/controllers/notification_controller.dart';
-import 'package:sixam_mart_delivery/features/order/widgets/collect_money_delivery_sheet_widget.dart';
-import 'package:sixam_mart_delivery/features/order/widgets/verify_delivery_sheet_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
+import 'package:wefrh_rider/features/notification/controllers/notification_controller.dart';
+import 'package:wefrh_rider/features/order/widgets/collect_money_delivery_sheet_widget.dart';
+import 'package:wefrh_rider/features/order/widgets/verify_delivery_sheet_widget.dart';
 
 class CompleteDeliveryButton extends StatelessWidget {
   final dynamic order;

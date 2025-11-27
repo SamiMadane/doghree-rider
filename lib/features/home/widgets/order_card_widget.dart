@@ -2,18 +2,16 @@ import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_card.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_outlined_button.dart';
-import 'package:sixam_mart_delivery/features/home/widgets/order_action_row.dart';
-import 'package:sixam_mart_delivery/features/order/domain/models/order_model.dart';
-import 'package:sixam_mart_delivery/features/order/screens/order_details_screen.dart';
-import 'package:sixam_mart_delivery/helper/route_helper.dart';
-import 'package:sixam_mart_delivery/util/app_constants.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/manager_assets.dart';
-import 'package:sixam_mart_delivery/util/manager_colors.dart';
-import 'package:sixam_mart_delivery/util/styles.dart';
-import 'package:url_launcher/url_launcher_string.dart';
+import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_card.dart';
+import 'package:wefrh_rider/common/widgets/custom_image_widget.dart';
+import 'package:wefrh_rider/features/order/domain/models/order_model.dart';
+import 'package:wefrh_rider/features/order/screens/order_details_screen.dart';
+import 'package:wefrh_rider/helper/route_helper.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/util/manager_assets.dart';
+import 'package:wefrh_rider/util/manager_colors.dart';
+import 'package:wefrh_rider/util/styles.dart';
 
 class OrderCardWidget extends StatelessWidget {
   final OrderModel order;
@@ -30,12 +28,11 @@ class OrderCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool parcel = order.orderType == 'parcel';
-    var isArabic =
-        Get.locale?.languageCode == AppConstants.languages[1].languageCode;
 
     return CustomCard(
       width: MediaQuery.of(context).size.width,
       padding: const EdgeInsets.all(Dimensions.p16),
+      margin: const EdgeInsetsDirectional.only(end: Dimensions.p16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -43,43 +40,42 @@ class OrderCardWidget extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              RichText(
-                text: TextSpan(
-                  children: [
-                    TextSpan(
-                      text: '${'id_label'.tr}: ', // هذا نص الـ Label للترجمة
-                      style: robotoSemiBold.copyWith(
-                        fontSize: Dimensions.fs14,
-                        color: Theme.of(context).hintColor, // لون رمادي
+              Expanded(
+                child: RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: '${'id_label'.tr}: ', // هذا نص الـ Label للترجمة
+                        style: robotoSemiBold.copyWith(
+                          fontSize: Dimensions.fs14,
+                          color: Theme.of(context).hintColor, // لون رمادي
+                        ),
                       ),
-                    ),
-                    TextSpan(
-                      text: '#${order.id}', // القيمة نفسها
-                      style: robotoSemiBold.copyWith(
-                        fontSize: Dimensions.fs14,
-                        color: ManagerColors.darkGreen, // برايمري كولور
+                      TextSpan(
+                        text: '#${order.id}', // القيمة نفسها
+                        style: robotoSemiBold.copyWith(
+                          fontSize: Dimensions.fs14,
+                          color: ManagerColors.darkGreen, // برايمري كولور
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
               CustomCard(
-                width: isArabic ? 90 : 80,
                 isBorder: false,
+                autoWidth: true,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                 fillColor: order.paymentStatus == 'paid'
                     ? ManagerColors.greenLightMode
                     : Theme.of(context).colorScheme.error,
                 borderRadius: Dimensions.r20,
-                child: Center(
-                  child: Text(
-                    order.paymentStatus == 'paid' ? 'paid'.tr : 'unpaid'.tr,
-                    style: robotoMedium.copyWith(
-                      color: ManagerColors.white,
-                      fontSize: Dimensions.fs14,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                child: Text(
+                  order.paymentStatus == 'paid' ? 'paid'.tr : 'unpaid'.tr,
+                  style: robotoMedium.copyWith(
+                    color: ManagerColors.white,
+                    fontSize: Dimensions.fs14,
                   ),
                 ),
               ),
@@ -93,7 +89,13 @@ class OrderCardWidget extends StatelessWidget {
             children: [
               Column(
                 children: [
-                  Image.asset(ManagerAssets.storeImage, width: 24, height: 24),
+                  ClipOval(
+                    child: CustomImageWidget(
+                        image:
+                            order.storeLogoFullUrl ?? ManagerAssets.storeImage,
+                        width: 28,
+                        height: 28),
+                  ),
                   SizedBox(
                     height: 40,
                     child: DottedLine(
@@ -113,8 +115,8 @@ class OrderCardWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(order.storeName!,
-                        style: robotoSemiBold.copyWith(
-                            fontSize: Dimensions.fs14)),
+                        style:
+                            robotoSemiBold.copyWith(fontSize: Dimensions.fs14)),
                     Text(order.storeAddress!,
                         style: robotoRegular.copyWith(
                             fontSize: Dimensions.fs14,
@@ -122,11 +124,9 @@ class OrderCardWidget extends StatelessWidget {
                     const SizedBox(height: Dimensions.p4),
                     if (parcel)
                       Container(
-                        padding: const EdgeInsets.all(
-                            Dimensions.p4),
+                        padding: const EdgeInsets.all(Dimensions.p4),
                         decoration: BoxDecoration(
-                          borderRadius:
-                              BorderRadius.circular(Dimensions.r4),
+                          borderRadius: BorderRadius.circular(Dimensions.r4),
                           color:
                               Theme.of(context).primaryColor.withOpacity(0.1),
                         ),
@@ -140,9 +140,9 @@ class OrderCardWidget extends StatelessWidget {
                         parcel
                             ? order.deliveryAddress.toString()
                             : order.storeAddress!,
-                        style: robotoSemiBold.copyWith(
-                            fontSize: Dimensions.fs14)),
-                    Text(parcel ? 'Delivery Location' : 'Store Location',
+                        style:
+                            robotoSemiBold.copyWith(fontSize: Dimensions.fs14)),
+                    Text(parcel ? 'delivery_location'.tr : 'store_location'.tr,
                         style: robotoRegular.copyWith(
                             fontSize: Dimensions.fs14,
                             color: Theme.of(context).hintColor)),
@@ -154,74 +154,21 @@ class OrderCardWidget extends StatelessWidget {
 
           const Spacer(),
 
-          // Actions
-          OrderActionRow(
-            textAbove: null,
-            actions: [
-              Expanded(
-                child: CustomOutlinedButton(
-                  onPressed: () {
-                    Get.toNamed(
-                      RouteHelper.getOrderDetailsRoute(order.id),
-                      arguments: OrderDetailsScreen(
-                          orderId: order.id,
-                          isRunningOrder: isRunningOrder,
-                          orderIndex: index),
-                    );
-                  },
-                  text: 'details'.tr,
-                ),
-              ),
-              if (parcel) const SizedBox(width: 8),
-              if (parcel)
-                InkWell(
-                  onTap: () async {
-                    String url;
-                    if (parcel &&
-                        order.orderStatus == 'picked_up' &&
-                        order.receiverDetails != null) {
-                      url =
-                          'https://www.google.com/maps/dir/?api=1&destination=${order.receiverDetails!.latitude},${order.receiverDetails!.longitude}&mode=d';
-                    } else if (parcel) {
-                      url =
-                          'https://www.google.com/maps/dir/?api=1&destination=${order.deliveryAddress?.latitude},${order.deliveryAddress?.longitude}&mode=d';
-                    } else if (!parcel &&
-                        order.orderStatus == 'picked_up' &&
-                        order.deliveryAddress != null) {
-                      url =
-                          'https://www.google.com/maps/dir/?api=1&destination=${order.deliveryAddress!.latitude},${order.deliveryAddress!.longitude}&mode=d';
-                    } else {
-                      url =
-                          'https://www.google.com/maps/dir/?api=1&destination=${order.storeLat ?? '0'},${order.storeLng ?? '0'}&mode=d';
-                    }
-
-                    if (await canLaunchUrlString(url)) {
-                      await launchUrlString(url,
-                          mode: LaunchMode.externalApplication);
-                    } else {
-                      Get.snackbar('Error', '${'could_not_launch'.tr} $url');
-                    }
-                  },
-                  child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(Icons.directions,
-                            color: Theme.of(context).primaryColor, size: 20),
-                        const SizedBox(width: 4),
-                        Text('direction'.tr,
-                            style: robotoMedium.copyWith(
-                                color: Theme.of(context).primaryColor)),
-                      ],
-                    ),
-                  ),
-                ),
-            ],
+          CustomButtonWidget(
+            onPressed: () {
+              Get.toNamed(
+                RouteHelper.getOrderDetailsRoute(order.id),
+                arguments: OrderDetailsScreen(
+                    orderId: order.id,
+                    isRunningOrder: isRunningOrder,
+                    orderIndex: index),
+              );
+            },
+            isBorder: true,
+            transparent: true,
+            textColor: Theme.of(context).textTheme.bodyMedium?.color,
+            borderColor: Theme.of(context).textTheme.bodyMedium?.color,
+            buttonText: 'details'.tr,
           ),
         ],
       ),

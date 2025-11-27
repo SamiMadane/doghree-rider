@@ -1,15 +1,12 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
-import 'package:sixam_mart_delivery/util/manager_colors.dart';
+import 'package:wefrh_rider/util/manager_colors.dart';
 import 'package:vibration/vibration.dart';
 
 class SliderButton extends StatefulWidget {
-  ///To make button more customizable add your child widget
   final Widget? child;
 
-  ///Sets the radius of corners of a button.
   final double radius;
 
   final double height;
@@ -20,8 +17,6 @@ class SliderButton extends StatefulWidget {
   final Color baseColor;
   final Color highlightedColor;
   final Color buttonColor;
-
-  ///Accepts either String or Widget
   final Object? label;
 
   final Alignment alignLabel;
@@ -74,7 +69,7 @@ class SliderButtonState extends State<SliderButton>
   Widget? _child;
   late AnimationController _controller;
   late Animation<Offset> _offsetAnimation;
-  Key _dismissibleKey = UniqueKey(); // مفتاح فريد للـ Dismissible
+  Key _dismissibleKey = UniqueKey();
 
   @override
   void initState() {
@@ -82,7 +77,6 @@ class SliderButtonState extends State<SliderButton>
     flag = true;
     _child = widget.child;
     
-    // تهيئة الـ AnimationController للتحكم في الرجوع للوضع الأساسي
     _controller = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
@@ -117,10 +111,9 @@ class SliderButtonState extends State<SliderButton>
     return const SizedBox();
   }
 
-  // دالة لإعادة تعيين الزر بعد السحب
   void _resetButton() {
     setState(() {
-      _dismissibleKey = UniqueKey(); // إنشاء مفتاح جديد
+      _dismissibleKey = UniqueKey();
     });
     _controller.reset();
   }
@@ -162,28 +155,27 @@ class SliderButtonState extends State<SliderButton>
                   message: 'Button is disabled',
                   child: _buildButtonContainer(),
                 )
-              : Dismissible(
-                  key: _dismissibleKey, // استخدام المفتاح الفريد
-                  direction: DismissDirection.startToEnd, // السحب من اليسار لليمين دائماً
-                  movementDuration: const Duration(milliseconds: 300),
-                  confirmDismiss: (direction) async {
-                    // تنفيذ الإجراء
-                    widget.action();
-                    
-                    // تفعيل الاهتزاز إن أردت
-                    if (widget.vibrationFlag && await Vibration.hasVibrator()) {
-                      Vibration.vibrate(duration: 200);
-                    }
-                    
-                    // إعادة تعيين الزر بعد تأخير قصير
-                    Future.delayed(const Duration(milliseconds: 100), () {
-                      _resetButton();
-                    });
-                    
-                    // إرجاع false لمنع الإزالة الفعلية للـ widget
-                    return false;
-                  },
-                  child: _buildButtonContainer(),
+              : Directionality(
+                  textDirection: TextDirection.ltr, // فرض LTR دائماً
+                  child: Dismissible(
+                    key: _dismissibleKey,
+                    direction: DismissDirection.startToEnd, // الآن سيعمل من اليسار لليمين دائماً
+                    movementDuration: const Duration(milliseconds: 300),
+                    confirmDismiss: (direction) async {
+                      widget.action();
+                      
+                      if (widget.vibrationFlag && await Vibration.hasVibrator() == true) {
+                        Vibration.vibrate(duration: 200);
+                      }
+                      
+                      Future.delayed(const Duration(milliseconds: 100), () {
+                        _resetButton();
+                      });
+                      
+                      return false;
+                    },
+                    child: _buildButtonContainer(),
+                  ),
                 ),
           const SizedBox.expand(),
         ]),

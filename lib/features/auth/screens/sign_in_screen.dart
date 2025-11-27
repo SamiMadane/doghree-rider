@@ -1,16 +1,18 @@
 import 'package:country_code_picker/country_code_picker.dart';
-import 'package:sixam_mart_delivery/features/auth/controllers/auth_controller.dart';
-import 'package:sixam_mart_delivery/common/widgets/field_with_label.dart';
-import 'package:sixam_mart_delivery/features/profile/controllers/profile_controller.dart';
-import 'package:sixam_mart_delivery/features/navigation_handler/controllers/navigation_handler_controller.dart';
-import 'package:sixam_mart_delivery/helper/custom_validator_helper.dart';
-import 'package:sixam_mart_delivery/helper/route_helper.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/manager_assets.dart';
-import 'package:sixam_mart_delivery/util/styles.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_button_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_snackbar_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_text_field_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_bottom_sheet_widget.dart';
+import 'package:wefrh_rider/common/widgets/session_expired_bottom_sheet.dart';
+import 'package:wefrh_rider/features/auth/controllers/auth_controller.dart';
+import 'package:wefrh_rider/common/widgets/widget_with_label.dart';
+import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
+import 'package:wefrh_rider/features/splash/controllers/splash_controller.dart';
+import 'package:wefrh_rider/helper/custom_validator_helper.dart';
+import 'package:wefrh_rider/helper/route_helper.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/util/manager_assets.dart';
+import 'package:wefrh_rider/util/styles.dart';
+import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_text_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -34,20 +36,41 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   void initState() {
     super.initState();
-    _countryDialCode = Get.find<AuthController>()
-            .getUserCountryDialCode()
-            .isNotEmpty
-        ? Get.find<AuthController>().getUserCountryDialCode()
-        : CountryCode.fromCountryCode(
-                Get.find<NavigationHandlerController>().configModel!.country!)
-            .dialCode;
+    _checkLogoutReason();
+    _countryDialCode =
+        Get.find<AuthController>().getUserCountryDialCode().isNotEmpty
+            ? Get.find<AuthController>().getUserCountryDialCode()
+            : CountryCode.fromCountryCode(
+                    Get.find<SplashController>().configModel!.country!)
+                .dialCode;
     _countryCode = Get.find<AuthController>().getUserCountryCode().isNotEmpty
         ? Get.find<AuthController>().getUserCountryCode()
         : CountryCode.fromCountryCode(
-                Get.find<NavigationHandlerController>().configModel!.country!)
+                Get.find<SplashController>().configModel!.country!)
             .code;
     _phoneController.text = Get.find<AuthController>().getUserNumber();
     _passwordController.text = Get.find<AuthController>().getUserPassword();
+  }
+
+  void _checkLogoutReason() async {
+    String? reason = await Get.find<AuthController>().getLogoutReason();
+
+    if (reason == 'session_expired') {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showCustomBottomSheet(
+          child: SessionExpiredBottomSheet(
+            onConfirm: () {
+              Get.back();
+              Get.offAllNamed(RouteHelper.getSignInRoute());
+            },
+          ),
+          isDismissible: false,
+          showCloseButton: false, 
+        );
+      });
+
+      await Get.find<AuthController>().clearLogoutReason();
+    }
   }
 
   @override
@@ -67,8 +90,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 height: Dimensions.p20,
               ),
               Text('sign_in_account'.tr,
-                  style: robotoBold.copyWith(
-                      fontSize: Dimensions.fs18)),
+                  style: robotoBold.copyWith(fontSize: Dimensions.fs18)),
               SizedBox(
                 height: Dimensions.p4,
               ),
@@ -93,10 +115,9 @@ class _SignInScreenState extends State<SignInScreen> {
                     _countryCode = countryCode.code;
                   },
                   countryDialCode: _countryCode ??
-                      CountryCode.fromCountryCode(
-                              Get.find<NavigationHandlerController>()
-                                  .configModel!
-                                  .country!)
+                      CountryCode.fromCountryCode(Get.find<SplashController>()
+                              .configModel!
+                              .country!)
                           .code,
                 ),
               ),
@@ -134,8 +155,8 @@ class _SignInScreenState extends State<SignInScreen> {
                       onChanged: (bool? isChecked) =>
                           authController.toggleRememberMe(),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(Dimensions
-                            .r4), // غير الرقم لتكبير أو تصغير الزوايا
+                        borderRadius: BorderRadius.circular(
+                            Dimensions.r4), // غير الرقم لتكبير أو تصغير الزوايا
                       ),
                     ),
                     title: Text('remember_me'.tr,
@@ -151,8 +172,9 @@ class _SignInScreenState extends State<SignInScreen> {
                   onPressed: () =>
                       Get.toNamed(RouteHelper.getForgotPassRoute()),
                   child: Text(
-                    '${'forgot_password'.tr}?',
-                    style: robotoMedium.copyWith(color: Theme.of(context).primaryColor),
+                    '${'forgot_password'.tr}',
+                    style: robotoMedium.copyWith(
+                        color: Theme.of(context).primaryColor),
                   ),
                 ),
               ]),
@@ -169,14 +191,12 @@ class _SignInScreenState extends State<SignInScreen> {
                     context),
               ),
               SizedBox(
-                  height: Get.find<NavigationHandlerController>()
+                  height: Get.find<SplashController>()
                           .configModel!
                           .toggleDmRegistration!
                       ? Dimensions.p25
                       : 0),
-              Get.find<NavigationHandlerController>()
-                      .configModel!
-                      .toggleDmRegistration!
+              Get.find<SplashController>().configModel!.toggleDmRegistration!
                   ? TextButton(
                       style: TextButton.styleFrom(
                         minimumSize: const Size(1, 40),

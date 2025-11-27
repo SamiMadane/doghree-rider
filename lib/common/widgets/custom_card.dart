@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/theme_extension.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/util/theme_extension.dart';
 
 class CustomCard extends StatelessWidget {
   final Widget? child;
@@ -13,38 +13,92 @@ class CustomCard extends StatelessWidget {
   final bool isBorder;
   final Color? borderColor;
   final double? borderwidth;
-  const CustomCard(
-      {super.key,
-      this.child,
-      this.width,
-      this.height,
-      this.borderRadius,
-      this.margin,
-      this.padding,
-      this.isBorder = true,
-      this.borderColor,
-      this.borderwidth,
-      this.fillColor});
+
+  final bool autoWidth;
+
+  final bool hasInnerBottomShadow;
+
+  const CustomCard({
+    super.key,
+    this.child,
+    this.width,
+    this.height,
+    this.borderRadius,
+    this.margin,
+    this.padding,
+    this.fillColor,
+    this.isBorder = true,
+    this.borderColor,
+    this.borderwidth,
+    this.autoWidth = false,
+    this.hasInnerBottomShadow = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     final customColor = Theme.of(context).extension<CustomColorsExtension>()!;
 
-    return Container(
-      width: width ?? double.infinity,
-      height: height,
-      margin: margin,
-      padding: padding,
-      decoration: BoxDecoration(
-        color: fillColor ?? Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(borderRadius ?? Dimensions.r20),
-        border: isBorder
-            ? Border.all(
-                color: borderColor ?? customColor.strock2,
-                width: borderwidth ?? 1)
-            : null,
+    Widget content = child ?? const SizedBox();
+
+    // 👇 في حال autoWidth مفعّل والنص هو الـ child، نخليه سطر واحد فقط
+    if (autoWidth && child is Text) {
+      final textWidget = child as Text;
+      content = Text(
+        textWidget.data ?? '',
+        style: textWidget.style,
+        maxLines: 1,
+        softWrap: false,
+        overflow: TextOverflow.visible,
+        textAlign: textWidget.textAlign,
+      );
+    }
+
+    // 👇 الكارد الأساسي
+    Widget card = ClipRRect(
+      borderRadius: BorderRadius.circular(borderRadius ?? Dimensions.r20),
+      child: Stack(
+        children: [
+          Container(
+            width: autoWidth ? null : (width ?? double.infinity),
+            height: height,
+            margin: margin,
+            padding: padding,
+            decoration: BoxDecoration(
+              color: fillColor ?? Theme.of(context).cardColor,
+              borderRadius:
+                  BorderRadius.circular(borderRadius ?? Dimensions.r20),
+              border: isBorder
+                  ? Border.all(
+                      color: borderColor ?? customColor.strock2,
+                      width: borderwidth ?? 1,
+                    )
+                  : null,
+            ),
+            child: content,
+          ),
+          if (hasInnerBottomShadow)
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: Container(
+                height: Dimensions.p6,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    colors: [
+                      Color.fromARGB(40, 0, 0, 0),
+                      Colors.transparent,
+                    ],
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
-      child: child,
     );
+
+    return autoWidth ? IntrinsicWidth(child: card) : card;
   }
 }

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_card.dart';
-import 'package:sixam_mart_delivery/helper/price_converter_helper.dart';
-import 'package:sixam_mart_delivery/helper/route_helper.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
-import 'package:sixam_mart_delivery/util/manager_colors.dart';
-import 'package:sixam_mart_delivery/util/styles.dart';
-import 'package:sixam_mart_delivery/util/theme_extension.dart';
+import 'package:wefrh_rider/common/widgets/custom_card.dart';
+import 'package:wefrh_rider/helper/price_converter_helper.dart';
+import 'package:wefrh_rider/helper/route_helper.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/util/manager_colors.dart';
+import 'package:wefrh_rider/util/styles.dart';
+import 'package:wefrh_rider/util/theme_extension.dart';
 
 class StatisticsSection extends StatelessWidget {
   const StatisticsSection({super.key});
@@ -87,7 +87,7 @@ class _StatisticsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomCard(
-      fillColor: Theme.of(context).cardColor,
+      fillColor: Theme.of(context).scaffoldBackgroundColor,
       isBorder: false,
       padding: EdgeInsets.all(Dimensions.p16),
       child: Column(
@@ -103,8 +103,7 @@ class _StatisticsCard extends StatelessWidget {
           SizedBox(height: Dimensions.p4),
           Text(
             title,
-            style: robotoSemiBold.copyWith(
-              color: Theme.of(context).disabledColor,
+            style: robotoMedium.copyWith(
             ),
           ),
         ],

@@ -18,6 +18,8 @@ class CustomColorsExtension extends ThemeExtension<CustomColorsExtension> {
   final Color disabledButton;
   final Color orangeBg;
   final Color orange;
+    final Color red;
+  final Color redBg;
 
   
 
@@ -38,6 +40,8 @@ class CustomColorsExtension extends ThemeExtension<CustomColorsExtension> {
     required this.disabledButton,
     required this.orangeBg,
     required this.orange,
+        required this.red,
+    required this.redBg,
     
   });
 
@@ -59,6 +63,8 @@ class CustomColorsExtension extends ThemeExtension<CustomColorsExtension> {
     Color? disabledButton,
     Color? orangeBg,
     Color? orange,
+        Color? red,
+    Color? redBg,
   }) {
     return CustomColorsExtension(
       strock1: stroke1 ?? this.strock1,
@@ -77,6 +83,8 @@ class CustomColorsExtension extends ThemeExtension<CustomColorsExtension> {
       disabledButton: disabledButton ?? this.disabledButton,
       orangeBg: orangeBg ?? this.orangeBg,
       orange: orange ?? this.orange,
+           red: red ?? this.red,
+      redBg: redBg ?? this.redBg,
     );
   }
 
@@ -101,6 +109,8 @@ class CustomColorsExtension extends ThemeExtension<CustomColorsExtension> {
       disabledButton: Color.lerp(disabledButton, other.disabledButton, t)!,
       orangeBg: Color.lerp(orangeBg, other.orangeBg, t)!,
       orange: Color.lerp(orange, other.orange, t)!,
+      red: Color.lerp(red, other.red, t)!,
+      redBg: Color.lerp(redBg, other.redBg, t)!,
     );
   }
 }

@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_bottom_sheet_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_card.dart';
-import 'package:sixam_mart_delivery/features/task/widgets/delivered_bottom_sheet.dart';
-import 'package:sixam_mart_delivery/features/task/widgets/reschedule_bottom_sheet.dart';
-import 'package:sixam_mart_delivery/features/task/widgets/task_card.dart';
-import 'package:sixam_mart_delivery/features/task/widgets/task_progress_section.dart';
-import 'package:sixam_mart_delivery/helper/route_helper.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
+import 'package:wefrh_rider/common/widgets/custom_bottom_sheet_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_card.dart';
+import 'package:wefrh_rider/features/task/widgets/delivered_bottom_sheet.dart';
+import 'package:wefrh_rider/features/task/widgets/reschedule_bottom_sheet.dart';
+import 'package:wefrh_rider/features/task/widgets/task_card.dart';
+import 'package:wefrh_rider/features/task/widgets/task_progress_section.dart';
+import 'package:wefrh_rider/helper/route_helper.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
 
 class ExistTaskSection extends StatelessWidget {
   const ExistTaskSection({super.key});
@@ -19,6 +18,7 @@ class ExistTaskSection extends StatelessWidget {
       CustomCard(
         padding: const EdgeInsets.all(Dimensions.p16),
         isBorder: false,
+        fillColor: Theme.of(context).scaffoldBackgroundColor,
         child: TaskProgressSection(completed: 3, remaining: 3, issue: 1),
       ),
       SizedBox(

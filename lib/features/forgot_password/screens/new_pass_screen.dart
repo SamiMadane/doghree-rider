@@ -1,15 +1,15 @@
-import 'package:sixam_mart_delivery/common/widgets/field_with_label.dart';
-import 'package:sixam_mart_delivery/features/auth/controllers/auth_controller.dart';
-import 'package:sixam_mart_delivery/features/auth/widgets/pass_view_widget.dart';
-import 'package:sixam_mart_delivery/features/forgot_password/controllers/forgot_password_controller.dart';
-import 'package:sixam_mart_delivery/features/profile/controllers/profile_controller.dart';
-import 'package:sixam_mart_delivery/helper/route_helper.dart';
-import 'package:sixam_mart_delivery/util/dimensions.dart';
+import 'package:wefrh_rider/common/widgets/widget_with_label.dart';
+import 'package:wefrh_rider/features/auth/controllers/auth_controller.dart';
+import 'package:wefrh_rider/features/auth/widgets/pass_view_widget.dart';
+import 'package:wefrh_rider/features/forgot_password/controllers/forgot_password_controller.dart';
+import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
+import 'package:wefrh_rider/helper/route_helper.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
 
-import 'package:sixam_mart_delivery/common/widgets/custom_app_bar_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_button_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_snackbar_widget.dart';
-import 'package:sixam_mart_delivery/common/widgets/custom_text_field_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_text_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -173,6 +173,7 @@ class _NewPassScreenState extends State<NewPassScreen> {
   void _resetPassword(AuthController authController) {
     String password = newPasswordController.text.trim();
     String confirmPassword = confirmPasswordController.text.trim();
+    String currentPassword = currentPasswordController.text.trim();
 
     if (password.isEmpty) {
       showCustomSnackBar('enter_password'.tr);
@@ -189,7 +190,7 @@ class _NewPassScreenState extends State<NewPassScreen> {
     } else {
       if (widget.fromPasswordChange) {
         Get.find<ForgotPasswordController>().changePassword(
-            Get.find<ProfileController>().profileModel!, password);
+            Get.find<ProfileController>().profileModel!, currentPassword ,password);
       } else {
         Get.find<ForgotPasswordController>()
             .resetPassword(widget.resetToken, '+${widget.number!.trim()}',
