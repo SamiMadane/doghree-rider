@@ -8,7 +8,7 @@ class AppConstants {
 
   ///Flutter sdk 3.32.8
 
-  static const String baseUrl = 'https://www.wefrh.com';
+  static const String baseUrl = 'https://taj.mdmderma.com';
   static String get fontFamily {
     return (Get.locale?.languageCode ==
                 AppConstants.languages[1].languageCode ||
