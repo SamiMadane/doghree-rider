@@ -68,6 +68,25 @@ class CustomButtonWidget extends StatelessWidget {
                 ? Theme.of(context).cardColor
                 : Colors.white);
 
+    // Check if there's an icon
+    final bool hasIcon = icon != null || iconData != null || isLoading;
+
+    /// ----------------- CONTENT -----------------
+    Widget buildText() {
+      return Text(
+        buttonText,
+        softWrap: autoWidth ? false : true,
+        overflow: autoWidth ? TextOverflow.visible : TextOverflow.ellipsis,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: effectiveTextColor,
+          fontSize: fontSize ?? 16,
+          fontWeight:
+              fontWeight ?? (isBold ? FontWeight.w600 : FontWeight.normal),
+        ),
+      );
+    }
+
     Widget buttonContent;
 
     if (isLoading) {
@@ -79,66 +98,60 @@ class CustomButtonWidget extends StatelessWidget {
             height: 15,
             width: 15,
             child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(
-                  textColor ?? Colors.white),
+              valueColor: AlwaysStoppedAnimation<Color>(effectiveTextColor),
               strokeWidth: 2,
             ),
           ),
-          const SizedBox(width: 10),
+          SizedBox(width: 10),
           Text(
             'loading'.tr,
             style: TextStyle(
-                color: textColor ?? Colors.white, fontWeight: FontWeight.w500),
+                color: effectiveTextColor, fontWeight: FontWeight.w500),
           ),
         ],
       );
+    } else if (icon == null && iconData == null) {
+      buttonContent = buildText();
     } else {
       buttonContent = Row(
         mainAxisSize: autoWidth ? MainAxisSize.min : MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
-          textDirection: TextDirection.ltr,
         children: [
           if (icon != null)
             Padding(
-              padding: const EdgeInsetsDirectional.symmetric(horizontal: Dimensions.p8),
+              padding: EdgeInsetsDirectional.only(end: Dimensions.w8),
               child: icon!,
             ),
           if (icon == null && iconData != null)
             Padding(
-              padding: const EdgeInsetsDirectional.symmetric(horizontal: Dimensions.p8),
+              padding: EdgeInsetsDirectional.only(end: Dimensions.w8),
               child: Icon(
                 iconData,
                 color: iconColor ??
-                    (transparent ? Theme.of(context).primaryColor : Colors.white),
+                    (transparent
+                        ? Theme.of(context).primaryColor
+                        : Colors.white),
               ),
             ),
-          Flexible(
-            fit: FlexFit.loose,
-            child: Text(
-              buttonText,
-              textAlign: TextAlign.center,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: effectiveTextColor,
-                fontSize: fontSize ?? 16,
-                fontWeight: fontWeight ?? (isBold ? FontWeight.w600 : FontWeight.normal),
-              ),
-            ),
-          ),
+          buildText(),
         ],
       );
     }
 
+    /// ----------------- BUTTON -----------------
     return Padding(
       padding: margin ?? EdgeInsets.zero,
       child: SizedBox(
         width: autoWidth ? null : width ?? double.infinity,
-        height: height ?? 50,
+        height: height ?? (autoWidth ? Dimensions.h40 : Dimensions.h50),
         child: TextButton(
           onPressed: isLoading ? null : onPressed as void Function()?,
           style: TextButton.styleFrom(
             backgroundColor: effectiveBgColor,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            // إذا في icon، استخدم padding عادي، وإلا استخدم padding صفر
+            padding: autoWidth && !hasIcon 
+                ? EdgeInsets.symmetric(horizontal: 12) 
+                : EdgeInsets.symmetric(horizontal: 16),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(radius),
               side: isBorder

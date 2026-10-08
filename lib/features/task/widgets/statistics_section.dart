@@ -21,7 +21,7 @@ class StatisticsSection extends StatelessWidget {
           children: [
             Text(
               'statistics'.tr,
-              style: robotoBold.copyWith(fontSize: Dimensions.fs20),
+              style: textBold().copyWith(fontSize: Dimensions.fs20),
             ),
             const Spacer(),
             InkWell(
@@ -32,7 +32,7 @@ class StatisticsSection extends StatelessWidget {
                 children: [
                   Text(
                     'detailed_statistics'.tr,
-                    style: robotoRegular.copyWith(
+                    style: textRegular().copyWith(
                       color: customColor.naturalBlue,
                       decoration: TextDecoration.underline,
                       decorationColor: customColor.naturalBlue,
@@ -47,7 +47,7 @@ class StatisticsSection extends StatelessWidget {
             )
           ],
         ),
-        SizedBox(height: Dimensions.p16),
+        SizedBox(height: Dimensions.h16),
         Row(
           children: [
             Expanded(
@@ -57,7 +57,7 @@ class StatisticsSection extends StatelessWidget {
                 color: ManagerColors.greenLightMode,
               ),
             ),
-            SizedBox(width: Dimensions.p16),
+            SizedBox(width: Dimensions.w16),
             Expanded(
               child: _StatisticsCard(
                 amount: 0,
@@ -89,21 +89,21 @@ class _StatisticsCard extends StatelessWidget {
     return CustomCard(
       fillColor: Theme.of(context).scaffoldBackgroundColor,
       isBorder: false,
-      padding: EdgeInsets.all(Dimensions.p16),
+      padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             PriceConverterHelper.convertPrice(amount),
-            style: robotoSemiBold.copyWith(
+            style: textSemiBold().copyWith(
               fontSize: Dimensions.fs22,
               color: color,
             ),
           ),
-          SizedBox(height: Dimensions.p4),
+          SizedBox(height: Dimensions.h4),
           Text(
             title,
-            style: robotoMedium.copyWith(
+            style: textMedium().copyWith(
             ),
           ),
         ],

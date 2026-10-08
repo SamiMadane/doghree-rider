@@ -23,10 +23,10 @@ class _LanguageBottomSheetWidgetState extends State<LanguageBottomSheetWidget> {
     return GetBuilder<LocalizationController>(
         builder: (localizationController) {
       return Container(
-        padding: const EdgeInsets.only(top: Dimensions.p20),
+        padding: EdgeInsets.only(top: Dimensions.h20),
         decoration: BoxDecoration(
           color: Theme.of(context).cardColor,
-          borderRadius: const BorderRadius.only(
+          borderRadius: BorderRadius.only(
             topLeft: Radius.circular(20),
             topRight: Radius.circular(20),
           ),
@@ -40,12 +40,12 @@ class _LanguageBottomSheetWidgetState extends State<LanguageBottomSheetWidget> {
               borderRadius: BorderRadius.circular(5),
             ),
           ),
-          const SizedBox(height: Dimensions.p20),
+          SizedBox(height: Dimensions.h20),
 
           Text('choose_your_language'.tr,
-              style: robotoSemiBold.copyWith(
+              style: textSemiBold().copyWith(
                   fontSize: Dimensions.fs18)),
-          const SizedBox(height: Dimensions.p25),
+          SizedBox(height: Dimensions.h25),
 
           Flexible(
             child: SingleChildScrollView(
@@ -53,8 +53,8 @@ class _LanguageBottomSheetWidgetState extends State<LanguageBottomSheetWidget> {
                 itemCount: localizationController.languages.length,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                padding: const EdgeInsets.symmetric(
-                    horizontal: Dimensions.p20),
+                padding: EdgeInsets.symmetric(
+                    horizontal: Dimensions.w20),
                 itemBuilder: (context, index) {
                   return Column(
                     children: [
@@ -65,9 +65,9 @@ class _LanguageBottomSheetWidgetState extends State<LanguageBottomSheetWidget> {
                         fromBottomSheet: true,
                         isFromInitScreen: widget.isFromInitScreen,
                       ),
-                      const SizedBox(
+                       SizedBox(
                           height: Dimensions
-                              .p10), // المسافة بين البطاقات
+                              .h10), // المسافة بين البطاقات
                     ],
                   );
                 },
@@ -75,7 +75,7 @@ class _LanguageBottomSheetWidgetState extends State<LanguageBottomSheetWidget> {
             ),
           ),
 
-          const SizedBox(height: Dimensions.p16), // فاصل آمن
+          SizedBox(height: Dimensions.h16), // فاصل آمن
         ]),
       );
     });

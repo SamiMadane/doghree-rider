@@ -41,7 +41,7 @@ class TaskCard extends StatelessWidget {
     final customColor = Theme.of(context).extension<CustomColorsExtension>()!;
 
     return CustomCard(
-      padding: EdgeInsets.all(Dimensions.p16),
+      padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
       isBorder: false,
         fillColor: Theme.of(context).scaffoldBackgroundColor,
 
@@ -49,38 +49,38 @@ class TaskCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('${'task'.tr} : $taskNumber',
-              style: robotoBold.copyWith(
+              style: textBold().copyWith(
                 fontSize: Dimensions.fs16,
               )),
 
-          const SizedBox(height: Dimensions.p8),
+          SizedBox(height: Dimensions.h8),
           Row(
             children: [
               Expanded(
                 flex: 2,
                 child: Text(name,
                     maxLines: 2,
-                    style: robotoSemiBold.copyWith(fontSize: Dimensions.fs18)),
+                    style: textSemiBold().copyWith(fontSize: Dimensions.fs18)),
               ),
               Spacer(),
               Expanded(
                 flex: 1,
                 child: Text(PriceConverterHelper.convertPrice(amount),
-                    style: robotoSemiBold.copyWith(
+                    style: textSemiBold().copyWith(
                         fontSize: Dimensions.fs18,
                         color: ManagerColors.greenLightMode)),
               ),
             ],
           ),
-          const SizedBox(height: Dimensions.p8),
+          SizedBox(height: Dimensions.h8),
 
           Text('${'id_number'.tr} $idNumber',
-              style: robotoBold.copyWith(fontSize: Dimensions.fs16)),
-          const SizedBox(height: Dimensions.p8),
+              style: textBold().copyWith(fontSize: Dimensions.fs16)),
+          SizedBox(height: Dimensions.h8),
 
           // Item box
           CustomCard(
-            padding: const EdgeInsets.all(Dimensions.p16),
+            padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
             borderRadius: Dimensions.r16,
             fillColor: Theme.of(context).cardColor,
             child: Column(
@@ -89,19 +89,19 @@ class TaskCard extends StatelessWidget {
                 Row(
                   children: [
                     SvgPicture.asset(ManagerAssets.taskIcon,color: Theme.of(context).textTheme.bodyMedium?.color,),
-                    const SizedBox(width: Dimensions.p12),
+                    SizedBox(width: Dimensions.w12),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(itemTitle,
-                            style: robotoBold.copyWith(
+                            style: textBold().copyWith(
                               fontSize: Dimensions.fs16,
                             )),
                         SizedBox(
-                          height: Dimensions.p4,
+                          height: Dimensions.h4,
                         ),
                         Text(itemSubtitle,
-                            style: robotoSemiBold.copyWith(
+                            style: textSemiBold().copyWith(
                                 fontSize: Dimensions.fs14,
                                 color: Theme.of(context).disabledColor)),
                       ],
@@ -114,28 +114,28 @@ class TaskCard extends StatelessWidget {
           // Note box (اختياري)
           if (note != null) ...[
             
-            const SizedBox(height: Dimensions.p12),
+            SizedBox(height: Dimensions.h12),
             CustomCard(
               width: double.infinity,
-              padding: const EdgeInsets.all(Dimensions.p16),
+              padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
               fillColor: customColor.blueBg,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('updated_from_support'.tr,
-                      style: robotoBold.copyWith(
+                      style: textBold().copyWith(
                           fontSize: Dimensions.fs16,
                           color: customColor.blue)),
-                  const SizedBox(height: Dimensions.p4),
+                  SizedBox(height: Dimensions.h4),
                   Text(note!,
-                      style: robotoMedium.copyWith(
+                      style: textMedium().copyWith(
                           fontSize: Dimensions.fs15,
                           color: customColor.blue)),
                 ],
               ),
             ),
           ],
-          const SizedBox(height: Dimensions.p16),
+          SizedBox(height: Dimensions.h16),
 
           // Buttons
           Row(
@@ -148,7 +148,7 @@ class TaskCard extends StatelessWidget {
                   fontSize: Dimensions.fs15,
                 ),
               ),
-              const SizedBox(width: Dimensions.p8),
+              SizedBox(width: Dimensions.w8),
               Expanded(
                 child: CustomButtonWidget(
                   onPressed: onReschedule,
@@ -157,7 +157,7 @@ class TaskCard extends StatelessWidget {
                   fontSize: Dimensions.fs15,
                 ),
               ),
-              const SizedBox(width: Dimensions.p8),
+              SizedBox(width: Dimensions.w8),
               Expanded(
                 child: CustomButtonWidget(
                   onPressed: onSupport,

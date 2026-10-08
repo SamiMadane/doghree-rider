@@ -41,7 +41,7 @@ class PaymentLoadingWidget extends StatelessWidget {
 
             Text(
               'processing_payment'.tr,
-              style: robotoMedium.copyWith(
+              style: textMedium().copyWith(
                 fontSize: Dimensions.fs20,
                 color: ManagerColors.TextColorLight,
                 letterSpacing: 0.5,
@@ -49,11 +49,11 @@ class PaymentLoadingWidget extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 48),
+              padding: EdgeInsets.symmetric(horizontal: 48),
               child: Text(
                 'please_wait'.tr,
                 textAlign: TextAlign.center,
-                style: robotoRegular.copyWith(
+                style: textRegular().copyWith(
                   fontSize: Dimensions.fs14,
                   color: ManagerColors.TextColorLight.withOpacity(0.6),
                   height: 1.5,
@@ -65,7 +65,7 @@ class PaymentLoadingWidget extends StatelessWidget {
 
             // Security indicators
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               decoration: BoxDecoration(
                 color: ManagerColors.white,
                 borderRadius: BorderRadius.circular(30),
@@ -89,15 +89,15 @@ class PaymentLoadingWidget extends StatelessWidget {
                     size: 18,
                     color: Colors.green,
                   ),
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8),
                   Text(
                     'secure_connection'.tr,
-                    style: robotoMedium.copyWith(
+                    style: textMedium().copyWith(
                       fontSize: Dimensions.fs13,
                       color: Colors.green,
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8),
                   const Icon(
                     Icons.lock,
                     size: 16,
@@ -324,7 +324,7 @@ class _AnimatedProgressIndicatorState extends State<_AnimatedProgressIndicator>
             const SizedBox(height: 12),
             Text(
               '${(_progressAnimation.value * 100).toInt()}%',
-              style: robotoMedium.copyWith(
+              style: textMedium().copyWith(
                 fontSize: Dimensions.fs16,
                 color: widget.primaryColor,
               ),

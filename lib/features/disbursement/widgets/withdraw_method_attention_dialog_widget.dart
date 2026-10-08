@@ -14,7 +14,7 @@ class WithdrawMethodAttentionDialogWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: context.width * 0.95,
-      padding: const EdgeInsets.all(Dimensions.p10),
+      padding: EdgeInsets.symmetric(horizontal:Dimensions.w10 ,vertical: Dimensions.h10,),
       child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
 
         Align(
@@ -24,7 +24,7 @@ class WithdrawMethodAttentionDialogWidget extends StatelessWidget {
             hoverColor: Colors.transparent,
             child: Container(
               height: 20, width: 20,
-              padding: const EdgeInsets.all(2),
+              padding: EdgeInsets.all(2),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: Theme.of(context).disabledColor.withValues(alpha: 0.05),
@@ -36,16 +36,16 @@ class WithdrawMethodAttentionDialogWidget extends StatelessWidget {
 
         Row(children: [
           Image.asset(ManagerAssets.attentionWarningIcon, width: 20, height: 20),
-          const SizedBox(width: Dimensions.p10),
+          SizedBox(width: Dimensions.w10),
 
-          Text('attention_please'.tr, style: robotoBold.copyWith(color: Colors.black)),
+          Text('attention_please'.tr, style: textBold().copyWith(color: Colors.black)),
         ]),
-        const SizedBox(height: Dimensions.p10),
+        SizedBox(height: Dimensions.h10),
 
         RichText(
           text: TextSpan(
             text: '${'withdraw_methods_attention_message'.tr}  ',
-            style: robotoRegular.copyWith(color: Colors.black),
+            style: textRegular().copyWith(color: Colors.black),
             children: [
               TextSpan(
                 recognizer: TapGestureRecognizer()..onTap = () {
@@ -59,7 +59,7 @@ class WithdrawMethodAttentionDialogWidget extends StatelessWidget {
 
                 },
                 text: 'set_default_withdraw_method'.tr,
-                style: robotoRegular.copyWith(color: Colors.blue, decoration: TextDecoration.underline),
+                style: textRegular().copyWith(color: Colors.blue, decoration: TextDecoration.underline),
               ),
             ],
           ),

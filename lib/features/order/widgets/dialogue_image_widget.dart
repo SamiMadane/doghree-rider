@@ -21,12 +21,12 @@ class DialogImageWidget extends StatelessWidget {
             onTap: () => Get.back(),
             child: Container(
               decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.white54),
-              padding: const EdgeInsets.all(3),
+              padding: EdgeInsets.all(3),
               child: const Icon(Icons.clear),
             ),
           ),
         ),
-        const SizedBox(height: Dimensions.p10),
+        SizedBox(height: Dimensions.h10),
 
         Container(
           width: double.infinity,
@@ -34,18 +34,18 @@ class DialogImageWidget extends StatelessWidget {
             color: Theme.of(context).cardColor,
             borderRadius: BorderRadius.circular(Dimensions.r20),
           ),
-          padding: const EdgeInsets.all(Dimensions.p20),
+          padding: EdgeInsets.symmetric(horizontal: Dimensions.w20, vertical: Dimensions.h20),
           child: Column(mainAxisSize: MainAxisSize.min, children: [
 
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Dimensions.p20),
+              padding: EdgeInsets.symmetric(horizontal: Dimensions.w20),
               child: Text(
                 'take_a_picture'.tr, textAlign: TextAlign.center,
-                style: robotoMedium.copyWith(fontSize: Dimensions.fs18, color: Theme.of(context).primaryColor),
+                style: textMedium().copyWith(fontSize: Dimensions.fs18, color: Theme.of(context).primaryColor),
               ),
             ),
 
-            const SizedBox(height: Dimensions.p20),
+            SizedBox(height: Dimensions.h20),
 
             GetBuilder<OrderController>(builder: (orderController) {
               return InkWell(

@@ -9,29 +9,72 @@ import 'package:wefrh_rider/util/app_constants.dart';
 class NotificationRepository implements NotificationRepositoryInterface {
   final ApiClient apiClient;
   final SharedPreferences sharedPreferences;
+
   NotificationRepository(
       {required this.apiClient, required this.sharedPreferences});
 
   @override
-  Future<List<NotificationModel>?> getList() async {
-    List<NotificationModel>? notificationList;
-    Response response = await apiClient
-        .getData('${AppConstants.notificationUri}${_getUserToken()}');
-    if (response.statusCode == 200) {
-      notificationList = [];
-      response.body.forEach((notification) {
-        NotificationModel notify = NotificationModel.fromJson(notification);
-        notify.title = notification['data']['title'];
-        notify.description = notification['data']['description'];
-        notify.imageFullUrl = notification['image_full_url'];
-        // هذا السطر مهم جداً - استخراج data كـ Map كامل
-        if (notification['data'] != null) {
-          notify.data = Data.fromJson(notification['data']);
-        }
-        notificationList!.add(notify);
-      });
+Future<List<NotificationModel>?> getList({int? offset}) async {
+  List<NotificationModel>? notificationList;
+  Response response = await apiClient.getData(AppConstants.notificationUri);
+
+  print('🔍 API Response Length: ${response.body.length}');
+  print('🔍 Raw API Response: ${response.body}');
+
+  if (response.statusCode == 200) {
+    notificationList = [];
+
+    response.body.forEach((notification) {
+      // طباعة القيم الخام من API
+      print('------------------------------');
+      print('🔔 Notification ID (raw): ${notification['id']}');
+      print('📥 is_read from API (raw): ${notification['is_read']}');
+
+      // التحويل إلى Model
+      NotificationModel notify = NotificationModel.fromJson(notification);
+
+      // طباعة بعد التحويل
+      print('✅ Notification ID: ${notify.id}');
+      print('✅ isRead (parsed): ${notify.isRead}');
+      print('------------------------------');
+
+      notificationList!.add(notify);
+    });
+  }
+
+  return notificationList;
+}
+
+  // ✅ الجديد - Server-side marking
+  Future<bool> _patchMarkRead(List<int> notificationIds,
+      {bool all = false}) async {
+    try {
+      Response response = await apiClient.patchData(
+        all
+            ? AppConstants.markAllNotificationsReadUri
+            : AppConstants.markNotificationReadUri,
+        all ? {} : {'notification_ids': notificationIds},
+      );
+      return response.statusCode == 200;
+    } catch (e) {
+      print('❌ Error marking notifications as read: $e');
+      return false;
     }
-    return notificationList;
+  }
+
+  @override
+  Future<bool> markNotificationAsRead(int notificationId) async {
+    return await _patchMarkRead([notificationId]);
+  }
+
+  @override
+  Future<bool> markNotificationsAsRead(List<int> notificationIds) async {
+    return await _patchMarkRead(notificationIds);
+  }
+
+  @override
+  Future<bool> markAllNotificationsAsRead() async {
+    return await _patchMarkRead([], all: true);
   }
 
   @override
@@ -42,6 +85,13 @@ class NotificationRepository implements NotificationRepositoryInterface {
     return (response.statusCode == 200);
   }
 
+  String _getUserToken() {
+    return sharedPreferences.getString(AppConstants.token) ?? "";
+  }
+
+  // ═══════════════════════════════════════════════════════
+  // الدوال القديمة للتوافق - ما تغيرش
+  // ═══════════════════════════════════════════════════════
   @override
   void saveSeenNotificationCount(int count) {
     sharedPreferences.setInt(AppConstants.notificationCount, count);
@@ -52,10 +102,6 @@ class NotificationRepository implements NotificationRepositoryInterface {
     return sharedPreferences.getInt(AppConstants.notificationCount);
   }
 
-  String _getUserToken() {
-    return sharedPreferences.getString(AppConstants.token) ?? "";
-  }
-
   @override
   List<int> getNotificationIdList() {
     List<String>? list = [];
@@ -63,7 +109,7 @@ class NotificationRepository implements NotificationRepositoryInterface {
       list = sharedPreferences.getStringList(AppConstants.notificationIdList);
     }
     List<int> notificationIdList = [];
-    for (var id in list!) {
+    for (var id in list ?? []) {
       notificationIdList.add(jsonDecode(id));
     }
     return notificationIdList;
@@ -79,22 +125,11 @@ class NotificationRepository implements NotificationRepositoryInterface {
   }
 
   @override
-  Future add(value) {
-    throw UnimplementedError();
-  }
-
+  Future add(value) => throw UnimplementedError();
   @override
-  Future delete(int? id) {
-    throw UnimplementedError();
-  }
-
+  Future delete(int? id) => throw UnimplementedError();
   @override
-  Future get(int? id) {
-    throw UnimplementedError();
-  }
-
+  Future get(int? id) => throw UnimplementedError();
   @override
-  Future update(Map<String, dynamic> body) {
-    throw UnimplementedError();
-  }
+  Future update(Map<String, dynamic> body) => throw UnimplementedError();
 }

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wefrh_rider/common/widgets/empty_state_widget.dart';
 import 'package:wefrh_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
 import 'package:wefrh_rider/helper/price_converter_helper.dart';
 import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/util/manager_assets.dart';
 import 'package:wefrh_rider/util/manager_colors.dart';
 import 'package:wefrh_rider/util/styles.dart';
 import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
@@ -27,8 +29,11 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
     return Scaffold(
       appBar: CustomAppBarWidget(title: 'payment_history'.tr),
       body: Container(
-        padding: const EdgeInsets.all(Dimensions.p16),
-        margin: const EdgeInsets.only(top: Dimensions.p16),
+        padding: EdgeInsets.symmetric(
+          horizontal: Dimensions.w16,
+          vertical: Dimensions.h16,
+        ),
+        margin: EdgeInsets.only(top: Dimensions.h16),
         color: Theme.of(context).cardColor,
         height: double.maxFinite,
         child:
@@ -42,11 +47,12 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
                       itemBuilder: (context, index) {
                         final item = cashInHandController.transactions![index];
                         final status = item.status ?? '';
-                        final statusColor = status == 'approved' || status == 'Approved'
-                            ? ManagerColors.darkGreen
-                            : status == 'denied'
-                                ? Theme.of(context).colorScheme.error
-                                : Theme.of(context).primaryColor;
+                        final statusColor =
+                            status == 'approved' || status == 'Approved'
+                                ? ManagerColors.darkGreen
+                                : status == 'denied'
+                                    ? Theme.of(context).colorScheme.error
+                                    : Theme.of(context).primaryColor;
 
                         return Column(
                           children: [
@@ -60,14 +66,14 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
                                       Text(
                                         PriceConverterHelper.convertPrice(
                                             item.amount),
-                                        style: robotoSemiBold.copyWith(
+                                        style: textSemiBold().copyWith(
                                             fontSize: Dimensions.fs15),
                                         textDirection: TextDirection.ltr,
                                       ),
-                                      const SizedBox(height: Dimensions.p8),
+                                      SizedBox(height: Dimensions.h8),
                                       Text(
                                         '${'paid_via'.tr} ${_capitalize(item.method?.replaceAll('_', ' '))}',
-                                        style: robotoRegular.copyWith(
+                                        style: textRegular().copyWith(
                                           fontSize: Dimensions.fs12,
                                           color:
                                               Theme.of(context).disabledColor,
@@ -81,15 +87,15 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
                                   children: [
                                     Text(
                                       item.paymentTime.toString(),
-                                      style: robotoRegular.copyWith(
+                                      style: textRegular().copyWith(
                                         fontSize: Dimensions.fs12,
                                         color: Theme.of(context).disabledColor,
                                       ),
                                     ),
-                                    const SizedBox(height: Dimensions.p8),
+                                    SizedBox(height: Dimensions.h8),
                                     Text(
                                       _capitalize(status),
-                                      style: robotoSemiBold.copyWith(
+                                      style: textSemiBold().copyWith(
                                         fontSize: Dimensions.fs12,
                                         color: statusColor,
                                       ),
@@ -98,12 +104,22 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
                                 ),
                               ],
                             ),
-                            const SizedBox(height: Dimensions.p16),
+                            SizedBox(height: Dimensions.h16),
                           ],
                         );
                       },
                     )
-                  : Center(child: Text('no_transaction_found'.tr))
+                  : Container(
+                      margin: EdgeInsets.only(top: Dimensions.h16),
+                      color: Theme.of(context).cardColor,
+                      child: EmptyStateWidget(
+                        image: ManagerAssets.noTransactionImage,
+                        title: 'no_transaction_found'.tr,
+                        description:
+                            'get_ready_receive_first_order_track_earnings'.tr,
+                        spacing: Dimensions.h4,
+                      ),
+                    )
               : const Center(child: CircularProgressIndicator());
         }),
       ),

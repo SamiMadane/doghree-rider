@@ -26,9 +26,9 @@ class TaskScreen extends StatelessWidget {
         actionWidget: ConnectionStatusWidget(),
       ),
       body: Container(
-        padding: const EdgeInsets.all(Dimensions.p16),
+        padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
          margin: EdgeInsets.only(
-          top: Dimensions.p16,
+          top: Dimensions.h16,
         ),
         color: Theme.of(context).cardColor,
         child: SingleChildScrollView(
@@ -37,17 +37,17 @@ class TaskScreen extends StatelessWidget {
               Column(
                 children: [
                   StatisticsSection(),
-                  const SizedBox(height: Dimensions.p16),
+                  SizedBox(height: Dimensions.h16),
                   existTransaction
                       ? const ExistTaskSection()
                       : const NoTaskSection(),
                 ],
               ),
               if (existTransaction) ...[
-                const SizedBox(height: Dimensions.p30),
+                SizedBox(height: Dimensions.h30),
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.all(Dimensions.p16),
+                  padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
                   decoration: BoxDecoration(
                     color: Theme.of(context).cardColor,
                     boxShadow: [

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wefrh_rider/common/widgets/confirmation_bottom_sheet.dart';
+import 'package:wefrh_rider/common/widgets/custom_bottom_sheet_widget.dart';
 import 'package:wefrh_rider/features/language/controllers/language_controller.dart';
 import 'package:wefrh_rider/features/order/controllers/order_controller.dart';
 import 'package:wefrh_rider/common/widgets/slider_button_widget.dart';
@@ -54,14 +56,15 @@ class OrderSliderButton extends StatelessWidget {
             orderController.initLoading();
           }
 
-          Get.dialog(
-            ConfirmationDialogWidget(
-              icon: ManagerAssets.warning,
+          showCustomBottomSheet(
+            child: ConfirmationBottomSheet(
+              icon: ManagerAssets.confirmationOrderImage,
+              iconSize: Dimensions.fs150,
               title: 'are_you_sure_to_confirm'.tr,
               description: parcel
                   ? 'you_want_to_confirm_this_delivery'.tr
                   : 'you_want_to_confirm_this_order'.tr,
-              onYesPressed: () {
+              onAccept: () {
                 orderController.updateOrderStatus(
                   order,
                   parcel ? AppConstants.handover : AppConstants.confirmed,
@@ -69,8 +72,10 @@ class OrderSliderButton extends StatelessWidget {
                   gotoDashboard: fromLocationScreen ? true : false,
                 );
               },
+              acceptText: 'yes'.tr,
+              acceptColor: Theme.of(context).primaryColor,
+              cancelText: 'no'.tr,
             ),
-            barrierDismissible: false,
           );
         }
         // Case 2: Handover
@@ -214,7 +219,7 @@ class OrderSliderButton extends StatelessWidget {
                             ? 'swipe_to_pick_up_parcel'.tr
                             : 'swipe_to_pick_up_order'.tr
                         : '',
-        style: robotoMedium.copyWith(
+        style: textMedium().copyWith(
           fontSize: Dimensions.fs16,
           color: Theme.of(context).textTheme.bodyMedium?.color,
         ),
@@ -228,12 +233,12 @@ class OrderSliderButton extends StatelessWidget {
       radius: 10,
       icon: Center(
         child: Icon(
-          isLtr ? Icons.double_arrow_sharp : Icons.keyboard_arrow_left,
+          Icons.double_arrow_sharp, // سهم لليمين دائماً
           color: Colors.white,
           size: 20.0,
         ),
       ),
-      isLtr: isLtr,
+      isLtr: true, // دائماً LTR: المربع على اليسار والسحب لليمين
       boxShadow: const BoxShadow(blurRadius: 0),
       buttonColor: Theme.of(context).primaryColor,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,

@@ -35,9 +35,9 @@ class _FinishShiftScreenState extends State<FinishShiftScreen> {
         title: 'finish_shift'.tr,
       ),
       body: Container(
-        padding: EdgeInsets.all(Dimensions.p16),
+        padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
         margin: EdgeInsets.only(
-          top: Dimensions.p16,
+          top: Dimensions.h16,
         ),
         height: double.infinity,
         color: Theme.of(context).cardColor,
@@ -46,30 +46,30 @@ class _FinishShiftScreenState extends State<FinishShiftScreen> {
             children: [
               // ملخص الشفت
               CustomCard(
-                padding: EdgeInsets.all(Dimensions.p16),
+                padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
                 isBorder: false,
                 fillColor:Theme.of(context).scaffoldBackgroundColor,
                 child: Column(
                   children: [
-                    SizedBox(height: Dimensions.p4),
+                    SizedBox(height: Dimensions.h4),
                     Text(
                       'shift_summary'.tr,
-                      style: robotoBold.copyWith(fontSize: Dimensions.fs18),
+                      style: textBold().copyWith(fontSize: Dimensions.fs18),
                     ),
-                    SizedBox(height: Dimensions.p20),
+                    SizedBox(height: Dimensions.h20),
                     Row(
                       children: [
                         _statusBox('3', 'delivered'.tr, customColor.primaryBg,
                             Theme.of(context).primaryColor),
-                        SizedBox(width: Dimensions.p12),
+                        SizedBox(width: Dimensions.w12),
                         _statusBox('3', 'remaining'.tr, customColor.orangeBg,
                             ManagerColors.orangeLightMode),
-                        SizedBox(width: Dimensions.p12),
+                        SizedBox(width: Dimensions.w12),
                         _statusBox('1', 'problem'.tr, customColor.redBg,
                             customColor.red),
                       ],
                     ),
-                    SizedBox(height: Dimensions.p30),
+                    SizedBox(height: Dimensions.h30),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -80,26 +80,26 @@ class _FinishShiftScreenState extends State<FinishShiftScreen> {
                               ManagerAssets.flagIcon,
                               color: Theme.of(context).primaryColor,
                             ),
-                            SizedBox(width: Dimensions.p4),
+                            SizedBox(width: Dimensions.w4),
                             Text(
                               'amount_to_be_delivered'.tr,
-                              style: robotoBold.copyWith(
+                              style: textBold().copyWith(
                                   fontSize: Dimensions.fs16,
                                   color: Theme.of(context).primaryColor),
                             ),
                           ],
                         ),
-                        SizedBox(height: Dimensions.p8),
+                        SizedBox(height: Dimensions.h8),
                         Text(PriceConverterHelper.convertPrice(47),
-                            style: robotoSemiBold.copyWith(
+                            style: textSemiBold().copyWith(
                                 fontSize: Dimensions.fs24,
                                 color: Theme.of(context).primaryColor)),
-                        SizedBox(height: Dimensions.p8),
+                        SizedBox(height: Dimensions.h8),
                         Text(
                           'handover_message'.tr,
                           textAlign: TextAlign.center,
                           style:
-                              robotoRegular.copyWith(fontSize: Dimensions.fs14),
+                              textRegular().copyWith(fontSize: Dimensions.fs14),
                         ),
                       ],
                     ),
@@ -107,11 +107,11 @@ class _FinishShiftScreenState extends State<FinishShiftScreen> {
                 ),
               ),
 
-              SizedBox(height: Dimensions.p16),
+              SizedBox(height: Dimensions.h16),
 
               // خيارات التأكيد
               CustomCard(
-                padding: EdgeInsets.all(Dimensions.p16),
+                padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
                 isBorder: false,
                 fillColor:Theme.of(context).scaffoldBackgroundColor,
 
@@ -120,9 +120,9 @@ class _FinishShiftScreenState extends State<FinishShiftScreen> {
                   children: [
                     Text(
                       'confirmation_shift_termination'.tr,
-                      style: robotoBold.copyWith(fontSize: Dimensions.fs18),
+                      style: textBold().copyWith(fontSize: Dimensions.fs18),
                     ),
-                    SizedBox(height: Dimensions.p12),
+                    SizedBox(height: Dimensions.h12),
                     selectableRow(
                       text: 'handover_funds'.tr,
                       isSelected: isOption1Selected,
@@ -153,7 +153,7 @@ class _FinishShiftScreenState extends State<FinishShiftScreen> {
                       },
                       context: context,
                     ),
-                    SizedBox(height: Dimensions.p30),
+                    SizedBox(height: Dimensions.h30),
 
                     // زر التأكيد مع تفعيل/تعطيل
                     CustomButtonWidget(
@@ -168,7 +168,7 @@ class _FinishShiftScreenState extends State<FinishShiftScreen> {
                           : Theme.of(context).disabledColor,
                     ),
 
-                    SizedBox(height: Dimensions.p16),
+                    SizedBox(height: Dimensions.h16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -176,10 +176,10 @@ class _FinishShiftScreenState extends State<FinishShiftScreen> {
                           ManagerAssets.downloadIcon,
                           color: Theme.of(context).primaryColor,
                         ),
-                        SizedBox(width: Dimensions.p8),
+                        SizedBox(width: Dimensions.w8),
                         Text(
                           'download_final_report'.tr,
-                          style: robotoRegular.copyWith(
+                          style: textRegular().copyWith(
                             fontSize: Dimensions.fs15,
                             color: Theme.of(context).primaryColor,
                             decoration: TextDecoration.underline,
@@ -188,7 +188,7 @@ class _FinishShiftScreenState extends State<FinishShiftScreen> {
                         ),
                       ],
                     ),
-                    SizedBox(height: Dimensions.p10),
+                    SizedBox(height: Dimensions.h10),
                   ],
                 ),
               ),
@@ -204,7 +204,7 @@ class _FinishShiftScreenState extends State<FinishShiftScreen> {
 Widget _statusBox(String count, String title, Color bgColor, Color textColor) {
   return Expanded(
     child: CustomCard(
-      padding: EdgeInsets.all(Dimensions.p12),
+      padding: EdgeInsets.symmetric(horizontal:Dimensions.w12 ,vertical: Dimensions.h12,),
       fillColor: bgColor,
       isBorder: false,
       borderRadius: Dimensions.r8,
@@ -213,10 +213,10 @@ Widget _statusBox(String count, String title, Color bgColor, Color textColor) {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(count,
-              style: robotoBold.copyWith(
+              style: textBold().copyWith(
                   color: textColor, fontSize: Dimensions.fs18)),
           Text(title,
-              style: robotoBold.copyWith(
+              style: textBold().copyWith(
                   color: textColor, fontSize: Dimensions.fs14)),
         ],
       ),
@@ -245,7 +245,7 @@ Widget selectableRow({
       Expanded(
         child: Text(
           text,
-          style: robotoRegular.copyWith(fontSize: Dimensions.fs15),
+          style: textRegular().copyWith(fontSize: Dimensions.fs15),
         ),
       ),
     ],

@@ -9,35 +9,42 @@ class PassViewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<AuthController>(
-      builder: (authController) {
-        return Padding(
-          padding: const EdgeInsets.only(top: Dimensions.p10),
-          child: Wrap(children: [
-
-            view('8_or_more_character'.tr, authController.lengthCheck),
-
-            view('1_number'.tr, authController.numberCheck),
-
-            view('1_upper_case'.tr, authController.uppercaseCheck),
-
-            view('1_lower_case'.tr, authController.lowercaseCheck),
-
-            view('1_special_character'.tr, authController.spatialCheck),
-
-          ]),
-        );
-      }
-    );
+    return GetBuilder<AuthController>(builder: (authController) {
+      return Padding(
+        padding: EdgeInsets.only(top: Dimensions.h10),
+        child:
+            Wrap(spacing: Dimensions.w12, runSpacing: Dimensions.h6, children: [
+          _item('8_or_more_character'.tr, authController.lengthCheck),
+          _item('1_number'.tr, authController.numberCheck),
+          _item('1_upper_case'.tr, authController.uppercaseCheck),
+          _item('1_lower_case'.tr, authController.lowercaseCheck),
+          _item('1_special_character'.tr, authController.spatialCheck),
+        ]),
+      );
+    });
   }
 
-  Widget view(String title, bool done){
-    return Padding(
-      padding: const EdgeInsets.only(right: Dimensions.p4),
-      child: Row(mainAxisSize: MainAxisSize.min, children: [
-        Icon(done ? Icons.check : Icons.clear, color: done ? Colors.green : Colors.red, size: 12),
-        Text(title, style: robotoRegular.copyWith(color: done ? Colors.green : Colors.red, fontSize: 12))
-      ]),
+  Widget _item(String title, bool done) {
+    final Color activeColor = Colors.green;
+    final Color inactiveColor = Colors.grey.shade500;
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(
+          done ? Icons.check_circle_rounded : Icons.circle_outlined,
+          size: 14,
+          color: done ? activeColor : inactiveColor,
+        ),
+        SizedBox(width: 5),
+        Text(
+          title,
+          style: textRegular().copyWith(
+            fontSize: 12,
+            color: done ? activeColor : inactiveColor,
+          ),
+        ),
+      ],
     );
   }
 }

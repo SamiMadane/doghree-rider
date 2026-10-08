@@ -16,10 +16,10 @@ class EmptyStateBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: context.width,
-      padding: const EdgeInsets.all(Dimensions.p20),
+      padding: EdgeInsets.symmetric(horizontal: Dimensions.w20, vertical: Dimensions.h20),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: const BorderRadius.only(
+        borderRadius: BorderRadius.only(
           topLeft: Radius.circular(Dimensions.r20),
           topRight: Radius.circular(Dimensions.r20),
         ),
@@ -29,11 +29,11 @@ class EmptyStateBottomSheet extends StatelessWidget {
 
          
 
-          Text(noPaymentMethod ? 'payment_method'.tr : 'insufficient_balance'.tr, style: robotoBold.copyWith(fontSize: Dimensions.fs16)),
-          const SizedBox(height: Dimensions.p20),
+          Text(noPaymentMethod ? 'payment_method'.tr : 'insufficient_balance'.tr, style: textBold().copyWith(fontSize: Dimensions.fs16)),
+          SizedBox(height: Dimensions.h20),
 
           Container(
-            padding: const EdgeInsets.all(40),
+            padding: EdgeInsets.all(40),
             width: context.width,
             decoration: BoxDecoration(
               color: Theme.of(context).hintColor.withValues(alpha: 0.1),
@@ -45,18 +45,18 @@ class EmptyStateBottomSheet extends StatelessWidget {
                 image: ManagerAssets.emptyPaymentIcon,
                 height: 50, width: 50,
               ),
-              const SizedBox(height: Dimensions.p10),
+              SizedBox(height: Dimensions.h10),
 
               Text(
                 noPaymentMethod ? 'no_payment_method_is_available'.tr : '${'you_do_not_have_sufficient_balance_to_pay_the_minimum_payable_balance_is'.tr} ${PriceConverterHelper.convertPrice(Get.find<SplashController>().configModel!.minAmountToPayDm)}',
-                style: robotoRegular.copyWith(fontSize: Dimensions.fs14, color: Theme.of(context).textTheme.bodyLarge!.color?.withValues(alpha: 0.5)),
+                style: textRegular().copyWith(fontSize: Dimensions.fs14, color: Theme.of(context).textTheme.bodyLarge!.color?.withValues(alpha: 0.5)),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: noPaymentMethod ? Dimensions.p4 : 0),
+              SizedBox(height: noPaymentMethod ? Dimensions.h4 : 0),
 
               noPaymentMethod ? Text(
                 'please_contact_the_admin'.tr,
-                style: robotoRegular.copyWith(fontSize: Dimensions.fs12, color: Theme.of(context).textTheme.bodyLarge!.color?.withValues(alpha: 0.5)),
+                style: textRegular().copyWith(fontSize: Dimensions.fs12, color: Theme.of(context).textTheme.bodyLarge!.color?.withValues(alpha: 0.5)),
                 textAlign: TextAlign.center,
               ) : const SizedBox(),
 

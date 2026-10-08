@@ -30,7 +30,7 @@ class TitleWidget extends StatelessWidget {
     final customColor = Theme.of(context).extension<CustomColorsExtension>()!;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: Dimensions.p4),
+      padding: EdgeInsets.symmetric(horizontal: Dimensions.w4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -39,8 +39,8 @@ class TitleWidget extends StatelessWidget {
                   children: [
                     Text(title,
                         style: titleStyle ??
-                            robotoSemiBold.copyWith(fontSize: Dimensions.fs16)),
-                    const SizedBox(width: Dimensions.p8),
+                            textSemiBold().copyWith(fontSize: Dimensions.fs16)),
+                    SizedBox(width: Dimensions.w8),
                     CircleAvatar(
                       radius: Dimensions.r8,
                       backgroundColor:
@@ -48,7 +48,7 @@ class TitleWidget extends StatelessWidget {
                       child: Text(
                         '$orderCount',
                         style: countStyle ??
-                            robotoSemiBold.copyWith(
+                            textSemiBold().copyWith(
                               fontSize: Dimensions.fs12,
                               color: ManagerColors.white,
                             ),
@@ -56,13 +56,13 @@ class TitleWidget extends StatelessWidget {
                     ),
                   ],
                 )
-              : Text(title, style: titleStyle ?? robotoMedium),
+              : Text(title, style: titleStyle ?? textMedium()),
           onTap != null
               ? InkWell(
                   onTap: onTap as void Function()?,
                   child: Text(
                     'view_all'.tr,
-                    style: robotoRegular.copyWith(
+                    style: textRegular().copyWith(
                       color: customColor.naturalBlue,
                       decoration: TextDecoration.underline,
                       decorationColor: customColor.naturalBlue,

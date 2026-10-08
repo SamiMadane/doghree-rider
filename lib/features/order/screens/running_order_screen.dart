@@ -13,8 +13,8 @@ class RunningOrderScreen extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBarWidget(title: 'running_orders'.tr),
       body: Container(
-             padding: const EdgeInsets.all(Dimensions.p16),
-        margin: const EdgeInsets.only(top: Dimensions.p16),
+             padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
+        margin: EdgeInsets.only(top: Dimensions.h16),
         color: Theme.of(context).cardColor,
         height: double.maxFinite,
         child: GetBuilder<OrderController>(builder: (orderController) {
@@ -28,7 +28,7 @@ class RunningOrderScreen extends StatelessWidget {
               child: Center(child: SizedBox(
                 width: 1170,
                 child: ListView.builder(
-                  padding: const EdgeInsets.all(Dimensions.p10),
+                  padding: EdgeInsets.symmetric(horizontal:Dimensions.w10 ,vertical: Dimensions.h10,),
                   itemCount: orderController.currentOrderList!.length,
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,

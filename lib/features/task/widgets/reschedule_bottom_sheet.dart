@@ -24,11 +24,11 @@ class _RescheduleBottomSheetState extends State<RescheduleBottomSheet> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(
-        bottom: Dimensions.p20,
-        left: Dimensions.p16,
-        right: Dimensions.p16,
-        top: Dimensions.p10,
+      padding: EdgeInsets.only(
+        bottom: Dimensions.h20,
+        left: Dimensions.w16,
+        right: Dimensions.w16,
+        top: Dimensions.h10,
       ),
       child: AnimatedSwitcher(
         duration: const Duration(milliseconds: 300),
@@ -81,7 +81,7 @@ class _RescheduleBottomSheetState extends State<RescheduleBottomSheet> {
           selected: selectedReason == "other_conditions".tr,
           onTap: () => setState(() => selectedReason = "other_conditions".tr),
         ),
-        const SizedBox(height: Dimensions.p23),
+        SizedBox(height: Dimensions.h23),
         Row(
           children: [
             Expanded(
@@ -93,7 +93,7 @@ class _RescheduleBottomSheetState extends State<RescheduleBottomSheet> {
                 fontColor: Theme.of(context).textTheme.bodyMedium?.color,
               ),
             ),
-            const SizedBox(width: Dimensions.p16),
+            SizedBox(width: Dimensions.w16),
             Expanded(
               child: CustomButtonWidget(
                 onPressed: selectedReason != null
@@ -127,7 +127,7 @@ class _RescheduleBottomSheetState extends State<RescheduleBottomSheet> {
                 onTap: () => setState(() => selectedDay = "tomorrow".tr),
               ),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12),
             Expanded(
               child: SelectableButton(
                 text: "next_day".tr,
@@ -138,13 +138,13 @@ class _RescheduleBottomSheetState extends State<RescheduleBottomSheet> {
           ],
         ),
         const Divider(),
-        const SizedBox(height: Dimensions.p8),
+        SizedBox(height: Dimensions.h8),
         GridView.count(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           crossAxisCount: 2,
-          crossAxisSpacing: Dimensions.p8,
-          mainAxisSpacing: Dimensions.p8,
+          crossAxisSpacing: Dimensions.w8,
+          mainAxisSpacing: Dimensions.h8,
           childAspectRatio: 3.2,
           children: [
             SelectableButton(
@@ -173,7 +173,7 @@ class _RescheduleBottomSheetState extends State<RescheduleBottomSheet> {
             ),
           ],
         ),
-        const SizedBox(height: Dimensions.p23),
+        SizedBox(height: Dimensions.h23),
         Row(
           children: [
             Expanded(
@@ -186,7 +186,7 @@ class _RescheduleBottomSheetState extends State<RescheduleBottomSheet> {
                 fontColor: Theme.of(context).textTheme.bodyMedium?.color,
               ),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12),
             Expanded(
               child: CustomButtonWidget(
                 onPressed: (selectedDay != null && selectedTime != null)
@@ -207,22 +207,22 @@ class _RescheduleBottomSheetState extends State<RescheduleBottomSheet> {
   Widget _buildConfirmStep() {
     return Column(
       children: [
-        const SizedBox(height: Dimensions.p30),
+        SizedBox(height: Dimensions.h30),
         Image.asset(
           ManagerAssets.confirmedImage,
         ),
-        const SizedBox(height: Dimensions.p30),
+        SizedBox(height: Dimensions.h30),
         Text(
           'rescheduling_confirmed'.tr,
-          style: robotoBold.copyWith(fontSize: Dimensions.fs20),
+          style: textBold().copyWith(fontSize: Dimensions.fs20),
         ),
-        const SizedBox(height: Dimensions.p16),
+        SizedBox(height: Dimensions.h16),
         ConfirmInfoRow(
             title: "beneficiary".tr, value: "Youssef Mahmoud Abdel Rahman"),
         ConfirmInfoRow(title: "reason".tr, value: selectedReason ?? "-"),
         ConfirmInfoRow(title: "new_date".tr, value: selectedDay ?? "-"),
         ConfirmInfoRow(title: "time".tr, value: selectedTime ?? "-"),
-        const SizedBox(height: Dimensions.p40),
+        SizedBox(height: Dimensions.h40),
         CustomButtonWidget(
           onPressed: () => Navigator.pop(context),
           buttonText: 'done'.tr,
@@ -259,7 +259,7 @@ class _BottomSheetContainer extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
-            height: Dimensions.p20,
+            height: Dimensions.h20,
           ),
           StepProgressBar(
             status: statusForStepProgressBar,
@@ -267,19 +267,19 @@ class _BottomSheetContainer extends StatelessWidget {
             color: Theme.of(context).primaryColor,
           ),
           SizedBox(
-            height: Dimensions.p20,
+            height: Dimensions.h20,
           ),
-          Text(title, style: robotoBold.copyWith(fontSize: Dimensions.fs20)),
+          Text(title, style: textBold().copyWith(fontSize: Dimensions.fs20)),
           if (subtitle != null) ...[
-            const SizedBox(height: Dimensions.p16),
+            SizedBox(height: Dimensions.h16),
             Text(subtitle!,
-                style: robotoRegular.copyWith(fontSize: Dimensions.fs16)),
+                style: textRegular().copyWith(fontSize: Dimensions.fs16)),
           ],
           if (name != null) ...[
-            const SizedBox(height: Dimensions.p4),
-            Text(name!, style: robotoBold.copyWith(fontSize: Dimensions.fs16)),
+            SizedBox(height: Dimensions.h4),
+            Text(name!, style: textBold().copyWith(fontSize: Dimensions.fs16)),
           ],
-          const SizedBox(height: Dimensions.p25),
+          SizedBox(height: Dimensions.h25),
           ...children,
         ],
       ),
@@ -305,7 +305,7 @@ class SelectableButton extends StatelessWidget {
     final customColor = Theme.of(context).extension<CustomColorsExtension>()!;
 
     return Container(
-      margin: EdgeInsets.only(bottom: Dimensions.p8),
+      margin: EdgeInsets.only(bottom: Dimensions.h8),
       child: CustomButtonWidget(
         onPressed: onTap,
         isBorder: true,
@@ -334,12 +334,12 @@ class ConfirmInfoRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: Dimensions.p8),
+      padding: EdgeInsets.symmetric(vertical: Dimensions.h8),
       child: Row(
         children: [
-          Text(title, style: robotoBold.copyWith(fontSize: Dimensions.fs16)),
-          const SizedBox(width: Dimensions.p4),
-          Text(value, style: robotoRegular.copyWith(fontSize: Dimensions.fs16)),
+          Text(title, style: textBold().copyWith(fontSize: Dimensions.fs16)),
+          SizedBox(width: Dimensions.w4),
+          Text(value, style: textRegular().copyWith(fontSize: Dimensions.fs16)),
         ],
       ),
     );

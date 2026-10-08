@@ -35,9 +35,9 @@ class MessageBubbleWidget extends StatelessWidget {
     return Directionality(
       textDirection: TextDirection.ltr,
       child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: Dimensions.p16,
-          vertical: Dimensions.p10,
+        padding: EdgeInsets.symmetric(
+          horizontal: Dimensions.w16,
+          vertical: Dimensions.h10,
         ),
         child: Column(
           crossAxisAlignment:
@@ -66,7 +66,7 @@ class MessageBubbleWidget extends StatelessWidget {
                       ),
                     ),
                     padding:
-                        const EdgeInsets.all(Dimensions.p16),
+                        EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -74,7 +74,7 @@ class MessageBubbleWidget extends StatelessWidget {
                         if (hasImages)
                           Padding(
                             padding: EdgeInsets.only(
-                              bottom: hasText ? Dimensions.p10 : 0,
+                              bottom: hasText ? Dimensions.h10 : 0,
                             ),
                             child: _buildImagesLayout(context, message),
                           ),
@@ -83,7 +83,7 @@ class MessageBubbleWidget extends StatelessWidget {
                         if (hasText)
                           Text(
                             message.message!,
-                            style: robotoRegular.copyWith(
+                            style: textRegular().copyWith(
                               fontSize: Dimensions.fs16,
                               color: isReply
                                   ? Colors.white
@@ -100,7 +100,7 @@ class MessageBubbleWidget extends StatelessWidget {
               ],
             ),
 
-            const SizedBox(height: Dimensions.p8),
+            SizedBox(height: Dimensions.h8),
 
             // تاريخ ووقت الإرسال + حالة القراءة
             Row(
@@ -117,29 +117,29 @@ class MessageBubbleWidget extends StatelessWidget {
                             ? ManagerColors.darkGreen
                             : Theme.of(context).hintColor,
                       ),
-                      const SizedBox(width: 3),
+                      SizedBox(width: 3),
                       Text(
                         message.isSeen == 1 ? 'read'.tr : 'unread'.tr,
-                        style: robotoRegular.copyWith(
+                        style: textRegular().copyWith(
                           color: Theme.of(context).hintColor,
                           fontSize: Dimensions.fs12,
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(width: Dimensions.p4),
+                  SizedBox(width: Dimensions.w4),
                 ],
                 Text(
                   DateConverterHelper.isoStringToLocalTimeOnly(
                       message.createdAt!),
-                  style: robotoRegular.copyWith(
+                  style: textRegular().copyWith(
                     color: Theme.of(context).hintColor,
                     fontSize: Dimensions.fs12,
                   ),
                 ),
               ],
             ),
-            SizedBox(height: Dimensions.p16),
+            SizedBox(height: Dimensions.h16),
           ],
         ),
       ),

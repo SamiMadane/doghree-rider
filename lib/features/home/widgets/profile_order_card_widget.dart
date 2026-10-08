@@ -31,24 +31,24 @@ class ProfileOrderCardWidget extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(Dimensions.r10),
       ),
-      padding: const EdgeInsets.all(Dimensions.p16),
+      padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             title,
-            style: robotoSemiBold.copyWith(
+            style: textSemiBold().copyWith(
               color: Colors.white,
               fontSize: isTopCard ? Dimensions.fs24:Dimensions.fs18,
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: Dimensions.p4),
+          SizedBox(height: Dimensions.h4),
           value != null
               ? Text(
                   value!,
-                  style: robotoSemiBold.copyWith(
+                  style: textSemiBold().copyWith(
                     fontSize: Dimensions.fs24,
                     color: Colors.white, // أو overlay لون إذا الصورة فاتحة
                   ),

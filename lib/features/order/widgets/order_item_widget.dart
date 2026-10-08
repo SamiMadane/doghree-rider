@@ -66,7 +66,7 @@ class OrderItemWidget extends StatelessWidget {
               ),
             SizedBox(
                 width: orderDetails.itemDetails!.imageFullUrl != null
-                    ? Dimensions.p12
+                    ? Dimensions.w12
                     : 0),
             Expanded(
               child: Column(
@@ -74,13 +74,13 @@ class OrderItemWidget extends StatelessWidget {
                 children: [
                   Text(
                     orderDetails.itemDetails!.name!,
-                    style: robotoRegular.copyWith(
+                    style: textRegular().copyWith(
                       fontSize: Dimensions.fs14,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: Dimensions.p4),
+                  SizedBox(height: Dimensions.h4),
                   if (((Get.find<SplashController>()
                               .getModule(order.moduleType)
                               .unit! &&
@@ -99,13 +99,13 @@ class OrderItemWidget extends StatelessWidget {
                           : orderDetails.itemDetails!.veg == 0
                               ? 'non_veg'.tr
                               : 'veg'.tr,
-                      style: robotoRegular.copyWith(
+                      style: textRegular().copyWith(
                         fontSize: Dimensions.fs13,
                         color: ManagerColors.darkGreen,
                       ),
                     ),
                     SizedBox(
-                      height: Dimensions.p4,
+                      height: Dimensions.h4,
                     ),
                   ],
                   Row(
@@ -113,15 +113,15 @@ class OrderItemWidget extends StatelessWidget {
                       Text(
                         PriceConverterHelper.convertPrice(orderDetails.price! -
                             (orderDetails.discountOnItem!)),
-                        style: robotoMedium.copyWith(
+                        style: textMedium().copyWith(
                           fontSize: Dimensions.fs14,
                         ),
                       ),
                       if (orderDetails.discountOnItem! > 0) ...[
-                        SizedBox(width: Dimensions.p8),
+                        SizedBox(width: Dimensions.w8),
                         Text(
                           PriceConverterHelper.convertPrice(orderDetails.price),
-                          style: robotoMedium.copyWith(
+                          style: textMedium().copyWith(
                             decoration: TextDecoration.lineThrough,
                             fontSize: Dimensions.fs12,
                             color: Theme.of(context).disabledColor,
@@ -131,7 +131,7 @@ class OrderItemWidget extends StatelessWidget {
                       Spacer(),
                       Text(
                         '${orderDetails.quantity} ${orderDetails.quantity! > 1 ? 'items'.tr : 'item'.tr}',
-                        style: robotoMedium.copyWith(
+                        style: textMedium().copyWith(
                           fontSize: Dimensions.fs12,
                           color: ManagerColors.darkGreen,
                         ),
@@ -145,20 +145,20 @@ class OrderItemWidget extends StatelessWidget {
         ),
         if (addOnText.isNotEmpty)
           Padding(
-            padding: const EdgeInsets.only(left: 60, top: Dimensions.p4),
+            padding: EdgeInsets.only(left: 60, top: Dimensions.h4),
             child: Text(
               'addons'.tr + ': ' + addOnText,
-              style: robotoRegular.copyWith(
+              style: textRegular().copyWith(
                   fontSize: Dimensions.fs12,
                   color: Theme.of(context).disabledColor),
             ),
           ),
         if (variationText.isNotEmpty)
           Padding(
-            padding: const EdgeInsets.only(left: 60, top: Dimensions.p4),
+            padding: EdgeInsets.only(left: 60, top: Dimensions.h4),
             child: Text(
               'variations'.tr + ': ' + variationText,
-              style: robotoRegular.copyWith(
+              style: textRegular().copyWith(
                   fontSize: Dimensions.fs12,
                   color: Theme.of(context).disabledColor),
             ),

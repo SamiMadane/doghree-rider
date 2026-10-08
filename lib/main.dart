@@ -2,12 +2,14 @@ import 'dart:async';
 import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:wefrh_rider/features/auth/controllers/auth_controller.dart';
 import 'package:wefrh_rider/features/language/controllers/language_controller.dart';
 import 'package:wefrh_rider/features/splash/controllers/splash_controller.dart';
 import 'package:wefrh_rider/common/controllers/theme_controller.dart';
 import 'package:wefrh_rider/features/notification/domain/models/notification_body_model.dart';
 import 'package:wefrh_rider/helper/date_converter_helper.dart';
+import 'package:wefrh_rider/helper/location_permission_manager.dart';
 import 'package:wefrh_rider/helper/notification_helper.dart';
 import 'package:wefrh_rider/helper/route_helper.dart';
 import 'package:wefrh_rider/theme/dark_theme.dart';
@@ -60,7 +62,10 @@ Future<void> main() async {
       FirebaseMessaging.onBackgroundMessage(myBackgroundMessageHandler);
     }
   } catch (_) {}
+
   await DateConverterHelper.initLocaleDateFormatting();
+  Get.put(LocationPermissionManager(), permanent: true);
+
   cameras = await availableCameras();
   runApp(MyApp(languages: languages, body: body));
 }
@@ -97,48 +102,62 @@ class MyApp extends StatelessWidget {
       systemNavigationBarIconBrightness: Brightness.dark,
     ));
 
-    return GetBuilder<ThemeController>(builder: (themeController) {
-      return GetBuilder<LocalizationController>(builder: (localizeController) {
-        return GetBuilder<SplashController>(
-            builder: (splashController) {
-          return (GetPlatform.isWeb && splashController.configModel == null)
-              ? const SizedBox()
-              : GetMaterialApp(
-                  title: AppConstants.appName,
-                  debugShowCheckedModeBanner: false,
-                  navigatorKey: Get.key,
-                  theme: themeController.darkTheme ? dark : light,
-                  locale: localizeController.locale,
-                  translations: Messages(languages: languages),
-                  fallbackLocale: Locale(
-                      AppConstants.languages[0].languageCode!,
-                      AppConstants.languages[0].countryCode),
-                  initialRoute: Get.find<LocalizationController>()
-                              .selectedLanguageIndex ==
-                          -1
-                      ? RouteHelper.getLanguageInitRoute()
-                      : RouteHelper.getNavigationHandlerRoute(body),
-                  getPages: RouteHelper.routes,
-                  defaultTransition: Transition.topLevel,
-                  transitionDuration: const Duration(milliseconds: 500),
-                  builder: (BuildContext context, widget) {
-                    return MediaQuery(
-                        data: MediaQuery.of(context)
-                            .copyWith(textScaler: const TextScaler.linear(1.0)),
-                        child: Material(
-                          child: SafeArea(
-                            top: false,
-                            bottom: GetPlatform.isAndroid,
-                            child: Stack(children: [
-                              widget!,
-                            ]),
+    return ScreenUtilInit(
+      designSize: const Size(376, 812), // ✅ نفس اليوزر
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) {
+        return GetBuilder<ThemeController>(builder: (themeController) {
+          return GetBuilder<LocalizationController>(
+              builder: (localizeController) {
+            return GetBuilder<SplashController>(
+                builder: (splashController) {
+              return (GetPlatform.isWeb &&
+                      splashController.configModel == null)
+                  ? const SizedBox()
+                  : GetMaterialApp(
+                      title: AppConstants.appName,
+                      debugShowCheckedModeBanner: false,
+                      navigatorKey: Get.key,
+                      theme: themeController.darkTheme ? dark : light,
+                      locale: localizeController.locale,
+                      translations: Messages(languages: languages),
+                      fallbackLocale: Locale(
+                          AppConstants.languages[0].languageCode!,
+                          AppConstants.languages[0].countryCode),
+                      initialRoute: Get.find<LocalizationController>()
+                                  .selectedLanguageIndex ==
+                              -1
+                          ? RouteHelper.getLanguageInitRoute()
+                          : RouteHelper.getNavigationHandlerRoute(body),
+                      getPages: RouteHelper.routes,
+                      defaultTransition: Transition.topLevel,
+                      transitionDuration:
+                          const Duration(milliseconds: 500),
+                      builder: (BuildContext context, widget) {
+                        return MediaQuery(
+                          data: MediaQuery.of(context).copyWith(
+                              textScaler:
+                                  const TextScaler.linear(1.0)),
+                          child: Material(
+                            child: SafeArea(
+                              top: false,
+                              bottom: GetPlatform.isAndroid,
+                              child: Stack(
+                                children: [
+                                  widget!,
+                                ],
+                              ),
+                            ),
                           ),
-                        ));
-                  },
-                );
+                        );
+                      },
+                    );
+            });
+          });
         });
-      });
-    });
+      },
+    );
   }
 }
 

@@ -12,7 +12,7 @@ abstract class ProfileServiceInterface {
   Future<void> recordWebSocketLocation(RecordLocationBodyModel recordLocationBody);
   Future<Response> recordLocation(RecordLocationBodyModel recordLocationBody);
   Future<ResponseModel> deleteDriver();
-  void checkPermission(Function callback);
+  void checkPermission(Function callback,{bool showDialog = true});
   Future<String> addressPlaceMark(Position locationResult);
   Future<XFile?> pickImageFromGallery();
 

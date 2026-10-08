@@ -19,9 +19,9 @@ class WidgetWithLabel extends StatelessWidget {
       children: [
         Text(
           label,
-          style: robotoMedium,
+          style: textMedium(),
         ),
-        const SizedBox(height: Dimensions.p10),
+        SizedBox(height: Dimensions.h10),
         textField,
       ],
     );

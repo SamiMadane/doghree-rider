@@ -2,12 +2,13 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:get/get.dart';
 import 'package:wefrh_rider/util/manager_assets.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
 import 'package:wefrh_rider/util/styles.dart';
 
 class CustomTextFieldWidget extends StatefulWidget {
-  final String hintText;
+  final String? hintText;
   final TextEditingController? controller;
   final FocusNode? focusNode;
   final FocusNode? nextFocus;
@@ -22,11 +23,13 @@ class CustomTextFieldWidget extends StatefulWidget {
   final int? maxLength;
   final TextCapitalization capitalization;
   final bool hideEnableText;
+  final Color? fillColor;
 
   final IconData? prefixIcon;
   final String? prefixImage;
-  final double prefixSize;
+  final double? prefixSize;
   final double iconSize;
+  final double? borderRadius;
 
   final bool divider;
   final bool showTitle;
@@ -48,9 +51,13 @@ class CustomTextFieldWidget extends StatefulWidget {
   final Widget? suffixChild;
   final String? Function(String?)? validator;
 
+  // NEW PARAMETERS
+  final bool readOnly;
+  final VoidCallback? onTap;
+
   const CustomTextFieldWidget({
     super.key,
-    this.hintText = 'Write something...',
+    this.hintText,
     this.controller,
     this.focusNode,
     this.nextFocus,
@@ -71,8 +78,9 @@ class CustomTextFieldWidget extends StatefulWidget {
     this.onCountryChanged,
     this.prefixIcon,
     this.prefixImage,
-    this.prefixSize = Dimensions.p10,
+    this.prefixSize,
     this.iconSize = 18,
+    this.borderRadius,
     this.divider = false,
     this.showTitle = false,
     this.border = true,
@@ -84,6 +92,9 @@ class CustomTextFieldWidget extends StatefulWidget {
     this.suffixChild,
     this.validator,
     this.hideEnableText = false,
+    this.fillColor,
+    this.readOnly = false,
+    this.onTap,
   });
 
   @override
@@ -96,8 +107,12 @@ class CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
   @override
   void initState() {
     super.initState();
-    widget.focusNode?.addListener(() => setState(() {}));
-    widget.controller?.addListener(() => setState(() {}));
+    widget.focusNode?.addListener(() {
+      if (mounted) setState(() {});
+    });
+    widget.controller?.addListener(() {
+      if (mounted) setState(() {});
+    });
   }
 
   @override
@@ -111,26 +126,29 @@ class CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
       children: [
         if (widget.showTitle)
           Padding(
-            padding: const EdgeInsets.only(bottom: Dimensions.p4),
-            child: Text(widget.hintText,
-                style: robotoRegular.copyWith(fontSize: Dimensions.fs12)),
+            padding: EdgeInsets.only(bottom: Dimensions.h4),
+            child: Text(widget.hintText ?? 'write_something'.tr,
+                style: textRegular().copyWith(fontSize: Dimensions.fs12)),
           ),
         Directionality(
-          textDirection: widget.isPhone ? TextDirection.ltr : Directionality.of(context) ,
+          textDirection:
+              widget.isPhone ? TextDirection.ltr : Directionality.of(context),
           child: TextFormField(
             controller: widget.controller,
             focusNode: widget.focusNode,
             validator: widget.validator,
-            style: robotoRegular.copyWith(fontSize: Dimensions.fs16),
+            style: textRegular().copyWith(fontSize: Dimensions.fs16),
             textInputAction: widget.inputAction,
             keyboardType: widget.isAmount
-                ? const TextInputType.numberWithOptions(decimal: true)
+                ? TextInputType.numberWithOptions(decimal: true)
                 : widget.isNumber
                     ? TextInputType.number
                     : widget.inputType,
             cursorColor: Theme.of(context).primaryColor,
             textCapitalization: widget.capitalization,
             enabled: widget.isEnabled,
+            readOnly: widget.readOnly,
+            onTap: widget.onTap,
             autofocus: false,
             textDirection: widget.isPhone ? TextDirection.ltr : null,
             obscureText: widget.isPassword ? _obscureText : false,
@@ -145,21 +163,24 @@ class CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
                         : null,
             decoration: InputDecoration(
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(Dimensions.r16),
+                borderRadius: BorderRadius.circular(
+                    widget.borderRadius ?? Dimensions.r16),
                 borderSide: BorderSide(
                   style: widget.border ? BorderStyle.solid : BorderStyle.none,
                   color: Theme.of(context).dividerTheme.color!,
                 ),
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(Dimensions.r16),
+                borderRadius: BorderRadius.circular(
+                    widget.borderRadius ?? Dimensions.r16),
                 borderSide: BorderSide(
                   style: widget.border ? BorderStyle.solid : BorderStyle.none,
                   color: Theme.of(context).dividerTheme.color!,
                 ),
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(Dimensions.r16),
+                borderRadius: BorderRadius.circular(
+                    widget.borderRadius ?? Dimensions.r16),
                 borderSide: BorderSide(
                   style: widget.border ? BorderStyle.solid : BorderStyle.none,
                   width: 1.5,
@@ -167,16 +188,17 @@ class CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
                 ),
               ),
               errorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(Dimensions.r16),
+                borderRadius: BorderRadius.circular(
+                    widget.borderRadius ?? Dimensions.r16),
                 borderSide: BorderSide(
                   color: Theme.of(context).colorScheme.error,
                 ),
               ),
               isDense: true,
               hintText: widget.hintText,
-              fillColor: Theme.of(context).cardColor,
+              fillColor: widget.fillColor ?? Theme.of(context).cardColor,
               filled: true,
-              hintStyle: robotoRegular.copyWith(
+              hintStyle: textRegular().copyWith(
                 fontSize: Dimensions.fs16,
                 color: Theme.of(context).hintColor,
               ),
@@ -184,21 +206,22 @@ class CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
                   ? Text.rich(TextSpan(children: [
                       TextSpan(
                         text: widget.labelText ?? '',
-                        style: robotoRegular.copyWith(
+                        style: textRegular().copyWith(
                           fontSize: widget.labelTextSize ?? Dimensions.fs14,
                           color: Theme.of(context).hintColor.withAlpha(180),
                         ),
                       ),
-                      if (widget.required && widget.labelText != null)
+                      if (widget.isRequired && widget.labelText != null)
                         TextSpan(
                           text: ' *',
-                          style: robotoRegular.copyWith(
+                          style: textRegular().copyWith(
                             color: Theme.of(context).colorScheme.error,
                             fontSize: Dimensions.fs14,
                           ),
                         ),
                     ]))
                   : null,
+              alignLabelWithHint: widget.maxLines > 1,
               prefixIcon: _buildPrefix(context),
               suffixIcon: _buildSuffix(context),
             ),
@@ -212,8 +235,8 @@ class CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
           ),
         ),
         if (widget.divider)
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: Dimensions.p20),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: Dimensions.w20),
             child: Divider(),
           ),
       ],
@@ -230,21 +253,21 @@ class CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
               width: 85,
               height: 50,
               margin: EdgeInsets.zero,
-              padding: const EdgeInsetsDirectional.only(start: Dimensions.p5),
+              padding: EdgeInsetsDirectional.only(start: Dimensions.w5),
               child: Center(
                 child: Row(
                   children: [
-                    SizedBox(width: Dimensions.p5),
+                    SizedBox(width: Dimensions.w5),
                     Image.asset(
                       ManagerAssets.psFlag,
                       width: 25,
                       height: 25,
                     ),
-                    SizedBox(width: Dimensions.p5),
+                    SizedBox(width: Dimensions.w5),
                     Text(
                       '+970',
-                      style: robotoRegular.copyWith(
-                        fontSize: Dimensions.p14,
+                      style: textRegular().copyWith(
+                        fontSize: Dimensions.fs14,
                         color: Theme.of(context).textTheme.bodyMedium!.color,
                       ),
                     ),
@@ -262,8 +285,15 @@ class CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
       );
     } else if (widget.prefixImage != null) {
       return Padding(
-        padding: EdgeInsets.symmetric(horizontal: widget.prefixSize),
-        child: Image.asset(widget.prefixImage!, height: 20, width: 20),
+        padding: EdgeInsets.symmetric(
+          horizontal: widget.prefixSize ?? Dimensions.r10,
+        ),
+        child: SvgPicture.asset(
+          widget.prefixImage!,
+          height: 20,
+          width: 20,
+          color: Theme.of(context).hintColor,
+        ),
       );
     } else if (widget.prefixIcon != null) {
       return Icon(widget.prefixIcon,

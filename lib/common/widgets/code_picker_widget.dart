@@ -43,7 +43,7 @@ class CodePickerWidget extends StatefulWidget {
     this.initialSelection,
     this.favorite = const [],
     this.textStyle,
-    this.padding = const EdgeInsets.all(8.0),
+    this.padding ,
     this.showCountryOnly = false,
     this.searchDecoration = const InputDecoration(),
     this.searchStyle,
@@ -275,8 +275,8 @@ class _CodePickerWidgetState extends State<CodePickerWidget> {
                       widget.flagDecoration == null ? Clip.none : Clip.hardEdge,
                   decoration: widget.flagDecoration,
                   margin: widget.alignLeft!
-                      ? const EdgeInsets.only(right: 0.0, left: 0)
-                      : const EdgeInsets.only(right: 0.0, left: 0),
+                      ? EdgeInsets.only(right: 0.0, left: 0)
+                      : EdgeInsets.only(right: 0.0, left: 0),
                   child: Image.asset(
                     selectedItem!.flagUri!,
                     package: 'country_code_picker',
@@ -284,7 +284,7 @@ class _CodePickerWidgetState extends State<CodePickerWidget> {
                   ),
                 ),
               ),
-            const SizedBox(width: 5),
+            SizedBox(width: 5),
             if (!widget.hideMainText!)
               Flexible(
                 fit: widget.alignLeft! ? FlexFit.tight : FlexFit.loose,

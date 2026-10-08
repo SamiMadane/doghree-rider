@@ -83,10 +83,10 @@ class _PreviewIdScreenState extends State<PreviewIdScreen>
               scale: _scaleAnimation,
               child: SafeArea(
                 child: Padding(
-                  padding: EdgeInsets.all(Dimensions.p20),
+                  padding: EdgeInsets.symmetric(horizontal:Dimensions.w20 ,vertical: Dimensions.h20,),
                   child: Column(
                     children: [
-                      SizedBox(height: Dimensions.p20),
+                      SizedBox(height: Dimensions.h20),
 
                       // حاوي الصورة البسيط
                       Expanded(
@@ -109,7 +109,7 @@ class _PreviewIdScreenState extends State<PreviewIdScreen>
                                 ),
                               ],
                             ),
-                            padding: EdgeInsets.all(Dimensions.p12),
+                            padding: EdgeInsets.symmetric(horizontal:Dimensions.w12 ,vertical: Dimensions.h12,),
                             child: ClipRRect(
                               borderRadius:
                                   BorderRadius.circular(Dimensions.r12),
@@ -137,13 +137,13 @@ class _PreviewIdScreenState extends State<PreviewIdScreen>
                         ),
                       ),
 
-                      SizedBox(height: Dimensions.p30),
+                      SizedBox(height: Dimensions.h30),
 
                       // مؤشر النجاح البسيط
                       Container(
                         padding: EdgeInsets.symmetric(
-                          horizontal: Dimensions.p16,
-                          vertical: Dimensions.p8,
+                          horizontal: Dimensions.w16,
+                          vertical: Dimensions.h8,
                         ),
                         decoration: BoxDecoration(
                           color: customColor.greenBg,
@@ -161,10 +161,10 @@ class _PreviewIdScreenState extends State<PreviewIdScreen>
                               color: ManagerColors.greenLightMode,
                               size: 18,
                             ),
-                            SizedBox(width: Dimensions.p8),
+                            SizedBox(width: Dimensions.w8),
                             Text(
                               "preview_id_success".tr,
-                              style: robotoBold.copyWith(
+                              style: textBold().copyWith(
                                 color: ManagerColors.greenLightMode,
                                 fontSize: Dimensions.fs14,
                               ),
@@ -173,7 +173,7 @@ class _PreviewIdScreenState extends State<PreviewIdScreen>
                         ),
                       ),
 
-                      SizedBox(height: Dimensions.p40),
+                      SizedBox(height: Dimensions.h40),
 
                       // الأزرار البسيطة
                       Row(
@@ -184,7 +184,7 @@ class _PreviewIdScreenState extends State<PreviewIdScreen>
                               buttonText: 'preview_id_retake'.tr,
                               backgroundColor: Colors.grey,
                               onPressed: _retakePhoto,
-                              height: Dimensions.p56,
+                              height: Dimensions.h56,
                               radius: Dimensions.r16,
                               icon: Icon(
                                 Icons.refresh,
@@ -194,14 +194,14 @@ class _PreviewIdScreenState extends State<PreviewIdScreen>
                             ),
                           ),
 
-                          SizedBox(width: Dimensions.p12),
+                          SizedBox(width: Dimensions.w12),
 
                           // زر التأكيد
                           Expanded(
                             child: CustomButtonWidget(
                               onPressed: _confirmPhoto,
                               buttonText: 'preview_id_confirm'.tr,
-                              height: Dimensions.p56,
+                              height: Dimensions.h56,
                               radius: Dimensions.r16,
                               fontSize: Dimensions.fs15,
                               icon: SvgPicture.asset(
@@ -215,7 +215,7 @@ class _PreviewIdScreenState extends State<PreviewIdScreen>
                         ],
                       ),
 
-                      SizedBox(height: Dimensions.p20),
+                      SizedBox(height: Dimensions.h20),
                     ],
                   ),
                 ),

@@ -25,11 +25,11 @@ class _PaymentMethodBottomSheetWidgetState
     final customColor = Theme.of(context).extension<CustomColorsExtension>()!;
 
     return Container(
-      padding: const EdgeInsets.only(
-          top: Dimensions.p10, left: Dimensions.p16, right: Dimensions.p16),
+      padding: EdgeInsets.only(
+          top: Dimensions.h10, left: Dimensions.w16, right: Dimensions.w16),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: const BorderRadius.only(
+        borderRadius: BorderRadius.only(
           topLeft: Radius.circular(Dimensions.r20),
           topRight: Radius.circular(Dimensions.r20),
         ),
@@ -40,15 +40,15 @@ class _PaymentMethodBottomSheetWidgetState
             Align(
                 alignment: Alignment.center,
                 child: Text('payment_method'.tr,
-                    style: robotoBold.copyWith(fontSize: Dimensions.fs16))),
-            const SizedBox(height: Dimensions.p16),
+                    style: textBold().copyWith(fontSize: Dimensions.fs16))),
+            SizedBox(height: Dimensions.h16),
             Row(children: [
               Text('pay_via_online'.tr,
-                  style: robotoBold.copyWith(fontSize: Dimensions.fs14)),
+                  style: textBold().copyWith(fontSize: Dimensions.fs14)),
               Flexible(
                 child: Text(
                   ' (${'faster_and_secure_way_to_pay_bill'.tr})',
-                  style: robotoMedium.copyWith(
+                  style: textMedium().copyWith(
                       fontSize: Dimensions.fs12,
                       color: Theme.of(context).hintColor),
                   maxLines: 1,
@@ -57,7 +57,7 @@ class _PaymentMethodBottomSheetWidgetState
               ),
             ]),
           ]),
-          const SizedBox(height: Dimensions.p16),
+          SizedBox(height: Dimensions.h16),
           Flexible(
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
@@ -86,7 +86,7 @@ class _PaymentMethodBottomSheetWidgetState
                               .getWay!);
                     },
                     child: Container(
-                      margin: const EdgeInsets.only(bottom: Dimensions.p10),
+                      margin: EdgeInsets.only(bottom: Dimensions.h10),
                       decoration: BoxDecoration(
                         color: Theme.of(context).cardColor,
                         borderRadius: BorderRadius.circular(Dimensions.r10),
@@ -94,8 +94,8 @@ class _PaymentMethodBottomSheetWidgetState
                           color: customColor.strock1,
                         ),
                       ),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: Dimensions.p16, vertical: Dimensions.p20),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: Dimensions.w16, vertical: Dimensions.h20),
                       child: Row(children: [
                         Container(
                           height: 20,
@@ -111,14 +111,14 @@ class _PaymentMethodBottomSheetWidgetState
                           child: Icon(Icons.check,
                               color: Theme.of(context).cardColor, size: 16),
                         ),
-                        const SizedBox(width: Dimensions.p16),
+                        SizedBox(width: Dimensions.w16),
                         Text(
                           Get.find<SplashController>()
                               .configModel!
                               .activePaymentMethodList![index]
                               .getWayTitle!,
                           style:
-                              robotoMedium.copyWith(fontSize: Dimensions.fs14),
+                              textMedium().copyWith(fontSize: Dimensions.fs14),
                         ),
                         const Spacer(),
                         CustomImageWidget(
@@ -136,7 +136,7 @@ class _PaymentMethodBottomSheetWidgetState
           ),
           SafeArea(
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: Dimensions.p16),
+              padding: EdgeInsets.symmetric(vertical: Dimensions.h16),
               child: CustomButtonWidget(
                   radius: Dimensions.r10,
                   buttonText: 'select'.tr,

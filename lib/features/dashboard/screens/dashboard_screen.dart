@@ -170,7 +170,7 @@ class DashboardScreenState extends State<DashboardScreen> {
             behavior: SnackBarBehavior.floating,
             backgroundColor: Colors.green,
             duration: const Duration(seconds: 2),
-            margin: const EdgeInsets.all(Dimensions.p10),
+            margin: EdgeInsets.symmetric(horizontal:Dimensions.w10 ,vertical: Dimensions.h10,),
           ));
           _canExit = true;
 
@@ -199,7 +199,7 @@ class DashboardScreenState extends State<DashboardScreen> {
                     ],
                   ),
                   child: ClipRRect(
-                    borderRadius: const BorderRadius.only(
+                    borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(0),
                       topRight: Radius.circular(0),
                     ),
@@ -209,7 +209,7 @@ class DashboardScreenState extends State<DashboardScreen> {
                       padding: EdgeInsets.zero,
                       color: Theme.of(context).cardColor,
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(
+                        padding: EdgeInsets.symmetric(
                           horizontal: 8,
                           vertical: 4,
                         ),

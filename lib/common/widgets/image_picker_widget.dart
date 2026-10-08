@@ -65,7 +65,7 @@ class ImagePickerWidget extends StatelessWidget {
         radius: Dimensions.r10,
       ),
       child: Padding(
-        padding: const EdgeInsets.all(2),
+        padding: EdgeInsets.all(2),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(Dimensions.r10 - 2),
           child: _buildImage(),

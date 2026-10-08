@@ -19,15 +19,15 @@ class NoTaskSection extends StatelessWidget {
     return Column(
       children: [
         CustomCard(
-          padding: const EdgeInsets.all(Dimensions.p16),
+          padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
                 'hello'.tr,
-                style: robotoBold.copyWith(fontSize: Dimensions.fs24),
+                style: textBold().copyWith(fontSize: Dimensions.fs24),
               ),
-              const SizedBox(height: Dimensions.p12),
+              SizedBox(height: Dimensions.h12),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.3,
                 child: Align(
@@ -41,14 +41,14 @@ class NoTaskSection extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: Dimensions.p12),
+              SizedBox(height: Dimensions.h12),
               Text(
                 'no_tasks_message'.tr,
-                style: robotoRegular.copyWith(fontSize: Dimensions.fs17),
+                style: textRegular().copyWith(fontSize: Dimensions.fs17),
                 maxLines: 2,
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: Dimensions.p20),
+              SizedBox(height: Dimensions.h20),
               CustomButtonWidget(
                 buttonText: 'contact_admin'.tr,
                 backgroundColor: ManagerColors.darkGreen,
@@ -58,7 +58,7 @@ class NoTaskSection extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: Dimensions.p16),
+        SizedBox(height: Dimensions.h16),
         TipCardWidget(
           title: 'tips_getting_ready'.tr,
           titleColor: customColor.darkBlue,
@@ -69,7 +69,7 @@ class NoTaskSection extends StatelessWidget {
             Tip(text: 'tip_contact_supervisor'.tr, color: customColor.blue),
           ],
         ),
-        const SizedBox(height: Dimensions.p16),
+        SizedBox(height: Dimensions.h16),
         TipCardWidget(
           title: 'tips_getting_ready'.tr,
           titleColor: customColor.orange,

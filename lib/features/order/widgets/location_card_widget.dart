@@ -65,12 +65,12 @@ class LocationCardWidget extends StatelessWidget {
     );
 
     return Container(
-      padding: const EdgeInsets.symmetric(
-          horizontal: Dimensions.p16,
-          vertical: Dimensions.p25),
+      padding: EdgeInsets.symmetric(
+          horizontal: Dimensions.w16,
+          vertical: Dimensions.h25),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: const BorderRadius.only(
+        borderRadius: BorderRadius.only(
           topLeft: Radius.circular(Dimensions.r20),
           topRight: Radius.circular(Dimensions.r20),
         ),
@@ -88,7 +88,7 @@ class LocationCardWidget extends StatelessWidget {
         children: [
           // -------- STORE / PICKUP --------
           CustomCard(
-            padding: EdgeInsets.all(Dimensions.p16),
+            padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
             child: Row(
               children: [
                 parcel
@@ -107,7 +107,7 @@ class LocationCardWidget extends StatelessWidget {
                           fit: BoxFit.cover,
                         ),
                       ),
-                const SizedBox(width: Dimensions.p10),
+                SizedBox(width: Dimensions.w10),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -117,14 +117,14 @@ class LocationCardWidget extends StatelessWidget {
                       parcel
                           ? orderModel.parcelCategory?.name ?? '' // is it true ? add parcel order to check it
                           : orderModel.storeName ?? '', // وفرة مارت
-                      style: robotoMedium.copyWith(
+                      style: textMedium().copyWith(
                           fontSize: Dimensions.fs16),
                     ),
                     Text(
                       parcel
                           ? orderModel.parcelCategory?.description ?? '' // not have type 
                           : orderModel.moduleType ?? '', // grocery
-                      style: robotoRegular.copyWith(
+                      style: textRegular().copyWith(
                           fontSize: Dimensions.fs14,
                           color: Theme.of(context).hintColor),
                     ),
@@ -133,7 +133,7 @@ class LocationCardWidget extends StatelessWidget {
                 Spacer(),
                 Text(
                   '${restaurantDistance > 1000 ? '1000+' : restaurantDistance.toStringAsFixed(2)} ${'km_away'.tr}',
-                  style: robotoMedium.copyWith(
+                  style: textMedium().copyWith(
                     fontSize: Dimensions.fs12,
                     color: ManagerColors.darkGreen,
                   ),
@@ -142,11 +142,11 @@ class LocationCardWidget extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: Dimensions.p10),
+          SizedBox(height: Dimensions.h10),
 
           // -------- CUSTOMER / DELIVERY --------
           CustomCard(
-            padding: EdgeInsets.all(Dimensions.p16),
+            padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
             child: Row(
               children: [
                 parcel
@@ -165,7 +165,7 @@ class LocationCardWidget extends StatelessWidget {
                           fit: BoxFit.cover,
                         ),
                       ),
-                const SizedBox(width: Dimensions.p10),
+                SizedBox(width: Dimensions.w10),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -173,14 +173,14 @@ class LocationCardWidget extends StatelessWidget {
                       parcel
                           ? orderModel.receiverDetails?.contactPersonName ?? ''
                           : orderModel.customer?.fName ?? '',
-                      style: robotoMedium.copyWith(
+                      style: textMedium().copyWith(
                           fontSize: Dimensions.fs16),
                     ),
                     Text(
                       parcel
                           ? orderModel.receiverDetails?.addressType ?? ''
                           : 'customer'.tr,
-                      style: robotoRegular.copyWith(
+                      style: textRegular().copyWith(
                           fontSize: Dimensions.fs14,
                           color: Theme.of(context).hintColor),
                     ),
@@ -189,7 +189,7 @@ class LocationCardWidget extends StatelessWidget {
                 Spacer(),
                 Text(
                   '${restaurantToCustomerDistance > 1000 ? '1000+' : restaurantToCustomerDistance.toStringAsFixed(2)} ${'km_away'.tr}',
-                  style: robotoMedium.copyWith(
+                  style: textMedium().copyWith(
                     fontSize: Dimensions.fs12,
                     color: ManagerColors.darkGreen,
                   ),
@@ -198,7 +198,7 @@ class LocationCardWidget extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: Dimensions.p20),
+          SizedBox(height: Dimensions.h20),
 
           // -------- PRICE + PAYMENT --------
           Row(
@@ -211,16 +211,16 @@ class LocationCardWidget extends StatelessWidget {
                       PriceConverterHelper.convertPrice(
                           orderModel.originalDeliveryCharge! +
                               orderModel.dmTips!),
-                      style: robotoMedium.copyWith(
+                      style: textMedium().copyWith(
                           fontSize: Dimensions.fs16),
                     )
                   : const SizedBox(),
               SizedBox(
-                width: Dimensions.p10,
+                width: Dimensions.w10,
               ),
               Text(
                 '${orderModel.paymentMethod == 'cash_on_delivery' ? 'cod'.tr : orderModel.paymentMethod == 'wallet' ? 'wallet'.tr : 'paid'.tr}',
-                style: robotoSemiBold.copyWith(
+                style: textSemiBold().copyWith(
                   fontSize: Dimensions.fs14,
                   color: orderModel.paymentMethod == 'cash_on_delivery'
                       ? ManagerColors.orangeLightMode
@@ -232,7 +232,7 @@ class LocationCardWidget extends StatelessWidget {
             ],
           ),
 
-          const SizedBox(height: Dimensions.p20),
+          SizedBox(height: Dimensions.h20),
 
           // -------- ACTION BUTTONS --------
           Row(
@@ -266,7 +266,7 @@ class LocationCardWidget extends StatelessWidget {
                           ),
                         )),
               ),
-              const SizedBox(width: Dimensions.p10),
+              SizedBox(width: Dimensions.w10),
               Expanded(
                 child: CustomButtonWidget(
                     height: 40,

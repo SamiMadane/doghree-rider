@@ -31,8 +31,8 @@ class OrderCardWidget extends StatelessWidget {
 
     return CustomCard(
       width: MediaQuery.of(context).size.width,
-      padding: const EdgeInsets.all(Dimensions.p16),
-      margin: const EdgeInsetsDirectional.only(end: Dimensions.p16),
+      padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
+      margin: EdgeInsetsDirectional.only(end: Dimensions.w16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -46,16 +46,16 @@ class OrderCardWidget extends StatelessWidget {
                     children: [
                       TextSpan(
                         text: '${'id_label'.tr}: ', // هذا نص الـ Label للترجمة
-                        style: robotoSemiBold.copyWith(
+                        style: textSemiBold().copyWith(
                           fontSize: Dimensions.fs14,
                           color: Theme.of(context).hintColor, // لون رمادي
                         ),
                       ),
                       TextSpan(
-                        text: '#${order.id}', // القيمة نفسها
-                        style: robotoSemiBold.copyWith(
+                        text: '#${order.id}', 
+                        style: textSemiBold().copyWith(
                           fontSize: Dimensions.fs14,
-                          color: ManagerColors.darkGreen, // برايمري كولور
+                          color: ManagerColors.darkGreen, 
                         ),
                       ),
                     ],
@@ -66,14 +66,14 @@ class OrderCardWidget extends StatelessWidget {
                 isBorder: false,
                 autoWidth: true,
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                    EdgeInsets.symmetric(horizontal: Dimensions.w12, vertical: Dimensions.h4),
                 fillColor: order.paymentStatus == 'paid'
                     ? ManagerColors.greenLightMode
                     : Theme.of(context).colorScheme.error,
                 borderRadius: Dimensions.r20,
                 child: Text(
                   order.paymentStatus == 'paid' ? 'paid'.tr : 'unpaid'.tr,
-                  style: robotoMedium.copyWith(
+                  style: textMedium().copyWith(
                     color: ManagerColors.white,
                     fontSize: Dimensions.fs14,
                   ),
@@ -81,7 +81,7 @@ class OrderCardWidget extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: Dimensions.p16),
+          SizedBox(height: Dimensions.h16),
 
           // أيقونات + خطوط
           Row(
@@ -92,58 +92,58 @@ class OrderCardWidget extends StatelessWidget {
                   ClipOval(
                     child: CustomImageWidget(
                         image:
-                            order.storeLogoFullUrl ?? ManagerAssets.storeImage,
-                        width: 28,
-                        height: 28),
+                            order.storeLogoFullUrl,
+                        width: Dimensions.w28,
+                        height: Dimensions.h28),
                   ),
                   SizedBox(
-                    height: 40,
+                    height: Dimensions.h40,
                     child: DottedLine(
                       direction: Axis.vertical,
                       lineLength: double.infinity,
-                      dashLength: 6,
+                      dashLength: 8,
                       dashColor: Theme.of(context).disabledColor,
                     ),
                   ),
                   SvgPicture.asset(ManagerAssets.locationIcon,
-                      width: 24, height: 24),
+                      width: Dimensions.w24, height: Dimensions.h24),
                 ],
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: Dimensions.w8),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(order.storeName!,
                         style:
-                            robotoSemiBold.copyWith(fontSize: Dimensions.fs14)),
+                            textSemiBold().copyWith(fontSize: Dimensions.fs14)),
                     Text(order.storeAddress!,
-                        style: robotoRegular.copyWith(
+                        style: textRegular().copyWith(
                             fontSize: Dimensions.fs14,
                             color: Theme.of(context).hintColor)),
-                    const SizedBox(height: Dimensions.p4),
+                    SizedBox(height: Dimensions.h4),
                     if (parcel)
                       Container(
-                        padding: const EdgeInsets.all(Dimensions.p4),
+                        padding: EdgeInsets.symmetric(horizontal:Dimensions.w4 ,vertical: Dimensions.h4,),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(Dimensions.r4),
                           color:
                               Theme.of(context).primaryColor.withOpacity(0.1),
                         ),
                         child: Text('parcel'.tr,
-                            style: robotoMedium.copyWith(
+                            style: textMedium().copyWith(
                                 fontSize: Dimensions.fs10,
                                 color: Theme.of(context).primaryColor)),
                       ),
-                    const SizedBox(height: Dimensions.p10),
+                    SizedBox(height: Dimensions.h20),
                     Text(
                         parcel
                             ? order.deliveryAddress.toString()
                             : order.storeAddress!,
                         style:
-                            robotoSemiBold.copyWith(fontSize: Dimensions.fs14)),
+                            textSemiBold().copyWith(fontSize: Dimensions.fs14)),
                     Text(parcel ? 'delivery_location'.tr : 'store_location'.tr,
-                        style: robotoRegular.copyWith(
+                        style: textRegular().copyWith(
                             fontSize: Dimensions.fs14,
                             color: Theme.of(context).hintColor)),
                   ],

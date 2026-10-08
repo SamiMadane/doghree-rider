@@ -36,11 +36,11 @@ class TipCardWidget extends StatelessWidget {
             shape: BoxShape.circle,
           ),
         ),
-        SizedBox(width: Dimensions.p8),
+        SizedBox(width: Dimensions.w8),
         Expanded(
           child: Text(
             tip.text,
-            style: robotoSemiBold.copyWith(color: tip.color),
+            style: textSemiBold().copyWith(color: tip.color),
           ),
         ),
       ],
@@ -51,21 +51,21 @@ class TipCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomCard(
       fillColor: backgroundColor ?? Theme.of(context).cardColor,
-      padding: const EdgeInsets.all(Dimensions.p16),
+      padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             title,
-            style: robotoBold.copyWith(
+            style: textBold().copyWith(
               fontSize: Dimensions.fs16,
               color: titleColor,
             ),
           ),
-          SizedBox(height: Dimensions.p10),
+          SizedBox(height: Dimensions.h10),
           ...tips.expand((tip) sync* {
             yield _tipRow(tip);
-            if (tip != tips.last) yield SizedBox(height: Dimensions.p8);
+            if (tip != tips.last) yield SizedBox(height: Dimensions.h8);
           }),
         ],
       ),

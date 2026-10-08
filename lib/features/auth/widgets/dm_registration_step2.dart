@@ -38,10 +38,10 @@ class DmRegistrationStep2 extends StatelessWidget {
             children: [
               Text(
                 'identity_information'.tr,
-                style: robotoSemiBold.copyWith(fontSize: Dimensions.fs16),
+                style: textSemiBold().copyWith(fontSize: Dimensions.fs16),
               ),
               SizedBox(
-                height: Dimensions.p16,
+                height: Dimensions.h16,
               ),
               // Delivery Type
               WidgetWithLabel(
@@ -55,7 +55,7 @@ class DmRegistrationStep2 extends StatelessWidget {
                   },
                 ),
               ),
-              const SizedBox(height: Dimensions.p16),
+              SizedBox(height: Dimensions.h16),
 
               // Delivery Zone
               addressController.zoneList != null
@@ -69,7 +69,7 @@ class DmRegistrationStep2 extends StatelessWidget {
                                 value: zone.id.toString(),
                                 child: Text(
                                   zone.name ?? '',
-                                  style: robotoRegular.copyWith(
+                                  style: textRegular().copyWith(
                                     color: Theme.of(context)
                                         .textTheme
                                         .bodyLarge
@@ -94,7 +94,7 @@ class DmRegistrationStep2 extends StatelessWidget {
                         color: Theme.of(context).shadowColor,
                       ),
                     ),
-              const SizedBox(height: Dimensions.p16),
+              SizedBox(height: Dimensions.h16),
 
               // Vehicle Type
               authController.vehicleIds != null
@@ -108,7 +108,7 @@ class DmRegistrationStep2 extends StatelessWidget {
                                 value: vehicle.id.toString(),
                                 child: Text(
                                   vehicle.type ?? '',
-                                  style: robotoRegular.copyWith(
+                                  style: textRegular().copyWith(
                                     color: Theme.of(context)
                                         .textTheme
                                         .bodyLarge
@@ -134,7 +134,7 @@ class DmRegistrationStep2 extends StatelessWidget {
                     ),
             ],
           ),
-          const SizedBox(height: Dimensions.p16),
+          SizedBox(height: Dimensions.h16),
           Column(
             children: [
               // Identity Type Dropdown
@@ -149,7 +149,7 @@ class DmRegistrationStep2 extends StatelessWidget {
                   },
                 ),
               ),
-              const SizedBox(height: Dimensions.p16),
+              SizedBox(height: Dimensions.h16),
 
               // Identity Number TextField
               WidgetWithLabel(
@@ -167,7 +167,7 @@ class DmRegistrationStep2 extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: Dimensions.p20),
+          SizedBox(height: Dimensions.h20),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -197,11 +197,11 @@ class DmRegistrationStep2 extends StatelessWidget {
                         return ImagePickerWidget(
                           pickedImagePath: file?.path,
                           placeholderText: 'upload_id_picture'.tr,
-                          height: 180,
-                          onPickImage: () {
+                          height: Dimensions.h180,
+                          onPickImage: () async {
                             if (authController.pickedIdentities.length < 6) {
-                              authController.pickDmImageForRegistration(
-                                  false, false);
+                              await authController
+                                  .pickIdentityImageWithCrop(context);
                             } else {
                               showCustomSnackBar('maximum_image_limit_is_6'.tr);
                             }
@@ -218,7 +218,7 @@ class DmRegistrationStep2 extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: Dimensions.p16),
+              SizedBox(height: Dimensions.h16),
               ConditionCheckBoxWidget(
                 authController: authController,
                 fromSignUp: true,

@@ -54,7 +54,7 @@ Future<T?> showCustomBottomSheet<T>({
             child: Container(
               decoration: BoxDecoration(
                 color: resolvedSheetBg,
-                borderRadius: const BorderRadius.only(
+                borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(Dimensions.r20),
                   topRight: Radius.circular(Dimensions.r20),
                 ),
@@ -70,11 +70,11 @@ Future<T?> showCustomBottomSheet<T>({
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(
-                          bottom: Dimensions.p6,
-                          left: Dimensions.p12,
-                          right: Dimensions.p12,
-                          top: Dimensions.p12,
+                        padding: EdgeInsets.only(
+                          bottom: Dimensions.h6,
+                          left: Dimensions.w12,
+                          right: Dimensions.w12,
+                          top: Dimensions.h12,
                         ),
                         child: Container(
                           height: 5,
@@ -95,13 +95,13 @@ Future<T?> showCustomBottomSheet<T>({
                       child: GestureDetector(
                         onTap: onClose ?? () => Navigator.of(context).pop(),
                         child: Container(
-                          padding: const EdgeInsets.all(Dimensions.p10),
+                          padding: EdgeInsets.symmetric(horizontal:Dimensions.w10 ,vertical: Dimensions.h10,),
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: resolvedCloseBg,
                           ),
                           child: Container(
-                            padding: EdgeInsets.all(Dimensions.p4),
+                            padding: EdgeInsets.symmetric(horizontal:Dimensions.w4 ,vertical: Dimensions.h4,),
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: resolvedCloseBg,

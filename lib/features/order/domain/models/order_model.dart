@@ -28,7 +28,6 @@ class PaginatedOrderModel {
     }
     return data;
   }
-
 }
 
 class OrderModel {
@@ -83,6 +82,7 @@ class OrderModel {
   double? referrerBonusAmount;
   String? storeBusinessModel;
   int? storeChatPermission;
+  String? prescriptionNote;
 
   OrderModel({
     this.id,
@@ -136,6 +136,7 @@ class OrderModel {
     this.referrerBonusAmount,
     this.storeBusinessModel,
     this.storeChatPermission,
+    this.prescriptionNote,
   });
 
   OrderModel.fromJson(Map<String, dynamic> json) {
@@ -172,15 +173,22 @@ class OrderModel {
     if (json['order_attachment_full_url'] != null) {
       orderAttachmentFullUrl = <String>[];
       json['order_attachment_full_url'].forEach((v) {
-        if(v != null){
+        if (v != null) {
           orderAttachmentFullUrl!.add(v.toString());
         }
       });
     }
-    deliveryAddress = json['delivery_address'] != null ? DeliveryAddress.fromJson(json['delivery_address']) : null;
-    receiverDetails = json['receiver_details'] != null ? DeliveryAddress.fromJson(json['receiver_details']) : null;
-    parcelCategory = json['parcel_category'] != null ? ParcelCategory.fromJson(json['parcel_category']) : null;
-    customer = json['customer'] != null ? Customer.fromJson(json['customer']) : null;
+    deliveryAddress = json['delivery_address'] != null
+        ? DeliveryAddress.fromJson(json['delivery_address'])
+        : null;
+    receiverDetails = json['receiver_details'] != null
+        ? DeliveryAddress.fromJson(json['receiver_details'])
+        : null;
+    parcelCategory = json['parcel_category'] != null
+        ? ParcelCategory.fromJson(json['parcel_category'])
+        : null;
+    customer =
+        json['customer'] != null ? Customer.fromJson(json['customer']) : null;
     dmTips = json['dm_tips']?.toDouble();
     cutlery = json['cutlery'];
     unavailableItemNote = json['unavailable_item_note'];
@@ -188,7 +196,7 @@ class OrderModel {
     if (json['order_proof_full_url'] != null) {
       orderProofFullUrl = <String>[];
       json['order_proof_full_url'].forEach((v) {
-        if(v != null){
+        if (v != null) {
           orderProofFullUrl!.add(v.toString());
         }
       });
@@ -203,12 +211,15 @@ class OrderModel {
     taxStatus = json['tax_status'] == 'included' ? true : false;
     additionalCharge = json['additional_charge']?.toDouble() ?? 0;
     isGuest = json['is_guest'];
-    flashAdminDiscountAmount = json['flash_admin_discount_amount']?.toDouble() ?? 0;
-    flashStoreDiscountAmount = json['flash_store_discount_amount']?.toDouble() ?? 0;
+    flashAdminDiscountAmount =
+        json['flash_admin_discount_amount']?.toDouble() ?? 0;
+    flashStoreDiscountAmount =
+        json['flash_store_discount_amount']?.toDouble() ?? 0;
     extraPackagingAmount = json['extra_packaging_amount']?.toDouble();
     referrerBonusAmount = json['ref_bonus_amount']?.toDouble();
     storeBusinessModel = json['store_business_model'];
     storeChatPermission = json['chat_permission'];
+    prescriptionNote = json['prescription_note'];
   }
 
   Map<String, dynamic> toJson() {
@@ -225,6 +236,8 @@ class OrderModel {
     data['transaction_reference'] = transactionReference;
     data['delivery_address_id'] = deliveryAddressId;
     data['delivery_man_id'] = deliveryManId;
+    data['prescription_note'] = prescriptionNote;
+
     data['order_type'] = orderType;
     data['store_id'] = storeId;
     data['created_at'] = createdAt;
@@ -321,7 +334,9 @@ class DeliveryAddress {
     contactPersonName = json['contact_person_name'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    zoneId = json['zone_id'] != null && json['zone_id'] != 'null' ? int.parse(json['zone_id'].toString()) : null;
+    zoneId = json['zone_id'] != null && json['zone_id'] != 'null'
+        ? int.parse(json['zone_id'].toString())
+        : null;
     streetNumber = json['road'];
     house = json['house'];
     floor = json['floor'];

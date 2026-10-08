@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:wefrh_rider/common/widgets/custom_card.dart';
+import 'package:wefrh_rider/common/widgets/empty_state_widget.dart';
 import 'package:wefrh_rider/features/chat/controllers/chat_controller.dart';
 import 'package:wefrh_rider/features/notification/domain/models/notification_body_model.dart';
 import 'package:wefrh_rider/features/chat/domain/models/conversation_model.dart';
@@ -54,8 +55,11 @@ class _ConversationScreenState extends State<ConversationScreen> {
 
         return Container(
           color: Theme.of(context).cardColor,
-          padding: EdgeInsets.all(Dimensions.p16),
-          margin: EdgeInsets.only(top: Dimensions.p16),
+          padding: EdgeInsets.symmetric(
+            horizontal: Dimensions.w16,
+            vertical: Dimensions.h16,
+          ),
+          margin: EdgeInsets.only(top: Dimensions.h16),
           child: Column(children: [
             (conversation0 != null && conversation0.conversations != null)
                 ? SearchFieldWidget(
@@ -96,7 +100,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                         conversation0.conversations != null &&
                         chatController
                             .conversationModel!.conversations!.isNotEmpty)
-                    ? Dimensions.p10
+                    ? Dimensions.h10
                     : 0),
             Expanded(
               child:
@@ -146,10 +150,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                               }
 
                                               return CustomCard(
-                                                margin:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical:
-                                                            Dimensions.p16),
+                                                margin: EdgeInsets.symmetric(
+                                                    vertical: Dimensions.h16),
                                                 isBorder: false,
                                                 child: CustomInkWellWidget(
                                                   onTap: () {
@@ -205,9 +207,9 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                                           // imageType: baseUrl,
                                                         ),
                                                       ),
-                                                      const SizedBox(
+                                                      SizedBox(
                                                           width:
-                                                              Dimensions.p10),
+                                                              Dimensions.w10),
                                                       Expanded(
                                                           child: Column(
                                                               mainAxisAlignment:
@@ -225,7 +227,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                                                 user != null
                                                                     ? Text(
                                                                         '${user.fName} ${user.lName}',
-                                                                        style: robotoSemiBold
+                                                                        style: textSemiBold()
                                                                             .copyWith(
                                                                           fontSize:
                                                                               Dimensions.fs14,
@@ -233,7 +235,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                                                       )
                                                                     : Text(
                                                                         '${type!.tr} ${'deleted'.tr}',
-                                                                        style: robotoSemiBold
+                                                                        style: textSemiBold()
                                                                             .copyWith(
                                                                           fontSize:
                                                                               Dimensions.fs14,
@@ -244,7 +246,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                                                       DateConverterHelper.dateTimeStringToDate(
                                                                           conversation
                                                                               .lastMessageTime!)),
-                                                                  style: robotoMedium.copyWith(
+                                                                  style: textMedium().copyWith(
                                                                       color: Theme.of(
                                                                               context)
                                                                           .hintColor,
@@ -257,10 +259,10 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                                                 ),
                                                               ],
                                                             ),
-                                                            const SizedBox(
+                                                            SizedBox(
                                                                 height:
                                                                     Dimensions
-                                                                        .p8),
+                                                                        .h8),
                                                             Row(
                                                               mainAxisAlignment:
                                                                   MainAxisAlignment
@@ -271,7 +273,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                                                           .lastMessage!
                                                                           .message ??
                                                                       ''.tr,
-                                                                  style: robotoMedium.copyWith(
+                                                                  style: textMedium().copyWith(
                                                                       fontSize:
                                                                           Dimensions
                                                                               .fs12,
@@ -291,12 +293,16 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                                                             .senderId ==
                                                                         user?.id)
                                                                   Container(
-                                                                    padding: EdgeInsets.all((conversation.lastMessage!.senderId ==
+                                                                    padding: (conversation.lastMessage!.senderId ==
                                                                             user
                                                                                 ?.id)
-                                                                        ? Dimensions
-                                                                            .p4
-                                                                        : 0.0),
+                                                                        ? EdgeInsets.symmetric(
+                                                                            horizontal: Dimensions
+                                                                                .w4,
+                                                                            vertical: Dimensions
+                                                                                .h4)
+                                                                        : EdgeInsets
+                                                                            .zero,
                                                                     decoration: BoxDecoration(
                                                                         color: ManagerColors
                                                                             .darkGreen,
@@ -309,7 +315,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                                                               ? conversation.unreadMessageCount.toString()
                                                                               : ''
                                                                           : conversation.unreadMessageCount.toString(),
-                                                                      style: robotoMedium.copyWith(
+                                                                      style: textMedium().copyWith(
                                                                           color: Theme.of(context)
                                                                               .cardColor,
                                                                           fontSize:
@@ -329,8 +335,15 @@ class _ConversationScreenState extends State<ConversationScreen> {
                               ),
                             )
                           : Center(
-                              child: Text('no_conversation_found'.tr,
-                                  style: robotoMedium))
+                              child: SizedBox(
+                              height: 500,
+                              child: EmptyStateWidget(
+                                imageScale: 1.2,
+                                spacing: Dimensions.h20,
+                                image: ManagerAssets.noConversationImage,
+                                title: 'no_conversation_found'.tr,
+                              ),
+                            ))
                       : const Center(child: CircularProgressIndicator()),
             ),
           ]),

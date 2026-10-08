@@ -16,30 +16,30 @@ class OrderFeeReceiveDialogWidget extends StatelessWidget {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.r4)),
       child: Padding(
-        padding: const EdgeInsets.all(Dimensions.p20),
+        padding: EdgeInsets.symmetric(horizontal: Dimensions.w20, vertical: Dimensions.h20),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
 
           Image.asset(ManagerAssets.money, height: 100, width: 100),
-          const SizedBox(height: Dimensions.p20),
+          SizedBox(height: Dimensions.h20),
 
           Text(
             'collect_money_from_customer'.tr, textAlign: TextAlign.center,
-            style: robotoMedium.copyWith(fontSize: Dimensions.fs16),
+            style: textMedium().copyWith(fontSize: Dimensions.fs16),
           ),
-          const SizedBox(height: Dimensions.p20),
+          SizedBox(height: Dimensions.h20),
 
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             Text(
               '${'order_amount'.tr}:', textAlign: TextAlign.center,
-              style: robotoBold.copyWith(fontSize: Dimensions.fs16),
+              style: textBold().copyWith(fontSize: Dimensions.fs16),
             ),
-            const SizedBox(width: Dimensions.p4),
+            SizedBox(width: Dimensions.w4),
             Text(
               PriceConverterHelper.convertPrice(totalAmount), textAlign: TextAlign.center,
-              style: robotoBold.copyWith(fontSize: Dimensions.fs16, color: Theme.of(context).primaryColor),
+              style: textBold().copyWith(fontSize: Dimensions.fs16, color: Theme.of(context).primaryColor),
             ),
           ]),
-          const SizedBox(height: Dimensions.p20),
+          SizedBox(height: Dimensions.h20),
 
           CustomButtonWidget(
             buttonText: 'ok'.tr,

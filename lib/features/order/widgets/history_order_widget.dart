@@ -33,18 +33,19 @@ class HistoryOrderWidget extends StatelessWidget {
                   orderIndex: index))),
       child: CustomCard(
         borderRadius: Dimensions.r16,
-        padding: const EdgeInsets.all(Dimensions.p16),
-        margin: const EdgeInsets.only(bottom: Dimensions.p16),
+        padding: EdgeInsets.symmetric(
+          horizontal: Dimensions.w16,
+          vertical: Dimensions.h16,
+        ),
+        margin: EdgeInsets.only(bottom: Dimensions.h16),
         child: Row(children: [
           CustomCard(
             height: 75,
             width: 90,
             isBorder: true,
             borderRadius: Dimensions.r10,
-            padding: const EdgeInsets.symmetric(
-                horizontal: Dimensions.p10,
-                vertical: Dimensions
-                    .fs10), 
+            padding: EdgeInsets.symmetric(
+                horizontal: Dimensions.w10, vertical: Dimensions.fs10),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(Dimensions.r4),
               child: CustomImageWidget(
@@ -57,7 +58,7 @@ class HistoryOrderWidget extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: Dimensions.p16),
+          SizedBox(width: Dimensions.w16),
           Expanded(
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -67,14 +68,14 @@ class HistoryOrderWidget extends StatelessWidget {
                     children: [
                       TextSpan(
                         text: '${'id_label'.tr}: ',
-                        style: robotoSemiBold.copyWith(
+                        style: textSemiBold().copyWith(
                           fontSize: Dimensions.fs14,
                           color: Theme.of(context).hintColor,
                         ),
                       ),
                       TextSpan(
                         text: '#${orderModel.id}',
-                        style: robotoSemiBold.copyWith(
+                        style: textSemiBold().copyWith(
                           fontSize: Dimensions.fs14,
                           color: ManagerColors.darkGreen,
                         ),
@@ -84,46 +85,49 @@ class HistoryOrderWidget extends StatelessWidget {
                 ),
                 parcel
                     ? CustomCard(
-                      width: 60,
-                        padding: const EdgeInsets.all(
-                            Dimensions.p4),
+                        width: 60,
+                        padding: EdgeInsets.symmetric(
+                            horizontal: Dimensions.w4, vertical: Dimensions.h4),
                         borderRadius: Dimensions.r10,
                         fillColor: Theme.of(context)
-                              .primaryColor
-                              .withValues(alpha: 0.1),
+                            .primaryColor
+                            .withValues(alpha: 0.1),
                         child: Center(
                           child: Text('parcel'.tr,
-                              style: robotoMedium.copyWith(
+                              style: textMedium().copyWith(
                                 fontSize: Dimensions.fs14,
-                                color: Theme.of(context).textTheme.bodyMedium?.color,
+                                color: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.color,
                               )),
                         ),
                       )
                     : const SizedBox(),
               ]),
-              const SizedBox(height: Dimensions.p4),
+              SizedBox(height: Dimensions.h4),
               Text(
                 parcel
                     ? orderModel.parcelCategory != null
                         ? orderModel.parcelCategory!.name!
                         : 'no_parcel_category_data_found'.tr
                     : orderModel.storeName ?? 'no_store_data_found'.tr,
-                style: robotoSemiBold.copyWith(
+                style: textSemiBold().copyWith(
                     fontSize: Dimensions.fs14,
                     color: Theme.of(context).textTheme.bodyMedium?.color),
               ),
-              const SizedBox(height: Dimensions.p4),
+              SizedBox(height: Dimensions.h4),
               Row(children: [
                 Icon(
                   Icons.access_time,
                   size: 15,
                   color: Theme.of(context).disabledColor,
                 ),
-                const SizedBox(width: Dimensions.p4),
+                SizedBox(width: Dimensions.w4),
                 Text(
                   DateConverterHelper.dateTimeStringToDateTime(
                       orderModel.createdAt!),
-                  style: robotoMedium.copyWith(
+                  style: textMedium().copyWith(
                       color: Theme.of(context).disabledColor,
                       fontSize: Dimensions.fs12),
                 ),

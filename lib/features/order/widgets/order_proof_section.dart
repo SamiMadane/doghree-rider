@@ -24,8 +24,8 @@ class OrderProofSection extends StatelessWidget {
     }
 
     return CustomCard(
-      padding: const EdgeInsets.all(Dimensions.p16),
-      margin: const EdgeInsets.only(bottom: Dimensions.p16),
+      padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
+      margin: EdgeInsets.only(bottom: Dimensions.h16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -34,11 +34,11 @@ class OrderProofSection extends StatelessWidget {
             children: [
               Text(
                 'order_proof'.tr,
-                style: robotoSemiBold.copyWith(
+                style: textSemiBold().copyWith(
                   fontSize: Dimensions.fs16,
                 ),
               ),
-              const SizedBox(width: Dimensions.p8),
+              SizedBox(width: Dimensions.w8),
               Icon(
                 Icons.verified,
                 color: Theme.of(context).primaryColor,
@@ -46,15 +46,15 @@ class OrderProofSection extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: Dimensions.p12),
+          SizedBox(height: Dimensions.h12),
 
           // Images Grid
           GridView.builder(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               childAspectRatio: 1.5,
               crossAxisCount: ResponsiveHelper.isTab(context) ? 5 : 3,
-              mainAxisSpacing: Dimensions.p8,
-              crossAxisSpacing: Dimensions.p8,
+              mainAxisSpacing: Dimensions.h8,
+              crossAxisSpacing: Dimensions.w8,
             ),
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),

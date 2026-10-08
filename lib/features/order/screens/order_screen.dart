@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:wefrh_rider/common/widgets/empty_state_widget.dart';
 import 'package:wefrh_rider/features/order/controllers/order_controller.dart';
+import 'package:wefrh_rider/helper/route_helper.dart';
 import 'package:wefrh_rider/util/dimensions.dart';
 import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
 import 'package:wefrh_rider/features/order/widgets/history_order_widget.dart';
 import 'package:get/get.dart';
+import 'package:wefrh_rider/util/manager_assets.dart';
 
 class OrderScreen extends StatefulWidget {
   const OrderScreen({super.key});
@@ -52,8 +55,11 @@ class _OrderScreenState extends State<OrderScreen> {
                     },
                     child: Container(
                       color: Theme.of(context).cardColor,
-                      padding: const EdgeInsets.all(Dimensions.p16),
-                      margin: EdgeInsets.only(top: Dimensions.p16),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: Dimensions.w16,
+                        vertical: Dimensions.h16,
+                      ),
+                      margin: EdgeInsets.only(top: Dimensions.h16),
                       child: ConstrainedBox(
                         constraints: BoxConstraints(
                           minHeight: MediaQuery.of(context).size.height -
@@ -78,9 +84,12 @@ class _OrderScreenState extends State<OrderScreen> {
                               ),
                             ),
                             orderController.paginate
-                                ? const Center(
+                                ? Center(
                                     child: Padding(
-                                    padding: EdgeInsets.all(Dimensions.p10),
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: Dimensions.w10,
+                                      vertical: Dimensions.h10,
+                                    ),
                                     child: CircularProgressIndicator(),
                                   ))
                                 : const SizedBox(),
@@ -89,8 +98,23 @@ class _OrderScreenState extends State<OrderScreen> {
                       ),
                     ),
                   )
-                : Center(child: Text('no_order_found'.tr))
-            : const Center(child: CircularProgressIndicator());
+                : Container(
+                    margin: EdgeInsets.only(top: Dimensions.h16),
+                    color: Theme.of(context).cardColor,
+                    child: EmptyStateWidget(
+                      image: ManagerAssets.noOrderImage,
+                      imageScale: 1.1,
+                      title: 'no_order_found'.tr,
+                      buttonText: 'back_to_home_screen'.tr,
+                      onButtonPressed: () {
+                        Get.offAllNamed(RouteHelper.getInitialRoute());
+                      },
+                    ),
+                  )
+            : Container(
+                margin: EdgeInsets.only(top: Dimensions.h16),
+                color: Theme.of(context).cardColor,
+                child: const Center(child: CircularProgressIndicator()));
       }),
     );
   }

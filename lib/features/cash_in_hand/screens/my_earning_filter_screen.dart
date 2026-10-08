@@ -26,14 +26,14 @@ class _MyEarningFilterScreenState extends State<MyEarningFilterScreen> {
 
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.all(Dimensions.p16),
+              padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
               child: Column(children: [
 
                 CustomDropdownButton(
                   hintText: 'select_earning_types'.tr,
                   dropdownMenuItems: cashInHandController.earningTypes.map((type) => DropdownMenuItem<String>(
                     value: type,
-                    child: Text(type.tr, style: robotoRegular.copyWith(fontSize: Dimensions.fs14)),
+                    child: Text(type.tr, style: textRegular().copyWith(fontSize: Dimensions.fs14)),
                   )).toList(),
                   isBorder: true,
                   backgroundColor: Theme.of(context).cardColor,
@@ -42,13 +42,13 @@ class _MyEarningFilterScreenState extends State<MyEarningFilterScreen> {
                   },
                   selectedValue: cashInHandController.selectedEarningType,
                 ),
-                const SizedBox(height: Dimensions.p25),
+                SizedBox(height: Dimensions.h25),
 
                 CustomDropdownButton(
                   hintText: 'select_date_range'.tr,
                   dropdownMenuItems: cashInHandController.dateTypes.map((range) => DropdownMenuItem<String>(
                     value: range,
-                    child: Text(range.tr, style: robotoRegular.copyWith(fontSize: Dimensions.fs14)),
+                    child: Text(range.tr, style: textRegular().copyWith(fontSize: Dimensions.fs14)),
                   )).toList(),
                   isBorder: true,
                   backgroundColor: Theme.of(context).cardColor,
@@ -61,8 +61,8 @@ class _MyEarningFilterScreenState extends State<MyEarningFilterScreen> {
                 Visibility(
                   visible: cashInHandController.selectedDateType == 'custom_date_range',
                   child: Container(
-                    padding: const EdgeInsets.all(Dimensions.p10),
-                    margin: const EdgeInsetsDirectional.only(top: Dimensions.p25),
+                    padding: EdgeInsets.symmetric(horizontal:Dimensions.w10 ,vertical: Dimensions.h10,),
+                    margin: EdgeInsetsDirectional.only(top: Dimensions.h25),
                     decoration: BoxDecoration(
                       color: Theme.of(context).cardColor,
                       borderRadius: BorderRadius.circular(Dimensions.r10),
@@ -71,8 +71,8 @@ class _MyEarningFilterScreenState extends State<MyEarningFilterScreen> {
                     child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
 
                       cashInHandController.from != null && cashInHandController.to != null ? Text(
-                        '${cashInHandController.from} - ${cashInHandController.to}', style: robotoRegular,
-                      ) : Text('custom_date_range'.tr, style: robotoRegular.copyWith(color: Theme.of(context).textTheme.bodyLarge!.color?.withValues(alpha: 0.5))),
+                        '${cashInHandController.from} - ${cashInHandController.to}', style: textRegular(),
+                      ) : Text('custom_date_range'.tr, style: textRegular().copyWith(color: Theme.of(context).textTheme.bodyLarge!.color?.withValues(alpha: 0.5))),
 
                       InkWell(
                         onTap: () {
@@ -90,7 +90,7 @@ class _MyEarningFilterScreenState extends State<MyEarningFilterScreen> {
           ),
 
           Container(
-            padding: const EdgeInsets.all(Dimensions.p16),
+            padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
             decoration: BoxDecoration(
               color: Theme.of(context).cardColor,
               borderRadius: BorderRadius.circular(Dimensions.r4),
@@ -115,7 +115,7 @@ class _MyEarningFilterScreenState extends State<MyEarningFilterScreen> {
                   },
                 ),
               ),
-              const SizedBox(width: Dimensions.p10),
+              SizedBox(width: Dimensions.w10),
 
               Expanded(
                 child: CustomButtonWidget(

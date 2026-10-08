@@ -21,19 +21,19 @@ class AccountSection extends StatelessWidget {
       children: [
         Text(
           'account'.tr,
-          style: robotoMedium.copyWith(fontSize: Dimensions.fs16),
+          style: textMedium().copyWith(fontSize: Dimensions.fs16),
         ),
-        SizedBox(height: Dimensions.p16),
+        SizedBox(height: Dimensions.h16),
         CustomCard(
-          padding: EdgeInsets.all(Dimensions.p16),
+          padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
           isBorder: false,
           child: Column(
             children: [
               if (profileController.profileModel != null &&
                   profileController.profileModel!.earnings == 1)
                 Padding(
-                  padding: const EdgeInsets.only(
-                      bottom: Dimensions.p16),
+                  padding: EdgeInsets.only(
+                      bottom: Dimensions.h16),
                   child: ProfileButtonWidget(
                     svgPath: ManagerAssets.walletIcon,
                     title: 'balance'.tr,
@@ -50,7 +50,7 @@ class AccountSection extends StatelessWidget {
                 },
               ),
               SizedBox(
-                height: Dimensions.p16,
+                height: Dimensions.h16,
               ),
               ProfileButtonWidget(
                 svgPath: ManagerAssets.languageIcon,
@@ -71,7 +71,7 @@ class AccountSection extends StatelessWidget {
                 ),
               ),
               SizedBox(
-                height: Dimensions.p16,
+                height: Dimensions.h16,
               ),
               ProfileButtonWidget(
                 svgPath: ManagerAssets.conversationIcon,
@@ -98,7 +98,7 @@ _manageLanguageFunctionality() {
     useRootNavigator: true,
     context: Get.context!,
     backgroundColor: Colors.white,
-    shape: const RoundedRectangleBorder(
+    shape:  RoundedRectangleBorder(
       borderRadius: BorderRadius.only(
           topLeft: Radius.circular(Dimensions.r20),
           topRight: Radius.circular(Dimensions.r20)),

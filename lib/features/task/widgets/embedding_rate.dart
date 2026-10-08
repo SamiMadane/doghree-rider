@@ -20,7 +20,7 @@ class EmbeddingRateWidget extends StatelessWidget {
     final fillRatio = (percentage / 100).clamp(0.0, 1.0);
 
     return Container(
-      height: Dimensions.p56,
+      height: Dimensions.h56,
       decoration: BoxDecoration(
         color: ManagerColors.darkGreen.withValues(alpha: 0.7),
         borderRadius: BorderRadius.circular(20),
@@ -43,24 +43,24 @@ class EmbeddingRateWidget extends StatelessWidget {
           ),
 
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
+            padding: EdgeInsets.symmetric(horizontal: 8),
             child: Row(
               children: [
                 Expanded(
                   child: Center(
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 12),
+                      padding: EdgeInsets.only(left: 12),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(title,
-                              style: robotoBold.copyWith(
+                              style: textBold().copyWith(
                                   color: ManagerColors.white,
                                   fontSize: Dimensions.fs15)),
                           GestureDetector(
                             onTap: onSeeAllPressed,
                             child: Text('See All',
-                                style: robotoBold.copyWith(
+                                style: textBold().copyWith(
                                   color: ManagerColors.white,
                                   decoration: TextDecoration.underline,
                                   decorationColor: ManagerColors.white,
@@ -72,11 +72,11 @@ class EmbeddingRateWidget extends StatelessWidget {
                   ),
                 ),
 
-                const SizedBox(width: 8),
+                SizedBox(width: 8),
 
                 // الجزء الأيمن: النسبة المئوية
                 Container(
-                  padding: const EdgeInsets.symmetric(
+                  padding: EdgeInsets.symmetric(
                     horizontal: 20,
                     vertical: 12,
                   ),
@@ -85,7 +85,7 @@ class EmbeddingRateWidget extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text('${percentage.toInt()}%',
-                      style: robotoBold.copyWith(
+                      style: textBold().copyWith(
                           color: ManagerColors.darkGreen,
                           fontSize: Dimensions.fs15)),
                 ),
@@ -117,7 +117,7 @@ class _ExampleScreenState extends State<ExampleScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: EdgeInsets.all(16.0),
               child: EmbeddingRateWidget(
                 title: 'Embedding Rate',
                 percentage: percentage,
@@ -131,7 +131,7 @@ class _ExampleScreenState extends State<ExampleScreen> {
 
             // Slider لتجربة التغيير الديناميكي
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32),
+              padding: EdgeInsets.symmetric(horizontal: 32),
               child: Column(
                 children: [
                   Text(

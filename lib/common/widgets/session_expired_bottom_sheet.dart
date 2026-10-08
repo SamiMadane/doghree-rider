@@ -17,7 +17,7 @@ class SessionExpiredBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(Dimensions.p20),
+      padding: EdgeInsets.symmetric(horizontal: Dimensions.w20, vertical: Dimensions.h20),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -30,7 +30,7 @@ class SessionExpiredBottomSheet extends StatelessWidget {
           // العنوان
           Text(
             'weve_logged_you_out'.tr,
-            style: robotoBold.copyWith(
+            style: textBold().copyWith(
               fontSize: 22,
               color: ManagerColors.error,
             ),
@@ -42,7 +42,7 @@ class SessionExpiredBottomSheet extends StatelessWidget {
           // الوصف
           Text(
             'new_device_logged_in'.tr,
-            style: robotoRegular.copyWith(
+            style: textRegular().copyWith(
               fontSize: Dimensions.fs15,
               color: Theme.of(context).disabledColor,
               height: 1.5,
@@ -50,7 +50,7 @@ class SessionExpiredBottomSheet extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
 
-          SizedBox(height: Dimensions.p25),
+          SizedBox(height: Dimensions.h25),
 
           // زر مخصص
           _buildConfirmButton(context),
@@ -75,7 +75,7 @@ class SessionExpiredBottomSheet extends StatelessWidget {
         ),
         child: Text(
           'ok'.tr,
-          style: robotoBold.copyWith(
+          style: textBold().copyWith(
             fontSize: 16,
             color: Colors.white,
           ),

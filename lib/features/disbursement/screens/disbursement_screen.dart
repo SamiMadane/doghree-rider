@@ -41,7 +41,7 @@ class _DisbursementScreenState extends State<DisbursementScreen> {
         isBackButtonExist: true,
         actionWidget: GetBuilder<ProfileController>(builder: (profileController) {
           return Container(
-            margin: const EdgeInsets.symmetric(vertical: Dimensions.p4),
+            margin: EdgeInsets.symmetric(vertical: Dimensions.h4),
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(200), border: Border.all(width: 1.5, color: Theme.of(context).primaryColor)),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(200),
@@ -92,10 +92,10 @@ class _DisbursementScreenState extends State<DisbursementScreen> {
             ),
 
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Dimensions.p16),
+              padding: EdgeInsets.symmetric(horizontal: Dimensions.w16),
               child: Text(
                 "disbursement_history".tr,
-                style: robotoBold.copyWith(
+                style: textBold().copyWith(
                   fontSize: Dimensions.fs16,
                   color: Theme.of(context).textTheme.bodyLarge!.color,
                 ),
@@ -103,7 +103,7 @@ class _DisbursementScreenState extends State<DisbursementScreen> {
             ),
 
             (disbursementController.disbursementReportModel!.disbursements != null  && disbursementController.disbursementReportModel!.disbursements!.isNotEmpty)? ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: Dimensions.p16, vertical: Dimensions.p20),
+              padding: EdgeInsets.symmetric(horizontal: Dimensions.w16, vertical: Dimensions.h20),
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: disbursementController.disbursementReportModel!.disbursements!.length,
@@ -126,24 +126,24 @@ class _DisbursementScreenState extends State<DisbursementScreen> {
                     },
                     child: ListTile(
                       contentPadding: EdgeInsets.zero,
-                      title: Text(PriceConverterHelper.convertPrice(disbursement.disbursementAmount), style: robotoMedium),
+                      title: Text(PriceConverterHelper.convertPrice(disbursement.disbursementAmount), style: textMedium()),
                       subtitle: Text(disbursement.withdrawMethod != null ? '${"payment_method".tr} : ${disbursement.withdrawMethod!.methodName}' : 'payment_method_deleted'.tr,
-                        style: robotoRegular.copyWith(fontSize: Dimensions.fs12, color: Theme.of(context).disabledColor)),
+                        style: textRegular().copyWith(fontSize: Dimensions.fs12, color: Theme.of(context).disabledColor)),
                       trailing: Column(crossAxisAlignment: CrossAxisAlignment.end, mainAxisAlignment: MainAxisAlignment.center, children: [
 
                         Text(
                           DateConverterHelper.dateTimeStringForDisbursement(disbursement.createdAt!),
-                          style: robotoRegular.copyWith(fontSize: Dimensions.fs12, color: Theme.of(context).disabledColor),
+                          style: textRegular().copyWith(fontSize: Dimensions.fs12, color: Theme.of(context).disabledColor),
                         ),
-                        const SizedBox(height: Dimensions.p4),
+                        SizedBox(height: Dimensions.h4),
 
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: Dimensions.p16, vertical: Dimensions.p4),
+                          padding: EdgeInsets.symmetric(horizontal: Dimensions.w16, vertical: Dimensions.h4),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(Dimensions.r4),
                             color: disbursement.status == 'pending' ? Colors.blue.withValues(alpha: 0.1) : disbursement.status == 'completed' ? Colors.green.withValues(alpha: 0.1) : Colors.red.withValues(alpha: 0.1),
                           ),
-                          child: Text(disbursement.status!.tr, style: robotoMedium.copyWith(fontSize: Dimensions.fs12, color: disbursement.status == 'pending' ? Colors.blue : disbursement.status == 'completed' ? Colors.green : Colors.red)),
+                          child: Text(disbursement.status!.tr, style: textMedium().copyWith(fontSize: Dimensions.fs12, color: disbursement.status == 'pending' ? Colors.blue : disbursement.status == 'completed' ? Colors.green : Colors.red)),
                         ),
 
                       ]),
@@ -153,7 +153,7 @@ class _DisbursementScreenState extends State<DisbursementScreen> {
                   Divider(height: 2, thickness: 1, color: Theme.of(context).disabledColor.withValues(alpha: 0.5)),
                 ]);
               },
-            ) : Padding(padding: const EdgeInsets.only(top: 200), child: Center(child: Text('no_history_available'.tr, style: robotoMedium))),
+            ) : Padding(padding: EdgeInsets.only(top: 200), child: Center(child: Text('no_history_available'.tr, style: textMedium()))),
 
           ]),
 

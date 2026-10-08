@@ -12,6 +12,14 @@ class ManagerAssets {
   static const String bengali = '$imagePath/bengali.png';
   static const String psFlag = '$imagePath/ps_flag.png';
   static const String mail = '$imagePath/mail.png';
+  static const String changePasswordImage = '$imagePath/change_password.png';
+  static const String confirmationOrderImage = '$imagePath/confirmation_order.png';
+  static const String noTransactionImage = '$imagePath/no_transaction.png';
+  static const String noConversationImage = '$imagePath/no_conversation.png';
+
+  static const String noNotificationImage = '$imagePath/no_notification.png';
+  static const String noOrderImage = '$imagePath/no_order.png';
+  static const String privacyTermsImage = '$imagePath/privacy_terms.png';
   static const String checked = '$imagePath/checked.png';
   static const String deliveryManMarker = '$imagePath/delivery_man_marker.png';
   static const String locationMarker = '$imagePath/location_marker.png';

@@ -72,16 +72,16 @@ class _ClientScreenState extends State<ClientScreen> {
         child: Column(
           children: [
             Container(
-              padding: EdgeInsets.all(Dimensions.p16),
+              padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
               margin: EdgeInsets.only(
-                top: Dimensions.p16,
+                top: Dimensions.h16,
               ),
               color: Theme.of(context).cardColor,
               child: Column(
                 children: [
                   // بطاقة المنتج (النصوص تجي من API لاحقاً)
                   CustomCard(
-                    padding: EdgeInsets.all(Dimensions.p16),
+                    padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
                     isBorder: false,
                     borderRadius: Dimensions.r8,
                     fillColor: Theme.of(context).scaffoldBackgroundColor,
@@ -89,7 +89,7 @@ class _ClientScreenState extends State<ClientScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         CustomCard(
-                            padding: const EdgeInsets.all(16),
+                            padding: EdgeInsets.all(16),
                             isBorder: false,
                             borderRadius: Dimensions.r8,
                             fillColor: customColor.naturalBlue.withAlpha(20),
@@ -99,37 +99,37 @@ class _ClientScreenState extends State<ClientScreen> {
                               ManagerAssets.newOrderIcon,
                               color: customColor.naturalBlue,
                             )),
-                        const SizedBox(width: Dimensions.p16),
+                        SizedBox(width: Dimensions.w16),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               "Food package for kids", // من الـ API
-                              style: robotoBold.copyWith(
-                                  fontSize: Dimensions.fs17),
+                              style: textBold()
+                                  .copyWith(fontSize: Dimensions.fs17),
                             ),
-                            SizedBox(height: Dimensions.p4),
+                            SizedBox(height: Dimensions.h4),
                             Text(
                               "World Lunch Organization", // من الـ API
-                              style: robotoBold.copyWith(
+                              style: textBold().copyWith(
                                   fontSize: Dimensions.fs15,
                                   color: Theme.of(context).disabledColor),
                             ),
-                            SizedBox(height: Dimensions.p4),
+                            SizedBox(height: Dimensions.h4),
                             Text(PriceConverterHelper.convertPrice(590),
-                                style: robotoSemiBold.copyWith(
-                                    fontSize: Dimensions.fs22)),
+                                style: textSemiBold()
+                                    .copyWith(fontSize: Dimensions.fs22)),
                           ],
                         ),
                       ],
                     ),
                   ),
                   SizedBox(
-                    height: Dimensions.p12,
+                    height: Dimensions.h12,
                   ),
                   // العنوان
                   CustomCard(
-                    padding: const EdgeInsets.all(16),
+                    padding: EdgeInsets.all(16),
                     isBorder: false,
                     borderRadius: Dimensions.r8,
                     fillColor: Theme.of(context).scaffoldBackgroundColor,
@@ -138,54 +138,53 @@ class _ClientScreenState extends State<ClientScreen> {
                       children: [
                         Text("beneficiary_addresses".tr,
                             style:
-                                robotoBold.copyWith(fontSize: Dimensions.fs18)),
+                                textBold().copyWith(fontSize: Dimensions.fs18)),
                         SizedBox(
-                          height: Dimensions.p12,
+                          height: Dimensions.h12,
                         ),
                         CustomCard(
-                          padding: const EdgeInsets.all(16),
+                          padding: EdgeInsets.all(16),
                           borderRadius: Dimensions.r8,
                           fillColor: Theme.of(context).cardColor,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text("original_titles".tr,
-                                  style: robotoBold),
+                              Text("original_titles".tr, style: textBold()),
                               SizedBox(
-                                height: Dimensions.p8,
+                                height: Dimensions.h8,
                               ),
                               Text(
                                 "Al-Bureij Camp, Western Sector, Tent No. 156", // من الـ API
-                                style: robotoRegular.copyWith(),
+                                style: textRegular().copyWith(),
                               ),
                             ],
                           ),
                         ),
-                        SizedBox(height: Dimensions.p8),
+                        SizedBox(height: Dimensions.h8),
                         CustomCard(
-                          padding: const EdgeInsets.all(16),
+                          padding: EdgeInsets.all(16),
                           borderRadius: Dimensions.r8,
                           fillColor: customColor.greenBg,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text("updated_address".tr,
-                                  style: robotoBold.copyWith(
-                                      color: customColor.green)),
+                                  style: textBold()
+                                      .copyWith(color: customColor.green)),
                               Text(
                                   "Al-Bureij Camp, Western Sector, Tent No. 156, Medical Distribution Point", // من الـ API
-                                  style: robotoRegular.copyWith(
-                                      color: customColor.green)),
+                                  style: textRegular()
+                                      .copyWith(color: customColor.green)),
                             ],
                           ),
                         ),
                         SizedBox(
-                          height: Dimensions.p12,
+                          height: Dimensions.h12,
                         ),
                         // الخريطة
                         Container(
                           height: 250,
-                          margin: const EdgeInsets.all(8),
+                          margin: EdgeInsets.all(8),
                           child: currentLocation == null
                               ? Center(
                                   child: CircularProgressIndicator(
@@ -217,7 +216,7 @@ class _ClientScreenState extends State<ClientScreen> {
                                 ),
                         ),
                         SizedBox(
-                          height: Dimensions.p12,
+                          height: Dimensions.h12,
                         ),
 
                         Row(
@@ -228,15 +227,15 @@ class _ClientScreenState extends State<ClientScreen> {
                               children: [
                                 Text(
                                   'your_current_location'.tr,
-                                  style: robotoBold.copyWith(
-                                      fontSize: Dimensions.fs14),
+                                  style: textBold()
+                                      .copyWith(fontSize: Dimensions.fs14),
                                 ),
                                 SizedBox(
-                                  height: Dimensions.p4,
+                                  height: Dimensions.h4,
                                 ),
                                 Text(
                                   '34.4700 , 31.5000', // من API أو GPS
-                                  style: robotoBold.copyWith(
+                                  style: textBold().copyWith(
                                       fontSize: Dimensions.fs14,
                                       color: Theme.of(context).disabledColor),
                                 ),
@@ -247,15 +246,15 @@ class _ClientScreenState extends State<ClientScreen> {
                               children: [
                                 Text(
                                   'distance'.tr,
-                                  style: robotoBold.copyWith(
-                                      fontSize: Dimensions.fs14),
+                                  style: textBold()
+                                      .copyWith(fontSize: Dimensions.fs14),
                                 ),
                                 SizedBox(
-                                  height: Dimensions.p4,
+                                  height: Dimensions.h4,
                                 ),
                                 Text(
                                   '242m', // من API أو حساب
-                                  style: robotoBold.copyWith(
+                                  style: textBold().copyWith(
                                       fontSize: Dimensions.fs14,
                                       color: Theme.of(context).disabledColor),
                                 ),
@@ -267,15 +266,14 @@ class _ClientScreenState extends State<ClientScreen> {
                     ),
                   ),
                   SizedBox(
-                    height: Dimensions.p12,
+                    height: Dimensions.h12,
                   ),
                   // بيانات المستفيد
                   CustomCard(
                     isBorder: false,
                     borderRadius: Dimensions.r8,
-                    padding: const EdgeInsets.all(16),
+                    padding: EdgeInsets.all(16),
                     fillColor: Theme.of(context).scaffoldBackgroundColor,
-
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -287,14 +285,14 @@ class _ClientScreenState extends State<ClientScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text("Youssef Mahmoud Abdel Rahman", // من API
-                                      style: robotoBold.copyWith(
-                                          fontSize: Dimensions.fs17)),
+                                      style: textBold()
+                                          .copyWith(fontSize: Dimensions.fs17)),
                                   Text("id_number".tr + ": 444555666",
-                                      style: robotoBold.copyWith(
-                                          fontSize: Dimensions.fs15)),
+                                      style: textBold()
+                                          .copyWith(fontSize: Dimensions.fs15)),
                                   Text("phone".tr + ": 0595444555",
-                                      style: robotoBold.copyWith(
-                                          fontSize: Dimensions.fs15)),
+                                      style: textBold()
+                                          .copyWith(fontSize: Dimensions.fs15)),
                                 ],
                               ),
                             ),
@@ -302,9 +300,8 @@ class _ClientScreenState extends State<ClientScreen> {
                               flex: 1,
                               child: CustomCard(
                                 borderRadius: Dimensions.r8,
-                                padding: const EdgeInsets.all(16),
-                                fillColor:
-                                    Theme.of(context).cardColor,
+                                padding: EdgeInsets.all(16),
+                                fillColor: Theme.of(context).cardColor,
                                 height: 100,
                                 child: Column(
                                   children: [
@@ -316,12 +313,12 @@ class _ClientScreenState extends State<ClientScreen> {
                                           ?.color,
                                     ),
                                     SizedBox(
-                                      height: Dimensions.p4,
+                                      height: Dimensions.h4,
                                     ),
                                     Text(
                                       'view_image_identity'.tr,
-                                      style: robotoBold.copyWith(
-                                          fontSize: Dimensions.fs13),
+                                      style: textBold()
+                                          .copyWith(fontSize: Dimensions.fs13),
                                       textAlign: TextAlign.center,
                                     )
                                   ],
@@ -330,9 +327,9 @@ class _ClientScreenState extends State<ClientScreen> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: Dimensions.p20),
+                        SizedBox(height: Dimensions.h20),
                         CustomCard(
-                          padding: EdgeInsets.all(Dimensions.p16),
+                          padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
                           borderRadius: Dimensions.r8,
                           fillColor: ManagerColors.blueLightMode.withAlpha(20),
                           child: Column(
@@ -343,7 +340,7 @@ class _ClientScreenState extends State<ClientScreen> {
                                   Expanded(
                                     flex: 1,
                                     child: CustomCard(
-                                      padding: EdgeInsets.all(Dimensions.p16),
+                                      padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
                                       height: 60,
                                       isBorder: false,
                                       fillColor: Theme.of(context)
@@ -357,7 +354,7 @@ class _ClientScreenState extends State<ClientScreen> {
                                     ),
                                   ),
                                   SizedBox(
-                                    width: Dimensions.p12,
+                                    width: Dimensions.w12,
                                   ),
                                   Expanded(
                                     flex: 3,
@@ -365,13 +362,13 @@ class _ClientScreenState extends State<ClientScreen> {
                                       children: [
                                         Text(
                                           'updated_info_support'.tr,
-                                          style: robotoBold.copyWith(
+                                          style: textBold().copyWith(
                                               color: customColor.blue,
                                               fontSize: Dimensions.fs15),
                                         ),
                                         Text(
                                           "Ahmed Mohamed employee - text message", // من API
-                                          style: robotoRegular.copyWith(
+                                          style: textRegular().copyWith(
                                               color: ManagerColors.disabledDark,
                                               fontSize: Dimensions.fs13),
                                         ),
@@ -381,59 +378,59 @@ class _ClientScreenState extends State<ClientScreen> {
                                 ],
                               ),
                               SizedBox(
-                                height: Dimensions.p8,
+                                height: Dimensions.h8,
                               ),
                               Text("last_update".tr,
-                                  style: robotoBold.copyWith(
-                                      fontSize: Dimensions.fs13)),
+                                  style: textBold()
+                                      .copyWith(fontSize: Dimensions.fs13)),
                               SizedBox(
-                                height: Dimensions.p2,
+                                height: Dimensions.h2,
                               ),
                               Text(" 03/08/2025 12:00:00 AM", // من API
-                                  style: robotoRegular.copyWith(
-                                      fontSize: Dimensions.fs13)),
+                                  style: textRegular()
+                                      .copyWith(fontSize: Dimensions.fs13)),
                               SizedBox(
-                                height: Dimensions.p12,
+                                height: Dimensions.h12,
                               ),
                               Text("important_notes".tr,
-                                  style: robotoBold.copyWith(
+                                  style: textBold().copyWith(
                                       fontSize: Dimensions.fs15,
                                       color: customColor.blue)),
                               SizedBox(
-                                height: Dimensions.p8,
+                                height: Dimensions.h8,
                               ),
                               CustomCard(
-                                padding: EdgeInsets.all(Dimensions.p8),
+                                padding: EdgeInsets.symmetric(horizontal:Dimensions.w8 ,vertical: Dimensions.h8,),
                                 borderRadius: Dimensions.r8,
-                                child: const Text(
+                                child: Text(
                                   "Phone number updated - old number not working", // من API
-                                  style: robotoRegular,
+                                  style: textRegular(),
                                 ),
                               ),
                               SizedBox(
-                                height: Dimensions.p4,
+                                height: Dimensions.h4,
                               ),
                               CustomCard(
-                                padding: EdgeInsets.all(Dimensions.p8),
+                                padding: EdgeInsets.symmetric(horizontal:Dimensions.w8 ,vertical: Dimensions.h8,),
                                 borderRadius: Dimensions.r8,
-                                child: const Text(
+                                child: Text(
                                     "Delivery can be made to any family member with ID", // من API
-                                    style: robotoRegular),
+                                    style: textRegular()),
                               ),
                               SizedBox(
-                                height: Dimensions.p4,
+                                height: Dimensions.h4,
                               ),
                               CustomCard(
-                                  padding: EdgeInsets.all(Dimensions.p8),
+                                  padding: EdgeInsets.symmetric(horizontal:Dimensions.w8 ,vertical: Dimensions.h8,),
                                   borderRadius: Dimensions.r8,
-                                  child: const Text(
+                                  child: Text(
                                       "Make sure to call before you go", // من API
-                                      style: robotoRegular)),
+                                      style: textRegular())),
                             ],
                           ),
                         ),
                         SizedBox(
-                          height: Dimensions.p20,
+                          height: Dimensions.h20,
                         ),
 
                         // أزرار
@@ -456,7 +453,7 @@ class _ClientScreenState extends State<ClientScreen> {
                               ),
                             ),
                             SizedBox(
-                              width: Dimensions.p8,
+                              width: Dimensions.w8,
                             ),
                             Expanded(
                               child: CustomButtonWidget(
@@ -474,7 +471,7 @@ class _ClientScreenState extends State<ClientScreen> {
                               ),
                             ),
                             SizedBox(
-                              width: Dimensions.p8,
+                              width: Dimensions.w8,
                             ),
                             Expanded(
                               child: CustomButtonWidget(
@@ -503,7 +500,7 @@ class _ClientScreenState extends State<ClientScreen> {
             ),
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Theme.of(context).cardColor,
                 boxShadow: [
@@ -532,7 +529,7 @@ class _ClientScreenState extends State<ClientScreen> {
                     fontSize: Dimensions.fs15,
                   ),
                   SizedBox(
-                    height: Dimensions.p16,
+                    height: Dimensions.h16,
                   ),
                   Row(
                     children: [
@@ -549,7 +546,7 @@ class _ClientScreenState extends State<ClientScreen> {
                         ),
                       ),
                       SizedBox(
-                        width: Dimensions.p12,
+                        width: Dimensions.w12,
                       ),
                       Expanded(
                         child: CustomButtonWidget(

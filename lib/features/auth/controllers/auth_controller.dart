@@ -7,6 +7,9 @@ import 'package:wefrh_rider/helper/route_helper.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:wefrh_rider/features/auth/domain/services/auth_service_interface.dart';
+import 'package:flutter/material.dart';
+import 'package:wefrh_rider/helper/image_picker_helper.dart'; 
+import 'package:image_cropper/image_cropper.dart'; 
 
 class AuthController extends GetxController implements GetxService {
   final AuthServiceInterface authServiceInterface;
@@ -205,6 +208,42 @@ class AuthController extends GetxController implements GetxService {
     return _notification;
   }
 
+  // ========== ✅ NEW: Pick Image with Crop Support ==========
+  /// اختيار صورة الديلفري مان مع القص الاحترافي
+  Future<void> pickDmImageWithCrop(BuildContext context) async {
+    final XFile? croppedImage = await ImagePickerHelper.showImageSourceBottomSheet(
+      context: context,
+      cropStyle: CropStyle.circle, // دائري للبروفايل
+      lockAspectRatio: false,
+    );
+
+    if (croppedImage != null) {
+      _pickedImage = croppedImage;
+      update();
+    }
+  }
+
+/// اختيار صور الهوية مع القص الاحترافي
+Future<void> pickIdentityImageWithCrop(BuildContext context) async {
+  final XFile? croppedImage = await ImagePickerHelper.showImageSourceBottomSheet(
+    context: context,
+    cropStyle: CropStyle.rectangle, // ⬅️ مستطيل للهويات
+    lockAspectRatio: false,
+    aspectRatioPresets: [
+      CropAspectRatioPreset.original,
+      CropAspectRatioPreset.square,
+      CropAspectRatioPreset.ratio3x2,  // ID Cards
+      CropAspectRatioPreset.ratio4x3,  // Passports
+      CropAspectRatioPreset.ratio16x9,
+    ],
+  );
+
+  if (croppedImage != null) {
+    _pickedIdentities.add(croppedImage);
+    update();
+  }
+}
+  // ========== ⚠️ KEEP OLD METHOD (for backward compatibility) ==========
   void pickDmImageForRegistration(bool isLogo, bool isRemove) async {
     if(isRemove) {
       _pickedImage = null;
@@ -233,17 +272,18 @@ class AuthController extends GetxController implements GetxService {
       update();
     }
   }
+  
   Future<void> setLogoutReason(String reason) async {
-  await authServiceInterface.setLogoutReason(reason);
-}
+    await authServiceInterface.setLogoutReason(reason);
+  }
 
-Future<String?> getLogoutReason() async {
-  return await authServiceInterface.getLogoutReason();
-}
+  Future<String?> getLogoutReason() async {
+    return await authServiceInterface.getLogoutReason();
+  }
 
-Future<void> clearLogoutReason() async {
-  await authServiceInterface.clearLogoutReason();
-}
+  Future<void> clearLogoutReason() async {
+    await authServiceInterface.clearLogoutReason();
+  }
 
   void validPassCheck(String pass, {bool isUpdate = true}){
     _lengthCheck = false;

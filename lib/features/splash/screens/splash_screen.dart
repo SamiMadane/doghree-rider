@@ -3,6 +3,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:wefrh_rider/api/api_checker.dart';
 import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
+import 'package:wefrh_rider/common/widgets/no_internet_screen.dart';
 import 'package:wefrh_rider/features/auth/controllers/auth_controller.dart';
 import 'package:wefrh_rider/features/dashboard/screens/dashboard_screen.dart';
 import 'package:wefrh_rider/features/language/controllers/language_controller.dart';
@@ -16,7 +17,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wefrh_rider/util/dimensions.dart';
 import 'package:wefrh_rider/util/manager_assets.dart';
-import 'package:wefrh_rider/util/manager_colors.dart';
 import 'package:wefrh_rider/util/styles.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -57,23 +57,23 @@ class SplashScreenState extends State<SplashScreen> {
     _loadConfig();
   }
 
- // في SplashScreen._route()
-Future<bool> _validateSession() async {
-  try {
-    await Get.find<ProfileController>().getProfile(isFromSplash: true);
-    bool isValid = Get.find<ProfileController>().profileModel != null;
-    
-    // إذا الجلسة منتهية، حفظ سبب تسجيل الخروج
-    if (!isValid) {
-      await Get.find<AuthController>().setLogoutReason('session_expired');
+  // في SplashScreen._route()
+  Future<bool> _validateSession() async {
+    try {
+      await Get.find<ProfileController>().getProfile(isFromSplash: true);
+      bool isValid = Get.find<ProfileController>().profileModel != null;
+
+      // إذا الجلسة منتهية، حفظ سبب تسجيل الخروج
+      if (!isValid) {
+        await Get.find<AuthController>().setLogoutReason('session_expired');
+      }
+
+      return isValid;
+    } catch (e) {
+      print("Session validation failed: $e");
+      return false;
     }
-    
-    return isValid;
-  } catch (e) {
-    print("Session validation failed: $e");
-    return false;
   }
-}
 
   void _listenConnectivity() {
     bool firstTime = true;
@@ -217,81 +217,34 @@ Future<bool> _validateSession() async {
       backgroundColor: Theme.of(context).cardColor,
       key: _globalKey,
       body: Center(
-        child: _loadFailed ? _buildErrorWidget() : buildLoadingWidget(context),
+        child: _loadFailed
+            ? _buildNoInternetScreen()
+            : buildLoadingWidget(context),
       ),
     );
   }
 
-  Widget _buildErrorWidget() {
-    return Column(
-      children: [
-        Expanded(
-          child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  "opps".tr,
-                  style: robotoBold.copyWith(
-                    fontSize: Dimensions.fs28,
-                    color: Theme.of(context).textTheme.bodyLarge!.color,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(
-                  height: Dimensions.p16,
-                ),
-                SvgPicture.asset(
-                  ManagerAssets.noInternetImage,
-                  fit: BoxFit.contain,
-                ),
-                const SizedBox(height: Dimensions.p25),
-                Text(
-                  "no_connection".tr,
-                  style: robotoBold.copyWith(
-                    fontSize: Dimensions.fs24,
-                    color: Theme.of(context).textTheme.bodyLarge!.color,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: Dimensions.p10),
-                Text(
-                  "please_check_your_internet_and_try_again".tr,
-                  style: robotoRegular.copyWith(
-                    fontSize: Dimensions.fs18,
-                    color: Theme.of(context).disabledColor,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-          ),
-        ),
+  Widget buildLoadingWidget(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
-        // زر retry ثابت بأسفل الصفحة
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Theme.of(Get.context!).cardColor,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black12,
-                blurRadius: 5,
-                spreadRadius: 1,
-                offset: const Offset(0, -2),
-              ),
-            ],
-          ),
-          child: CustomButtonWidget(
-            onPressed: () {
-              _loadConfig();
-            },
-            backgroundColor: Theme.of(context).primaryColor,
-            buttonText: "retry".tr,
-          ),
+    return Container(
+      color: Theme.of(context).cardColor,
+      child: Center(
+        child: Image.asset(
+          // ✅ استخدم اللوجو المناسب حسب الثيم
+          isDark
+              ? 'assets/image/rider_splash_dark.png'
+              : 'assets/image/rider_splash_light.png',
+          width: MediaQuery.of(context).size.width * 0.7,
+          fit: BoxFit.contain,
         ),
-      ],
+      ),
+    );
+  }
+
+  Widget _buildNoInternetScreen() {
+    return NoInternetScreen(
+      child: SplashScreen(body: widget.body),
     );
   }
 }

@@ -28,7 +28,7 @@ class DottedBorderWidget extends StatelessWidget {
           color: showErrorBorder
               ? Theme.of(context).colorScheme.error
               : Theme.of(context).dividerTheme.color!,
-          radius: const Radius.circular(Dimensions.r20),
+          radius:  Radius.circular(Dimensions.r20),
         ),
         child: Center(
           child: Column(
@@ -43,13 +43,13 @@ class DottedBorderWidget extends StatelessWidget {
                 height: 24,
                 width: 24,
               ),
-              const SizedBox(
-                height: Dimensions.p10,
+               SizedBox(
+                height: Dimensions.h10,
               ),
               Text(
                 text ?? "upload_file".tr,
                 textAlign: TextAlign.center,
-                style: robotoMedium.copyWith(
+                style: textMedium().copyWith(
                   fontSize: 12,
                   color: showErrorBorder
                       ? Theme.of(context).colorScheme.error

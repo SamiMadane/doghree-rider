@@ -16,13 +16,13 @@ class ExistTaskSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(children: [
       CustomCard(
-        padding: const EdgeInsets.all(Dimensions.p16),
+        padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
         isBorder: false,
         fillColor: Theme.of(context).scaffoldBackgroundColor,
         child: TaskProgressSection(completed: 3, remaining: 3, issue: 1),
       ),
       SizedBox(
-        height: Dimensions.p16,
+        height: Dimensions.h16,
       ),
       InkWell(
         onTap: () {

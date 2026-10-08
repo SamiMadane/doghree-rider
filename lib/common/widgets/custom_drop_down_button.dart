@@ -52,7 +52,7 @@ class _CustomDropdownButtonState extends State<CustomDropdownButton> {
       child: DropdownButtonFormField2<String>(
         isExpanded: true,
         decoration: InputDecoration(
-          contentPadding: const EdgeInsets.symmetric(vertical: Dimensions.p10),
+          contentPadding: EdgeInsets.symmetric(vertical: Dimensions.h10),
           focusedBorder: _border(),
           enabledBorder: _border(),
           disabledBorder: _border(),
@@ -61,20 +61,20 @@ class _CustomDropdownButtonState extends State<CustomDropdownButton> {
         ),
         hint: Text(
           widget.hintText ?? 'select_an_option'.tr,
-          style: robotoRegular.copyWith(color: Theme.of(context).disabledColor, fontSize: Dimensions.fs14),
+          style: textRegular().copyWith(color: Theme.of(context).disabledColor, fontSize: Dimensions.fs14),
         ),
         value: widget.selectedValue,
         items: (widget.dropdownMenuItems ?? widget.items?.map((item) => DropdownMenuItem<String>(
           value: item,
           child: Text(
-            item.tr, style: robotoRegular.copyWith(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: Dimensions.fs14),
+            item.tr, style: textRegular().copyWith(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: Dimensions.fs14),
           ),
         )).toList()) ?? [
           DropdownMenuItem<String>(
             value: null,
             child: Text(
               'no_data_available'.tr,
-              style: robotoRegular.copyWith(color: Theme.of(context).disabledColor, fontSize: Dimensions.fs14),
+              style: textRegular().copyWith(color: Theme.of(context).disabledColor, fontSize: Dimensions.fs14),
             ),
           )
         ],

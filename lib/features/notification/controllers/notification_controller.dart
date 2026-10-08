@@ -15,25 +15,31 @@ class NotificationController extends GetxController implements GetxService {
   bool _hasNotification = false;
   bool get hasNotification => _hasNotification;
 
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
   bool _hideNotificationButton = false;
   bool get hideNotificationButton => _hideNotificationButton;
 
-  void handleNotificationTap(NotificationModel notification) {
-    // تسجيل الإشعار كمقروء
-    addSeenNotificationId(notification.id!);
+  /// ✅ معالجة النقر على الإشعار - Server-side
+  Future<void> handleNotificationTap(NotificationModel notification) async {
+    print('🔔 Notification ID: ${notification.id}');
+    print('🔔 Is Read Before: ${notification.isRead}');
+    // تحديد الإشعار كمقروء في الـ Backend
+    if (!notification.isRead) {
+      await markNotificationAsRead(notification.id!);
+    }
 
     // إذا لم يكن هناك بيانات إضافية، لا تفعل شيء
     if (notification.data == null || notification.data!.type == null) {
       return;
     }
 
-    print('Raw type from API: "${notification.data!.type}"');
-    print('Order ID: ${notification.data!.orderId}');
+    print('🔔 Raw type from API: "${notification.data!.type}"');
+    print('🔔 Order ID: ${notification.data!.orderId}');
 
-    // استدعاء الدالة وحفظ النتيجة
     NotificationType notificationType =
         _convertStringToNotificationType(notification.data!.type!);
-    print('Converted Notification Type: $notificationType');
+    print('🔔 Converted Notification Type: $notificationType');
 
     // التنقل بناءً على نوع الإشعار
     switch (notificationType) {
@@ -81,17 +87,59 @@ class NotificationController extends GetxController implements GetxService {
       case NotificationType.general:
       case NotificationType.otp:
       default:
-        // إشعار عام - لا حاجة للتنقل
         break;
     }
   }
 
-// الدالة يجب أن تكون خارج handleNotificationTap
+  /// ✅ تحديد إشعار واحد كمقروء
+  /// ✅ تحديد إشعار واحد كمقروء (نفس منطق اليوزر)
+Future<void> markNotificationAsRead(int notificationId) async {
+  bool success = await notificationServiceInterface.markNotificationAsRead(notificationId);
+
+  if (success) {
+    // ✨ تحديث محلي فقط - نفس اليوزر
+    if (_notificationList != null) {
+      int index = _notificationList!.indexWhere((n) => n.id == notificationId);
+      if (index != -1) {
+        _notificationList![index].isRead = true;
+        _updateHasNotification();
+        update();
+        print('✅ Notification $notificationId marked locally');
+      }
+    }
+  } else {
+    print('❌ Failed to mark notification $notificationId as read');
+  }
+}
+
+
+    /// تحديد جميع الإشعارات كمقروءة
+  Future<void> markAllNotificationsAsRead() async {
+    _isLoading = true;
+    update();
+
+    bool success =
+        await notificationServiceInterface.markAllNotificationsAsRead();
+
+    if (success) {
+      // تحديث جميع الإشعارات محلياً
+      if (_notificationList != null) {
+        for (var notification in _notificationList!) {
+          notification.isRead = true;
+        }
+        _hasNotification = false;
+      }
+      print('✅ All notifications marked as read');
+    }
+
+    _isLoading = false;
+    update();
+  }
   NotificationType _convertStringToNotificationType(String type) {
     String cleanType =
         type.replaceAll('NotificationType.', '').toLowerCase().trim();
 
-    print('Clean type: "$cleanType"');
+    print('🔄 Clean type: "$cleanType"');
 
     switch (cleanType) {
       case 'message':
@@ -128,27 +176,42 @@ class NotificationController extends GetxController implements GetxService {
         return NotificationType.unassign;
 
       default:
-        print('Unknown type: "$cleanType"');
+        print('⚠️ Unknown type: "$cleanType"');
         return NotificationType.general;
     }
   }
 
-  Future<void> getNotificationList() async {
-    List<NotificationModel>? notificationList =
-        await notificationServiceInterface.getNotificationList();
-    if (notificationList != null) {
-      _notificationList = [];
-      _notificationList!.addAll(notificationList);
-      _notificationList!.sort((a, b) {
-        return DateConverterHelper.isoStringToLocalDate(a.updatedAt!)
-            .compareTo(DateConverterHelper.isoStringToLocalDate(b.updatedAt!));
-      });
-      Iterable iterable = _notificationList!.reversed;
-      _notificationList = iterable.toList() as List<NotificationModel>?;
-      _hasNotification =
-          _notificationList!.length != getSeenNotificationCount();
+  Future<void> getNotificationList([bool reload = false]) async {
+    if (_notificationList == null || reload) {
+      List<NotificationModel>? notificationList =
+          await notificationServiceInterface.getNotificationList();
+      if (notificationList != null) {
+        _notificationList = [];
+        _notificationList!.addAll(notificationList);
+        _notificationList!.sort((a, b) {
+          return DateConverterHelper.isoStringToLocalDate(a.updatedAt!)
+              .compareTo(
+                  DateConverterHelper.isoStringToLocalDate(b.updatedAt!));
+        });
+        Iterable iterable = _notificationList!.reversed;
+        _notificationList = iterable.toList() as List<NotificationModel>?;
+
+        // ✅ حساب الإشعارات غير المقروءة من الـ Backend
+        _updateHasNotification();
+      }
     }
     update();
+  }
+
+  /// ✅ حساب عدد الإشعارات غير المقروءة
+  int getUnreadNotificationCount() {
+    if (_notificationList == null) return 0;
+    return _notificationList!.where((n) => !n.isRead).length;
+  }
+
+  /// ✅ تحديث حالة وجود إشعارات غير مقروءة
+  void _updateHasNotification() {
+    _hasNotification = getUnreadNotificationCount() > 0;
   }
 
   Future<bool> sendDeliveredNotification(int? orderID) async {
@@ -156,21 +219,25 @@ class NotificationController extends GetxController implements GetxService {
     update();
     bool isSuccess =
         await notificationServiceInterface.sendDeliveredNotification(orderID);
-    bool success;
-    isSuccess ? success = true : success = false;
     _hideNotificationButton = false;
     update();
-    return success;
+    return isSuccess;
   }
 
+  // ═══════════════════════════════════════════════════════
+  // الدوال القديمة - @Deprecated للتوافق
+  // ═══════════════════════════════════════════════════════
+  @Deprecated('Use server-side read status instead')
   void saveSeenNotificationCount(int count) {
     notificationServiceInterface.saveSeenNotificationCount(count);
   }
 
+  @Deprecated('Use server-side read status instead')
   int? getSeenNotificationCount() {
     return notificationServiceInterface.getSeenNotificationCount();
   }
 
+  @Deprecated('Use server-side read status instead')
   void addSeenNotificationId(int id) {
     List<int> idList = [];
     idList.addAll(notificationServiceInterface.getNotificationIdList());
@@ -179,6 +246,7 @@ class NotificationController extends GetxController implements GetxService {
     update();
   }
 
+  @Deprecated('Use server-side read status instead')
   List<int>? getSeenNotificationIdList() {
     return notificationServiceInterface.getNotificationIdList();
   }

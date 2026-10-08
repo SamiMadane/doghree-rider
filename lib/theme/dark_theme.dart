@@ -27,11 +27,11 @@ ThemeData dark = ThemeData(
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(500)),
     backgroundColor: ManagerColors.fabColor,
   ),
-  bottomAppBarTheme: const BottomAppBarTheme(
-    color: ManagerColors.bottomAppBarDark,
-    height: 60,
-    padding: EdgeInsets.symmetric(vertical: 5),
-  ),
+  // bottomAppBarTheme: BottomAppBarTheme(
+  //   color: ManagerColors.bottomAppBarDark,
+  //   height: 60,
+  //   padding: EdgeInsets.symmetric(vertical: 5),
+  // ),
   dividerTheme: const DividerThemeData(
     thickness: 1,
     color: ManagerColors.Strock2Dark,

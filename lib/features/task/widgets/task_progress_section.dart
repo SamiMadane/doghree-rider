@@ -28,30 +28,30 @@ class TaskProgressSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('list_of_beneficiaries'.tr,
-            style: robotoBold.copyWith(fontSize: Dimensions.fs18)),
-        const SizedBox(height: Dimensions.p16),
+            style: textBold().copyWith(fontSize: Dimensions.fs18)),
+        SizedBox(height: Dimensions.h16),
         Row(
           children: [
             Text('remaining_task'.tr,
-                style: robotoBold.copyWith(fontSize: Dimensions.fs16)),
+                style: textBold().copyWith(fontSize: Dimensions.fs16)),
             Spacer(),
             RichText(
               text: TextSpan(
                 children: [
                   TextSpan(
                       text: '$completed', // الرقم الأول
-                      style: robotoBold.copyWith(
+                      style: textBold().copyWith(
                           fontSize: Dimensions.fs18,
                           color: customColor.naturalBlue)),
                   TextSpan(
                       text: '/', // الفاصل
-                      style: robotoBold.copyWith(
+                      style: textBold().copyWith(
                           fontSize: Dimensions.fs18,
                           color:
                               Theme.of(context).textTheme.bodyMedium?.color)),
                   TextSpan(
                       text: '$total', // الرقم الثاني
-                      style: robotoBold.copyWith(
+                      style: textBold().copyWith(
                           fontSize: Dimensions.fs18,
                           color:
                               Theme.of(context).textTheme.bodyMedium?.color)),
@@ -61,7 +61,7 @@ class TaskProgressSection extends StatelessWidget {
           ],
         ),
         SizedBox(
-          height: Dimensions.p12,
+          height: Dimensions.h12,
         ),
         ClipRRect(
           borderRadius: BorderRadius.circular(Dimensions.r8),
@@ -73,7 +73,7 @@ class TaskProgressSection extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: Dimensions.p12,
+          height: Dimensions.h12,
         ),
         Row(
           children: [
@@ -95,10 +95,10 @@ class TaskProgressSection extends StatelessWidget {
             height: 12,
             decoration: BoxDecoration(color: color, shape: BoxShape.circle),
           ),
-          const SizedBox(width: Dimensions.p4),
+          SizedBox(width: Dimensions.w4),
           Text(
             text,
-            style: robotoMedium,
+            style: textMedium(),
           ),
         ],
       ),

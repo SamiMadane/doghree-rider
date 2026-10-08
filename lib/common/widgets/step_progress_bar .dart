@@ -14,7 +14,7 @@ class StepProgressBar extends StatelessWidget {
     return Column(
       children: [
         Container(
-          margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+          margin: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
           height: 6,
           child: Row(
             children: [
@@ -28,7 +28,7 @@ class StepProgressBar extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(width: Dimensions.p10),
+              SizedBox(width: Dimensions.w10),
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
@@ -43,7 +43,7 @@ class StepProgressBar extends StatelessWidget {
           ),
         ),
         if (showDivider) ...[
-          const SizedBox(height: Dimensions.p10),
+          SizedBox(height: Dimensions.h10),
           Divider(),
         ]
       ],

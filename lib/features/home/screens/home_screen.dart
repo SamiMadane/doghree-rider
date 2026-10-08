@@ -4,7 +4,6 @@ import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
 import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
 import 'package:wefrh_rider/common/widgets/custom_image_widget.dart';
 import 'package:wefrh_rider/features/auth/controllers/auth_controller.dart';
-import 'package:wefrh_rider/features/dashboard/widgets/lottie_bottom_sheet_order_request.dart';
 import 'package:wefrh_rider/features/home/widgets/active_order_section.dart';
 import 'package:wefrh_rider/features/home/widgets/cash_in_hand_section.dart';
 import 'package:wefrh_rider/features/home/widgets/earning_grid_section.dart';
@@ -142,10 +141,11 @@ class _HomeScreenState extends State<HomeScreen> {
   void showNotificationPermissionBottomSheet() {
     Get.bottomSheet(
       Container(
-        padding: EdgeInsets.all(Dimensions.p30),
+        padding: EdgeInsets.symmetric(
+            horizontal: Dimensions.w30, vertical: Dimensions.h30),
         decoration: BoxDecoration(
           color: Theme.of(context).cardColor,
-          borderRadius: const BorderRadius.only(
+          borderRadius: BorderRadius.only(
             topLeft: Radius.circular(Dimensions.r20),
             topRight: Radius.circular(Dimensions.r20),
           ),
@@ -163,50 +163,50 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: 70,
                     width: 70,
                   ),
-                  SizedBox(width: Dimensions.p16),
+                  SizedBox(width: Dimensions.w16),
                   Expanded(
                     child: Text(
-                      'Make Your Work Easier with Notifications!',
-                      style: robotoBold.copyWith(fontSize: Dimensions.fs20),
+                      'make_work_easier_notifications'.tr,
+                      style: textBold().copyWith(fontSize: Dimensions.fs20),
                       maxLines: 2,
                     ),
                   ),
                 ],
               ),
 
-              SizedBox(height: Dimensions.p16),
+              SizedBox(height: Dimensions.h16),
 
               // Description
               Text(
-                'Enable notifications to get new orders instantly and stay updated on every step.',
-                style: robotoRegular.copyWith(fontSize: Dimensions.fs14),
+                'enable_notifications_description'.tr,
+                style: textRegular().copyWith(fontSize: Dimensions.fs14),
                 maxLines: 2,
               ),
 
-              SizedBox(height: Dimensions.p30),
+              SizedBox(height: Dimensions.h30),
 
               // Subheading
               Text(
-                'Why enable notifications?',
-                style: robotoBold.copyWith(fontSize: Dimensions.fs18),
+                'why_enable_notifications'.tr,
+                style: textBold().copyWith(fontSize: Dimensions.fs18),
               ),
 
-              SizedBox(height: Dimensions.p16),
+              SizedBox(height: Dimensions.h16),
 
               // Features list
               _buildFeatureRow(
-                  ManagerAssets.newOrderIcon, 'Receive new orders right away'),
-              SizedBox(height: Dimensions.p10),
-              _buildFeatureRow(ManagerAssets.trakingIcon,
-                  'Track delivery status step by step'),
-              SizedBox(height: Dimensions.p10),
-              _buildFeatureRow(ManagerAssets.offersIcon,
-                  'Get special offers & incentives for drivers'),
-              SizedBox(height: Dimensions.p10),
-              _buildFeatureRow(ManagerAssets.alertsIcon,
-                  'Important alerts from the management'),
+                  ManagerAssets.newOrderIcon, 'receive_new_orders'.tr),
+              SizedBox(height: Dimensions.h10),
+              _buildFeatureRow(
+                  ManagerAssets.trakingIcon, 'track_delivery_status'.tr),
+              SizedBox(height: Dimensions.h10),
+              _buildFeatureRow(
+                  ManagerAssets.offersIcon, 'get_special_offers'.tr),
+              SizedBox(height: Dimensions.h10),
+              _buildFeatureRow(
+                  ManagerAssets.alertsIcon, 'important_management_alerts'.tr),
 
-              SizedBox(height: Dimensions.p30),
+              SizedBox(height: Dimensions.h30),
 
               // Buttons
               Row(
@@ -218,10 +218,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         requestNotificationPermission();
                         Get.back();
                       },
-                      buttonText: 'Allow Notifications',
+                      buttonText: 'allow_notifications'.tr,
                     ),
                   ),
-                  SizedBox(width: Dimensions.p16),
+                  SizedBox(width: Dimensions.w16),
                   Expanded(
                     flex: 1,
                     child: CustomButtonWidget(
@@ -231,7 +231,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           Theme.of(context).textTheme.bodyMedium?.color,
                       fontColor: Theme.of(context).textTheme.bodyMedium?.color,
                       onPressed: () => Get.back(),
-                      buttonText: 'Later',
+                      buttonText: 'later'.tr,
                     ),
                   ),
                 ],
@@ -249,12 +249,15 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildFeatureRow(String iconPath, String text) {
     return Row(
       children: [
-        SvgPicture.asset(iconPath),
-        SizedBox(width: Dimensions.p8),
+        SvgPicture.asset(
+          iconPath,
+          color: Theme.of(context).primaryColor,
+        ),
+        SizedBox(width: Dimensions.w8),
         Expanded(
           child: Text(
             text,
-            style: robotoRegular.copyWith(fontSize: Dimensions.fs14),
+            style: textRegular().copyWith(fontSize: Dimensions.fs14),
           ),
         ),
       ],
@@ -279,7 +282,10 @@ class _HomeScreenState extends State<HomeScreen> {
         titleWidget: Row(
           children: [
             Padding(
-              padding: const EdgeInsets.all(Dimensions.p4),
+              padding: EdgeInsets.symmetric(
+                horizontal: Dimensions.w4,
+                vertical: Dimensions.h4,
+              ),
               child: ClipOval(
                 child: CustomImageWidget(
                   width: 40,
@@ -289,10 +295,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            SizedBox(width: Dimensions.p8),
+            SizedBox(width: Dimensions.w8),
             Text(
               '${profileController.profileModel?.fName} ${profileController.profileModel?.lName}',
-              style: robotoSemiBold.copyWith(
+              style: textSemiBold().copyWith(
                 fontSize: Dimensions.fs18,
                 color: Theme.of(context).textTheme.bodyMedium!.color,
               ),
@@ -332,13 +338,12 @@ class _HomeScreenState extends State<HomeScreen> {
           return await _loadData();
         },
         child: Padding(
-          padding: const EdgeInsets.only(top: Dimensions.p16),
+          padding: EdgeInsets.only(top: Dimensions.h16),
           child: Container(
             color: Theme.of(context).cardColor,
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  // نقل التحذيرات هنا داخل الـ SingleChildScrollView
                   if (!_isNotificationPermissionGranted)
                     permissionWarning(
                       isBatteryPermission: false,
@@ -359,11 +364,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         });
                       },
                     ),
-
                   GetBuilder<ProfileController>(
                     builder: (profileController) {
                       return Padding(
-                        padding: const EdgeInsets.all(Dimensions.p16),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: Dimensions.w16,
+                          vertical: Dimensions.h16,
+                        ),
                         child: Column(
                           children: [
                             const StatusSwitchSection(),
@@ -397,7 +404,7 @@ class _HomeScreenState extends State<HomeScreen> {
     required Function() onTap,
     required Function() closeOnTap,
   }) {
-    final Color textColor = Theme.of(context).colorScheme.onSurface;
+    final Color textColor = Theme.of(context).textTheme.bodyMedium!.color!;
     final Color bgColor =
         Theme.of(context).colorScheme.surface.withOpacity(0.6);
     var isArabic =
@@ -405,7 +412,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Container(
       width: double.infinity,
-      margin: EdgeInsets.all(Dimensions.p4),
+      margin: EdgeInsets.symmetric(
+        horizontal: Dimensions.w4,
+        vertical: Dimensions.h4,
+      ),
       decoration: BoxDecoration(
         color: bgColor,
         boxShadow: [
@@ -422,11 +432,17 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Stack(
           children: [
             Padding(
-              padding: const EdgeInsets.all(Dimensions.p10),
+              padding: EdgeInsets.symmetric(
+                horizontal: Dimensions.w10,
+                vertical: Dimensions.h10,
+              ),
               child: Row(
                 children: [
                   Container(
-                      padding: const EdgeInsets.all(Dimensions.p4),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: Dimensions.w4,
+                        vertical: Dimensions.h4,
+                      ),
                       decoration: BoxDecoration(
                         color: ManagerColors.orangeLightMode
                             .withOpacity(0.2), // أصفر فاتح شفاف
@@ -436,7 +452,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ManagerAssets.warningIcon,
                         color: ManagerColors.orangeLightMode,
                       )),
-                  const SizedBox(width: 10),
+                  SizedBox(width: 10),
                   // النص + السهم
                   Expanded(
                     child: Row(
@@ -449,13 +465,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                 : 'notification_is_disabled_please_allow_notification'
                                     .tr,
                             maxLines: 2,
-                            style: robotoRegular.copyWith(
+                            style: textRegular().copyWith(
                               fontSize: Dimensions.fs12,
                               color: textColor,
                             ),
                           ),
                         ),
-                        const SizedBox(width: Dimensions.p10),
+                        SizedBox(width: Dimensions.w10),
                         Icon(
                           isArabic
                               ? Icons.arrow_circle_left_rounded
@@ -466,7 +482,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 20),
+                  SizedBox(width: 20),
                 ],
               ),
             ),

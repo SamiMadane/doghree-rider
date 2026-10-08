@@ -75,12 +75,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 physics: const BouncingScrollPhysics(),
                 child: Container(
                   color: Theme.of(context).scaffoldBackgroundColor,
-                  padding: const EdgeInsets.all(Dimensions.p16),
+                  padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
                   child: Column(children: [
                     UserProfileInfoCard(profileController: profileController),
-                    const SizedBox(height: Dimensions.p16),
+                    SizedBox(height: Dimensions.h16),
                     AccountSection(profileController: profileController),
-                    const SizedBox(height: Dimensions.p16),
+                    SizedBox(height: Dimensions.h16),
                     LegalSection(profileController: profileController),
                   ]),
                 ));

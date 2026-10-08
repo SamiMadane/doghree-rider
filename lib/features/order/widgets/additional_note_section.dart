@@ -18,24 +18,24 @@ class AdditionalNoteSection extends StatelessWidget {
     if (note.isEmpty) return const SizedBox.shrink();
 
     return CustomCard(
-      padding: const EdgeInsets.all(Dimensions.p16),
-      margin: const EdgeInsets.only(bottom: Dimensions.p16),
+      padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
+      margin: EdgeInsets.only(bottom: Dimensions.h16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Header
           Text(
             'additional_note'.tr,
-            style: robotoSemiBold.copyWith(
+            style: textSemiBold().copyWith(
               fontSize: Dimensions.fs16,
             ),
           ),
-          const SizedBox(height: Dimensions.p8),
+          SizedBox(height: Dimensions.h8),
 
           // Note Content
           Text(
             note,
-            style: robotoRegular.copyWith(
+            style: textRegular().copyWith(
               fontSize: Dimensions.fs13,
               color: Theme.of(context).hintColor,
             ),

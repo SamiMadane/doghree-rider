@@ -3,16 +3,13 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:wefrh_rider/common/models/response_model.dart';
-import 'package:wefrh_rider/common/widgets/custom_bottom_sheet_widget.dart';
-import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
-import 'package:wefrh_rider/common/widgets/custom_confirmation_bottom_sheet.dart';
 import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
 import 'package:wefrh_rider/features/address/domain/models/record_location_body_model.dart';
 import 'package:wefrh_rider/features/profile/domain/models/profile_model.dart';
 import 'package:wefrh_rider/features/profile/domain/repositories/profile_repository_interface.dart';
 import 'package:geocoding/geocoding.dart' as geo_coding;
 import 'package:wefrh_rider/features/profile/domain/services/profile_service_interface.dart';
-import 'package:wefrh_rider/util/manager_assets.dart';
+import 'package:wefrh_rider/helper/location_permission_manager.dart';
 
 class ProfileService implements ProfileServiceInterface {
   final ProfileRepositoryInterface profileRepositoryInterface;
@@ -24,8 +21,10 @@ class ProfileService implements ProfileServiceInterface {
   }
 
   @override
-  Future<ResponseModel> updateProfile(ProfileModel userInfoModel, XFile? data, String token) async {
-    return await profileRepositoryInterface.updateProfile(userInfoModel, data, token);
+  Future<ResponseModel> updateProfile(
+      ProfileModel userInfoModel, XFile? data, String token) async {
+    return await profileRepositoryInterface.updateProfile(
+        userInfoModel, data, token);
   }
 
   @override
@@ -34,12 +33,15 @@ class ProfileService implements ProfileServiceInterface {
   }
 
   @override
-  Future<void> recordWebSocketLocation(RecordLocationBodyModel recordLocationBody) async {
-    await profileRepositoryInterface.recordWebSocketLocation(recordLocationBody);
+  Future<void> recordWebSocketLocation(
+      RecordLocationBodyModel recordLocationBody) async {
+    await profileRepositoryInterface
+        .recordWebSocketLocation(recordLocationBody);
   }
 
   @override
-  Future<Response> recordLocation(RecordLocationBodyModel recordLocationBody) async {
+  Future<Response> recordLocation(
+      RecordLocationBodyModel recordLocationBody) async {
     return await profileRepositoryInterface.recordLocation(recordLocationBody);
   }
 
@@ -51,76 +53,35 @@ class ProfileService implements ProfileServiceInterface {
   @override
   Future<String> addressPlaceMark(Position locationResult) async {
     String address;
-    try{
-      List<geo_coding.Placemark> addresses = await geo_coding.placemarkFromCoordinates(locationResult.latitude, locationResult.longitude);
+    try {
+      List<geo_coding.Placemark> addresses =
+          await geo_coding.placemarkFromCoordinates(
+        locationResult.latitude,
+        locationResult.longitude,
+      );
       geo_coding.Placemark placeMark = addresses.first;
-      address = '${placeMark.name}, ${placeMark.subAdministrativeArea}, ${placeMark.isoCountryCode}';
-    }catch(e) {
+      address =
+          '${placeMark.name}, ${placeMark.subAdministrativeArea}, ${placeMark.isoCountryCode}';
+    } catch (e) {
       address = 'Unknown Location Found';
     }
     return address;
   }
 
   @override
-  void checkPermission(Function callback) async {
-    LocationPermission permission = await Geolocator.requestPermission();
-    permission = await Geolocator.checkPermission();
-
-    while(Get.isBottomSheetOpen == true) {
-      Get.back();
-    }
-
-    if(permission == LocationPermission.denied) {
-      showCustomBottomSheet(
-        child: CustomConfirmationBottomSheet(
-          title: 'location_access_needed'.tr,
-          description: 'you_denied'.tr,
-          image: ManagerAssets.locationAccessIcon,
-          buttonWidget: Padding(
-            padding: const EdgeInsets.only(bottom: 20, top: 10, left: 30, right: 30),
-            child: CustomButtonWidget(
-              onPressed: () async {
-                Get.back();
-                await Geolocator.openAppSettings();
-                Future.delayed(const Duration(seconds: 3), () {
-                  if(GetPlatform.isAndroid) checkPermission(callback);
-                });
-              },
-              buttonText: 'allow_location_permission'.tr,
-            ),
-          ),
-        ),
-      );
-    }else if(permission == LocationPermission.deniedForever || (GetPlatform.isIOS ? false : permission == LocationPermission.whileInUse)) {
-      showCustomBottomSheet(
-        child: CustomConfirmationBottomSheet(
-          title: 'location_access_needed'.tr,
-          description: permission == LocationPermission.whileInUse ? 'you_denied'.tr : 'you_denied_forever'.tr,
-          image: ManagerAssets.locationAccessIcon,
-          buttonWidget: Padding(
-            padding: const EdgeInsets.only(bottom: 20, top: 10, left: 30, right: 30),
-            child: CustomButtonWidget(
-              onPressed: () async {
-                Get.back();
-                await Geolocator.openAppSettings();
-                Future.delayed(const Duration(seconds: 3), () {
-                  if(GetPlatform.isAndroid) checkPermission(callback);
-                });
-              },
-              buttonText: 'allow_location_permission'.tr,
-            ),
-          ),
-        ),
-      );
-    }else {
-      callback();
-    }
+  void checkPermission(Function callback, {bool showDialog = true}) async {
+    // ✅ استخدام LocationPermissionManager بدلاً من الكود المكرر
+    await LocationPermissionManager.to.requestLocationPermission(
+      onGranted: () async => callback(),
+      showDialogIfDenied: showDialog,
+    );
   }
 
-    @override
-  Future<XFile?> pickImageFromGallery() async{
-    XFile? pickImage = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if(pickImage != null) {
+  @override
+  Future<XFile?> pickImageFromGallery() async {
+    XFile? pickImage =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickImage != null) {
       pickImage.length().then((value) {
         if (value > 2000000) {
           showCustomSnackBar('please_upload_lower_size_file'.tr);
@@ -131,5 +92,4 @@ class ProfileService implements ProfileServiceInterface {
     }
     return pickImage;
   }
-
 }

@@ -30,7 +30,7 @@ class BalanceOverviewSection extends StatelessWidget {
               children: [
                 // المحتوى النصي
                 Padding(
-                  padding: const EdgeInsets.all(Dimensions.p16),
+                  padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
                   child: Row(
                     textDirection: TextDirection.ltr,
                     children: [
@@ -42,18 +42,18 @@ class BalanceOverviewSection extends StatelessWidget {
                           children: [
                             Text(
                               'current_balance'.tr,
-                              style: robotoRegular.copyWith(
+                              style: textRegular().copyWith(
                                 color: Theme.of(context).disabledColor,
                                 fontSize: Dimensions.fs16,
                               ),
                             ),
-                            const SizedBox(
-                                height: Dimensions.p16),
+                             SizedBox(
+                                height: Dimensions.h16),
                             Text(
                               PriceConverterHelper.convertPrice(
                                   profileController
                                       .profileModel!.payableBalance),
-                              style: robotoBold.copyWith(
+                              style: textBold().copyWith(
                                 fontSize: Dimensions.fs28,
                                 color: Theme.of(context)
                                     .textTheme
@@ -61,8 +61,8 @@ class BalanceOverviewSection extends StatelessWidget {
                                     .color,
                               ),
                             ),
-                            const SizedBox(
-                                height: Dimensions.p16),
+                             SizedBox(
+                                height: Dimensions.h16),
                             CustomButtonWidget(
                               buttonText: 'transaction'.tr,
                               fontSize: Dimensions.fs16,
@@ -101,30 +101,30 @@ class BalanceOverviewSection extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: Dimensions.p20),
+        SizedBox(height: Dimensions.h20),
 
         /// Cash Info Section
         Row(
           children: [
             Expanded(
               child: CustomCard(
-                padding: const EdgeInsets.all(Dimensions.p16),
+                padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
                 fillColor: Theme.of(context).scaffoldBackgroundColor,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'cash_in_hand'.tr,
-                      style: robotoRegular.copyWith(
+                      style: textRegular().copyWith(
                         color: Theme.of(context).disabledColor,
                         fontSize: Dimensions.fs14,
                       ),
                     ),
-                    const SizedBox(height: Dimensions.p16),
+                    SizedBox(height: Dimensions.h16),
                     Text(
                       PriceConverterHelper.convertPrice(
                           profileController.profileModel!.cashInHands),
-                      style: robotoBold.copyWith(
+                      style: textBold().copyWith(
                         fontSize: Dimensions.fs16,
                         color: Theme.of(context).textTheme.bodyMedium!.color,
                       ),
@@ -133,26 +133,26 @@ class BalanceOverviewSection extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: Dimensions.p16),
+            SizedBox(width: Dimensions.w16),
             Expanded(
               child: CustomCard(
-                padding: const EdgeInsets.all(Dimensions.p16),
+                padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
                 fillColor: Theme.of(context).scaffoldBackgroundColor,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'total_withdrawn'.tr,
-                      style: robotoRegular.copyWith(
+                      style: textRegular().copyWith(
                         color: Theme.of(context).disabledColor,
                         fontSize: Dimensions.fs14,
                       ),
                     ),
-                    const SizedBox(height: Dimensions.p16),
+                    SizedBox(height: Dimensions.h16),
                     Text(
                       PriceConverterHelper.convertPrice(
                           profileController.profileModel!.totalWithdrawn),
-                      style: robotoBold.copyWith(
+                      style: textBold().copyWith(
                         fontSize: Dimensions.fs16,
                         color: Theme.of(context).textTheme.bodyMedium!.color,
                       ),

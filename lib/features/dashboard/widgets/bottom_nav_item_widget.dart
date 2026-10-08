@@ -63,7 +63,7 @@ class BottomNavItemWidget extends StatelessWidget {
                         top: -4,
                         right: -6,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(
+                          padding: EdgeInsets.symmetric(
                             horizontal: 4,
                             vertical: 1,
                           ),
@@ -86,7 +86,7 @@ class BottomNavItemWidget extends StatelessWidget {
                                         .toString() ??
                                     '0',
                                 textAlign: TextAlign.center,
-                                style: robotoRegular.copyWith(
+                                style: textRegular().copyWith(
                                   fontSize: 9,
                                   color: Colors.white,
                                   height: 1.2,
@@ -110,12 +110,12 @@ class BottomNavItemWidget extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: isSelected
-                        ? robotoSemiBold.copyWith(
+                        ? textSemiBold().copyWith(
                             fontSize: Get.width < 360 ? 9.5 : 10.5,
                             color: Theme.of(context).primaryColor,
                             height: 1.1,
                           )
-                        : robotoRegular.copyWith(
+                        : textRegular().copyWith(
                             fontSize: Get.width < 360 ? 9 : 10,
                             color: Theme.of(context).hintColor,
                             height: 1.1,

@@ -10,6 +10,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:wefrh_rider/features/profile/domain/services/profile_service_interface.dart';
+import 'package:flutter/material.dart'; 
+import 'package:wefrh_rider/helper/image_picker_helper.dart'; 
+import 'package:image_cropper/image_cropper.dart'; 
 
 class ProfileController extends GetxController implements GetxService {
   final ProfileServiceInterface profileServiceInterface;
@@ -32,26 +35,45 @@ class ProfileController extends GetxController implements GetxService {
   bool _backgroundNotification = true;
   bool get backgroundNotification => _backgroundNotification;
 
-Future<void> pickProfileImage() async {
-  XFile? image = await profileServiceInterface.pickImageFromGallery();
-  if(image != null) {
-    _pickedFile = image;
-    update();
-  }
-}
+  // ========== ✅ NEW: Pick Profile Image with Crop ==========
+  /// اختيار صورة البروفايل مع القص الاحترافي
+  Future<void> pickProfileImageWithCrop(BuildContext context) async {
+    final XFile? croppedImage = await ImagePickerHelper.showImageSourceBottomSheet(
+      context: context,
+      cropStyle: CropStyle.circle, 
+      lockAspectRatio: false,
+    );
 
- Future<void> getProfile({bool isFromSplash = false}) async {
-  ProfileModel? profileModel = await profileServiceInterface.getProfileInfo();
-  if (profileModel != null) {
-    _profileModel = profileModel;
-    if (_profileModel!.active == 1) {
-      profileServiceInterface.checkPermission(() => startLocationRecord());
-    } else {
-      stopLocationRecord();
+    if (croppedImage != null) {
+      _pickedFile = croppedImage;
+      update();
     }
   }
-  update();
-}
+
+  // ========== ⚠️ KEEP OLD METHOD (for backward compatibility) ==========
+  Future<void> pickProfileImage() async {
+    XFile? image = await profileServiceInterface.pickImageFromGallery();
+    if (image != null) {
+      _pickedFile = image;
+      update();
+    }
+  }
+
+  Future<void> getProfile({bool isFromSplash = false}) async {
+    ProfileModel? profileModel = await profileServiceInterface.getProfileInfo();
+    if (profileModel != null) {
+      _profileModel = profileModel;
+      if (_profileModel!.active == 1) {
+        profileServiceInterface.checkPermission(
+          () => startLocationRecord(),
+          showDialog: !isFromSplash,
+        );
+      } else {
+        stopLocationRecord();
+      }
+    }
+    update();
+  }
 
   Future<bool> updateUserInfo(
       ProfileModel updateUserModel, String token) async {

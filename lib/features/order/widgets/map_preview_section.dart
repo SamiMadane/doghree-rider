@@ -293,7 +293,7 @@ class _MapPreviewSectionState extends State<MapPreviewSection> {
   Widget build(BuildContext context) {
     return widget.showMap
         ? Container(
-            margin: EdgeInsets.only(bottom: Dimensions.p16),
+            margin: EdgeInsets.only(bottom: Dimensions.h16),
             height: 200,
             width: double.infinity,
             decoration: BoxDecoration(
@@ -320,7 +320,7 @@ class _MapPreviewSectionState extends State<MapPreviewSection> {
                                         ?.color,
                                   ),
                                   SizedBox(
-                                      height: Dimensions.p16),
+                                      height: Dimensions.h16),
                                   Text(
                                     'locating'.tr,
                                     style: TextStyle(
@@ -377,7 +377,7 @@ class _MapPreviewSectionState extends State<MapPreviewSection> {
                               rotateGesturesEnabled: true,
                               // إضافة padding للخريطة لتجنب تداخل الأزرار
                               padding:
-                                  const EdgeInsets.only(bottom: 60, right: 10),
+                                  EdgeInsets.only(bottom: 60, right: 10),
 
                               gestureRecognizers: <Factory<
                                   OneSequenceGestureRecognizer>>{
@@ -416,7 +416,7 @@ class _MapPreviewSectionState extends State<MapPreviewSection> {
                                 : null,
                           ),
                         ),
-                        const SizedBox(width: 8),
+                        SizedBox(width: 8),
                         // زر فتح في الخريطة الكاملة
                         Container(
                           decoration: BoxDecoration(
@@ -447,7 +447,7 @@ class _MapPreviewSectionState extends State<MapPreviewSection> {
                     top: 8,
                     left: 8,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(
+                      padding: EdgeInsets.symmetric(
                           horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
                         color: Colors.orange.withOpacity(0.8),

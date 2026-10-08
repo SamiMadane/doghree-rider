@@ -33,28 +33,28 @@ class ChooseLanguageScreen extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: Dimensions.p20),
+            padding: EdgeInsets.symmetric(
+                horizontal: Dimensions.w20),
             child: Text('choose_your_language'.tr,
-                style: robotoBold.copyWith(fontSize: Dimensions.fs16)),
+                style: textBold().copyWith(fontSize: Dimensions.fs16)),
           ),
-          const SizedBox(height: Dimensions.p4),
+          SizedBox(height: Dimensions.h4),
           Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: Dimensions.p20),
+            padding: EdgeInsets.symmetric(
+                horizontal: Dimensions.w20),
             child: Text('choose_your_language_to_proceed'.tr,
                 style:
-                    robotoRegular.copyWith(fontSize: Dimensions.fs12)),
+                    textRegular().copyWith(fontSize: Dimensions.fs12)),
           ),
-          const SizedBox(height: Dimensions.p25),
+          SizedBox(height: Dimensions.h25),
           Expanded(
             child: SingleChildScrollView(
               child: ListView.builder(
                 itemCount: localizationController.languages.length,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                padding: const EdgeInsets.symmetric(
-                    horizontal: Dimensions.p20),
+                padding: EdgeInsets.symmetric(
+                    horizontal: Dimensions.w20),
                 itemBuilder: (context, index) {
                   return LanguageCardWidget(
                     languageModel: localizationController.languages[index],
@@ -66,9 +66,9 @@ class ChooseLanguageScreen extends StatelessWidget {
             ),
           ),
           Container(
-            padding: const EdgeInsets.symmetric(
-                vertical: Dimensions.p16,
-                horizontal: Dimensions.p25),
+            padding: EdgeInsets.symmetric(
+                vertical: Dimensions.h16,
+                horizontal: Dimensions.w25),
             decoration: BoxDecoration(
               color: Theme.of(context).cardColor,
               boxShadow: [

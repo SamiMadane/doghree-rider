@@ -21,18 +21,18 @@ class ConnectionBottomSheet extends StatelessWidget {
     final customColor = Theme.of(context).extension<CustomColorsExtension>()!;
 
     return Obx(() => Padding(
-          padding: const EdgeInsets.all(Dimensions.p16),
+          padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              SizedBox(height: Dimensions.p16),
+              SizedBox(height: Dimensions.h16),
               Text('data_management'.tr,
-                  style: robotoSemiBold.copyWith(fontSize: Dimensions.fs18)),
+                  style: textSemiBold().copyWith(fontSize: Dimensions.fs18)),
               const SizedBox(height: 16),
               CustomCard(
                 fillColor: Theme.of(context).scaffoldBackgroundColor,
                 borderRadius: Dimensions.r16,
-                padding: EdgeInsets.all(Dimensions.p16),
+                padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -40,7 +40,7 @@ class ConnectionBottomSheet extends StatelessWidget {
                     Row(
                       children: [
                         Text('connection_status'.tr,
-                            style: robotoRegular.copyWith(
+                            style: textRegular().copyWith(
                                 fontSize: Dimensions.fs16)),
                         const Spacer(),
                         Container(
@@ -51,13 +51,13 @@ class ConnectionBottomSheet extends StatelessWidget {
                             shape: BoxShape.circle,
                           ),
                         ),
-                        const SizedBox(width: Dimensions.p8),
+                        SizedBox(width: Dimensions.w8),
                         Text(controller.connectionStatusText,
-                            style: robotoSemiBold.copyWith(
+                            style: textSemiBold().copyWith(
                                 color: controller.connectionColor.value)),
                       ],
                     ),
-                    SizedBox(height: Dimensions.p16),
+                    SizedBox(height: Dimensions.h16),
                     if (controller.connectionLabel.value == '2G')
                       Column(
                         children: [
@@ -69,15 +69,15 @@ class ConnectionBottomSheet extends StatelessWidget {
                                 width: 18,
                                 color: ManagerColors.red,
                               ),
-                              const SizedBox(width: Dimensions.p8),
+                              SizedBox(width: Dimensions.w8),
                               Text(
                                 'consumption_of_packages'.tr,
-                                style: robotoSemiBold.copyWith(
+                                style: textSemiBold().copyWith(
                                     color: ManagerColors.red),
                               ),
                             ],
                           ),
-                          SizedBox(height: Dimensions.p16),
+                          SizedBox(height: Dimensions.h16),
                         ],
                       ),
                     // --- Connection Options ---
@@ -105,25 +105,25 @@ class ConnectionBottomSheet extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: Dimensions.p16),
+              SizedBox(height: Dimensions.h16),
               // --- Pending Data Section ---
               Row(
                 children: [
                   Text(
                     'pending_data'.tr,
-                    style: robotoBold.copyWith(fontSize: Dimensions.fs17),
+                    style: textBold().copyWith(fontSize: Dimensions.fs17),
                   ),
                   const Spacer(),
                   CustomCard(
                     fillColor: customColor.primaryBg,
-                    padding: EdgeInsets.all(Dimensions.p16),
+                    padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
                     borderRadius: Dimensions.r8,
                     isBorder: false,
                     height: 55,
                     width: 100,
                     child: Center(
                       child: Text('${'0'} ${'items'.tr}',
-                          style: robotoSemiBold.copyWith(
+                          style: textSemiBold().copyWith(
                             fontSize: Dimensions.fs16,
                             color: Theme.of(context).primaryColor,
                           )),
@@ -131,7 +131,7 @@ class ConnectionBottomSheet extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(height: Dimensions.p30),
+              SizedBox(height: Dimensions.h30),
               // --- Data Up To Date Section ---
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -142,16 +142,16 @@ class ConnectionBottomSheet extends StatelessWidget {
                     width: 22,
                     color: ManagerColors.oliveGreen,
                   ),
-                  SizedBox(width: Dimensions.p8),
+                  SizedBox(width: Dimensions.w8),
                   Text(
                     'all_data_up_to_date'.tr,
-                    style: robotoBold.copyWith(
+                    style: textBold().copyWith(
                         color: ManagerColors.oliveGreen,
                         fontSize: Dimensions.fs16),
                   )
                 ],
               ),
-              SizedBox(height: Dimensions.p80),
+              SizedBox(height: Dimensions.h80),
               // --- Data Saving Tips ---
               TipCardWidget(
                 title: 'data_saving_tips'.tr,
@@ -187,8 +187,8 @@ class ConnectionBottomSheet extends StatelessWidget {
           Get.back();
         },
         child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: Dimensions.p4),
-          padding: EdgeInsets.all(Dimensions.p10),
+          margin: EdgeInsets.symmetric(horizontal: Dimensions.w4),
+          padding: EdgeInsets.symmetric(horizontal:Dimensions.w10 ,vertical: Dimensions.h10,),
           decoration: BoxDecoration(
             color: isSelected ? selectedBg : customColor.grayBg,
             borderRadius: BorderRadius.circular(Dimensions.r8),
@@ -204,14 +204,14 @@ class ConnectionBottomSheet extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
               ),
-              const SizedBox(width: Dimensions.p8),
+              SizedBox(width: Dimensions.w8),
               Text(label,
                   style: isSelected
-                      ? robotoMedium.copyWith(
+                      ? textMedium().copyWith(
                           fontSize: Dimensions.fs16,
                           color: ManagerColors.white,
                         )
-                      : robotoRegular.copyWith(
+                      : textRegular().copyWith(
                           fontSize: Dimensions.fs16,
                           color: Theme.of(context).textTheme.bodyMedium?.color,
                         )),

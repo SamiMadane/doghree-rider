@@ -6,6 +6,7 @@ import 'package:wefrh_rider/features/disbursement/domain/models/disbursement_rep
 import 'package:wefrh_rider/common/widgets/custom_dropdown_widget.dart';
 import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
 import 'package:wefrh_rider/features/disbursement/domain/services/disbursement_service_interface.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
 
 class DisbursementController extends GetxController implements GetxService {
   final DisbursementServiceInterface disbursementServiceInterface;
@@ -66,7 +67,7 @@ class DisbursementController extends GetxController implements GetxService {
       for(int i=0; i < _widthDrawMethods!.length; i++){
         _methodList.add(DropdownItem<int>(value: i, child: SizedBox(
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: EdgeInsets.symmetric(horizontal:Dimensions.w8 ,vertical: Dimensions.h8,),
             child: Text('${_widthDrawMethods![i].methodName}'),
           ),
         )));

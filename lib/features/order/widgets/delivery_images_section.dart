@@ -31,16 +31,16 @@ class DeliveryImagesSection extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.only(top: Dimensions.p16),
+      padding: EdgeInsets.only(top: Dimensions.h16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'completed_after_delivery_picture'.tr,
             style:
-                robotoSemiBold.copyWith(fontSize: Dimensions.fs16),
+                textSemiBold().copyWith(fontSize: Dimensions.fs16),
           ),
-          const SizedBox(height: Dimensions.p16),
+          SizedBox(height: Dimensions.h16),
           SizedBox(
             height: 100,
             child: ListView(
@@ -63,8 +63,8 @@ class DeliveryImagesSection extends StatelessWidget {
                       strokeWidth: 1,
                       strokeCap: StrokeCap.butt,
                       dashPattern: const [8, 5],
-                      padding: const EdgeInsets.all(5),
-                      radius: const Radius.circular(Dimensions.r10),
+                      padding: EdgeInsets.all(5),
+                      radius:  Radius.circular(Dimensions.r10),
                     ),
                     child: SizedBox(
                       height: 100,
@@ -82,7 +82,7 @@ class DeliveryImagesSection extends StatelessWidget {
                           const SizedBox(height: 6),
                           Text(
                             'add_a_photo'.tr,
-                            style: robotoRegular.copyWith(
+                            style: textRegular().copyWith(
                               fontSize: Dimensions.fs14,
                               color: Theme.of(context).hintColor,
                             ),
@@ -93,15 +93,15 @@ class DeliveryImagesSection extends StatelessWidget {
                   ),
                 ),
 
-                const SizedBox(width: Dimensions.p10),
+                SizedBox(width: Dimensions.w10),
 
                 // الصور المضافة تظهر بعد زر الإضافة
                 ...orderController.pickedPrescriptions.map((file) {
                   return Stack(
                     children: [
                       Container(
-                        margin: const EdgeInsets.only(
-                            right: Dimensions.p10),
+                        margin: EdgeInsets.only(
+                            right: Dimensions.w10),
                         decoration: BoxDecoration(
                           borderRadius:
                               BorderRadius.circular(Dimensions.r10),
@@ -137,7 +137,7 @@ class DeliveryImagesSection extends StatelessWidget {
                               shape: BoxShape.circle,
                               color: Colors.black.withOpacity(0.7),
                             ),
-                            padding: const EdgeInsets.all(4),
+                            padding: EdgeInsets.all(4),
                             child: const Icon(Icons.close,
                                 color: Colors.white, size: 16),
                           ),

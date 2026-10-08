@@ -7,14 +7,8 @@ import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
 import 'package:get/get.dart';
 import 'package:wefrh_rider/util/manager_assets.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:wefrh_rider/util/styles.dart';
 
-import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
-
-import 'package:flutter/material.dart';
-
-import 'package:get/get.dart';
-
-import 'package:url_launcher/url_launcher_string.dart';
 
 class HtmlViewerScreen extends StatefulWidget {
   final bool isPrivacyPolicy;
@@ -35,16 +29,15 @@ class _HtmlViewerScreenState extends State<HtmlViewerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBarWidget(
-        title:
-            widget.isPrivacyPolicy ? 'privacy_policy'.tr : 'terms_condition'.tr,
+        title: widget.isPrivacyPolicy ? 'privacy_policy'.tr : 'terms_condition'.tr,
       ),
       body: GetBuilder<HtmlController>(builder: (htmlController) {
         return Container(
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
           color: Theme.of(context).cardColor,
-          padding: const EdgeInsets.all(Dimensions.p16),
-          margin: const EdgeInsets.only(top: Dimensions.p16),
+          padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
+          margin: EdgeInsets.only(top: Dimensions.h16),
           child: htmlController.htmlText != null
               ? SingleChildScrollView(
                   physics: const BouncingScrollPhysics(),
@@ -58,20 +51,20 @@ class _HtmlViewerScreenState extends State<HtmlViewerScreen> {
                             width: 50,
                             height: 50,
                           ),
-                          const SizedBox(width: Dimensions.p12),
+                          SizedBox(width: Dimensions.w12),
                           Expanded(
                             child: Text(
                               widget.isPrivacyPolicy
                                   ? 'read_our_privacy_policy'.tr
                                   : 'read_our_terms_condition'.tr,
-                              style: robotoSemiBold.copyWith(
+                              style: textSemiBold().copyWith(
                                 fontSize: Dimensions.fs18,
                               ),
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: Dimensions.p24),
+                      SizedBox(height: Dimensions.h24),
                       HtmlWidget(
                         htmlController.htmlText ?? '',
                         key: Key(widget.isPrivacyPolicy

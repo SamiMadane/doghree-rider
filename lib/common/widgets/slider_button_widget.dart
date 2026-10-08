@@ -68,6 +68,7 @@ class SliderButtonState extends State<SliderButton>
   bool? flag;
   Widget? _child;
   late AnimationController _controller;
+  // ignore: unused_field
   late Animation<Offset> _offsetAnimation;
   Key _dismissibleKey = UniqueKey();
 

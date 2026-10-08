@@ -49,7 +49,7 @@ class CustomAppBarWidget extends StatelessWidget implements PreferredSizeWidget 
           (title != null
               ? Text(
                   title!,
-                  style: robotoSemiBold.copyWith(
+                  style: textSemiBold().copyWith(
                     fontSize: Dimensions.fs18,
                     color: resolvedTitleColor,
                   ),
@@ -88,7 +88,7 @@ class CustomAppBarWidget extends StatelessWidget implements PreferredSizeWidget 
       scrolledUnderElevation: 0,
       actions: [
         Padding(
-          padding: const EdgeInsetsDirectional.only(end: Dimensions.p16),
+          padding: EdgeInsetsDirectional.only(end: Dimensions.w16),
 
           child: actionWidget ?? const SizedBox(),
         ),

@@ -21,14 +21,13 @@ Future<ResponseModel> changePassword(
 ) async {
   ResponseModel responseModel;
 
-  // تجهيز body مع كلمة المرور الحالية والجديدة
   Map<String, dynamic> body = {
     '_method': 'put',
     'f_name': userInfoModel.fName,
     'l_name': userInfoModel.lName,
     'email': userInfoModel.email,
-    'current_password': currentPassword, // كلمة المرور الحالية
-    'password': newPassword, // كلمة المرور الجديدة
+    'current_password': currentPassword, 
+    'password': newPassword, 
     'token': _getUserToken(),
   };
 
@@ -39,8 +38,19 @@ Future<ResponseModel> changePassword(
   );
   if (response.statusCode == 200) {
     responseModel = ResponseModel(true, response.body["message"]);
-  } else {
-    responseModel = ResponseModel(false, response.statusText);
+  }  else {
+    // ⚠️ هنا يجب معالجة الـ errors array
+    String errorMessage = response.statusText ?? 'error_occurred'.tr;
+    
+    // لو الباك إند بيرجع errors array
+    if (response.body != null && response.body['errors'] != null) {
+      var errors = response.body['errors'] as List;
+      if (errors.isNotEmpty) {
+        errorMessage = errors[0]['message'] ?? errorMessage;
+      }
+    }
+    
+    responseModel = ResponseModel(false, errorMessage);
   }
 
   return responseModel;

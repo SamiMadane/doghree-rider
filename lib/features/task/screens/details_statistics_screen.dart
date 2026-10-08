@@ -22,8 +22,8 @@ class DetailsStatisticsScreen extends StatelessWidget {
         children: [
           Expanded(
             child: Container(
-              padding: EdgeInsets.all(Dimensions.p16),
-              margin: EdgeInsets.only(top: Dimensions.p16),
+              padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
+              margin: EdgeInsets.only(top: Dimensions.h16),
               color: Theme.of(context).cardColor,
               child: SingleChildScrollView(
                 child: Column(
@@ -40,29 +40,29 @@ class DetailsStatisticsScreen extends StatelessWidget {
                           children: [
                             Expanded(
                               child: Padding(
-                                padding: EdgeInsets.all(Dimensions.p16),
+                                padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
                                       'total_tasks_today'.tr,
-                                      style: robotoBold.copyWith(
+                                      style: textBold().copyWith(
                                         fontSize: Dimensions.fs16,
                                       ),
                                     ),
-                                    SizedBox(height: Dimensions.p12),
+                                    SizedBox(height: Dimensions.h12),
                                     Text(
                                       '8',
-                                      style: robotoBold.copyWith(
+                                      style: textBold().copyWith(
                                         fontSize: Dimensions.fs32,
                                       ),
                                     ),
-                                    SizedBox(height: Dimensions.p12),
+                                    SizedBox(height: Dimensions.h12),
                                     Text(
                                       'Turn in all collections to the supervisor before shift ends.'
                                           .tr,
-                                      style: robotoRegular.copyWith(
+                                      style: textRegular().copyWith(
                                         fontSize: Dimensions.fs12,
                                         color: Theme.of(context).hintColor,
                                       ),
@@ -82,9 +82,9 @@ class DetailsStatisticsScreen extends StatelessWidget {
                       ),
                     ),
 
-                    SizedBox(height: Dimensions.p16),
+                    SizedBox(height: Dimensions.h16),
                     CustomCard(
-                      padding: const EdgeInsets.all(Dimensions.p16),
+                      padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
                       isBorder: false,
                       fillColor: Theme.of(context).scaffoldBackgroundColor,
                       child: EmbeddingRateWidget(
@@ -97,7 +97,7 @@ class DetailsStatisticsScreen extends StatelessWidget {
                       ),
                     ),
                     SizedBox(
-                      height: Dimensions.p16,
+                      height: Dimensions.h16,
                     ),
 
                     /// List of beneficiaries
@@ -106,7 +106,7 @@ class DetailsStatisticsScreen extends StatelessWidget {
                       physics: const NeverScrollableScrollPhysics(),
                       padding: EdgeInsets.zero,
                       crossAxisCount: 2,
-                      crossAxisSpacing: Dimensions.p16,
+                      crossAxisSpacing: Dimensions.w16,
                       childAspectRatio: 1.4,
                       children: [
                         _statusBox("23", "Delivered",
@@ -120,7 +120,7 @@ class DetailsStatisticsScreen extends StatelessWidget {
                       ],
                     ),
 
-                    SizedBox(height: Dimensions.p16),
+                    SizedBox(height: Dimensions.h16),
 
                     /// Amount to be delivered
                     CustomCard(
@@ -134,7 +134,7 @@ class DetailsStatisticsScreen extends StatelessWidget {
                             Expanded(
                               flex: 2,
                               child: Container(
-                                padding: const EdgeInsets.all(Dimensions.p16),
+                                padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -147,22 +147,22 @@ class DetailsStatisticsScreen extends StatelessWidget {
                                               .bodyMedium
                                               ?.color,
                                         ),
-                                        SizedBox(width: Dimensions.p4),
+                                        SizedBox(width: Dimensions.w4),
                                         Text('amount_to_be_delivered'.tr,
-                                            style: robotoBold.copyWith(
+                                            style: textBold().copyWith(
                                               fontSize: Dimensions.fs16,
                                             )),
                                       ],
                                     ),
-                                    SizedBox(height: Dimensions.p8),
+                                    SizedBox(height: Dimensions.h8),
                                     Text(PriceConverterHelper.convertPrice(47),
-                                        style: robotoSemiBold.copyWith(
+                                        style: textSemiBold().copyWith(
                                           fontSize: Dimensions.fs22,
                                         )),
-                                    SizedBox(height: Dimensions.p8),
+                                    SizedBox(height: Dimensions.h8),
                                     Text(
                                       'handover_message'.tr,
-                                      style: robotoRegular.copyWith(
+                                      style: textRegular().copyWith(
                                           fontSize: Dimensions.fs13,
                                           color: Theme.of(context).hintColor),
                                     ),
@@ -192,7 +192,7 @@ class DetailsStatisticsScreen extends StatelessWidget {
           /// زر التحميل أسفل الشاشة
           SafeArea(
             child: Container(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Theme.of(context).cardColor,
                 boxShadow: [
@@ -238,7 +238,7 @@ class DetailsStatisticsScreen extends StatelessWidget {
               // نص مرن مع تقليم
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.all(Dimensions.p16),
+                  padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -247,18 +247,18 @@ class DetailsStatisticsScreen extends StatelessWidget {
                         title,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: robotoBold.copyWith(fontSize: Dimensions.fs14),
+                        style: textBold().copyWith(fontSize: Dimensions.fs14),
                       ),
-                      SizedBox(height: Dimensions.p4),
+                      SizedBox(height: Dimensions.h4),
                       Text(
                         count,
-                        style: robotoBold.copyWith(fontSize: Dimensions.fs16),
+                        style: textBold().copyWith(fontSize: Dimensions.fs16),
                       ),
                     ],
                   ),
                 ),
               ),
-              SizedBox(width: Dimensions.p8),
+              SizedBox(width: Dimensions.w8),
               // الصورة ثابتة الحجم
               Column(
                 children: [

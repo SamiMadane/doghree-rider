@@ -13,8 +13,8 @@ class OrderShimmerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomCard(
       width: MediaQuery.of(context).size.width,
-      padding: const EdgeInsets.all(Dimensions.p16),
-      margin: const EdgeInsetsDirectional.only(end: Dimensions.p16),
+      padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
+      margin: EdgeInsetsDirectional.only(end: Dimensions.w16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -54,7 +54,7 @@ class OrderShimmerWidget extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: Dimensions.p16),
+          SizedBox(height: Dimensions.h16),
 
           // أيقونات + خطوط
           Row(
@@ -100,7 +100,7 @@ class OrderShimmerWidget extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -132,7 +132,7 @@ class OrderShimmerWidget extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(height: Dimensions.p10),
+                    SizedBox(height: Dimensions.h10),
                     // Delivery Location
                     Shimmer(
                       enabled: isEnabled,
@@ -166,7 +166,7 @@ class OrderShimmerWidget extends StatelessWidget {
             ],
           ),
 
-          const SizedBox(height: Dimensions.p16),
+          SizedBox(height: Dimensions.h16),
 
           // Actions - Buttons
           Shimmer(

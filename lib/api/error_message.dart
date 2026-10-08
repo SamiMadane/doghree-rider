@@ -102,6 +102,7 @@ class ErrorMessages {
           : 'Operation cancelled';
           
       case ErrorType.unknown:
+      // ignore: unreachable_switch_default
       default:
         return isArabic 
           ? 'حدث خطأ غير متوقع\nيرجى المحاولة مرة أخرى'

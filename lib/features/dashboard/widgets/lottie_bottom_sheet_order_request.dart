@@ -119,7 +119,7 @@ class _LottieBottomSheetOrderRequestState
           children: [
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.all(Dimensions.p20),
+                padding: EdgeInsets.symmetric(horizontal: Dimensions.w20, vertical: Dimensions.h20),
                 child: Column(
                   children: [
                     // Lottie Animation
@@ -142,12 +142,12 @@ class _LottieBottomSheetOrderRequestState
                       ),
                     ),
 
-                    const SizedBox(height: Dimensions.p30),
+                    SizedBox(height: Dimensions.h30),
 
                     // Title
                     Text(
                       _getTitle(),
-                      style: robotoSemiBold.copyWith(
+                      style: textSemiBold().copyWith(
                         fontSize: Dimensions.fs22,
                         color: Theme.of(context).primaryColor,
                       ),
@@ -159,7 +159,7 @@ class _LottieBottomSheetOrderRequestState
                     // Subtitle
                     Text(
                       _getSubtitle(),
-                      style: robotoMedium.copyWith(
+                      style: textMedium().copyWith(
                         fontSize: Dimensions.fs16,
                         color: Theme.of(context).disabledColor,
                       ),
@@ -197,7 +197,7 @@ class _LottieBottomSheetOrderRequestState
 
             // Buttons Section
             Padding(
-              padding: const EdgeInsets.all(24),
+              padding: EdgeInsets.all(24),
               child: // للطلبات الجديدة (new_order):
                   widget.isRequest == true
                       ? Row(
@@ -211,7 +211,7 @@ class _LottieBottomSheetOrderRequestState
                                 transparent: true,
                               ),
                             ),
-                            SizedBox(width: Dimensions.p16),
+                            SizedBox(width: Dimensions.w16),
                             // زر القبول
                             Expanded(
                               flex: 2,

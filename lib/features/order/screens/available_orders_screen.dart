@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:wefrh_rider/common/widgets/empty_state_widget.dart';
 import 'package:wefrh_rider/features/order/controllers/order_controller.dart';
 import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
 import 'package:wefrh_rider/util/dimensions.dart';
@@ -6,6 +7,7 @@ import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
 import 'package:wefrh_rider/features/order/widgets/order_requset_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wefrh_rider/util/manager_assets.dart';
 
 class AvailableOrdersScreen extends StatefulWidget {
   final Function onTap;
@@ -47,7 +49,7 @@ class AvailableOrdersScreenState extends State<AvailableOrdersScreen> {
           title: 'available_orders'.tr, isBackButtonExist: false),
       body: Container(
         color: Theme.of(context).cardColor,
-        margin: EdgeInsets.only(top: Dimensions.p16),
+        margin: EdgeInsets.only(top: Dimensions.h16),
         child: GetBuilder<OrderController>(builder: (orderController) {
           return orderController.latestOrderList != null
               ? orderController.latestOrderList!.isNotEmpty
@@ -58,7 +60,7 @@ class AvailableOrdersScreenState extends State<AvailableOrdersScreen> {
                       child: ListView.builder(
                         itemCount: orderController.latestOrderList!.length,
                         padding:
-                            const EdgeInsets.all(Dimensions.p10),
+                            EdgeInsets.symmetric(horizontal:Dimensions.w10 ,vertical: Dimensions.h10,),
                         physics: const AlwaysScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
                           return OrderRequestWidget(
@@ -69,7 +71,13 @@ class AvailableOrdersScreenState extends State<AvailableOrdersScreen> {
                         },
                       ),
                     )
-                  : Center(child: Text('no_order_request_available'.tr))
+                  : EmptyStateWidget(
+                    image: ManagerAssets.noOrderImage,
+                    imageScale: 1.3,
+                    spacing: Dimensions.h40,
+                    title: 'no_order_request_available'.tr,
+                                    
+                  )
               : const Center(child: CircularProgressIndicator());
         }),
       ),

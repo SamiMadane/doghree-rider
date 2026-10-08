@@ -29,7 +29,7 @@ class ProfileBgWidget extends StatelessWidget {
             child: Container(
               width: 1170,
               decoration: BoxDecoration(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                 color: Theme.of(context).cardColor,
               ),
             ),
@@ -40,7 +40,7 @@ class ProfileBgWidget extends StatelessWidget {
           top: MediaQuery.of(context).padding.top+10, left: 0, right: 0,
           child: Text(
             'profile'.tr, textAlign: TextAlign.center,
-            style: robotoRegular.copyWith(fontSize: Dimensions.fs16, color: Theme.of(context).cardColor),
+            style: textRegular().copyWith(fontSize: Dimensions.fs16, color: Theme.of(context).cardColor),
           ),
         ),
 

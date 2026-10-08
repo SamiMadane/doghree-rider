@@ -49,12 +49,12 @@ class _WithdrawMethodScreenState extends State<WithdrawMethodScreen> {
         return disbursementController.disbursementMethodBody != null ? disbursementController.disbursementMethodBody!.methods!.isNotEmpty ? ListView.builder(
           itemCount: disbursementController.disbursementMethodBody!.methods!.length,
           shrinkWrap: true,
-          padding: const EdgeInsets.all(Dimensions.p16),
+          padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
           itemBuilder: (context, index) {
             Methods method = disbursementController.disbursementMethodBody!.methods![index];
             return Container(
               width: context.width,
-              margin: const EdgeInsets.only(bottom: Dimensions.p16),
+              margin: EdgeInsets.only(bottom: Dimensions.h16),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 color: Theme.of(context).cardColor,
@@ -63,14 +63,14 @@ class _WithdrawMethodScreenState extends State<WithdrawMethodScreen> {
               child: Column(children: [
 
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: Dimensions.p16, vertical: Dimensions.p4),
+                  padding: EdgeInsets.symmetric(horizontal: Dimensions.w16, vertical: Dimensions.h4),
                   child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
 
                     Flexible(
                       child: Text(
                         '${'payment_method'.tr} : ${method.methodName}',
                         maxLines: 1, overflow: TextOverflow.ellipsis,
-                        style: robotoBold.copyWith(fontSize: Dimensions.fs16),
+                        style: textBold().copyWith(fontSize: Dimensions.fs16),
                       ),
                     ),
 
@@ -79,8 +79,8 @@ class _WithdrawMethodScreenState extends State<WithdrawMethodScreen> {
                         color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(Dimensions.r10),
                       ),
-                      padding: const EdgeInsets.all(Dimensions.fs12),
-                      child: Text('default_method'.tr, style: robotoMedium.copyWith(color: Theme.of(context).primaryColor),),
+                      padding: EdgeInsets.all(Dimensions.fs12),
+                      child: Text('default_method'.tr, style: textMedium().copyWith(color: Theme.of(context).primaryColor),),
                     ) : InkWell(
                       onTap: () {
                         disbursementController.makeDefaultMethod({'id': '${method.id}', 'is_default': '1'}, index);
@@ -90,9 +90,9 @@ class _WithdrawMethodScreenState extends State<WithdrawMethodScreen> {
                           color: Theme.of(context).primaryColor,
                           borderRadius: BorderRadius.circular(Dimensions.r10),
                         ),
-                        padding: const EdgeInsets.all(Dimensions.fs12),
+                        padding: EdgeInsets.all(Dimensions.fs12),
                         child: !(disbursementController.isLoading && (index == disbursementController.index))
-                          ? Text('make_default'.tr, style: robotoMedium.copyWith(color: Theme.of(context).cardColor))
+                          ? Text('make_default'.tr, style: textMedium().copyWith(color: Theme.of(context).cardColor))
                           : SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Theme.of(context).cardColor)),
                       ),
                     ),
@@ -103,7 +103,7 @@ class _WithdrawMethodScreenState extends State<WithdrawMethodScreen> {
                 const Divider(height: 1, thickness: 0.5),
 
                 Padding(
-                  padding: const EdgeInsets.only(left: Dimensions.p16, right: Dimensions.p16, top: Dimensions.p16),
+                  padding: EdgeInsets.only(left: Dimensions.w16, right: Dimensions.w16, top: Dimensions.h16),
                   child: Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
 
                     Expanded(
@@ -113,18 +113,18 @@ class _WithdrawMethodScreenState extends State<WithdrawMethodScreen> {
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
                           return Padding(
-                            padding: const EdgeInsets.only(bottom: Dimensions.p16),
+                            padding: EdgeInsets.only(bottom: Dimensions.h16),
                             child: Row(children: [
                               Expanded(
                                 child: Text(method.methodFields![index].userInput!.replaceAll('_', ' '),
-                                    style: robotoRegular.copyWith(color: Theme.of(context).disabledColor)),
+                                    style: textRegular().copyWith(color: Theme.of(context).disabledColor)),
                               ),
-                              const Text(' :  ', style: robotoRegular),
+                               Text(' :  ', style: textRegular()),
 
                               Expanded(
                                 child: Text(
                                   '${method.methodFields![index].userData}',
-                                  style: robotoBold.copyWith(fontSize: Dimensions.fs14),
+                                  style: textBold().copyWith(fontSize: Dimensions.fs14),
                                   maxLines: 1, overflow: TextOverflow.ellipsis,
                                 ),
                               ),
@@ -134,14 +134,14 @@ class _WithdrawMethodScreenState extends State<WithdrawMethodScreen> {
                         },
                       ),
                     ),
-                    const SizedBox(width: Dimensions.p16),
+                    SizedBox(width: Dimensions.w16),
 
                     InkWell(
                       onTap: () {
                         Get.dialog(ConfirmDialogWidget(id: method.id!));
                       },
                       child: Padding(
-                        padding: const EdgeInsets.only(bottom: Dimensions.p16, top: Dimensions.p16),
+                        padding: EdgeInsets.only(bottom: Dimensions.h16, top: Dimensions.h16),
                         child: Icon(CupertinoIcons.delete, color: Theme.of(context).colorScheme.error, size: 20),
                       ),
                     )
@@ -152,7 +152,7 @@ class _WithdrawMethodScreenState extends State<WithdrawMethodScreen> {
 
             );
           },
-        ) : Center(child: Text('no_method_found'.tr, style: robotoMedium)) : const Center(child: CircularProgressIndicator());
+        ) : Center(child: Text('no_method_found'.tr, style: textMedium())) : const Center(child: CircularProgressIndicator());
       }),
     );
   }

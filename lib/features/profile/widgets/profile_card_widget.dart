@@ -16,12 +16,12 @@ class ProfileCardWidget extends StatelessWidget {
      isBorder: false,
       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
         Text(data,
-            style: robotoSemiBold.copyWith(
+            style: textSemiBold().copyWith(
               fontSize: Dimensions.fs18,
             )),
-        const SizedBox(height: Dimensions.p10),
+        SizedBox(height: Dimensions.h10),
         Text(title,
-            style: robotoRegular.copyWith(
+            style: textRegular().copyWith(
               fontSize: Dimensions.fs14,
               color: Theme.of(context).hintColor,
             )),

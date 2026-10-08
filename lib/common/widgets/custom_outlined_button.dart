@@ -9,10 +9,10 @@ class CustomOutlinedButton extends StatelessWidget {
   final VoidCallback onPressed;
   final Color? borderColor;
   final Color? textColor;
-  final double borderRadius;
-  final double fontSize;
+  final double? borderRadius;
+  final double? fontSize;
   final double iconSize;
-  final EdgeInsetsGeometry padding;
+  final EdgeInsetsGeometry? padding;
   final double? width;
   final double? height;
   final EdgeInsetsGeometry? margin;
@@ -26,10 +26,10 @@ class CustomOutlinedButton extends StatelessWidget {
     this.iconOnRight = false,
     this.borderColor,
     this.textColor,
-    this.borderRadius = Dimensions.r16,
-    this.fontSize = Dimensions.fs16,
+    this.borderRadius ,
+    this.fontSize,
     this.iconSize = 20,
-    this.padding = const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+    this.padding,
     this.width,
     this.height,
     this.margin,
@@ -42,17 +42,17 @@ class CustomOutlinedButton extends StatelessWidget {
       if (icon != null && !iconOnRight)
         Icon(icon, size: iconSize, color: textColor ?? Theme.of(context).primaryColor),
       if (icon != null && !iconOnRight)
-        const SizedBox(width: 8),
+        SizedBox(width: 8),
       Text(
         text,
-        style: robotoMedium.copyWith(
-          fontSize: fontSize,
+        style: textMedium().copyWith(
+          fontSize: fontSize ?? Dimensions.fs16,
           fontWeight: fontWeight,
           color: textColor ?? Theme.of(context).textTheme.bodyMedium!.color,
         ),
       ),
       if (icon != null && iconOnRight)
-        const SizedBox(width: 8),
+        SizedBox(width: 8),
       if (icon != null && iconOnRight)
         Icon(icon, size: iconSize, color: textColor ?? Theme.of(context).primaryColor),
     ];
@@ -64,13 +64,13 @@ class CustomOutlinedButton extends StatelessWidget {
       child: OutlinedButton(
         onPressed: onPressed,
         style: OutlinedButton.styleFrom(
-          padding: padding,
+          padding: padding ?? EdgeInsets.symmetric(horizontal: Dimensions.w16, vertical: Dimensions.h12),
           side: BorderSide(
             color: borderColor ?? Theme.of(context).disabledColor,
             width: 1.2,
           ),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(borderRadius),
+            borderRadius: BorderRadius.circular(borderRadius ??Dimensions.r16,),
           ),
         ),
         child: Row(

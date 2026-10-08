@@ -41,28 +41,28 @@ class _ForgetPassScreenState extends State<ForgetPassScreen> {
       ),
       body: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(Dimensions.p16),
+          padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
           child: Column(children: [
             Image.asset(ManagerAssets.logo),
             SizedBox(
-              height: Dimensions.p25,
+              height: Dimensions.h25,
             ),
             Text('forgot_password'.tr,
-                style: robotoMedium.copyWith(
+                style: textMedium().copyWith(
                     fontSize: Dimensions.fs18),
                 textAlign: TextAlign.center),
             SizedBox(
-              height: Dimensions.p16,
+              height: Dimensions.h16,
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
+              padding: EdgeInsets.symmetric(horizontal: 30),
               child: Text('please_enter_mobile'.tr,
-                  style: robotoMedium.copyWith(
+                  style: textMedium().copyWith(
                       color: Theme.of(context).disabledColor),
                   textAlign: TextAlign.center),
             ),
             SizedBox(
-              height: Dimensions.p25,
+              height: Dimensions.h25,
             ),
             WidgetWithLabel(
               label: 'mobile_number'.tr,
@@ -89,7 +89,7 @@ class _ForgetPassScreenState extends State<ForgetPassScreen> {
                     GetPlatform.isWeb ? _forgetPass(_countryDialCode!) : null,
               ),
             ),
-            const SizedBox(height: Dimensions.p20),
+            SizedBox(height: Dimensions.h20),
             GetBuilder<ForgotPasswordController>(
                 builder: (forgotPasswordController) {
               return !forgotPasswordController.isLoading

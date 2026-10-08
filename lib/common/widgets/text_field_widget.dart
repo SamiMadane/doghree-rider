@@ -58,17 +58,17 @@ class TextFieldWidgetState extends State<TextFieldWidget> {
       widget.title ? Row(children: [
         Text(
           widget.titleName ?? widget.hintText!,
-          style: robotoMedium.copyWith(fontSize: Dimensions.fs16),
+          style: textMedium().copyWith(fontSize: Dimensions.fs16),
         ),
-        const SizedBox(width: Dimensions.p4),
-        widget.isEnabled ? const SizedBox() : Text('(${'non_changeable'.tr})', style: robotoRegular.copyWith(
+        SizedBox(width: Dimensions.w4),
+        widget.isEnabled ? const SizedBox() : Text('(${'non_changeable'.tr})', style: textRegular().copyWith(
           fontSize: Dimensions.fs10, color: Theme.of(context).colorScheme.error,
         )),
 
-        widget.isRequired ? Text('*', style: robotoBold.copyWith(color: Theme.of(context).primaryColor)) : const SizedBox(),
+        widget.isRequired ? Text('*', style: textBold().copyWith(color: Theme.of(context).primaryColor)) : const SizedBox(),
 
       ]) : const SizedBox(),
-      SizedBox(height: widget.title ? Dimensions.p10 : 0),
+      SizedBox(height: widget.title ? Dimensions.h10 : 0),
 
       Container(
         decoration: BoxDecoration(
@@ -78,7 +78,7 @@ class TextFieldWidgetState extends State<TextFieldWidget> {
           maxLines: widget.maxLines,
           controller: widget.controller,
           focusNode: widget.focusNode,
-          style: robotoRegular,
+          style: textRegular(),
           textInputAction: widget.inputAction,
           keyboardType: widget.inputType,
           cursorColor: Theme.of(context).primaryColor,
@@ -93,7 +93,7 @@ class TextFieldWidgetState extends State<TextFieldWidget> {
             filled: true,
             fillColor: widget.fillColor ?? Theme.of(context).cardColor,
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(Dimensions.r4), borderSide: BorderSide.none),
-            hintStyle: robotoRegular.copyWith(color: Theme.of(context).hintColor),
+            hintStyle: textRegular().copyWith(color: Theme.of(context).hintColor),
             suffixIcon: widget.isPassword ? IconButton(
               icon: Icon(_obscureText ? Icons.visibility_off : Icons.visibility, color: Theme.of(context).hintColor.withValues(alpha: 0.3)),
               onPressed: _toggle,

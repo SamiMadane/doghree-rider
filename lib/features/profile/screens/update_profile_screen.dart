@@ -72,16 +72,19 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   children: [
                     Expanded(
                       child: Container(
-                        padding: const EdgeInsets.all(Dimensions.p16),
-                        margin: const EdgeInsets.only(top: Dimensions.p16),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: Dimensions.w16,
+                          vertical: Dimensions.h16,
+                        ),
+                        margin: EdgeInsets.only(top: Dimensions.h16),
                         color: Theme.of(context).cardColor,
                         child: SingleChildScrollView(
                           physics: const BouncingScrollPhysics(),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              const SizedBox(
-                                height: Dimensions.p10,
+                              SizedBox(
+                                height: Dimensions.h10,
                               ),
                               Stack(
                                 children: [
@@ -125,14 +128,16 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                     bottom: 0,
                                     right: 0,
                                     child: InkWell(
-                                      onTap: () =>
-                                          profileController.pickProfileImage(),
+                                      onTap: () => profileController
+                                          .pickProfileImageWithCrop(
+                                              context), 
+
                                       child: Material(
                                         elevation: 4,
                                         shape: const CircleBorder(),
                                         color: Theme.of(context).cardColor,
                                         child: Padding(
-                                          padding: const EdgeInsets.all(4.0),
+                                          padding: EdgeInsets.all(4.0),
                                           child: SizedBox(
                                             height: 32,
                                             width: 32,
@@ -149,7 +154,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: Dimensions.p25),
+                              SizedBox(height: Dimensions.h25),
 
                               // Full Name
                               WidgetWithLabel(
@@ -165,7 +170,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                   nextFocus: _phoneFocus,
                                 ),
                               ),
-                              const SizedBox(height: Dimensions.p16),
+                              SizedBox(height: Dimensions.h16),
                               // Email
                               WidgetWithLabel(
                                 label: 'email'.tr,
@@ -178,7 +183,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                   focusNode: _emailFocus,
                                 ),
                               ),
-                              const SizedBox(height: Dimensions.p16),
+                              SizedBox(height: Dimensions.h16),
 
                               // Phone
                               WidgetWithLabel(
@@ -207,7 +212,10 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     // زر التعديل
                     SafeArea(
                       child: Container(
-                        padding: const EdgeInsets.all(Dimensions.p16),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: Dimensions.w16,
+                          vertical: Dimensions.h16,
+                        ),
                         decoration: BoxDecoration(
                           color: Theme.of(context).cardColor,
                           boxShadow: [

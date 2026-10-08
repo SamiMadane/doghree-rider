@@ -87,7 +87,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     width: 40,
                   ),
                 ),
-                SizedBox(width: Dimensions.p8),
+                SizedBox(width: Dimensions.w8),
                 Expanded(
                   child: Text(
                     chatController.messageModel != null
@@ -111,7 +111,7 @@ class _ChatScreenState extends State<ChatScreen> {
           body: _isLoggedIn
               ? SafeArea(
                   child: Container(
-                    margin: EdgeInsets.only(top: Dimensions.p16),
+                    margin: EdgeInsets.only(top: Dimensions.h16),
                     color: Theme.of(context).cardColor,
                     child: Column(
                       children: [
@@ -179,28 +179,28 @@ class _ChatScreenState extends State<ChatScreen> {
                         Container(
                           decoration: BoxDecoration(
                             color: Theme.of(context).cardColor,
-                            boxShadow:  [
+                            boxShadow: [
                               BoxShadow(
-                                  color: Theme.of(context).shadowColor,
-                                  blurRadius: 5,
-                                  spreadRadius: 2,
-                                  offset: const Offset(0, -3),
-                                  )
+                                color: Theme.of(context).shadowColor,
+                                blurRadius: 5,
+                                spreadRadius: 2,
+                                offset: const Offset(0, -3),
+                              )
                             ],
                           ),
-                          padding: const EdgeInsets.only(
-                              top: Dimensions.p16,
-                              left: Dimensions.p16,
-                              right: Dimensions.p16,
-                              bottom: Dimensions.p4),
+                          padding: EdgeInsets.only(
+                              top: Dimensions.h16,
+                              left: Dimensions.w16,
+                              right: Dimensions.w16,
+                              bottom: Dimensions.h4),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               // صور المرفقات إذا كانت موجودة
                               if (chatController.chatImage!.isNotEmpty)
                                 Container(
-                                  margin: EdgeInsets.only(
-                                      bottom: Dimensions.p10),
+                                  margin:
+                                      EdgeInsets.only(bottom: Dimensions.h10),
                                   height: 100,
                                   child: Align(
                                     alignment: Alignment.centerLeft,
@@ -213,14 +213,13 @@ class _ChatScreenState extends State<ChatScreen> {
                                         return Container(
                                           margin: EdgeInsets.only(
                                               right: Dimensions
-                                                  .p16), // هنا فقط مسافة بين الصور
+                                                  .w16), // هنا فقط مسافة بين الصور
                                           child: Stack(
                                             children: [
                                               ClipRRect(
                                                 borderRadius:
                                                     BorderRadius.circular(
-                                                        Dimensions
-                                                            .r8),
+                                                        Dimensions.r8),
                                                 child: ResponsiveHelper.isWeb()
                                                     ? Image.network(
                                                         chatController
@@ -303,7 +302,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                         controller: _inputMessageController,
                                         textCapitalization:
                                             TextCapitalization.sentences,
-                                        style: robotoRegular,
+                                        style: textRegular(),
                                         keyboardType: TextInputType.multiline,
                                         maxLines: null,
                                         inputFormatters: [
@@ -312,24 +311,25 @@ class _ChatScreenState extends State<ChatScreen> {
                                         ],
                                         decoration: InputDecoration(
                                           hintText: 'type_text'.tr,
-                                          hintStyle: robotoRegular.copyWith(
+                                          hintStyle: textRegular().copyWith(
                                             color: Theme.of(context).hintColor,
                                             fontSize: Dimensions.fs16,
                                           ),
                                           border: InputBorder.none,
-                                          contentPadding: const EdgeInsets.all(
-                                              Dimensions.p16),
+                                          contentPadding: EdgeInsets.symmetric(
+                                              horizontal: Dimensions.w16,
+                                              vertical: Dimensions.h16),
                                           suffixIcon: InkWell(
                                             onTap: () async =>
                                                 chatController.pickImage(false),
                                             child: Padding(
-                                              padding: const EdgeInsets.all(
-                                                  Dimensions
-                                                      .p16),
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: Dimensions.w16,
+                                                  vertical: Dimensions.h16),
                                               child: SvgPicture.asset(
                                                 ManagerAssets.attachedIcon,
-                                                width: Dimensions.p20,
-                                                height: Dimensions.p20,
+                                                width: Dimensions.w20,
+                                                height: Dimensions.h20,
                                                 color:
                                                     Theme.of(context).hintColor,
                                               ),
@@ -352,7 +352,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(width: Dimensions.p8),
+                                  SizedBox(width: Dimensions.w8),
                                   GetBuilder<ChatController>(
                                       builder: (chatController) {
                                     return !chatController.isLoading
@@ -415,10 +415,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                                           .hintColor,
                                             ),
                                           )
-                                        : const Padding(
+                                        : Padding(
                                             padding: EdgeInsets.symmetric(
-                                                horizontal: Dimensions
-                                                    .p16),
+                                                horizontal: Dimensions.w16),
                                             child: SizedBox(
                                               width: 25,
                                               height: 25,

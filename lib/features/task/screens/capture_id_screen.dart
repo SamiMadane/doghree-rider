@@ -189,7 +189,7 @@ class _CaptureIdScreenState extends State<CaptureIdScreen> {
           Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
-              padding: const EdgeInsets.only(bottom: 30),
+              padding: EdgeInsets.only(bottom: 30),
               child: GestureDetector(
                 onTap: _takePicture,
                 child: Container(

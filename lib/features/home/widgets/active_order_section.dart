@@ -30,7 +30,7 @@ class _ActiveOrderSectionState extends State<ActiveOrderSection> {
           orderController.currentOrderList!.length > 1;
 
       return Container(
-        margin: const EdgeInsets.only(top: Dimensions.p20),
+        margin: EdgeInsets.only(top: Dimensions.h20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -48,14 +48,14 @@ class _ActiveOrderSectionState extends State<ActiveOrderSection> {
                       }
                     : null,
               ),
-            SizedBox(height: hasActiveOrder ? Dimensions.p10 : 0),
+            SizedBox(height: hasActiveOrder ? Dimensions.h10 : 0),
             if (orderController.currentOrderList == null)
               OrderShimmerWidget(isEnabled: true)
             else if (orderController.currentOrderList!.isNotEmpty)
               Column(
                 children: [
                   SizedBox(
-                    height: 240,
+                    height: Dimensions.h260,
                     child: PageView.builder(
                       controller: _pageController,
                       itemCount: orderController.currentOrderList!.length,
@@ -68,7 +68,7 @@ class _ActiveOrderSectionState extends State<ActiveOrderSection> {
                       },
                     ),
                   ),
-                  const SizedBox(height: Dimensions.p16),
+                  SizedBox(height: Dimensions.h16),
                   SmoothPageIndicator(
                     controller: _pageController,
                     count: orderController.currentOrderList!.length,

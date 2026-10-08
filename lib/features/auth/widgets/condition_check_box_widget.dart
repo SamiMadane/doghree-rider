@@ -21,20 +21,20 @@ class ConditionCheckBoxWidget extends StatelessWidget {
         onChanged: (bool? isChecked) => authController.toggleTerms(),
       ) : const SizedBox(),
 
-      fromSignUp ? const SizedBox() : const Text( '*', style: robotoRegular),
+      fromSignUp ? const SizedBox() :  Text( '*', style: textRegular()),
 
       Flexible(
         child: RichText(
           text: TextSpan(children: [
             TextSpan(
               text: 'i_agree_to_the'.tr,
-              style: robotoRegular.copyWith(color: fromSignUp ? Theme.of(context).textTheme.bodyMedium!.color : Theme.of(context).hintColor),
+              style: textRegular().copyWith(color: fromSignUp ? Theme.of(context).textTheme.bodyMedium!.color : Theme.of(context).hintColor),
             ),
             const TextSpan(text: ' '),
             TextSpan(
               recognizer: TapGestureRecognizer()..onTap = () => Get.toNamed(RouteHelper.getTermsRoute()),
               text: 'terms_conditions'.tr,
-              style: robotoMedium.copyWith(color: Theme.of(context).primaryColor),
+              style: textMedium().copyWith(color: Theme.of(context).primaryColor),
             ),
           ]),
         ),

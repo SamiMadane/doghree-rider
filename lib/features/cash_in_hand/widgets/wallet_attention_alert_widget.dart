@@ -20,7 +20,7 @@ class WalletAttentionAlertWidget extends StatelessWidget {
       builder: (profileController) {
         return Container(
           width: context.width * 0.95,
-          padding: const EdgeInsets.all(Dimensions.p16),
+          padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
           decoration: BoxDecoration(
             color: const Color(0xfffff1f1),
             borderRadius: BorderRadius.circular(Dimensions.r10),
@@ -30,18 +30,18 @@ class WalletAttentionAlertWidget extends StatelessWidget {
             Row(children: [
 
               Image.asset(ManagerAssets.attentionWarningIcon, width: 20, height: 20),
-              const SizedBox(width: Dimensions.p10),
+              SizedBox(width: Dimensions.w10),
 
-              Text('attention_please'.tr, style: robotoBold.copyWith(fontSize: Dimensions.fs12, color: Colors.black)),
+              Text('attention_please'.tr, style: textBold().copyWith(fontSize: Dimensions.fs12, color: Colors.black)),
 
             ]),
-            const SizedBox(height: Dimensions.p10),
+            SizedBox(height: Dimensions.h10),
 
             isOverFlowBlockWarning ? RichText(
               textAlign: TextAlign.justify,
               text: TextSpan(
                 text: '${'over_flow_block_warning_message'.tr}  ',
-                style: robotoRegular.copyWith(fontSize: Dimensions.fs12, color: Colors.black),
+                style: textRegular().copyWith(fontSize: Dimensions.fs12, color: Colors.black),
                 children: [
                   TextSpan(
                     recognizer: TapGestureRecognizer()..onTap = () {
@@ -49,7 +49,7 @@ class WalletAttentionAlertWidget extends StatelessWidget {
                         showModalBottomSheet(
                           isScrollControlled: true, useRootNavigator: true, context: context,
                           backgroundColor: Colors.white,
-                          shape: const RoundedRectangleBorder(
+                          shape:  RoundedRectangleBorder(
                             borderRadius: BorderRadius.only(topLeft: Radius.circular(Dimensions.r20), topRight: Radius.circular(Dimensions.r20)),
                           ),
                           builder: (context) {
@@ -68,11 +68,11 @@ class WalletAttentionAlertWidget extends StatelessWidget {
                       }
                     },
                     text: 'pay_the_due'.tr,
-                    style: robotoRegular.copyWith(fontSize: Dimensions.fs12, color: Colors.blue, decoration: TextDecoration.underline),
+                    style: textRegular().copyWith(fontSize: Dimensions.fs12, color: Colors.blue, decoration: TextDecoration.underline),
                   ),
                 ],
               ),
-            ) : Text('over_flow_warning_message'.tr, style: robotoRegular.copyWith(fontSize: Dimensions.fs12, color: Colors.black)),
+            ) : Text('over_flow_warning_message'.tr, style: textRegular().copyWith(fontSize: Dimensions.fs12, color: Colors.black)),
           ]),
         );
       }

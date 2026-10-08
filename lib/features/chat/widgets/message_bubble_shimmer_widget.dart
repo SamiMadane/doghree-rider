@@ -23,10 +23,10 @@ class MessageBubbleShimmerWidget extends StatelessWidget {
                 height: 30, width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(
-                    topLeft: const Radius.circular(10),
-                    bottomLeft: isMe ? const Radius.circular(10) : const Radius.circular(0),
-                    bottomRight: isMe ? const Radius.circular(0) : const Radius.circular(10),
-                    topRight: const Radius.circular(10),
+                    topLeft:  Radius.circular(10),
+                    bottomLeft: isMe ?  Radius.circular(10) :  Radius.circular(0),
+                    bottomRight: isMe ?  Radius.circular(0) :  Radius.circular(10),
+                    topRight:  Radius.circular(10),
                   ),
                   color: isMe ? Theme.of(context).hintColor : Theme.of(context).disabledColor,
                 ),

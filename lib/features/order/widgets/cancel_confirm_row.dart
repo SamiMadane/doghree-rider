@@ -48,14 +48,14 @@ class CancelConfirmRow extends StatelessWidget {
             child: Text(
               'cancel'.tr,
               textAlign: TextAlign.center,
-              style: robotoRegular.copyWith(
+              style: textRegular().copyWith(
                 color: Theme.of(context).textTheme.bodyLarge!.color,
                 fontSize: Dimensions.fs16,
               ),
             ),
           ),
         ),
-        const SizedBox(width: Dimensions.p10),
+        SizedBox(width: Dimensions.w10),
         Expanded(
           child: CustomButtonWidget(
             buttonText: 'confirm'.tr,

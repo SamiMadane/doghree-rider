@@ -11,7 +11,7 @@ class ImageDialogWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dialog(
         backgroundColor: Colors.transparent,
-        insetPadding: const EdgeInsets.all(16),
+        insetPadding: EdgeInsets.all(16),
         child: Stack(
           alignment: Alignment.center,
           children: [

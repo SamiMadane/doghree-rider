@@ -14,16 +14,16 @@ class CustomAlertDialogWidget extends StatelessWidget {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.r4)),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: Dimensions.p20, vertical: Dimensions.p10),
+        padding: EdgeInsets.symmetric(horizontal: Dimensions.w20, vertical: Dimensions.h10),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
 
           Icon(Icons.info, size: 80, color: Theme.of(context).primaryColor),
 
           Padding(
-            padding: const EdgeInsets.all(Dimensions.p20),
+            padding: EdgeInsets.symmetric(horizontal: Dimensions.w20, vertical: Dimensions.h20),
             child: Text(
               description, textAlign: TextAlign.center,
-              style: robotoMedium.copyWith(fontSize: Dimensions.fs16),
+              style: textMedium().copyWith(fontSize: Dimensions.fs16),
             ),
           ),
 

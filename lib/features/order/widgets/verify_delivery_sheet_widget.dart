@@ -65,11 +65,11 @@ class _VerifyDeliverySheetWidgetState extends State<VerifyDeliverySheetWidget> {
     return Container(
       decoration: BoxDecoration(
         color: Get.isDarkMode ? Colors.grey.shade900 : Theme.of(context).cardColor,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: GetBuilder<OrderController>(builder: (orderController) {
         return Padding(
-          padding: const EdgeInsets.all(Dimensions.p20),
+          padding: EdgeInsets.symmetric(horizontal: Dimensions.w20, vertical: Dimensions.h20),
           child: Column(mainAxisSize: MainAxisSize.min, children: [
 
             Container(
@@ -81,13 +81,13 @@ class _VerifyDeliverySheetWidgetState extends State<VerifyDeliverySheetWidget> {
             ),
 
             widget.verify! ? Column(children: [
-              const SizedBox(height: Dimensions.p20),
+              SizedBox(height: Dimensions.h20),
 
-              Text('otp_verification'.tr, style: robotoBold, textAlign: TextAlign.center),
-              const SizedBox(height: Dimensions.p20),
+              Text('otp_verification'.tr, style: textBold(), textAlign: TextAlign.center),
+              SizedBox(height: Dimensions.h20),
 
-              Text('enter_otp_number'.tr, style: robotoRegular.copyWith(color: Theme.of(context).disabledColor), textAlign: TextAlign.center),
-              const SizedBox(height: Dimensions.p20),
+              Text('enter_otp_number'.tr, style: textRegular().copyWith(color: Theme.of(context).disabledColor), textAlign: TextAlign.center),
+              SizedBox(height: Dimensions.h20),
 
               SizedBox(
                 width: 200,
@@ -116,31 +116,31 @@ class _VerifyDeliverySheetWidgetState extends State<VerifyDeliverySheetWidget> {
                   beforeTextPaste: (text) => true,
                 ),
               ),
-              const SizedBox(height: Dimensions.p10),
+              SizedBox(height: Dimensions.h10),
 
-              Text('collect_otp_from_customer'.tr, style: robotoRegular, textAlign: TextAlign.center),
-              const SizedBox(height: Dimensions.p20),
+              Text('collect_otp_from_customer'.tr, style: textRegular(), textAlign: TextAlign.center),
+              SizedBox(height: Dimensions.h20),
 
             ]) : Column(children: [
-              const SizedBox(height: Dimensions.p20),
+              SizedBox(height: Dimensions.h20),
 
               Image.asset(ManagerAssets.deliveredSuccess, height: 100, width: 100),
-              const SizedBox(height: Dimensions.p10),
+              SizedBox(height: Dimensions.h10),
 
               Text(
                 widget.isSenderPay ? 'want_to_collect_order_amount'.tr : 'want_to_complete_the_order'.tr, textAlign: TextAlign.center,
-                style: robotoMedium.copyWith(fontSize: Dimensions.fs16),
+                style: textMedium().copyWith(fontSize: Dimensions.fs16),
               ),
-              const SizedBox(height: Dimensions.p20),
+              SizedBox(height: Dimensions.h20),
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 Text(
                   '${'order_amount'.tr}:', textAlign: TextAlign.center,
-                  style: robotoBold.copyWith(fontSize: Dimensions.fs16),
+                  style: textBold().copyWith(fontSize: Dimensions.fs16),
                 ),
-                const SizedBox(width: Dimensions.p4),
+                SizedBox(width: Dimensions.w4),
                 Text(
                   PriceConverterHelper.convertPrice(widget.orderAmount), textAlign: TextAlign.center,
-                  style: robotoBold.copyWith(fontSize: Dimensions.fs16, color: Theme.of(context).primaryColor),
+                  style: textBold().copyWith(fontSize: Dimensions.fs16, color: Theme.of(context).primaryColor),
                 ),
               ]),
 
@@ -150,7 +150,7 @@ class _VerifyDeliverySheetWidgetState extends State<VerifyDeliverySheetWidget> {
            !orderController.isLoading ? CustomButtonWidget(
               buttonText: widget.verify! ? 'submit'.tr : 'ok'.tr,
               radius: Dimensions.r10,
-              margin: const EdgeInsets.only(bottom: Dimensions.p10),
+              margin: EdgeInsets.only(bottom: Dimensions.h10),
               onPressed: (widget.verify! && orderController.otp.length != 4) ? null : () {
 
                  if(widget.cod!){
@@ -183,7 +183,7 @@ class _VerifyDeliverySheetWidgetState extends State<VerifyDeliverySheetWidget> {
             widget.verify! ? Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               Text(
                 'did_not_receive_user_notification'.tr,
-                style: robotoRegular.copyWith(color: Theme.of(context).hintColor, fontSize: Dimensions.fs12),
+                style: textRegular().copyWith(color: Theme.of(context).hintColor, fontSize: Dimensions.fs12),
               ),
 
               Get.find<NotificationController>().hideNotificationButton ? const SizedBox() : InkWell(
@@ -194,7 +194,7 @@ class _VerifyDeliverySheetWidgetState extends State<VerifyDeliverySheetWidget> {
                 child: Text('${'resend_it'.tr}${_seconds > 0 ? ' (${_seconds}s)' : ''}', style: TextStyle(color: Theme.of(context).primaryColor),),
               )
             ]) : const SizedBox(),
-            const SizedBox(height: Dimensions.p20),
+            SizedBox(height: Dimensions.h20),
           ]),
         );
       }),

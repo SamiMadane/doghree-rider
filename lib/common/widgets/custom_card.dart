@@ -82,7 +82,7 @@ class CustomCard extends StatelessWidget {
               right: 0,
               bottom: 0,
               child: Container(
-                height: Dimensions.p6,
+                height: Dimensions.h6,
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.bottomCenter,

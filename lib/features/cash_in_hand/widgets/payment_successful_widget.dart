@@ -17,33 +17,32 @@ class PaymentSuccessfulWidget extends StatelessWidget {
       appBar: const CustomAppBarWidget(title: '', isBackButtonExist: false),
       body: SafeArea(
           child: Container(
-        padding: const EdgeInsets.all(Dimensions.p20),
-        margin: const EdgeInsets.only(top: Dimensions.p16),
+        padding: EdgeInsets.symmetric(horizontal: Dimensions.w20, vertical: Dimensions.h20),
+        margin: EdgeInsets.only(top: Dimensions.h16),
         color: Theme.of(context).cardColor,
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           Image.asset(success ? ManagerAssets.checked : ManagerAssets.warning,
-              width: 100,
-              height: 100,
+              width: 80,
+              height: 80,
               color: success ? Colors.green : Colors.red),
-          const SizedBox(height: Dimensions.p20),
+          SizedBox(height: Dimensions.h20),
           Text(
             success ? 'payment_success_title'.tr : 'payment_failed_title'.tr,
-            style: robotoSemiBold.copyWith(fontSize: Dimensions.fs28),
+            style: textSemiBold().copyWith(fontSize: Dimensions.fs20),
           ),
-          SizedBox(height: Dimensions.p10),
+          SizedBox(height: Dimensions.h10),
           Text(
             success
                 ? 'payment_success_description'.tr
                 : 'payment_failed_description'.tr,
             textAlign: TextAlign.center,
-            style: robotoRegular.copyWith(
-              fontSize: Dimensions.fs18,
+            style: textRegular().copyWith(
               color: Theme.of(context).hintColor,
             ),
           ),
-          const SizedBox(height: Dimensions.p30),
+          SizedBox(height: Dimensions.h30),
           Padding(
-            padding: const EdgeInsets.all(Dimensions.p10),
+            padding: EdgeInsets.symmetric(horizontal:Dimensions.w10 ,vertical: Dimensions.h10,),
             child: CustomButtonWidget(
                 buttonText: 'okay'.tr,
                 onPressed: () =>

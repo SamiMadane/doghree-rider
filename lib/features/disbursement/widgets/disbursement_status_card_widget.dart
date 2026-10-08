@@ -22,8 +22,8 @@ class DisbursementStatusCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 160, width: context.width * 0.65,
-      padding: const EdgeInsets.all(Dimensions.p16),
-      margin: const EdgeInsets.symmetric(horizontal: Dimensions.p16, vertical: Dimensions.p20),
+      padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
+      margin: EdgeInsets.symmetric(horizontal: Dimensions.w16, vertical: Dimensions.h20),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(Dimensions.r10),
@@ -40,10 +40,10 @@ class DisbursementStatusCardWidget extends StatelessWidget {
             tailLength: 14,
             tailBaseWidth: 20,
             content: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.symmetric(horizontal:Dimensions.w8 ,vertical: Dimensions.h8,),
               child: Text(
                 isPending ? 'pending_message'.tr : isCompleted ? 'completed_message'.tr : 'cancellation_message'.tr,
-                style: robotoRegular.copyWith(color: Colors.white),
+                style: textRegular().copyWith(color: Colors.white),
               ),
             ),
             child: InkWell(
@@ -57,10 +57,10 @@ class DisbursementStatusCardWidget extends StatelessWidget {
                 }
               },
               child: Container(
-                padding: const EdgeInsets.all(2),
+                padding: EdgeInsets.all(2),
                 decoration: BoxDecoration(color: isPending ? Colors.blue : isCompleted ? Colors.green : Colors.red, shape: BoxShape.circle),
                 child: Container(
-                  padding: const EdgeInsets.all(1),
+                  padding: EdgeInsets.all(1),
                   decoration: BoxDecoration(color: Theme.of(context).cardColor, shape: BoxShape.circle),
                   child: Icon(Icons.info, color: isPending ? Colors.blue : isCompleted ? Colors.green : Colors.red, size: 15,),
                 ),
@@ -75,7 +75,7 @@ class DisbursementStatusCardWidget extends StatelessWidget {
 
               Container(
                 height: 50, width: 50,
-                padding: const EdgeInsets.all(Dimensions.p4),
+                padding: EdgeInsets.symmetric(horizontal:Dimensions.w4 ,vertical: Dimensions.h4,),
                 decoration: BoxDecoration(color: isPending ? Colors.blue : isCompleted ? Colors.green : Colors.red, shape: BoxShape.circle),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(100),
@@ -89,22 +89,22 @@ class DisbursementStatusCardWidget extends StatelessWidget {
               ),
 
             ]),
-            const SizedBox(width: Dimensions.p16),
+            SizedBox(width: Dimensions.w16),
 
             Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center, children: [
 
               Text(
                 PriceConverterHelper.convertPrice(amount),
-                style: robotoBold.copyWith(
+                style: textBold().copyWith(
                   fontSize: 20, color: isPending ? Colors.blue : isCompleted ? Colors.green : Colors.red,
                 ),
                 textDirection: TextDirection.ltr,
               ),
-              const SizedBox(height: Dimensions.p10),
+              SizedBox(height: Dimensions.h10),
 
               Text(
                 text,
-                style: robotoRegular.copyWith(
+                style: textRegular().copyWith(
                   fontSize: Dimensions.fs12,
                   color: Theme.of(context).textTheme.bodyLarge!.color,
                 ),

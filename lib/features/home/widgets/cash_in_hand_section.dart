@@ -22,14 +22,12 @@ class CashInHandSection extends StatelessWidget {
     return profileController.profileModel != null
         ? profileController.profileModel!.earnings == 1
             ? CustomCard(
-                margin: const EdgeInsets.only(
-                    top: Dimensions.p20),
+                margin: EdgeInsets.only(top: Dimensions.h20),
                 height: 95,
                 width: MediaQuery.of(context).size.width,
                 fillColor: Theme.of(context).scaffoldBackgroundColor,
-                padding: const EdgeInsets.all(
-                  Dimensions.p16,
-                ),
+                padding: EdgeInsets.symmetric(
+                    horizontal: Dimensions.w16, vertical: Dimensions.h16),
                 child: Row(
                   children: [
                     Expanded(
@@ -41,13 +39,13 @@ class CashInHandSection extends StatelessWidget {
                             PriceConverterHelper.convertPrice(
                               profileController.profileModel!.cashInHands,
                             ),
-                            style: robotoBold.copyWith(
+                            style: textBold().copyWith(
                               fontSize: Dimensions.fs18,
                             ),
                           ),
                           Text(
                             'cash_in_your_hand'.tr,
-                            style: robotoBold.copyWith(
+                            style: textBold().copyWith(
                               color: Theme.of(context).hintColor,
                               fontSize: Dimensions.fs16,
                             ),

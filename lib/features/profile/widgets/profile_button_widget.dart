@@ -85,13 +85,13 @@ class ProfileButtonWidget extends StatelessWidget {
                       ),
               ),
             ),
-            const SizedBox(width: Dimensions.p10),
+            SizedBox(width: Dimensions.w10),
 
             // النص
             Expanded(
               child: Text(
                 title,
-                style: robotoRegular.copyWith(
+                style: textRegular().copyWith(
                   fontSize: Dimensions.fs16,
                   color: titleColor ??
                       (isButtonActive == true
@@ -104,7 +104,7 @@ class ProfileButtonWidget extends StatelessWidget {
             // المكون الاختياري قبل السهم
             if (trailingWidget != null) ...[
               trailingWidget!,
-              const SizedBox(width: Dimensions.p10),
+              SizedBox(width: Dimensions.w10),
             ],
 
             // السهم أو السويتش

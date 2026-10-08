@@ -54,6 +54,11 @@ dependencies:
   lottie: ^3.3.1
   camera: ^0.11.2
   syncfusion_flutter_gauges: ^30.2.7
+  flutter_screenutil: ^5.9.3
+  flutter_launcher_icons: ^0.14.4
+  image_cropper: ^11.0.0
+
+
 
 dependency_overrides:
   collection: ^1.19.0
@@ -63,6 +68,15 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/wefrh_logo.png"
+  remove_alpha_ios: true
+  adaptive_icon_background: "#0246c7"
+  adaptive_icon_foreground: "assets/icon/wefrh_logo.png"
 
 flutter:
   uses-material-design: true
@@ -85,3 +99,13 @@ flutter:
           weight: 700
         - asset: assets/font/Roboto-Black.ttf
           weight: 900
+    - family: Tajawal
+      fonts:
+        - asset: assets/font/Tajawal-Regular.ttf
+          weight: 400
+        - asset: assets/font/Tajawal-Medium.ttf
+          weight: 500
+        - asset: assets/font/Tajawal-Bold.ttf
+          weight: 700
+        - asset: assets/font/Tajawal-Black.ttf
+          weight: 900     

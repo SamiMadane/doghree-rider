@@ -19,9 +19,9 @@ class ConnectionStatusWidget extends StatelessWidget {
           onTap: () => _showBottomSheet(context),
           child: Container(
             padding: EdgeInsets.symmetric(
-                horizontal: Dimensions.p16,
-                vertical: Dimensions.p8),
-                margin: EdgeInsets.symmetric(horizontal: Dimensions.p10),
+                horizontal: Dimensions.w16,
+                vertical: Dimensions.h8),
+                margin: EdgeInsets.symmetric(horizontal: Dimensions.w10),
             decoration: BoxDecoration(
               color: Theme.of(context).scaffoldBackgroundColor,
               borderRadius: BorderRadius.circular(Dimensions.r8),
@@ -36,10 +36,10 @@ class ConnectionStatusWidget extends StatelessWidget {
                     shape: BoxShape.circle,
                   ),
                 ),
-                const SizedBox(width: Dimensions.p8),
+                SizedBox(width: Dimensions.w8),
                 Text(
                   controller.connectionLabel.value,
-                  style: robotoRegular.copyWith(
+                  style: textRegular().copyWith(
                       fontSize: Dimensions.fs14),
                 ),
               ],

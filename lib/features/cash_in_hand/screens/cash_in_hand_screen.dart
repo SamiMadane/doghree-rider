@@ -52,10 +52,11 @@ class _CashInHandScreenState extends State<CashInHandScreen> {
                   },
                   child: Container(
                     color: Theme.of(context).cardColor,
-                    margin: const EdgeInsets.only(
-                        top: Dimensions.p16),
-                    padding:
-                        const EdgeInsets.all(Dimensions.p16),
+                    margin: EdgeInsets.only(top: Dimensions.h16),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: Dimensions.w16,
+                      vertical: Dimensions.h16,
+                    ),
                     child: Column(children: [
                       Expanded(
                         child: SingleChildScrollView(
@@ -63,8 +64,7 @@ class _CashInHandScreenState extends State<CashInHandScreen> {
                           child: Column(children: [
                             BalanceOverviewSection(
                                 profileController: profileController),
-                            const SizedBox(
-                                height: Dimensions.p25),
+                            SizedBox(height: Dimensions.h25),
                             TransactionHistorySection(
                                 cashInHandController: cashInHandController),
                           ]),
@@ -80,7 +80,10 @@ class _CashInHandScreenState extends State<CashInHandScreen> {
                     ]),
                   ),
                 )
-              : const Center(child: CircularProgressIndicator());
+              : Container(
+                  margin: EdgeInsets.only(top: Dimensions.h16),
+                  color: Theme.of(context).cardColor,
+                  child: const Center(child: CircularProgressIndicator()));
         });
       }),
     );

@@ -37,7 +37,7 @@ class OrderInfoSection extends StatelessWidget {
     return Column(
       children: [
         CustomCard(
-          padding: const EdgeInsets.all(Dimensions.p16),
+          padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -50,16 +50,16 @@ class OrderInfoSection extends StatelessWidget {
                     orderCount: parcel
                         ? controllerOrderModel.chargePayer!.tr
                         : orderController.orderDetailsModel!.length,
-                    titleStyle: robotoSemiBold.copyWith(
+                    titleStyle: textSemiBold().copyWith(
                       fontSize: Dimensions.fs16,
                     ),
                   ),
                   showPaymentType
                       ? CustomCard(
                           width: 50,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: Dimensions.p10,
-                              vertical: Dimensions.p4),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: Dimensions.w10,
+                              vertical: Dimensions.h4),
                           fillColor:
                               Theme.of(context).primaryColor.withOpacity(0.1),
                           borderRadius: Dimensions.r8,
@@ -74,7 +74,7 @@ class OrderInfoSection extends StatelessWidget {
                                           : offlinePay == true
                                               ? 'offline_payment'.tr
                                               : 'digitally_paid'.tr,
-                              style: robotoMedium.copyWith(
+                              style: textMedium().copyWith(
                                 fontSize: Dimensions.fs10,
                                 color: Theme.of(context).primaryColor,
                               ),
@@ -85,7 +85,7 @@ class OrderInfoSection extends StatelessWidget {
                 ],
               ),
 
-              const SizedBox(height: Dimensions.p20),
+              SizedBox(height: Dimensions.h20),
 
               /// --- Parcel section ---
               parcel
@@ -105,7 +105,7 @@ class OrderInfoSection extends StatelessWidget {
                             if (index !=
                                 orderController.orderDetailsModel!.length -
                                     1) ...[
-                              const SizedBox(height: Dimensions.p16),
+                              SizedBox(height: Dimensions.h16),
                               LayoutBuilder(
                                 builder: (context, constraints) {
                                   final dashCount =
@@ -123,7 +123,7 @@ class OrderInfoSection extends StatelessWidget {
                                   );
                                 },
                               ),
-                              const SizedBox(height: Dimensions.p16),
+                              SizedBox(height: Dimensions.h16),
                             ]
                           ],
                         );
@@ -138,25 +138,25 @@ class OrderInfoSection extends StatelessWidget {
             orderController.orderDetailsModel![0].itemDetails != null &&
             orderController.orderDetailsModel![0].itemDetails!.moduleType ==
                 'food') ...[
-          const SizedBox(height: Dimensions.p16),
+          SizedBox(height: Dimensions.h16),
           CustomCard(
-            padding: const EdgeInsets.all(Dimensions.p16),
+            padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Header
                 Text(
                   'cutlery'.tr,
-                  style: robotoSemiBold.copyWith(
+                  style: textSemiBold().copyWith(
                     fontSize: Dimensions.fs16,
                   ),
                 ),
-                const SizedBox(height: Dimensions.p8),
+                SizedBox(height: Dimensions.h8),
 
                 // Note Content
                 Text(
                   controllerOrderModel.cutlery! ? 'yes'.tr : 'no'.tr,
-                  style: robotoRegular.copyWith(
+                  style: textRegular().copyWith(
                     fontSize: Dimensions.fs13,
                     color: Theme.of(context).hintColor,
                   ),
@@ -168,25 +168,25 @@ class OrderInfoSection extends StatelessWidget {
 
         /// --- Unavailable item note ---
         if (controllerOrderModel.unavailableItemNote != null) ...[
-          const SizedBox(height: Dimensions.p16),
+          SizedBox(height: Dimensions.h16),
           CustomCard(
-            padding: const EdgeInsets.all(Dimensions.p16),
+            padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Header
                 Text(
                   'unavailable_item_note'.tr,
-                  style: robotoSemiBold.copyWith(
+                  style: textSemiBold().copyWith(
                     fontSize: Dimensions.fs16,
                   ),
                 ),
-                const SizedBox(height: Dimensions.p8),
+                SizedBox(height: Dimensions.h8),
 
                 // Note Content
                 Text(
                   controllerOrderModel.unavailableItemNote!,
-                  style: robotoRegular.copyWith(
+                  style: textRegular().copyWith(
                     fontSize: Dimensions.fs13,
                     color: Theme.of(context).hintColor,
                   ),
@@ -202,7 +202,7 @@ class OrderInfoSection extends StatelessWidget {
   /// --- Widget Parcel Category ---
   Widget _buildParcelCategory(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(Dimensions.p10),
+      padding: EdgeInsets.symmetric(horizontal:Dimensions.w10 ,vertical: Dimensions.h10,),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(Dimensions.r4),
@@ -227,7 +227,7 @@ class OrderInfoSection extends StatelessWidget {
                     fit: BoxFit.cover,
                   ),
                 ),
-                const SizedBox(width: Dimensions.p10),
+                SizedBox(width: Dimensions.w10),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -235,14 +235,14 @@ class OrderInfoSection extends StatelessWidget {
                       Text(controllerOrderModel.parcelCategory!.name!,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: robotoRegular.copyWith(
+                          style: textRegular().copyWith(
                             fontSize: Dimensions.fs12,
                           )),
                       Text(
                         controllerOrderModel.parcelCategory!.description!,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: robotoRegular.copyWith(
+                        style: textRegular().copyWith(
                           fontSize: Dimensions.fs12,
                           color: Theme.of(context).disabledColor,
                         ),
@@ -252,7 +252,7 @@ class OrderInfoSection extends StatelessWidget {
                 ),
               ],
             )
-          : Text('no_parcel_category_data_found'.tr, style: robotoMedium),
+          : Text('no_parcel_category_data_found'.tr, style: textMedium()),
     );
   }
 }

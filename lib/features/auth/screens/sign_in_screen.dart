@@ -80,25 +80,25 @@ class _SignInScreenState extends State<SignInScreen> {
       body: SafeArea(
           child: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(Dimensions.p16),
+          padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
           child: GetBuilder<AuthController>(builder: (authController) {
             return Column(children: [
               Image.asset(
                 ManagerAssets.logo,
               ),
               SizedBox(
-                height: Dimensions.p20,
+                height: Dimensions.h20,
               ),
               Text('sign_in_account'.tr,
-                  style: robotoBold.copyWith(fontSize: Dimensions.fs18)),
+                  style: textBold().copyWith(fontSize: Dimensions.fs18)),
               SizedBox(
-                height: Dimensions.p4,
+                height: Dimensions.h4,
               ),
               Text('enter_details_continue'.tr,
-                  style: robotoRegular.copyWith(
+                  style: textRegular().copyWith(
                       color: Theme.of(context).disabledColor,
                       fontSize: Dimensions.fs14)),
-              const SizedBox(height: Dimensions.p25),
+              SizedBox(height: Dimensions.h25),
               WidgetWithLabel(
                 label: 'mobile_number'.tr,
                 textField: CustomTextFieldWidget(
@@ -121,7 +121,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           .code,
                 ),
               ),
-              const SizedBox(height: Dimensions.p25),
+              SizedBox(height: Dimensions.h25),
               WidgetWithLabel(
                 label: 'password'.tr,
                 textField: CustomTextFieldWidget(
@@ -160,7 +160,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       ),
                     ),
                     title: Text('remember_me'.tr,
-                        style: robotoMedium.copyWith(
+                        style: textMedium().copyWith(
                           color: Theme.of(context).disabledColor,
                         )),
                     contentPadding: EdgeInsets.zero,
@@ -173,12 +173,12 @@ class _SignInScreenState extends State<SignInScreen> {
                       Get.toNamed(RouteHelper.getForgotPassRoute()),
                   child: Text(
                     '${'forgot_password'.tr}',
-                    style: robotoMedium.copyWith(
+                    style: textMedium().copyWith(
                         color: Theme.of(context).primaryColor),
                   ),
                 ),
               ]),
-              const SizedBox(height: Dimensions.p16),
+              SizedBox(height: Dimensions.h16),
               CustomButtonWidget(
                 buttonText: 'sign_in'.tr,
                 isLoading: authController.isLoading,
@@ -194,7 +194,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   height: Get.find<SplashController>()
                           .configModel!
                           .toggleDmRegistration!
-                      ? Dimensions.p25
+                      ? Dimensions.h25
                       : 0),
               Get.find<SplashController>().configModel!.toggleDmRegistration!
                   ? TextButton(
@@ -209,12 +209,12 @@ class _SignInScreenState extends State<SignInScreen> {
                           text: TextSpan(children: [
                         TextSpan(
                             text: '${'join_as_a'.tr} ',
-                            style: robotoMedium.copyWith(
+                            style: textMedium().copyWith(
                                 color: Theme.of(context).disabledColor,
                                 fontSize: Dimensions.fs16)),
                         TextSpan(
                             text: 'delivery_man'.tr,
-                            style: robotoMedium.copyWith(
+                            style: textMedium().copyWith(
                                 color: Theme.of(context).disabledColor,
                                 fontSize: Dimensions.fs16)),
                       ])),

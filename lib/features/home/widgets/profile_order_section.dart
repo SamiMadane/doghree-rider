@@ -17,7 +17,7 @@ class ProfileOrdersSection extends StatelessWidget {
         Get.locale?.languageCode == AppConstants.languages[1].languageCode;
 
     return Container(
-      margin: const EdgeInsets.only(top: Dimensions.p20),
+      margin: EdgeInsets.only(top: Dimensions.h20),
       child: Column(
         children: [
           ProfileOrderCardWidget(
@@ -31,7 +31,7 @@ class ProfileOrdersSection extends StatelessWidget {
           ),
           SizedBox(
               height: orientation == Orientation.landscape
-                  ? Dimensions.p16
+                  ? Dimensions.h16
                   : 0),
           Row(
             children: [
@@ -46,7 +46,7 @@ class ProfileOrdersSection extends StatelessWidget {
                   height: orientation == Orientation.landscape ? 270 : 150,
                 ),
               ),
-              const SizedBox(width: Dimensions.p16),
+              SizedBox(width: Dimensions.w16),
               Expanded(
                 child: ProfileOrderCardWidget(
                   title: 'todays_orders'.tr,

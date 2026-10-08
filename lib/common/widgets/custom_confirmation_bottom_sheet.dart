@@ -49,10 +49,10 @@ class CustomConfirmationBottomSheet extends StatelessWidget {
         return GetBuilder<AuthController>(builder: (authController) {
           return Container(
             width: context.width,
-            padding: const EdgeInsets.all(Dimensions.p10),
+            padding: EdgeInsets.symmetric(horizontal:Dimensions.w10 ,vertical: Dimensions.h10,),
             decoration: BoxDecoration(
               color: resolvedBg,
-              borderRadius: const BorderRadius.only(
+              borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(Dimensions.r20),
                 topRight: Radius.circular(Dimensions.r20),
               ),
@@ -61,21 +61,21 @@ class CustomConfirmationBottomSheet extends StatelessWidget {
               image != null
                   ? Image.asset(image!, height: 60, width: 60)
                   : SizedBox(),
-              const SizedBox(height: Dimensions.p20),
+              SizedBox(height: Dimensions.h20),
               Text(
                 title,
-                style: robotoMedium.copyWith(
+                style: textMedium().copyWith(
                   fontSize: Dimensions.fs18,
                   color: resolvedText,
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: Dimensions.p16),
+              SizedBox(height: Dimensions.h16),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 35),
+                padding: EdgeInsets.symmetric(horizontal: 35),
                 child: Text(
                   description ?? '',
-                  style: robotoRegular.copyWith(
+                  style: textRegular().copyWith(
                       color: resolvedText.withOpacity(0.7)),
                   textAlign: TextAlign.center,
                 ),
@@ -84,7 +84,7 @@ class CustomConfirmationBottomSheet extends StatelessWidget {
               buttonWidget ??
                   Padding(
                     padding:
-                        const EdgeInsets.symmetric(horizontal: Dimensions.p10),
+                        EdgeInsets.symmetric(horizontal: Dimensions.w10),
                     child: Row(children: [
                       Expanded(
                         child: CustomButtonWidget(
@@ -97,7 +97,7 @@ class CustomConfirmationBottomSheet extends StatelessWidget {
                           isBorder: true,
                         ),
                       ),
-                      const SizedBox(width: Dimensions.p16),
+                      SizedBox(width: Dimensions.w16),
                       Expanded(
                         child: CustomButtonWidget(
                           onPressed: () => onConfirm?.call(),
@@ -110,7 +110,7 @@ class CustomConfirmationBottomSheet extends StatelessWidget {
                       ),
                     ]),
                   ),
-              SizedBox(height: Dimensions.p20),
+              SizedBox(height: Dimensions.h20),
             ]),
           );
         });

@@ -38,13 +38,13 @@ class _AddWithDrawMethodScreenState extends State<AddWithDrawMethodScreen> {
 
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.all(Dimensions.p16),
+              padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
-                  Text("payment_method".tr, style: robotoBold),
-                  const SizedBox(height: Dimensions.p10),
+                  Text("payment_method".tr, style: textBold()),
+                  SizedBox(height: Dimensions.h10),
 
                   Container(
                     decoration: BoxDecoration(
@@ -59,20 +59,20 @@ class _AddWithDrawMethodScreenState extends State<AddWithDrawMethodScreen> {
                       },
                       dropdownButtonStyle: DropdownButtonStyle(
                         height: 45,
-                        padding: const EdgeInsets.symmetric(
-                          vertical: Dimensions.p4,
-                          horizontal: Dimensions.p4,
+                        padding: EdgeInsets.symmetric(
+                          vertical: Dimensions.h4,
+                          horizontal: Dimensions.w4,
                         ),
                         primaryColor: Theme.of(context).textTheme.bodyLarge!.color,
                       ),
                       dropdownStyle: DropdownStyle(
                         elevation: 10,
                         borderRadius: BorderRadius.circular(Dimensions.r10),
-                        padding: const EdgeInsets.all(Dimensions.p4),
+                        padding: EdgeInsets.symmetric(horizontal:Dimensions.w4 ,vertical: Dimensions.h4,),
                       ),
                       items: disbursementController.methodList,
                       child: Padding(
-                        padding: const EdgeInsets.only(left: 8),
+                        padding: EdgeInsets.only(left: 8),
                         child: Text(
                           disbursementController.widthDrawMethods != null && disbursementController.widthDrawMethods!.isNotEmpty
                               ? disbursementController.widthDrawMethods![0].methodName! : 'select_payment_method'.tr,
@@ -80,7 +80,7 @@ class _AddWithDrawMethodScreenState extends State<AddWithDrawMethodScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: Dimensions.p25),
+                  SizedBox(height: Dimensions.h25),
 
                   ListView.builder(
                     physics: const BouncingScrollPhysics(),
@@ -126,7 +126,7 @@ class _AddWithDrawMethodScreenState extends State<AddWithDrawMethodScreen> {
                           ) : const SizedBox(),
 
                         ]),
-                        SizedBox(height: index != disbursementController.methodFields.length-1 ? Dimensions.p20 : 0),
+                        SizedBox(height: index != disbursementController.methodFields.length-1 ? Dimensions.h20 : 0),
 
                       ]);
                     }),
@@ -143,7 +143,7 @@ class _AddWithDrawMethodScreenState extends State<AddWithDrawMethodScreen> {
             ),
             child: SafeArea(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: Dimensions.p25, vertical: Dimensions.p10),
+                padding: EdgeInsets.symmetric(horizontal: Dimensions.w25, vertical: Dimensions.h10),
                 child: !disbursementController.isLoading ? CustomButtonWidget(
                   buttonText: 'add_method'.tr,
                   onPressed: () {

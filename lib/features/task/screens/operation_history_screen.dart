@@ -31,12 +31,12 @@ class _DetailedOperationHistoryScreenState
       appBar: CustomAppBarWidget(title: 'operations_history'.tr),
       body: Container(
         color: Theme.of(context).cardColor,
-        margin: EdgeInsets.only(top: Dimensions.p16),
-        padding: EdgeInsets.all(Dimensions.p16),
+        margin: EdgeInsets.only(top: Dimensions.h16),
+        padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
         child: Column(
           children: [
             _buildButtonsRow(),
-            SizedBox(height: Dimensions.p16),
+            SizedBox(height: Dimensions.h16),
             Expanded(child: _buildSelectedContent()),
           ],
         ),
@@ -63,9 +63,9 @@ class _DetailedOperationHistoryScreenState
 
     return CustomButtonWidget(
       onPressed: () => setState(() => selectedIndex = index),
-      height: Dimensions.p40,
+      height: Dimensions.h40,
       buttonText: title,
-      margin: EdgeInsetsDirectional.only(end: Dimensions.p10),
+      margin: EdgeInsetsDirectional.only(end: Dimensions.w10),
       isBorder: !isSelected,
       transparent: !isSelected,
       color: Theme.of(context).textTheme.bodyMedium!.color,
@@ -115,7 +115,7 @@ class _DetailedOperationHistoryScreenState
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TitleWidget(
-          titleStyle: robotoSemiBold.copyWith(
+          titleStyle: textSemiBold().copyWith(
             fontSize: Dimensions.fs16,
             color: color,
           ),
@@ -124,7 +124,7 @@ class _DetailedOperationHistoryScreenState
           backGroundColorOfCount: color,
           showOrderCount: true,
         ),
-        SizedBox(height: Dimensions.p16),
+        SizedBox(height: Dimensions.h16),
         ...List.generate(itemCount, (_) => _buildOperationItem()),
       ],
     );
@@ -135,22 +135,22 @@ class _DetailedOperationHistoryScreenState
     final customColor = Theme.of(context).extension<CustomColorsExtension>()!;
 
     return CustomCard(
-      margin: EdgeInsets.only(bottom: Dimensions.p16),
-      padding: EdgeInsets.all(Dimensions.p16),
+      margin: EdgeInsets.only(bottom: Dimensions.h16),
+      padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildItemHeader(textColor),
-          SizedBox(height: Dimensions.p16),
+          SizedBox(height: Dimensions.h16),
           _buildDashedDivider(customColor.strock2),
-          SizedBox(height: Dimensions.p16),
+          SizedBox(height: Dimensions.h16),
           _buildInfoRow(
             icon: ManagerAssets.orderIcon,
             label: 'type'.tr,
             value: 'Comprehensive food basket',
             textColor: textColor,
           ),
-          SizedBox(height: Dimensions.p16),
+          SizedBox(height: Dimensions.h16),
           _buildInfoRow(
             icon: ManagerAssets.clockIcon,
             label: 'time'.tr,
@@ -168,11 +168,11 @@ class _DetailedOperationHistoryScreenState
         ClipOval(
           child: CustomImageWidget(height: 35, width: 35),
         ),
-        SizedBox(width: Dimensions.p8),
+        SizedBox(width: Dimensions.w8),
         Expanded(
           child: Text(
             'Sami Al-Madani',
-            style: robotoSemiBold.copyWith(
+            style: textSemiBold().copyWith(
               color: textColor,
               fontSize: Dimensions.fs14,
             ),
@@ -186,8 +186,8 @@ class _DetailedOperationHistoryScreenState
   Widget _buildPriceChip() {
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: Dimensions.p12,
-        vertical: Dimensions.p4,
+        horizontal: Dimensions.w12,
+        vertical: Dimensions.h4,
       ),
       decoration: BoxDecoration(
         color: ManagerColors.darkGreen,
@@ -195,7 +195,7 @@ class _DetailedOperationHistoryScreenState
       ),
       child: Text(
         PriceConverterHelper.convertPrice(590),
-        style: robotoSemiBold.copyWith(
+        style: textSemiBold().copyWith(
           color: Theme.of(context).cardColor,
           fontSize: Dimensions.fs14,
         ),
@@ -228,15 +228,15 @@ class _DetailedOperationHistoryScreenState
       children: [
         SvgPicture.asset(
           icon,
-          height: Dimensions.p16,
-          width: Dimensions.p16,
+          height: Dimensions.h16,
+          width: Dimensions.w16,
           color: Theme.of(context).hintColor,
         ),
-        SizedBox(width: Dimensions.p4),
+        SizedBox(width: Dimensions.w4),
         Expanded(
           child: Text(
             label,
-            style: robotoRegular.copyWith(
+            style: textRegular().copyWith(
               color: Theme.of(context).hintColor,
               fontSize: Dimensions.fs12,
             ),
@@ -244,7 +244,7 @@ class _DetailedOperationHistoryScreenState
         ),
         Text(
           value,
-          style: robotoSemiBold.copyWith(
+          style: textSemiBold().copyWith(
             color: textColor,
             fontSize: Dimensions.fs13,
           ),

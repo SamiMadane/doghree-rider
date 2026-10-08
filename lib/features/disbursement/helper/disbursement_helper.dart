@@ -41,7 +41,7 @@ class DisbursementHelper {
         Dialog(
           alignment: Alignment.bottomCenter,
           backgroundColor: const Color(0xfffff1f1),
-          insetPadding: const EdgeInsets.only(bottom: Dimensions.p10),
+          insetPadding: EdgeInsets.only(bottom: Dimensions.h10),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.r10)), //this right here
           child: WithdrawMethodAttentionDialogWidget(isFromDashboard: fromDashboard),
         ),

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
+import 'package:wefrh_rider/common/widgets/empty_state_widget.dart';
 import 'package:wefrh_rider/helper/price_converter_helper.dart';
 import 'package:wefrh_rider/helper/route_helper.dart';
 import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:wefrh_rider/util/manager_assets.dart';
 import 'package:wefrh_rider/util/manager_colors.dart';
 import 'package:wefrh_rider/util/styles.dart';
 import 'package:wefrh_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
@@ -33,7 +35,7 @@ class TransactionHistorySection extends StatelessWidget {
                 },
               ),
             ),
-            const SizedBox(width: Dimensions.p10),
+            SizedBox(width: Dimensions.w10),
             Expanded(
               child: _TransactionToggleButton(
                 text: 'wallet_provided_earning'.tr,
@@ -47,7 +49,7 @@ class TransactionHistorySection extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: Dimensions.p25),
+        SizedBox(height: Dimensions.h25),
 
         // Transaction History + View All
         Row(
@@ -55,7 +57,7 @@ class TransactionHistorySection extends StatelessWidget {
           children: [
             Text(
               "transaction_history".tr,
-              style: robotoSemiBold.copyWith(fontSize: Dimensions.fs16),
+              style: textSemiBold().copyWith(fontSize: Dimensions.fs16),
             ),
             (cashInHandController.selectedIndex == 0 &&
                         cashInHandController.transactions!.isEmpty) ||
@@ -74,7 +76,7 @@ class TransactionHistorySection extends StatelessWidget {
                     },
                     child: Text(
                       'view_all'.tr,
-                      style: robotoMedium.copyWith(
+                      style: textMedium().copyWith(
                         fontSize: Dimensions.fs16,
                         color: Theme.of(context).disabledColor,
                       ),
@@ -82,7 +84,7 @@ class TransactionHistorySection extends StatelessWidget {
                   ),
           ],
         ),
-        const SizedBox(height: Dimensions.p16),
+        SizedBox(height: Dimensions.h16),
 
         // القوائم
         if (cashInHandController.selectedIndex == 0)
@@ -117,7 +119,9 @@ class _TransactionToggleButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomButtonWidget(
       buttonText: text,
-      fontSize: Dimensions.fs14,
+      fontSize: Dimensions.fs13,
+      height: Dimensions.h40,
+      autoWidth: true,
       backgroundColor: isSelected
           ? Theme.of(context).textTheme.bodyMedium!.color
           : Theme.of(context).cardColor,
@@ -152,7 +156,16 @@ class _TransactionList extends StatelessWidget {
     }
 
     if (transactions!.isEmpty) {
-      return Center(child: Text('no_transaction_found'.tr));
+      return Container(
+        margin: EdgeInsets.only(top: Dimensions.h16),
+        color: Theme.of(context).cardColor,
+        child: EmptyStateWidget(
+          image: ManagerAssets.noTransactionImage,
+          title: 'no_transaction_found'.tr,
+          description: 'get_ready_receive_first_order_track_earnings'.tr,
+          spacing: Dimensions.h4,
+        ),
+      );
     }
 
     return ListView.builder(
@@ -182,15 +195,15 @@ class _TransactionList extends StatelessWidget {
                       Text(
                         PriceConverterHelper.convertPrice(item.amount),
                         style:
-                            robotoSemiBold.copyWith(fontSize: Dimensions.fs15),
+                            textSemiBold().copyWith(fontSize: Dimensions.fs15),
                         textDirection: TextDirection.ltr,
                       ),
-                      const SizedBox(height: Dimensions.p8),
+                      SizedBox(height: Dimensions.h8),
                       Text(
                         isWallet
                             ? '${'wallet'.tr} ${_capitalize(item.method?.replaceAll('_', ' '))}'
                             : '${'paid_via'.tr} ${_capitalize(item.method?.replaceAll('_', ' '))}',
-                        style: robotoRegular.copyWith(
+                        style: textRegular().copyWith(
                           fontSize: Dimensions.fs12,
                           color: Theme.of(context).disabledColor,
                         ),
@@ -203,15 +216,15 @@ class _TransactionList extends StatelessWidget {
                   children: [
                     Text(
                       item.paymentTime.toString(),
-                      style: robotoRegular.copyWith(
+                      style: textRegular().copyWith(
                         fontSize: Dimensions.fs12,
                         color: Theme.of(context).disabledColor,
                       ),
                     ),
-                    const SizedBox(height: Dimensions.p8),
+                    SizedBox(height: Dimensions.h8),
                     Text(
                       _capitalize(status.toString().tr),
-                      style: robotoSemiBold.copyWith(
+                      style: textSemiBold().copyWith(
                         fontSize: Dimensions.fs12,
                         color: statusColor,
                       ),
@@ -220,7 +233,7 @@ class _TransactionList extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: Dimensions.p16),
+            SizedBox(height: Dimensions.h16),
           ],
         );
       },

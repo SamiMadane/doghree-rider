@@ -31,7 +31,7 @@ class OrderSummaryWidget extends StatelessWidget {
     return GetBuilder<OrderController>(builder: (orderController) {
       return CustomCard(
         width: MediaQuery.of(context).size.width,
-        padding: const EdgeInsets.all(Dimensions.p16),
+        padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -45,14 +45,14 @@ class OrderSummaryWidget extends StatelessWidget {
                       children: [
                         TextSpan(
                           text: '${'id_label'.tr}: ',
-                          style: robotoSemiBold.copyWith(
+                          style: textSemiBold().copyWith(
                             fontSize: Dimensions.fs14,
                             color: Theme.of(context).hintColor,
                           ),
                         ),
                         TextSpan(
                           text: '#${order.id}',
-                          style: robotoSemiBold.copyWith(
+                          style: textSemiBold().copyWith(
                             fontSize: Dimensions.fs14,
                             color: ManagerColors.darkGreen,
                           ),
@@ -65,14 +65,14 @@ class OrderSummaryWidget extends StatelessWidget {
                   isBorder: false,
                   autoWidth: true,
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                      EdgeInsets.symmetric(horizontal: Dimensions.w12, vertical: Dimensions.h4),
                   fillColor: order.paymentStatus == 'paid'
                       ? ManagerColors.greenLightMode
                       : Theme.of(context).colorScheme.error,
                   borderRadius: Dimensions.r20,
                   child: Text(
                     order.paymentStatus == 'paid' ? 'paid'.tr : 'unpaid'.tr,
-                    style: robotoMedium.copyWith(
+                    style: textMedium().copyWith(
                       color: ManagerColors.white,
                       fontSize: Dimensions.fs14,
                     ),
@@ -80,7 +80,7 @@ class OrderSummaryWidget extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: Dimensions.p16),
+            SizedBox(height: Dimensions.h16),
 
             // أيقونات + خطوط
             Row(
@@ -91,13 +91,13 @@ class OrderSummaryWidget extends StatelessWidget {
                     ClipOval(
                       child: CustomImageWidget(
                         image:
-                            order.storeLogoFullUrl ?? ManagerAssets.storeImage,
-                        width: 28,
-                        height: 28,
+                            order.storeLogoFullUrl,
+                        width: Dimensions.w28,
+                        height: Dimensions.h28,
                       ),
                     ),
                     SizedBox(
-                      height: 40,
+                      height: Dimensions.h40,
                       child: DottedLine(
                         direction: Axis.vertical,
                         lineLength: double.infinity,
@@ -107,12 +107,12 @@ class OrderSummaryWidget extends StatelessWidget {
                     ),
                     SvgPicture.asset(
                       ManagerAssets.locationIcon,
-                      width: 24,
-                      height: 24,
+                      width: Dimensions.w24,
+                      height: Dimensions.h24,
                     ),
                   ],
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: Dimensions.w8),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -120,19 +120,19 @@ class OrderSummaryWidget extends StatelessWidget {
                       Text(
                         order.storeName!,
                         style:
-                            robotoSemiBold.copyWith(fontSize: Dimensions.fs14),
+                            textSemiBold().copyWith(fontSize: Dimensions.fs14),
                       ),
                       Text(
                         order.storeAddress!,
-                        style: robotoRegular.copyWith(
+                        style: textRegular().copyWith(
                           fontSize: Dimensions.fs14,
                           color: Theme.of(context).hintColor,
                         ),
                       ),
-                      const SizedBox(height: Dimensions.p4),
+                      SizedBox(height: Dimensions.h4),
                       if (parcel)
                         Container(
-                          padding: const EdgeInsets.all(Dimensions.p4),
+                          padding: EdgeInsets.symmetric(horizontal:Dimensions.w4 ,vertical: Dimensions.h4,),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(Dimensions.r4),
                             color:
@@ -140,23 +140,23 @@ class OrderSummaryWidget extends StatelessWidget {
                           ),
                           child: Text(
                             'parcel'.tr,
-                            style: robotoMedium.copyWith(
+                            style: textMedium().copyWith(
                               fontSize: Dimensions.fs10,
                               color: Theme.of(context).primaryColor,
                             ),
                           ),
                         ),
-                      const SizedBox(height: Dimensions.p10),
+                      SizedBox(height: Dimensions.h10),
                       Text(
                         parcel
                             ? order.deliveryAddress.toString()
                             : order.storeAddress!,
                         style:
-                            robotoSemiBold.copyWith(fontSize: Dimensions.fs14),
+                            textSemiBold().copyWith(fontSize: Dimensions.fs14),
                       ),
                       Text(
                         parcel ? 'delivery_location'.tr : 'store_location'.tr,
-                        style: robotoRegular.copyWith(
+                        style: textRegular().copyWith(
                           fontSize: Dimensions.fs14,
                           color: Theme.of(context).hintColor,
                         ),
@@ -170,19 +170,19 @@ class OrderSummaryWidget extends StatelessWidget {
             // Delivery Instructions
             if (order.deliveryInstruction != null &&
                 order.deliveryInstruction!.isNotEmpty) ...[
-              const SizedBox(height: Dimensions.p16),
+              SizedBox(height: Dimensions.h16),
               RichText(
                 text: TextSpan(
                   children: [
                     TextSpan(
                       text: '${'delivery_instruction'.tr}: ',
-                      style: robotoSemiBold.copyWith(
+                      style: textSemiBold().copyWith(
                         color: Theme.of(context).textTheme.bodyMedium!.color,
                       ),
                     ),
                     TextSpan(
                       text: order.deliveryInstruction!,
-                      style: robotoMedium.copyWith(
+                      style: textMedium().copyWith(
                         color: Theme.of(context).hintColor,
                       ),
                     ),
@@ -195,19 +195,19 @@ class OrderSummaryWidget extends StatelessWidget {
                 orderController.orderDetailsModel![0].itemDetails != null &&
                 orderController.orderDetailsModel![0].itemDetails!.moduleType ==
                     'food') ...[
-              const SizedBox(height: Dimensions.p16),
+              SizedBox(height: Dimensions.h16),
               RichText(
                 text: TextSpan(
                   children: [
                     TextSpan(
                       text: '${'cutlery'.tr}: ',
-                      style: robotoSemiBold.copyWith(
+                      style: textSemiBold().copyWith(
                         color: Theme.of(context).textTheme.bodyMedium!.color,
                       ),
                     ),
                     TextSpan(
                       text: order.cutlery! ? 'yes'.tr : 'no'.tr,
-                      style: robotoMedium.copyWith(
+                      style: textMedium().copyWith(
                         color: Theme.of(context).hintColor,
                       ),
                     ),
@@ -217,19 +217,19 @@ class OrderSummaryWidget extends StatelessWidget {
             ],
 
             if (order.unavailableItemNote != null) ...[
-              const SizedBox(height: Dimensions.p16),
+              SizedBox(height: Dimensions.h16),
               RichText(
                 text: TextSpan(
                   children: [
                     TextSpan(
                       text: '${'unavailable_item_note'.tr}: ',
-                      style: robotoSemiBold.copyWith(
+                      style: textSemiBold().copyWith(
                         color: Theme.of(context).textTheme.bodyMedium!.color,
                       ),
                     ),
                     TextSpan(
                       text: order.unavailableItemNote!,
-                      style: robotoMedium.copyWith(
+                      style: textMedium().copyWith(
                         color: Theme.of(context).hintColor,
                       ),
                     ),
@@ -238,7 +238,7 @@ class OrderSummaryWidget extends StatelessWidget {
               ),
             ],
 
-            const SizedBox(height: Dimensions.p16),
+            SizedBox(height: Dimensions.h16),
 
             // Show Items Button
             CustomButtonWidget(

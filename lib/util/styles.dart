@@ -1,26 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:wefrh_rider/util/app_constants.dart';
+import 'package:wefrh_rider/util/dimensions.dart';
 
-const robotoRegular = TextStyle(
-  fontFamily: 'Roboto',
-  fontWeight: FontWeight.w400,
-);
+TextStyle textRegular() => TextStyle(
+      fontFamily: AppConstants.fontFamily,
+      fontWeight: FontWeight.w400,
+      fontSize: Dimensions.fs14,
+    );
 
-const robotoMedium = TextStyle(
-  fontFamily: 'Roboto',
-  fontWeight: FontWeight.w500,
-);
+TextStyle textMedium() => TextStyle(
+      fontFamily: AppConstants.fontFamily,
+      fontWeight: FontWeight.w500,
+      fontSize: Dimensions.fs14,
+    );
 
-const robotoSemiBold = TextStyle(
-  fontFamily: 'Roboto',
-  fontWeight: FontWeight.w600,
-);
+TextStyle textSemiBold() => TextStyle(
+      fontFamily: AppConstants.fontFamily,
+      fontWeight: FontWeight.w600,
+      fontSize: Dimensions.fs14,
+    );
 
-const robotoBold = TextStyle(
-  fontFamily: 'Roboto',
-  fontWeight: FontWeight.w700,
-);
+TextStyle textBold() => TextStyle(
+      fontFamily: AppConstants.fontFamily,
+      fontWeight: FontWeight.w700,
+      fontSize: Dimensions.fs14,
+    );
 
-const robotoBlack = TextStyle(
-  fontFamily: 'Roboto',
-  fontWeight: FontWeight.w900,
-);
+TextStyle textBlack() => TextStyle(
+      fontFamily: AppConstants.fontFamily,
+      fontWeight: FontWeight.w900,
+      fontSize: Dimensions.fs14,
+    );

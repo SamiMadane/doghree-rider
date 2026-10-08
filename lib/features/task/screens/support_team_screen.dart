@@ -36,26 +36,26 @@ class _SupportTeamScreenState extends State<SupportTeamScreen> {
       body: Stack(
         children: [
           SingleChildScrollView(
-            padding: const EdgeInsets.only(bottom: 120), // مساحة للزر الثابت + مسافة
+            padding: EdgeInsets.only(bottom: 120), // مساحة للزر الثابت + مسافة
             child: Padding(
-              padding: const EdgeInsets.all(Dimensions.p16),
+              padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   /// Beneficiary Card
                   CustomCard(
-                    padding: const EdgeInsets.all(Dimensions.p16),
+                    padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
                     borderRadius: Dimensions.r12,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           'beneficiary'.tr,
-                          style: robotoBold.copyWith(fontSize: Dimensions.fs17),
+                          style: textBold().copyWith(fontSize: Dimensions.fs17),
                         ),
-                        const SizedBox(height: Dimensions.p12),
+                        SizedBox(height: Dimensions.h12),
                         CustomCard(
-                          padding: const EdgeInsets.all(Dimensions.p16),
+                          padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
                           borderRadius: Dimensions.r12,
                           fillColor: Theme.of(context).scaffoldBackgroundColor,
                           child: Column(
@@ -63,14 +63,14 @@ class _SupportTeamScreenState extends State<SupportTeamScreen> {
                             children: [
                               Text(
                                 'Noura Abdullah Ibrahim',
-                                style: robotoBold.copyWith(
+                                style: textBold().copyWith(
                                   fontSize: Dimensions.fs17,
                                 ),
                               ),
-                              const SizedBox(height: Dimensions.p8),
+                              SizedBox(height: Dimensions.h8),
                               Text(
                                 'manually_updated_task'.tr,
-                                style: robotoRegular.copyWith(
+                                style: textRegular().copyWith(
                                   fontSize: Dimensions.fs13,
                                   color: customColor.naturalBlue,
                                 ),
@@ -82,25 +82,25 @@ class _SupportTeamScreenState extends State<SupportTeamScreen> {
                     ),
                   ),
 
-                  const SizedBox(height: Dimensions.p16),
+                  SizedBox(height: Dimensions.h16),
 
                   /// Issue Type
                   CustomCard(
-                    padding: const EdgeInsets.all(Dimensions.p16),
+                    padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
                     borderRadius: Dimensions.r12,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           'type_of_issue'.tr,
-                          style: robotoBold.copyWith(fontSize: Dimensions.fs17),
+                          style: textBold().copyWith(fontSize: Dimensions.fs17),
                         ),
-                        const SizedBox(height: Dimensions.p12),
+                        SizedBox(height: Dimensions.h12),
                         Column(
                           children: issues
                               .map(
                                 (issueKey) => Padding(
-                                  padding: const EdgeInsets.only(bottom: 10),
+                                  padding: EdgeInsets.only(bottom: 10),
                                   child: selectableCard(
                                     text: issueKey.tr,
                                     isSelected: selectedIssue == issueKey,
@@ -115,17 +115,17 @@ class _SupportTeamScreenState extends State<SupportTeamScreen> {
                               )
                               .toList(),
                         ),
-                        SizedBox(height: Dimensions.p16),
+                        SizedBox(height: Dimensions.h16),
                         Text(
                           "more_details".tr,
-                          style: robotoBold.copyWith(fontSize: Dimensions.fs17),
+                          style: textBold().copyWith(fontSize: Dimensions.fs17),
                         ),
-                        const SizedBox(height: Dimensions.p12),
+                        SizedBox(height: Dimensions.h12),
                         TextField(
                           maxLines: 4,
                           decoration: InputDecoration(
                             hintText: "write_details_here".tr,
-                            hintStyle: robotoRegular.copyWith(
+                            hintStyle: textRegular().copyWith(
                                 color: Theme.of(context).hintColor),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(Dimensions.r12),
@@ -147,9 +147,9 @@ class _SupportTeamScreenState extends State<SupportTeamScreen> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: Dimensions.p16),
+                        SizedBox(height: Dimensions.h16),
                         CustomCard(
-                          padding: const EdgeInsets.all(Dimensions.p16),
+                          padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
                           borderRadius: Dimensions.r12,
                           fillColor: customColor.blueBg,
                           child: Column(
@@ -157,11 +157,11 @@ class _SupportTeamScreenState extends State<SupportTeamScreen> {
                             children: [
                               Text(
                                 "info_sent_automatically".tr,
-                                style: robotoBold.copyWith(
+                                style: textBold().copyWith(
                                     fontSize: Dimensions.fs16,
                                     color: customColor.darkBlue),
                               ),
-                              const SizedBox(height: Dimensions.p10),
+                              SizedBox(height: Dimensions.h10),
                               infoRow('${'task_id'.tr} 646848646'),
                               infoRow('${'current_location'.tr}: 31.154, 34.546'),
                               infoRow('${'reporting_time'.tr} 3/8/2025 - PM 8:04:12'),
@@ -183,7 +183,7 @@ class _SupportTeamScreenState extends State<SupportTeamScreen> {
             left: 0,
             right: 0,
             child: Container(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Theme.of(context).cardColor,
                 boxShadow: [
@@ -194,7 +194,7 @@ class _SupportTeamScreenState extends State<SupportTeamScreen> {
                     offset: const Offset(0, -3),
                   ),
                 ],
-                borderRadius: const BorderRadius.only(
+                borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(Dimensions.r8),
                   topRight: Radius.circular(Dimensions.r8),
                 ),
@@ -213,7 +213,7 @@ class _SupportTeamScreenState extends State<SupportTeamScreen> {
                       radius: Dimensions.r12,
                     ),
                   ),
-                  const SizedBox(width: Dimensions.p12),
+                  SizedBox(width: Dimensions.w12),
                   Expanded(
                     child: CustomButtonWidget(
                       onPressed: () {
@@ -239,7 +239,7 @@ class _SupportTeamScreenState extends State<SupportTeamScreen> {
     final customColor = Theme.of(context).extension<CustomColorsExtension>()!;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
           Container(
@@ -250,11 +250,11 @@ class _SupportTeamScreenState extends State<SupportTeamScreen> {
               shape: BoxShape.circle,
             ),
           ),
-          SizedBox(width: Dimensions.p6),
+          SizedBox(width: Dimensions.w6),
           Expanded(
             child: Text(
               text,
-              style: robotoSemiBold.copyWith(
+              style: textSemiBold().copyWith(
                   fontSize: Dimensions.fs14, color: customColor.blue),
             ),
           ),
@@ -273,7 +273,7 @@ Widget selectableCard({
   return GestureDetector(
     onTap: onTap,
     child: CustomCard(
-      padding: const EdgeInsets.all(Dimensions.p16),
+      padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
       borderRadius: Dimensions.r12,
       borderColor: isSelected ? Theme.of(context).primaryColor : null,
       fillColor: Theme.of(context).scaffoldBackgroundColor,
@@ -298,10 +298,10 @@ Widget selectableCard({
                 ? const SizedBox.shrink()
                 : null,
           ),
-          const SizedBox(width: Dimensions.p10),
+          SizedBox(width: Dimensions.w10),
           Text(
             text,
-            style: robotoRegular.copyWith(fontSize: Dimensions.fs16),
+            style: textRegular().copyWith(fontSize: Dimensions.fs16),
           ),
         ],
       ),

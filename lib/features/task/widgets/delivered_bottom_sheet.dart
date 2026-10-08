@@ -20,9 +20,9 @@ class DeliveredBottomSheet extends StatelessWidget {
     final customColor = Theme.of(context).extension<CustomColorsExtension>()!;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: Dimensions.p16,
-        vertical: Dimensions.p25,
+      padding: EdgeInsets.symmetric(
+        horizontal: Dimensions.w16,
+        vertical: Dimensions.h25,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -34,40 +34,40 @@ class DeliveredBottomSheet extends StatelessWidget {
                 ManagerAssets.checkIcon,
                 color: ManagerColors.greenLightMode,
               ),
-              SizedBox(width: Dimensions.p4),
+              SizedBox(width: Dimensions.w4),
               Text(
                 'confirmation_of_delivery'.tr,
-                style: robotoBold.copyWith(
+                style: textBold().copyWith(
                   fontSize: Dimensions.fs20,
                   color: ManagerColors.greenLightMode,
                 ),
               ),
             ],
           ),
-          SizedBox(height: Dimensions.p16),
+          SizedBox(height: Dimensions.h16),
           CustomCard(
-            padding: EdgeInsets.all(Dimensions.p16),
+            padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
             fillColor: Theme.of(context).scaffoldBackgroundColor,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
                   'are_you_sure_package_delivered'.tr,
-                  style: robotoRegular.copyWith(
+                  style: textRegular().copyWith(
                     fontSize: Dimensions.fs16,
                   ),
                 ),
-                SizedBox(height: Dimensions.p8),
+                SizedBox(height: Dimensions.h8),
                 Text(
                   beneficiaryName,
-                  style: robotoBold.copyWith(
+                  style: textBold().copyWith(
                     fontSize: Dimensions.fs16,
                   ),
                 ),
               ],
             ),
           ),
-          SizedBox(height: Dimensions.p50),
+          SizedBox(height: Dimensions.h50),
           SliderButton(
             action: () async {
               print('Confirmed delivery for $beneficiaryName');
@@ -79,9 +79,9 @@ class DeliveredBottomSheet extends StatelessWidget {
               children: [
                 Text(
                   'pull_to_confirm'.tr,
-                  style: robotoMedium.copyWith(fontSize: Dimensions.fs16),
+                  style: textMedium().copyWith(fontSize: Dimensions.fs16),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: 8),
                 SvgPicture.asset(
                   ManagerAssets.pullArrowIcon,
                   color: Theme.of(context).textTheme.bodyMedium?.color,
@@ -104,7 +104,7 @@ class DeliveredBottomSheet extends StatelessWidget {
             buttonColor: ManagerColors.greenLightMode,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           ),
-          SizedBox(height: Dimensions.p20),
+          SizedBox(height: Dimensions.h20),
           CustomButtonWidget(
             buttonText: 'cancel'.tr,
             onPressed: () {

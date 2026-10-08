@@ -60,19 +60,19 @@ class VerificationScreenState extends State<VerificationScreen> {
 
       body: SafeArea(child: Center(child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.all(Dimensions.p10),
+        padding: EdgeInsets.symmetric(horizontal:Dimensions.w10 ,vertical: Dimensions.h10,),
         child: Center(child: SizedBox(width: 1170, child: GetBuilder<ForgotPasswordController>(builder: (forgotPasswordController) {
           return Column(children: [
 
             Get.find<SplashController>().configModel!.demo! ? Text(
-              'for_demo_purpose'.tr, style: robotoRegular,
+              'for_demo_purpose'.tr, style: textRegular(),
             ) : RichText(text: TextSpan(children: [
-              TextSpan(text: 'enter_the_verification_sent_to'.tr, style: robotoRegular.copyWith(color: Theme.of(context).disabledColor)),
-              TextSpan(text: ' $_number', style: robotoMedium.copyWith(color: Theme.of(context).textTheme.bodyLarge!.color)),
+              TextSpan(text: 'enter_the_verification_sent_to'.tr, style: textRegular().copyWith(color: Theme.of(context).disabledColor)),
+              TextSpan(text: ' $_number', style: textMedium().copyWith(color: Theme.of(context).textTheme.bodyLarge!.color)),
             ])),
 
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Dimensions.p16, vertical: 35),
+              padding: EdgeInsets.symmetric(horizontal: Dimensions.w16, vertical: 35),
               child: PinCodeTextField(
                 length: 6,
                 appContext: context,
@@ -103,7 +103,7 @@ class VerificationScreenState extends State<VerificationScreen> {
 
               Text(
                 'did_not_receive_the_code'.tr,
-                style: robotoRegular.copyWith(color: Theme.of(context).disabledColor),
+                style: textRegular().copyWith(color: Theme.of(context).disabledColor),
               ),
 
               !forgotPasswordController.isLoading ? TextButton(
@@ -127,7 +127,7 @@ class VerificationScreenState extends State<VerificationScreen> {
                 child: Text('${'resend'.tr}${_seconds > 0 ? ' ($_seconds)' : ''}'),
               ) : Container(
                 height: 20, width: 20,
-                padding: const EdgeInsets.symmetric(horizontal: Dimensions.p20),
+                padding: EdgeInsets.symmetric(horizontal: Dimensions.w20),
                 child: const CircularProgressIndicator(),
               ),
 

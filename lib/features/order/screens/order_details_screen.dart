@@ -129,8 +129,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
           child: SizedBox.expand(
             child: Container(
               color: Theme.of(context).cardColor,
-              padding: const EdgeInsets.all(Dimensions.p16),
-              margin: const EdgeInsets.only(top: Dimensions.p16),
+              padding: EdgeInsets.symmetric(
+                horizontal: Dimensions.w16,
+                vertical: Dimensions.h16,
+              ),
+              margin: EdgeInsets.only(top: Dimensions.h16),
               child: GetBuilder<OrderController>(builder: (orderController) {
                 OrderModel? controllerOrderModel = orderController.orderModel;
 
@@ -306,22 +309,23 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                   maxHeight:
                                       MediaQuery.of(context).size.height * 0.8,
                                   child: Container(
-                                    padding: EdgeInsets.all(
-                                      Dimensions.p16,
-                                    ),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: Dimensions.w16,
+                                        vertical: Dimensions.h16),
                                     child: Column(
                                       children: [
                                         Text(
                                           'order_items'.tr,
-                                          style: robotoSemiBold.copyWith(
+                                          style: textSemiBold().copyWith(
                                               fontSize: Dimensions.fs16),
                                         ),
                                         SizedBox(
-                                          height: Dimensions.p16,
+                                          height: Dimensions.h16,
                                         ),
                                         ListView.builder(
-                                          padding: const EdgeInsets.all(
-                                              Dimensions.p16),
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: Dimensions.w16,
+                                              vertical: Dimensions.h16),
                                           shrinkWrap: true,
                                           itemCount: orderController
                                               .orderDetailsModel!.length,
@@ -339,11 +343,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                                             .orderDetailsModel!
                                                             .length -
                                                         1) ...[
-                                                  const SizedBox(
-                                                      height: Dimensions.p16),
+                                                  SizedBox(
+                                                      height: Dimensions.h16),
                                                   LayoutBuilder(
-                                                    builder: (context,
-                                                        constraints) {
+                                                    builder:
+                                                        (context, constraints) {
                                                       final dashCount =
                                                           (constraints.maxWidth /
                                                                   9)
@@ -352,8 +356,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                                         mainAxisAlignment:
                                                             MainAxisAlignment
                                                                 .spaceBetween,
-                                                        children:
-                                                            List.generate(
+                                                        children: List.generate(
                                                           dashCount,
                                                           (_) => Container(
                                                               width: 5,
@@ -364,8 +367,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                                       );
                                                     },
                                                   ),
-                                                  const SizedBox(
-                                                      height: Dimensions.p16),
+                                                  SizedBox(
+                                                      height: Dimensions.h16),
                                                 ]
                                               ],
                                             );
@@ -383,7 +386,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                               isPaid:
                                   controllerOrderModel.paymentStatus == 'paid',
                             ),
-                            const SizedBox(height: Dimensions.p16),
+                            SizedBox(height: Dimensions.h16),
                             OrderInfoSection(
                               orderController: orderController,
                               controllerOrderModel: controllerOrderModel,
@@ -397,7 +400,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                             ),
                           ],
                           SizedBox(
-                            height: Dimensions.p16,
+                            height: Dimensions.h16,
                           ),
                           InfoCardSection(
                             title: parcel
@@ -449,7 +452,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                             )),
                             order: order!,
                           ),
-                          const SizedBox(height: Dimensions.p16),
+                          SizedBox(height: Dimensions.h16),
                           InfoCardSection(
                             title: parcel
                                 ? 'receiver_details'.tr
@@ -507,8 +510,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                             )),
                             order: order,
                           ),
-                          const SizedBox(height: Dimensions.p16),
-
+                          SizedBox(height: Dimensions.h16),
                           (controllerOrderModel.orderNote != null &&
                                   controllerOrderModel.orderNote!.isNotEmpty)
                               ? AdditionalNoteSection(
@@ -518,7 +520,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                               height: (controllerOrderModel.orderNote != null &&
                                       controllerOrderModel
                                           .orderNote!.isNotEmpty)
-                                  ? Dimensions.p20
+                                  ? Dimensions.h20
                                   : 0),
                           (Get.find<SplashController>()
                                       .getModule(
@@ -530,7 +532,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                       .orderAttachmentFullUrl!.isNotEmpty)
                               ? PrescriptionSection(
                                   attachments: controllerOrderModel
-                                      .orderAttachmentFullUrl!)
+                                      .orderAttachmentFullUrl ?? [],
+                                      prescriptionNote: controllerOrderModel.prescriptionNote,)
                               : const SizedBox(),
                           (controllerOrderModel.orderStatus == 'delivered' &&
                                   controllerOrderModel.orderProofFullUrl !=

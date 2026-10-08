@@ -78,17 +78,17 @@ class _PaginatedListViewWidgetState extends State<PaginatedListViewWidget> {
       widget.productView,
 
       (ResponsiveHelper.isDesktop(context) && (widget.totalSize == null || _offset! >= (widget.totalSize! / 10).ceil() || _offsetList.contains(_offset!+1))) ? const SizedBox() : Center(child: Padding(
-        padding: (_isLoading || ResponsiveHelper.isDesktop(context)) ? const EdgeInsets.all(Dimensions.p10) : EdgeInsets.zero,
+        padding: (_isLoading || ResponsiveHelper.isDesktop(context)) ? EdgeInsets.symmetric(horizontal:Dimensions.w10 ,vertical: Dimensions.h10,) : EdgeInsets.zero,
         child: _isLoading ? const CircularProgressIndicator() : (ResponsiveHelper.isDesktop(context) && widget.totalSize != null) ? InkWell(
           onTap: _paginate,
           child: Container(
-            padding: const EdgeInsets.symmetric(vertical: Dimensions.p10, horizontal: Dimensions.p20),
-            margin: ResponsiveHelper.isDesktop(context) ? const EdgeInsets.only(top: Dimensions.p10) : null,
+            padding: EdgeInsets.symmetric(vertical: Dimensions.h10, horizontal: Dimensions.w20),
+            margin: ResponsiveHelper.isDesktop(context) ? EdgeInsets.only(top: Dimensions.h10) : null,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(Dimensions.r4),
               color: Theme.of(context).primaryColor,
             ),
-            child: Text('view_more'.tr, style: robotoMedium.copyWith(fontSize: Dimensions.fs16, color: Colors.white)),
+            child: Text('view_more'.tr, style: textMedium().copyWith(fontSize: Dimensions.fs16, color: Colors.white)),
           ),
         ) : const SizedBox(),
       )),

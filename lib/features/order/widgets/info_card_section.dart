@@ -45,18 +45,18 @@ class InfoCardSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomCard(
-      padding: const EdgeInsets.all(Dimensions.p16),
+      padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // عنوان القسم
           Text(
             title,
-            style: robotoSemiBold.copyWith(
+            style: textSemiBold().copyWith(
               fontSize: Dimensions.fs16,
             ),
           ),
-          const SizedBox(height: Dimensions.p16),
+          SizedBox(height: Dimensions.h16),
 
           // صورة واسم وعنوان رئيسي
           Row(
@@ -64,13 +64,13 @@ class InfoCardSection extends StatelessWidget {
             children: [
               ClipOval(
                 child: CustomImageWidget(
-                  width: 50,
-                  height: 50,
+                  width: Dimensions.w50,
+                  height: Dimensions.h50,
                   fit: BoxFit.cover,
-                  image: image.isNotEmpty ? image : ManagerAssets.storeImage,
+                  image: image 
                 ),
               ),
-              const SizedBox(width: Dimensions.p16),
+              SizedBox(width: Dimensions.w16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,11 +78,11 @@ class InfoCardSection extends StatelessWidget {
                     if (name != null && name!.isNotEmpty)
                       Text(
                         name!,
-                        style: robotoSemiBold.copyWith(
+                        style: textSemiBold().copyWith(
                           fontSize: Dimensions.fs14,
                         ),
                       ),
-                    const SizedBox(height: Dimensions.p4),
+                    SizedBox(height: Dimensions.h4),
                     if (address != null)
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -92,14 +92,14 @@ class InfoCardSection extends StatelessWidget {
                               address!.address!.isNotEmpty)
                             Text(
                               address!.address!,
-                              style: robotoMedium.copyWith(
+                              style: textMedium().copyWith(
                                 fontSize: Dimensions.fs12,
                                 color: Theme.of(context).disabledColor,
                               ),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
-                          const SizedBox(height: Dimensions.p4),
+                          SizedBox(height: Dimensions.h4),
 
                           // التفاصيل الأخرى
                           Wrap(
@@ -108,7 +108,7 @@ class InfoCardSection extends StatelessWidget {
                                   address!.streetNumber!.isNotEmpty)
                                 Text(
                                   '${'street_number'.tr}: ${address!.streetNumber!}, ',
-                                  style: robotoMedium.copyWith(
+                                  style: textMedium().copyWith(
                                     fontSize: Dimensions.fs10,
                                     color: Theme.of(context).disabledColor,
                                   ),
@@ -117,7 +117,7 @@ class InfoCardSection extends StatelessWidget {
                                   address!.house!.isNotEmpty)
                                 Text(
                                   '${'house'.tr}: ${address!.house!}, ',
-                                  style: robotoMedium.copyWith(
+                                  style: textMedium().copyWith(
                                     fontSize: Dimensions.fs10,
                                     color: Theme.of(context).disabledColor,
                                   ),
@@ -126,7 +126,7 @@ class InfoCardSection extends StatelessWidget {
                                   address!.floor!.isNotEmpty)
                                 Text(
                                   '${'floor'.tr}: ${address!.floor!}',
-                                  style: robotoMedium.copyWith(
+                                  style: textMedium().copyWith(
                                     fontSize: Dimensions.fs10,
                                     color: Theme.of(context).disabledColor,
                                   ),
@@ -140,7 +140,7 @@ class InfoCardSection extends StatelessWidget {
               )
             ],
           ),
-          if (showButton) const SizedBox(height: Dimensions.p16),
+          if (showButton) SizedBox(height: Dimensions.h16),
 
           // أزرار Call, Chat, Direction
           if (showButton)
@@ -173,7 +173,7 @@ class InfoCardSection extends StatelessWidget {
                     ),
                   ),
                 SizedBox(
-                  width: Dimensions.p16,
+                  width: Dimensions.w16,
                 ),
                 if (isStore && isChatAllow && !order.isGuest!)
                   Expanded(
@@ -191,15 +191,15 @@ class InfoCardSection extends StatelessWidget {
                   ),
               ],
             ),
-          if (!showButton) const SizedBox(height: Dimensions.p16),
+          if (!showButton) SizedBox(height: Dimensions.h16),
 
           // رسالة عند عدم وجود بيانات
           if ((name == null || name!.isEmpty) && (address == null))
             Center(
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: Dimensions.p10),
+                padding: EdgeInsets.symmetric(vertical: Dimensions.h10),
                 child: Text('no_store_data_found'.tr,
-                    style: robotoRegular.copyWith(fontSize: Dimensions.fs12)),
+                    style: textRegular().copyWith(fontSize: Dimensions.fs12)),
               ),
             ),
         ],

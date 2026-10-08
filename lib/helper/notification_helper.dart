@@ -21,7 +21,7 @@ class NotificationHelper {
   static Future<void> initialize(
       FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin) async {
     var androidInitialize =
-        const AndroidInitializationSettings('notification_icon');
+        const AndroidInitializationSettings('ic_notification');
     var iOSInitialize = const DarwinInitializationSettings();
     var initializationsSettings =
         InitializationSettings(android: androidInitialize, iOS: iOSInitialize);
@@ -199,7 +199,7 @@ class NotificationHelper {
       FlutterLocalNotificationsPlugin fln) async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
-      '6ammart',
+      'wefrh',
       AppConstants.appName,
       playSound: true,
       importance: Importance.max,

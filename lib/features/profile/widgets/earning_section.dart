@@ -26,18 +26,18 @@ class EarningsSection extends StatelessWidget {
       children: [
         Text(
           'earnings'.tr,
-          style: robotoMedium.copyWith(fontSize: Dimensions.fs16),
+          style: textMedium().copyWith(fontSize: Dimensions.fs16),
         ),
-        SizedBox(height: Dimensions.p16),
+        SizedBox(height: Dimensions.h16),
         CustomCard(
-          padding: EdgeInsets.all(Dimensions.p16),
+          padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
           isBorder: false,
           child: Column(
             children: [
               // زر الأرباح الشخصية
               if (profile.earnings == 1)
                 Padding(
-                  padding: const EdgeInsets.only(bottom: Dimensions.p10),
+                  padding: EdgeInsets.only(bottom: Dimensions.h10),
                   child: ProfileButtonWidget(
                     iconData: Icons.monetization_on,
                     title: 'my_earning'.tr,
@@ -54,7 +54,7 @@ class EarningsSection extends StatelessWidget {
                 Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(bottom: Dimensions.p10),
+                      padding: EdgeInsets.only(bottom: Dimensions.h10),
                       child: ProfileButtonWidget(
                         iconData: Icons.payments,
                         title: 'disbursement'.tr,

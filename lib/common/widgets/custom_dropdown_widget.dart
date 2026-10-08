@@ -74,7 +74,7 @@ class CustomDropdownState<T> extends State<CustomDropdown<T?>>
         child: InkWell(
           onTap: _toggleDropdown,
           child: Padding(
-            padding: const EdgeInsets.all(5),
+            padding: EdgeInsets.all(5),
             child: Row(
               mainAxisAlignment:
               style.mainAxisAlignment ?? MainAxisAlignment.center,
