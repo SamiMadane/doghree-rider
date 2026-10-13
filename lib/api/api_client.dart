@@ -1,17 +1,20 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:wefrh_rider/api/api_checker.dart';
-import 'package:wefrh_rider/common/models/error_response.dart';
-import 'package:wefrh_rider/util/app_constants.dart';
+import 'package:flutter/foundation.dart' as foundation;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter/foundation.dart' as foundation;
-import 'package:path/path.dart';
 import 'package:http_parser/http_parser.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as p;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wefrh_rider/api/api_checker.dart';
+import 'package:wefrh_rider/api/api_error_handler.dart';
+import 'package:wefrh_rider/api/error_message.dart';
+import 'package:wefrh_rider/api/error_type.dart';
+import 'package:wefrh_rider/util/app_constants.dart';
 
 class ApiClient extends GetxService {
   final String appBaseUrl;
@@ -25,197 +28,157 @@ class ApiClient extends GetxService {
 
   ApiClient({required this.appBaseUrl, required this.sharedPreferences}) {
     token = sharedPreferences.getString(AppConstants.token);
-    debugPrint('Token: $token');
-
     updateHeader(token, sharedPreferences.getString(AppConstants.languageCode));
   }
 
   void updateHeader(String? token, String? languageCode) {
     _mainHeaders = {
       'Content-Type': 'application/json; charset=UTF-8',
+      'Accept': 'application/json',
       AppConstants.localizationKey:
           languageCode ?? AppConstants.languages[0].languageCode!,
-      'Authorization': 'Bearer $token'
+      if (token != null && token.isNotEmpty) 'Authorization': 'Bearer $token',
     };
   }
 
-  Future<Response> getData(String uri,
-      {Map<String, dynamic>? query,
-      Map<String, String>? headers,
-      bool handleError = true}) async {
+  void _log(String m) {
+    if (foundation.kDebugMode) debugPrint(m);
+  }
+
+  // ---------- نقطة الإرسال الوحيدة ----------
+  Future<Response> _send(String uri, Future<http.Response> Function() call,
+      bool handleError) async {
     try {
-      debugPrint('====> API Call: $uri\nHeader: $_mainHeaders');
-      http.Response response = await http
-          .get(
-            Uri.parse(appBaseUrl + uri),
-            headers: headers ?? _mainHeaders,
-          )
-          .timeout(Duration(seconds: timeoutInSeconds));
-      return handleResponse(response, uri, handleError);
+      _log('API ▶ $uri');
+      final res = await call().timeout(Duration(seconds: timeoutInSeconds));
+      return handleResponse(res, uri, handleError);
     } catch (e) {
-      return const Response(statusCode: 1, statusText: noInternetMessage);
+      return _failure(e, uri);
     }
   }
 
-  Future<Response> postData(String uri, dynamic body,
-      {Map<String, String>? headers, bool handleError = true}) async {
-    try {
-      debugPrint('====> API Call: $uri\nHeader: $_mainHeaders');
-      debugPrint('====> API Body: $body');
-      http.Response response = await http
-          .post(
-            Uri.parse(appBaseUrl + uri),
-            body: jsonEncode(body),
-            headers: headers ?? _mainHeaders,
-          )
-          .timeout(Duration(seconds: timeoutInSeconds));
-      return handleResponse(response, uri, handleError);
-    } catch (e) {
+  Response _failure(Object e, String uri) {
+    _log('API ✖ $uri → $e');
+    if (e is SocketException || e is TimeoutException || e is http.ClientException) {
       return const Response(statusCode: 1, statusText: noInternetMessage);
     }
+    // أي خطأ آخر (تحليل، منطق) ما بنسمّيه "لا يوجد إنترنت"
+    return Response(
+        statusCode: 0, statusText: ErrorMessages.getMessage(ErrorType.unknown));
   }
+
+  Future<Response> getData(String uri,
+          {Map<String, dynamic>? query,
+          Map<String, String>? headers,
+          bool handleError = true}) =>
+      _send(uri,
+          () => http.get(Uri.parse(appBaseUrl + uri), headers: headers ?? _mainHeaders),
+          handleError);
+
+  Future<Response> postData(String uri, dynamic body,
+          {Map<String, String>? headers, bool handleError = true}) =>
+      _send(
+          uri,
+          () => http.post(Uri.parse(appBaseUrl + uri),
+              body: jsonEncode(body), headers: headers ?? _mainHeaders),
+          handleError);
+
+  Future<Response> putData(String uri, dynamic body,
+          {Map<String, String>? headers, bool handleError = true}) =>
+      _send(
+          uri,
+          () => http.put(Uri.parse(appBaseUrl + uri),
+              body: jsonEncode(body), headers: headers ?? _mainHeaders),
+          handleError);
+
+  Future<Response> patchData(String uri, dynamic body,
+          {Map<String, String>? headers, bool handleError = true}) =>
+      _send(
+          uri,
+          () => http.patch(Uri.parse(appBaseUrl + uri),
+              body: jsonEncode(body), headers: headers ?? _mainHeaders),
+          handleError);
+
+  Future<Response> deleteData(String uri,
+          {Map<String, String>? headers, bool handleError = true}) =>
+      _send(
+          uri,
+          () => http.delete(Uri.parse(appBaseUrl + uri),
+              headers: headers ?? _mainHeaders),
+          handleError);
 
   Future<Response> postMultipartData(
       String uri, Map<String, String> body, List<MultipartBody> multipartBody,
       {Map<String, String>? headers, bool handleError = true}) async {
     try {
-      debugPrint('====> API Call: $uri\nHeader: $_mainHeaders');
-      debugPrint('====> API Body: $body with ${multipartBody.length} files');
-      http.MultipartRequest request =
-          http.MultipartRequest('POST', Uri.parse(appBaseUrl + uri));
+      _log('API ▶ $uri (multipart, ${multipartBody.length} files)');
+      final request = http.MultipartRequest('POST', Uri.parse(appBaseUrl + uri));
       request.headers.addAll(headers ?? _mainHeaders);
-      for (MultipartBody multipart in multipartBody) {
-        if (multipart.file != null) {
-          if (foundation.kIsWeb) {
-            Uint8List list = await multipart.file!.readAsBytes();
-            http.MultipartFile part = http.MultipartFile(
-              multipart.key,
-              multipart.file!.readAsBytes().asStream(),
-              list.length,
-              filename: basename(multipart.file!.path),
-              contentType: MediaType('image', 'jpg'),
-            );
-            request.files.add(part);
-          } else {
-            File file = File(multipart.file!.path);
-            request.files.add(http.MultipartFile(
-              multipart.key,
-              file.readAsBytes().asStream(),
-              file.lengthSync(),
-              filename: file.path.split('/').last,
-            ));
-          }
+      for (final multipart in multipartBody) {
+        if (multipart.file == null) continue;
+        final name = p.basename(multipart.file!.path);
+        final type = _mediaType(name);
+        if (foundation.kIsWeb) {
+          final Uint8List list = await multipart.file!.readAsBytes();
+          request.files.add(http.MultipartFile.fromBytes(multipart.key, list,
+              filename: name, contentType: type));
+        } else {
+          final file = File(multipart.file!.path);
+          request.files.add(http.MultipartFile(
+              multipart.key, file.openRead(), file.lengthSync(),
+              filename: name, contentType: type));
         }
       }
       request.fields.addAll(body);
-      http.Response response =
-          await http.Response.fromStream(await request.send());
-      return handleResponse(response, uri, handleError);
+      final streamed = await request.send().timeout(const Duration(seconds: 60));
+      final res = await http.Response.fromStream(streamed);
+      return handleResponse(res, uri, handleError);
     } catch (e) {
-      return const Response(statusCode: 1, statusText: noInternetMessage);
+      return _failure(e, uri);
     }
   }
 
-  Future<Response> putData(String uri, dynamic body,
-      {Map<String, String>? headers, bool handleError = true}) async {
-    try {
-      debugPrint('====> API Call: $uri\nHeader: $_mainHeaders');
-      debugPrint('====> API Body: $body');
-      http.Response response = await http
-          .put(
-            Uri.parse(appBaseUrl + uri),
-            body: jsonEncode(body),
-            headers: headers ?? _mainHeaders,
-          )
-          .timeout(Duration(seconds: timeoutInSeconds));
-      return handleResponse(response, uri, handleError);
-    } catch (e) {
-      return const Response(statusCode: 1, statusText: noInternetMessage);
+  MediaType _mediaType(String filename) {
+    switch (p.extension(filename).toLowerCase()) {
+      case '.png': return MediaType('image', 'png');
+      case '.webp': return MediaType('image', 'webp');
+      case '.pdf': return MediaType('application', 'pdf');
+      case '.jpg':
+      case '.jpeg':
+      default: return MediaType('image', 'jpeg');
     }
   }
 
-  Future<Response> patchData(String uri, dynamic body,
-      {Map<String, String>? headers, bool handleError = true}) async {
-    try {
-      debugPrint('====> API Call: $uri\nHeader: $_mainHeaders');
-      debugPrint('====> API Body: $body');
-      http.Response response = await http
-          .patch(
-            Uri.parse(appBaseUrl + uri),
-            body: jsonEncode(body),
-            headers: headers ?? _mainHeaders,
-          )
-          .timeout(Duration(seconds: timeoutInSeconds));
-      return handleResponse(response, uri, handleError);
-    } catch (e) {
-      return const Response(statusCode: 1, statusText: noInternetMessage);
-    }
-  }
-
-  Future<Response> deleteData(String uri,
-      {Map<String, String>? headers, bool handleError = true}) async {
-    try {
-      debugPrint('====> API Call: $uri\nHeader: $_mainHeaders');
-      http.Response response = await http
-          .delete(
-            Uri.parse(appBaseUrl + uri),
-            headers: headers ?? _mainHeaders,
-          )
-          .timeout(Duration(seconds: timeoutInSeconds));
-      return handleResponse(response, uri, handleError);
-    } catch (e) {
-      return const Response(statusCode: 1, statusText: noInternetMessage);
-    }
-  }
-
-  Response handleResponse(
-      http.Response response, String uri, bool handleError) {
+  // ---------- معالجة الجواب (المكان الوحيد للأخطاء) ----------
+  Response handleResponse(http.Response response, String uri, bool handleError) {
     dynamic body;
     try {
       body = jsonDecode(response.body);
     } catch (_) {}
-    Response response0 = Response(
+
+    final bool ok = response.statusCode == 200;
+    final String? statusText = ok
+        ? response.reasonPhrase
+        : (ApiErrorHandler.extractMessage(body) ?? response.reasonPhrase);
+
+    final Response result = Response(
       body: body ?? response.body,
       bodyString: response.body.toString(),
       headers: response.headers,
       statusCode: response.statusCode,
-      statusText: response.reasonPhrase,
+      statusText: statusText,
     );
-    if (response0.statusCode != 200 &&
-        response0.body != null &&
-        response0.body is! String) {
-      if (response0.body.toString().startsWith('{errors: [{code:')) {
-        ErrorResponse errorResponse = ErrorResponse.fromJson(response0.body);
-        response0 = Response(
-            statusCode: response0.statusCode,
-            body: response0.body,
-            statusText: errorResponse.errors![0].message);
-      } else if (response0.body.toString().startsWith('{message')) {
-        response0 = Response(
-            statusCode: response0.statusCode,
-            body: response0.body,
-            statusText: response0.body['message']);
-      }
-    } else if (response0.statusCode != 200 && response0.body == null) {
-      response0 = const Response(statusCode: 0, statusText: noInternetMessage);
-    }
 
-    if (handleError) {
-      if (response0.statusCode == 200) {
-        return response0;
-      } else {
-        ApiChecker.checkApi(response0);
-        return const Response();
-      }
-    } else {
-      return response0;
-    }
+    if (!handleError) return result;
+    if (ok) return result;
+
+    ApiChecker.checkApi(result, sessionAware: !uri.contains('/auth/'));
+    return const Response();
   }
 }
 
 class MultipartBody {
   String key;
   XFile? file;
-
   MultipartBody(this.key, this.file);
 }
