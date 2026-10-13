@@ -1,24 +1,38 @@
+import 'package:get/get.dart';
+import 'package:wefrh_rider/api/api_error_handler.dart';
+import 'package:wefrh_rider/api/error_message.dart';
+import 'package:wefrh_rider/api/error_type.dart';
 import 'package:wefrh_rider/common/widgets/custom_bottom_sheet_widget.dart';
+import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
 import 'package:wefrh_rider/common/widgets/session_expired_bottom_sheet.dart';
 import 'package:wefrh_rider/features/auth/controllers/auth_controller.dart';
 import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
 import 'package:wefrh_rider/helper/route_helper.dart';
-import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
-import 'package:get/get.dart';
 
 class ApiChecker {
   static bool _isSessionExpiredBottomSheetShown = false;
 
-  static void checkApi(Response response, {bool showDialog = true}) {
-    if (response.statusCode == 401) {
+  /// sessionAware=false: الـ 401 خطأ عادي (مسارات /auth/)
+  static void checkApi(Response response,
+      {bool showDialog = true, bool sessionAware = true}) {
+    if (response.statusCode == 401 && sessionAware) {
       _handleSessionExpired(showBottomSheet: showDialog);
-    } else {
-      showCustomSnackBar(response.statusText);
+      return;
     }
+    showCustomSnackBar(_messageFor(response));
+  }
+
+  static String _messageFor(Response response) {
+    if (response.statusCode == 1) {
+      return ErrorMessages.getMessage(ErrorType.noInternet);
+    }
+    final text = response.statusText;
+    if (text != null && text.trim().isNotEmpty) return text; // رسالة الخادم العربية
+    return ErrorMessages.getMessage(
+        ApiErrorHandler.getErrorType(response.statusCode ?? 0));
   }
 
   static void _handleSessionExpired({bool showBottomSheet = true}) {
-    // منع إظهار أكثر من Dialog
     if (_isSessionExpiredBottomSheetShown) return;
     _isSessionExpiredBottomSheetShown = true;
 
@@ -26,31 +40,27 @@ class ApiChecker {
     Get.find<ProfileController>().stopLocationRecord();
 
     if (showBottomSheet && Get.context != null) {
-      // إظهار Dialog
       showCustomBottomSheet(
         child: SessionExpiredBottomSheet(
           onConfirm: () {
             _isSessionExpiredBottomSheetShown = false;
-            Get.back(); // يغلق الشيت
+            Get.back();
             Get.offAllNamed(RouteHelper.getSignInRoute());
           },
         ),
-        isDismissible: false, // مهم
-        showCloseButton: false, // نريد إزالة زر الإغلاق
+        isDismissible: false,
+        showCloseButton: false,
       );
     } else {
-      // إذا التطبيق في الخلفية أو لا نريد Dialog
       _isSessionExpiredBottomSheetShown = false;
       Get.offAllNamed(RouteHelper.getSignInRoute());
     }
   }
 
-  // دالة لإعادة تعيين الحالة (مفيدة للحالات الخاصة)
   static void resetDialogState() {
     _isSessionExpiredBottomSheetShown = false;
   }
 }
-
 
 // import 'package:wefrh_rider/api/api_error_handler.dart';
 // import 'package:wefrh_rider/api/api_error_model.dart';
