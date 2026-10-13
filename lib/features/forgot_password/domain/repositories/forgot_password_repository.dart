@@ -57,7 +57,8 @@ class ForgotPasswordRepository implements ForgotPasswordRepositoryInterface {
     if (response.statusCode == 200) {
       responseModel = ResponseModel(true, response.body["message"]);
     } else {
-      responseModel = ResponseModel(false, response.statusText);
+      responseModel = ResponseModel(false, response.statusText,
+          statusCode: response.statusCode);
     }
     return responseModel;
   }
@@ -71,7 +72,8 @@ class ForgotPasswordRepository implements ForgotPasswordRepositoryInterface {
     if (response.statusCode == 200) {
       responseModel = ResponseModel(true, response.body["message"]);
     } else {
-      responseModel = ResponseModel(false, response.statusText);
+      responseModel = ResponseModel(false, response.statusText,
+          statusCode: response.statusCode);
     }
     return responseModel;
   }
@@ -114,7 +116,8 @@ class ForgotPasswordRepository implements ForgotPasswordRepositoryInterface {
     if (response.statusCode == 200) {
       responseModel = ResponseModel(true, response.body["message"]);
     } else {
-      responseModel = ResponseModel(false, response.statusText);
+      responseModel = ResponseModel(false, response.statusText,
+          statusCode: response.statusCode);
     }
     return responseModel;
   }

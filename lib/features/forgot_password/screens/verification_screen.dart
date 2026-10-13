@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:wefrh_rider/common/models/response_model.dart';
 import 'package:wefrh_rider/features/splash/controllers/splash_controller.dart';
 import 'package:wefrh_rider/features/forgot_password/controllers/forgot_password_controller.dart';
 import 'package:wefrh_rider/helper/route_helper.dart';
@@ -24,6 +25,7 @@ class VerificationScreenState extends State<VerificationScreen> {
   String? _number;
   Timer? _timer;
   int _seconds = 0;
+  bool _blocked = false; // 405/429: القفل المؤقت
 
   @override
   void initState() {
@@ -33,23 +35,41 @@ class VerificationScreenState extends State<VerificationScreen> {
     _startTimer();
   }
 
-  void _startTimer() {
-    _seconds = 60;
+  void _startTimer([int seconds = 60, bool blocked = false]) {
+    _timer?.cancel();
+    _seconds = seconds;
+    _blocked = blocked;
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      _seconds = _seconds - 1;
-      if(_seconds == 0) {
+      if (!mounted) {
         timer.cancel();
-        _timer?.cancel();
+        return;
       }
-      setState(() {});
+      setState(() {
+        _seconds--;
+        if (_seconds <= 0) {
+          _seconds = 0;
+          _blocked = false;
+          timer.cancel();
+        }
+      });
     });
+    if (mounted) setState(() {});
   }
+
+  /// 405 = قفل 600 ثانية حسب الدليل (blocked_temp_otp)، 429 = تجاوز المعدّل (نستخدم 60 ثانية)
+  void _handleRateLimit(ResponseModel response) {
+    if (response.isRateLimited) {
+      _startTimer(response.statusCode == 405 ? 600 : 60, true);
+    }
+  }
+
+  String _formatTime(int s) =>
+      '${(s ~/ 60).toString().padLeft(2, '0')}:${(s % 60).toString().padLeft(2, '0')}';
 
   @override
   void dispose() {
-    super.dispose();
-
     _timer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -99,6 +119,16 @@ class VerificationScreenState extends State<VerificationScreen> {
               ),
             ),
 
+            // عدّاد القفل المؤقت (يظهر فقط عند 405/429)
+            if (_blocked)
+              Padding(
+                padding: EdgeInsets.only(bottom: Dimensions.h10),
+                child: Text(
+                  _formatTime(_seconds),
+                  style: textMedium().copyWith(color: Theme.of(context).colorScheme.error),
+                ),
+              ),
+
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
 
               Text(
@@ -119,12 +149,13 @@ class VerificationScreenState extends State<VerificationScreen> {
                         _startTimer();
                         showCustomSnackBar('resend_code_successful'.tr, isError: false);
                       } else {
+                        _handleRateLimit(value);
                         showCustomSnackBar(value.message);
                       }
                     });
                   }
                 } : null,
-                child: Text('${'resend'.tr}${_seconds > 0 ? ' ($_seconds)' : ''}'),
+                child: Text('${'resend'.tr}${_seconds > 0 ? ' (${_formatTime(_seconds)})' : ''}'),
               ) : Container(
                 height: 20, width: 20,
                 padding: EdgeInsets.symmetric(horizontal: Dimensions.w20),
@@ -133,7 +164,7 @@ class VerificationScreenState extends State<VerificationScreen> {
 
             ]),
 
-            forgotPasswordController.verificationCode.length == 6 ? !forgotPasswordController.isLoading ? CustomButtonWidget(
+            forgotPasswordController.verificationCode.length == 6 && !_blocked ? !forgotPasswordController.isLoading ? CustomButtonWidget(
               buttonText: 'verify'.tr,
               onPressed: () {
                 if(widget.firebaseSession != null) {
@@ -147,6 +178,7 @@ class VerificationScreenState extends State<VerificationScreen> {
                     if(value.isSuccess) {
                       Get.toNamed(RouteHelper.getResetPasswordRoute(_number, forgotPasswordController.verificationCode, 'reset-password'));
                     }else {
+                      _handleRateLimit(value);
                       showCustomSnackBar(value.message);
                     }
                   });
