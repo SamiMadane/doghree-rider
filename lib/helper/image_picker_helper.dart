@@ -22,7 +22,9 @@ class ImagePickerHelper {
       // 1. Pick image
       final XFile? image = await _picker.pickImage(
         source: source,
-        imageQuality: 100,
+        imageQuality: 85,
+        maxWidth: 1600,
+        maxHeight: 1600,
       );
 
       if (image == null) return null;
@@ -194,105 +196,106 @@ class ImagePickerHelper {
 
     // ===== PREMIUM COLOR SCHEME =====
     // خلفية gradient حقيقية (مش flat color)
-    final backgroundColor = isDark 
-        ? const Color(0xFF0D0D0D)  // أغمق شوي
-        : const Color(0xFFF8F8F8);  // أفتح شوي
-    
+    final backgroundColor = isDark
+        ? const Color(0xFF0D0D0D) // أغمق شوي
+        : const Color(0xFFF8F8F8); // أفتح شوي
+
     // Toolbar مع depth
-    final toolbarColor = isDark 
-        ? const Color(0xFF1C1C1C)   // رمادي غامق مع warmth
-        : const Color(0xFFFFFFFF);  // أبيض نقي
-    
+    final toolbarColor = isDark
+        ? const Color(0xFF1C1C1C) // رمادي غامق مع warmth
+        : const Color(0xFFFFFFFF); // أبيض نقي
+
     // Grid ملونة ذكية - تتغير حسب brightness الصورة
     final gridColor = primaryColor;
     final frameColor = primaryColor;
 
     final croppedFile = await ImageCropper().cropImage(
       sourcePath: imagePath,
-      compressQuality: 90,
+      compressQuality: 85,
+      compressFormat: ImageCompressFormat.jpg, // امتداد حقيقي مسموح عند الخادم
+      maxWidth: 1600,
+      maxHeight: 1600,
       uiSettings: [
         AndroidUiSettings(
           // ===== MODERN TOOLBAR =====
           toolbarTitle: 'crop_image'.tr,
           toolbarColor: toolbarColor,
           toolbarWidgetColor: isDark ? Colors.white : const Color(0xFF1A1A1A),
-          
+
           // Status bar immersive
-          statusBarColor: isDark 
-              ? const Color(0xFF000000) 
-              : primaryColor,
-          
+          statusBarColor: isDark ? const Color(0xFF000000) : primaryColor,
+
           // ===== BACKGROUND WITH DEPTH =====
           backgroundColor: backgroundColor,
-          
+
           // ===== SMART CONTROLS =====
           // اللون النشط - أكثر وضوحاً
           activeControlsWidgetColor: primaryColor,
-          
+
           // ===== ADVANCED DIMMING =====
           // تعتيم ذكي - يسمح برؤية الصورة كاملة
-          dimmedLayerColor: isDark 
-              ? Colors.black.withOpacity(0.55)  // 55% للـ dark
+          dimmedLayerColor: isDark
+              ? Colors.black.withOpacity(0.55) // 55% للـ dark
               : Colors.black.withOpacity(0.40), // 40% للـ light
-          
+
           // ===== PREMIUM GRID SYSTEM =====
           // إطار بارز مع shadow effect
           cropFrameColor: frameColor,
-          cropFrameStrokeWidth: 3,  // متوسط - مش سميك أوي
-          
+          cropFrameStrokeWidth: 3, // متوسط - مش سميك أوي
+
           // شبكة ملونة ذكية
-          cropGridColor: gridColor.withOpacity(0.30),  // 30% للنعومة
-          cropGridStrokeWidth: 1,  // نحيفة وأنيقة
-          
+          cropGridColor: gridColor.withOpacity(0.30), // 30% للنعومة
+          cropGridStrokeWidth: 1, // نحيفة وأنيقة
+
           // ===== ADAPTIVE GRID =====
           // شبكة 3×3 (Rule of Thirds) - أفضل للـ composition
           cropGridRowCount: 3,
           cropGridColumnCount: 3,
           showCropGrid: true,
-          
+
           // ===== UI ENHANCEMENTS =====
           // إخفاء bottom controls القديمة - هنستخدم custom
           hideBottomControls: false,
-          
+
           // ===== CROP BEHAVIOR =====
           cropStyle: cropStyle,
           initAspectRatio: CropAspectRatioPreset.original,
           lockAspectRatio: lockAspectRatio,
-          
+
           // ===== ASPECT RATIOS =====
           aspectRatioPresets: aspectRatioPresets ??
               [
                 CropAspectRatioPreset.original,
                 CropAspectRatioPreset.square,
-                CropAspectRatioPreset.ratio3x2,  // بدل 4x3 - أكثر استخداماً
-                CropAspectRatioPreset.ratio5x3,  // جديد - للصور الأفقية
+                CropAspectRatioPreset.ratio3x2, // بدل 4x3 - أكثر استخداماً
+                CropAspectRatioPreset.ratio5x3, // جديد - للصور الأفقية
                 CropAspectRatioPreset.ratio16x9, // للفيديو
-                CropAspectRatioPreset.ratio5x4,  // للطباعة
+                CropAspectRatioPreset.ratio5x4, // للطباعة
               ],
         ),
-        
+
         // ===== iOS PREMIUM SETTINGS =====
         IOSUiSettings(
           title: 'crop_image'.tr,
           doneButtonTitle: 'done'.tr,
           cancelButtonTitle: 'cancel'.tr,
-          
+
           // ===== iOS SPECIFIC =====
-          minimumAspectRatio: 0.5,  // أكثر مرونة
+          minimumAspectRatio: 0.5, // أكثر مرونة
           rectX: 0.0,
           rectY: 0.0,
           rectWidth: 1.0,
           rectHeight: 1.0,
-          
+
           cropStyle: cropStyle,
           aspectRatioLockEnabled: lockAspectRatio,
-          
+
           // ===== FEATURES =====
           resetAspectRatioEnabled: true,
           rotateButtonsHidden: false,
           rotateClockwiseButtonHidden: false,
           hidesNavigationBar: false,
-          
+
           aspectRatioPresets: aspectRatioPresets ??
               [
                 CropAspectRatioPreset.original,

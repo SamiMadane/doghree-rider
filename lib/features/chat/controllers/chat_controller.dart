@@ -166,7 +166,8 @@ class ChatController extends GetxController implements GetxService {
       _chatImage = [];
       _isSendButtonActive = false;
     } else {
-      _imageFiles = await picker.pickMultiImage(imageQuality: 30);
+      _imageFiles =
+          await picker.pickMultiImage(imageQuality: 60, maxWidth: 1600);
       if (_imageFiles != null) {
         _chatImage = imageFiles;
         _isSendButtonActive = true;
