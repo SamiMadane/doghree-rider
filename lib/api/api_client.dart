@@ -59,7 +59,9 @@ class ApiClient extends GetxService {
 
   Response _failure(Object e, String uri) {
     _log('API ✖ $uri → $e');
-    if (e is SocketException || e is TimeoutException || e is http.ClientException) {
+    if (e is SocketException ||
+        e is TimeoutException ||
+        e is http.ClientException) {
       return const Response(statusCode: 1, statusText: noInternetMessage);
     }
     // أي خطأ آخر (تحليل، منطق) ما بنسمّيه "لا يوجد إنترنت"
@@ -71,8 +73,10 @@ class ApiClient extends GetxService {
           {Map<String, dynamic>? query,
           Map<String, String>? headers,
           bool handleError = true}) =>
-      _send(uri,
-          () => http.get(Uri.parse(appBaseUrl + uri), headers: headers ?? _mainHeaders),
+      _send(
+          uri,
+          () => http.get(Uri.parse(appBaseUrl + uri),
+              headers: headers ?? _mainHeaders),
           handleError);
 
   Future<Response> postData(String uri, dynamic body,
@@ -112,7 +116,8 @@ class ApiClient extends GetxService {
       {Map<String, String>? headers, bool handleError = true}) async {
     try {
       _log('API ▶ $uri (multipart, ${multipartBody.length} files)');
-      final request = http.MultipartRequest('POST', Uri.parse(appBaseUrl + uri));
+      final request =
+          http.MultipartRequest('POST', Uri.parse(appBaseUrl + uri));
       request.headers.addAll(headers ?? _mainHeaders);
       for (final multipart in multipartBody) {
         if (multipart.file == null) continue;
@@ -130,7 +135,8 @@ class ApiClient extends GetxService {
         }
       }
       request.fields.addAll(body);
-      final streamed = await request.send().timeout(const Duration(seconds: 60));
+      final streamed =
+          await request.send().timeout(const Duration(seconds: 60));
       final res = await http.Response.fromStream(streamed);
       return handleResponse(res, uri, handleError);
     } catch (e) {
@@ -140,17 +146,22 @@ class ApiClient extends GetxService {
 
   MediaType _mediaType(String filename) {
     switch (p.extension(filename).toLowerCase()) {
-      case '.png': return MediaType('image', 'png');
-      case '.webp': return MediaType('image', 'webp');
-      case '.pdf': return MediaType('application', 'pdf');
+      case '.png':
+        return MediaType('image', 'png');
+      case '.webp':
+        return MediaType('image', 'webp');
+      case '.pdf':
+        return MediaType('application', 'pdf');
       case '.jpg':
       case '.jpeg':
-      default: return MediaType('image', 'jpeg');
+      default:
+        return MediaType('image', 'jpeg');
     }
   }
 
   // ---------- معالجة الجواب (المكان الوحيد للأخطاء) ----------
-  Response handleResponse(http.Response response, String uri, bool handleError) {
+  Response handleResponse(
+      http.Response response, String uri, bool handleError) {
     dynamic body;
     try {
       body = jsonDecode(response.body);
@@ -159,7 +170,9 @@ class ApiClient extends GetxService {
     final bool ok = response.statusCode == 200;
     final String? statusText = ok
         ? response.reasonPhrase
-        : (ApiErrorHandler.extractMessage(body) ?? response.reasonPhrase);
+        : (ApiErrorHandler.extractMessage(body) ??
+            ErrorMessages.getMessage(
+                ApiErrorHandler.getErrorType(response.statusCode)));
 
     final Response result = Response(
       body: body ?? response.body,
