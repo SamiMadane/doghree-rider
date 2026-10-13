@@ -12,56 +12,48 @@ import 'package:wefrh_rider/features/forgot_password/domain/repositories/forgot_
 class ForgotPasswordRepository implements ForgotPasswordRepositoryInterface {
   final ApiClient apiClient;
   final SharedPreferences sharedPreferences;
-  ForgotPasswordRepository({required this.apiClient, required this.sharedPreferences});
-@override
-Future<ResponseModel> changePassword(
-  ProfileModel userInfoModel,
-  String currentPassword,
-  String newPassword,
-) async {
-  ResponseModel responseModel;
+  ForgotPasswordRepository(
+      {required this.apiClient, required this.sharedPreferences});
+  @override
+  Future<ResponseModel> changePassword(
+    ProfileModel userInfoModel,
+    String currentPassword,
+    String newPassword,
+  ) async {
+    ResponseModel responseModel;
 
-  Map<String, dynamic> body = {
-    '_method': 'put',
-    'f_name': userInfoModel.fName,
-    'l_name': userInfoModel.lName,
-    'email': userInfoModel.email,
-    'current_password': currentPassword, 
-    'password': newPassword, 
-    'token': _getUserToken(),
-  };
+    Map<String, dynamic> body = {
+      '_method': 'put',
+      'f_name': userInfoModel.fName,
+      'l_name': userInfoModel.lName,
+      'email': userInfoModel.email,
+      'current_password': currentPassword,
+      'password': newPassword,
+      'token': _getUserToken(),
+    };
 
-  Response response = await apiClient.postData(
-    AppConstants.updateProfileUri,
-    body,
-    handleError: false,
-  );
-  if (response.statusCode == 200) {
-    responseModel = ResponseModel(true, response.body["message"]);
-  }  else {
-    // ⚠️ هنا يجب معالجة الـ errors array
-    String errorMessage = response.statusText ?? 'error_occurred'.tr;
-    
-    // لو الباك إند بيرجع errors array
-    if (response.body != null && response.body['errors'] != null) {
-      var errors = response.body['errors'] as List;
-      if (errors.isNotEmpty) {
-        errorMessage = errors[0]['message'] ?? errorMessage;
-      }
+    Response response = await apiClient.postData(
+      AppConstants.updateProfileUri,
+      body,
+      handleError: false,
+    );
+    if (response.statusCode == 200) {
+      responseModel = ResponseModel(true, response.body["message"]);
+    } else {
+      responseModel =
+          ResponseModel(false, response.statusText ?? 'error_occurred'.tr);
     }
-    
-    responseModel = ResponseModel(false, errorMessage);
+
+    return responseModel;
   }
-
-  return responseModel;
-}
-
 
   @override
   Future<ResponseModel> forgetPassword(String? phone) async {
     ResponseModel responseModel;
     String? deviceToken = await _saveDeviceToken();
-    Response response = await apiClient.postData(AppConstants.forgetPasswordUri, {"phone": phone, "fcm_token" : deviceToken}, handleError: false);
+    Response response = await apiClient.postData(AppConstants.forgetPasswordUri,
+        {"phone": phone, "fcm_token": deviceToken},
+        handleError: false);
     if (response.statusCode == 200) {
       responseModel = ResponseModel(true, response.body["message"]);
     } else {
@@ -73,7 +65,9 @@ Future<ResponseModel> changePassword(
   @override
   Future<ResponseModel> verifyToken(String? phone, String token) async {
     ResponseModel responseModel;
-    Response response = await apiClient.postData(AppConstants.verifyTokenUri, {"phone": phone, "reset_token": token}, handleError: false);
+    Response response = await apiClient.postData(
+        AppConstants.verifyTokenUri, {"phone": phone, "reset_token": token},
+        handleError: false);
     if (response.statusCode == 200) {
       responseModel = ResponseModel(true, response.body["message"]);
     } else {
@@ -83,12 +77,17 @@ Future<ResponseModel> changePassword(
   }
 
   @override
-  Future<ResponseModel> verifyFirebaseOtp({required String phoneNumber, required String session, required String otp}) async {
-    Response response = await apiClient.postData(AppConstants.firebaseAuthVerify,
-      {'sessionInfo' : session,
-        'phoneNumber' : phoneNumber,
-        'code' : otp,
-        'is_reset_token' : 1,
+  Future<ResponseModel> verifyFirebaseOtp(
+      {required String phoneNumber,
+      required String session,
+      required String otp}) async {
+    Response response = await apiClient.postData(
+      AppConstants.firebaseAuthVerify,
+      {
+        'sessionInfo': session,
+        'phoneNumber': phoneNumber,
+        'code': otp,
+        'is_reset_token': 1,
       },
     );
     if (response.statusCode == 200) {
@@ -99,10 +98,19 @@ Future<ResponseModel> changePassword(
   }
 
   @override
-  Future<ResponseModel> resetPassword(String? resetToken, String phone, String password, String confirmPassword) async {
+  Future<ResponseModel> resetPassword(String? resetToken, String phone,
+      String password, String confirmPassword) async {
     ResponseModel responseModel;
-    Response response = await apiClient.postData(AppConstants.resetPasswordUri,
-      {"_method": "put", "phone": phone, "reset_token": resetToken, "password": password, "confirm_password": confirmPassword}, handleError: false);
+    Response response = await apiClient.postData(
+        AppConstants.resetPasswordUri,
+        {
+          "_method": "put",
+          "phone": phone,
+          "reset_token": resetToken,
+          "password": password,
+          "confirm_password": confirmPassword
+        },
+        handleError: false);
     if (response.statusCode == 200) {
       responseModel = ResponseModel(true, response.body["message"]);
     } else {
@@ -117,7 +125,7 @@ Future<ResponseModel> changePassword(
 
   Future<String?> _saveDeviceToken() async {
     String? deviceToken = '';
-    if(!GetPlatform.isWeb) {
+    if (!GetPlatform.isWeb) {
       deviceToken = (await FirebaseMessaging.instance.getToken())!;
     }
     debugPrint('----Device Token----- $deviceToken');
@@ -148,5 +156,4 @@ Future<ResponseModel> changePassword(
   Future update(Map<String, dynamic> body) {
     throw UnimplementedError();
   }
-
 }
