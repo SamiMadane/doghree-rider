@@ -81,7 +81,8 @@ class OrderController extends GetxController implements GetxService {
     } else {
       XFile? xFile = await ImagePicker().pickImage(
           source: isCamera ? ImageSource.camera : ImageSource.gallery,
-          imageQuality: 50);
+          imageQuality: 70,
+          maxWidth: 1600);
       if (xFile != null) {
         _pickedPrescriptions.add(xFile);
         if (Get.isDialogOpen!) {
@@ -141,10 +142,11 @@ class OrderController extends GetxController implements GetxService {
         if (offset == 1) {
           _completedOrderList = [];
         }
-        
+
         // ✅ فلترة Orders بدون items
-        List<OrderModel> validOrders = paginatedOrderModel.orders!.where(_isValidOrder).toList();
-        
+        List<OrderModel> validOrders =
+            paginatedOrderModel.orders!.where(_isValidOrder).toList();
+
         _completedOrderList!.addAll(validOrders);
         _pageSize = paginatedOrderModel.totalSize;
         _paginate = false;
@@ -172,10 +174,11 @@ class OrderController extends GetxController implements GetxService {
         await orderServiceInterface.getCurrentOrders();
     if (currentOrderList != null) {
       _currentOrderList = [];
-      
+
       // ✅ فلترة Orders بدون items
-      List<OrderModel> validOrders = currentOrderList.where(_isValidOrder).toList();
-      
+      List<OrderModel> validOrders =
+          currentOrderList.where(_isValidOrder).toList();
+
       _currentOrderList!.addAll(validOrders);
     }
     update();
@@ -198,14 +201,15 @@ class OrderController extends GetxController implements GetxService {
       _latestOrderList = [];
       List<int?> ignoredIdList =
           orderServiceInterface.prepareIgnoreIdList(_ignoredRequests);
-      
+
       // معالجة Orders + فلترة Orders الفاضية
-      List<OrderModel> processedOrders = orderServiceInterface.processLatestOrders(
-          latestOrderList, ignoredIdList);
-      
+      List<OrderModel> processedOrders = orderServiceInterface
+          .processLatestOrders(latestOrderList, ignoredIdList);
+
       // ✅ فلترة Orders بدون items
-      List<OrderModel> validOrders = processedOrders.where(_isValidOrder).toList();
-      
+      List<OrderModel> validOrders =
+          processedOrders.where(_isValidOrder).toList();
+
       _latestOrderList!.addAll(validOrders);
     }
     update();
@@ -245,6 +249,7 @@ class OrderController extends GetxController implements GetxService {
       showCustomSnackBar(responseModel.message, isError: false);
     } else {
       showCustomSnackBar(responseModel.message, isError: true);
+      getLatestOrders();
     }
     _isLoading = false;
     update();
@@ -256,11 +261,11 @@ class OrderController extends GetxController implements GetxService {
       _orderDetailsModel = [];
     } else {
       _orderDetailsModel = null;
-      
+
       try {
         List<OrderDetailsModel>? orderDetailsModel =
             await orderServiceInterface.getOrderDetails(orderID);
-        
+
         if (orderDetailsModel != null) {
           _orderDetailsModel = [];
           _orderDetailsModel!.addAll(orderDetailsModel);
@@ -273,7 +278,7 @@ class OrderController extends GetxController implements GetxService {
         showCustomSnackBar('failed_to_load_order_details'.tr, isError: true);
         debugPrint('🔴 Error loading order details: $e');
       }
-      
+
       update();
     }
   }
@@ -308,8 +313,8 @@ class OrderController extends GetxController implements GetxService {
   }
 
   void removePrescriptionImage(XFile file) {
-    _pickedPrescriptions.remove(file); 
-    update(); 
+    _pickedPrescriptions.remove(file);
+    update();
   }
 
   void ignoreOrder(int index) {
