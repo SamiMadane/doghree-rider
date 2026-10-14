@@ -10,7 +10,6 @@ import 'package:wefrh_rider/util/dimensions.dart';
 import 'package:wefrh_rider/util/styles.dart';
 import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
 import 'package:wefrh_rider/util/manager_assets.dart';
-import 'package:wefrh_rider/common/widgets/confirmation_dialog_widget.dart';
 import 'package:wefrh_rider/features/order/widgets/verify_delivery_sheet_widget.dart';
 import 'package:wefrh_rider/util/app_constants.dart';
 
@@ -45,7 +44,6 @@ class OrderSliderButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final orderController = Get.find<OrderController>();
-    final isLtr = Get.find<LocalizationController>().isLtr;
 
     return SliderButton(
       action: () async {

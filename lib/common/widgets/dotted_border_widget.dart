@@ -37,6 +37,7 @@ class DottedBorderWidget extends StatelessWidget {
             children: [
               SvgPicture.asset(
                 ManagerAssets.uploadIcon,
+                // ignore: deprecated_member_use
                 color: showErrorBorder
                     ? Theme.of(context).colorScheme.error
                     : Theme.of(context).disabledColor,

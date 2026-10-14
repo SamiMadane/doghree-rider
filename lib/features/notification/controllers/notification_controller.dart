@@ -86,7 +86,6 @@ class NotificationController extends GetxController implements GetxService {
 
       case NotificationType.general:
       case NotificationType.otp:
-      default:
         break;
     }
   }

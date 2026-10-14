@@ -1,23 +1,17 @@
 import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:wefrh_rider/api/api_checker.dart';
-import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
 import 'package:wefrh_rider/common/widgets/no_internet_screen.dart';
 import 'package:wefrh_rider/features/auth/controllers/auth_controller.dart';
 import 'package:wefrh_rider/features/dashboard/screens/dashboard_screen.dart';
 import 'package:wefrh_rider/features/language/controllers/language_controller.dart';
 import 'package:wefrh_rider/features/splash/controllers/splash_controller.dart';
-import 'package:wefrh_rider/features/splash/widgets/build_loading_widget.dart';
 import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
 import 'package:wefrh_rider/features/notification/domain/models/notification_body_model.dart';
 import 'package:wefrh_rider/helper/route_helper.dart';
 import 'package:wefrh_rider/util/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/util/manager_assets.dart';
-import 'package:wefrh_rider/util/styles.dart';
 
 class SplashScreen extends StatefulWidget {
   final NotificationBodyModel? body;
@@ -36,7 +30,6 @@ class SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    print("NavigationHandler: initState started");
 
     _initializeApp();
   }
@@ -45,8 +38,6 @@ class SplashScreenState extends State<SplashScreen> {
     await Get.find<SplashController>().initSharedData();
 
     final localizationController = Get.find<LocalizationController>();
-    print(
-        'localizationController.selectedLanguageIndex = ${localizationController.selectedLanguageIndex}');
 
     // لا نجلب البروفايل هنا - سنفعل ذلك في _validateSession
     // if (Get.find<AuthController>().isLoggedIn()) {
@@ -70,7 +61,6 @@ class SplashScreenState extends State<SplashScreen> {
 
       return isValid;
     } catch (e) {
-      print("Session validation failed: $e");
       return false;
     }
   }
@@ -103,8 +93,6 @@ class SplashScreenState extends State<SplashScreen> {
 
   @override
   void dispose() {
-    print(
-        "NavigationHandler: dispose called, cancelling connectivity subscription");
     _onConnectivityChanged?.cancel();
     super.dispose();
   }
@@ -126,7 +114,6 @@ class SplashScreenState extends State<SplashScreen> {
   }
 
   void _route() async {
-    print("NavigationHandler: Starting _route()");
 
     Timer(const Duration(seconds: 1), () async {
       final config = Get.find<SplashController>().configModel;

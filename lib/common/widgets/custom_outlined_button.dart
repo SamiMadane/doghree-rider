@@ -19,7 +19,7 @@ class CustomOutlinedButton extends StatelessWidget {
   final FontWeight fontWeight;
 
   const CustomOutlinedButton({
-    Key? key,
+    super.key,
     required this.text,
     required this.onPressed,
     this.icon,
@@ -34,7 +34,7 @@ class CustomOutlinedButton extends StatelessWidget {
     this.height,
     this.margin,
     this.fontWeight = FontWeight.w500,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

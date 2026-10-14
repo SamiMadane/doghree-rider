@@ -292,6 +292,7 @@ class CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
           widget.prefixImage!,
           height: 20,
           width: 20,
+          // ignore: deprecated_member_use
           color: Theme.of(context).hintColor,
         ),
       );
@@ -310,12 +311,14 @@ class CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
                 ManagerAssets.visibilityOffIcon,
                 width: 24,
                 height: 24,
+                // ignore: deprecated_member_use
                 color: Theme.of(context).hintColor,
               )
             : SvgPicture.asset(
                 ManagerAssets.visibilityIcon,
                 width: 24,
                 height: 24,
+                // ignore: deprecated_member_use
                 color: Theme.of(context).hintColor,
               ),
         onPressed: _toggle,
