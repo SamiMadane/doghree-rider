@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -29,9 +28,6 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 late List<CameraDescription> cameras;
 
 Future<void> main() async {
-  if (!GetPlatform.isWeb) {
-    HttpOverrides.global = MyHttpOverrides();
-  }
   setPathUrlStrategy();
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -76,9 +72,7 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key, required this.languages, this.body});
 
   void _route() {
-    Get.find<SplashController>()
-        .getConfigData()
-        .then((bool isSuccess) async {
+    Get.find<SplashController>().getConfigData().then((bool isSuccess) async {
       if (isSuccess) {
         if (Get.find<AuthController>().isLoggedIn()) {
           Get.find<AuthController>().updateToken();
@@ -110,10 +104,8 @@ class MyApp extends StatelessWidget {
         return GetBuilder<ThemeController>(builder: (themeController) {
           return GetBuilder<LocalizationController>(
               builder: (localizeController) {
-            return GetBuilder<SplashController>(
-                builder: (splashController) {
-              return (GetPlatform.isWeb &&
-                      splashController.configModel == null)
+            return GetBuilder<SplashController>(builder: (splashController) {
+              return (GetPlatform.isWeb && splashController.configModel == null)
                   ? const SizedBox()
                   : GetMaterialApp(
                       title: AppConstants.appName,
@@ -132,13 +124,11 @@ class MyApp extends StatelessWidget {
                           : RouteHelper.getNavigationHandlerRoute(body),
                       getPages: RouteHelper.routes,
                       defaultTransition: Transition.topLevel,
-                      transitionDuration:
-                          const Duration(milliseconds: 500),
+                      transitionDuration: const Duration(milliseconds: 500),
                       builder: (BuildContext context, widget) {
                         return MediaQuery(
                           data: MediaQuery.of(context).copyWith(
-                              textScaler:
-                                  const TextScaler.linear(1.0)),
+                              textScaler: const TextScaler.linear(1.0)),
                           child: Material(
                             child: SafeArea(
                               top: false,
@@ -158,14 +148,5 @@ class MyApp extends StatelessWidget {
         });
       },
     );
-  }
-}
-
-class MyHttpOverrides extends HttpOverrides {
-  @override
-  HttpClient createHttpClient(SecurityContext? context) {
-    return super.createHttpClient(context)
-      ..badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
   }
 }
