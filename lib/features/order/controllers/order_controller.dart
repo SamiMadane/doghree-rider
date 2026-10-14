@@ -79,6 +79,11 @@ class OrderController extends GetxController implements GetxService {
     if (isRemove) {
       _pickedPrescriptions = [];
     } else {
+      if (_pickedPrescriptions.length >= 5) {
+        if (Get.isDialogOpen ?? false) Get.back();
+        showCustomSnackBar('maximum_proof_images_5'.tr);
+        return;
+      }
       XFile? xFile = await ImagePicker().pickImage(
           source: isCamera ? ImageSource.camera : ImageSource.gallery,
           imageQuality: 70,
