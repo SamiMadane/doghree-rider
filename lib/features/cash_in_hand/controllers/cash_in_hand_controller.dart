@@ -7,6 +7,7 @@ import 'package:wefrh_rider/api/api_checker.dart';
 import 'dart:async';
 import 'package:wefrh_rider/common/models/response_model.dart';
 import 'package:wefrh_rider/features/cash_in_hand/domain/models/earning_report_model.dart';
+import 'package:wefrh_rider/features/cash_in_hand/domain/models/wallet_model.dart';
 import 'package:wefrh_rider/features/cash_in_hand/domain/models/wallet_payment_model.dart';
 import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
 import 'package:wefrh_rider/features/cash_in_hand/domain/services/cash_in_hand_service_interface.dart';
@@ -32,7 +33,8 @@ class CashInHandController extends GetxController implements GetxService {
   int get selectedIndex => _selectedIndex;
 
   List<Transactions>? _walletProvidedTransactions;
-  List<Transactions>? get walletProvidedTransactions => _walletProvidedTransactions;
+  List<Transactions>? get walletProvidedTransactions =>
+      _walletProvidedTransactions;
 
   late DateTimeRange _selectedDateRange;
 
@@ -59,7 +61,11 @@ class CashInHandController extends GetxController implements GetxService {
   List<Data>? _earningList;
   List<Data>? get earningList => _earningList;
 
-  final List<String> _earningTypes = ['all_types_earning', 'delivery_fee', 'delivery_tips'];
+  final List<String> _earningTypes = [
+    'all_types_earning',
+    'delivery_fee',
+    'delivery_tips'
+  ];
   List<String> get earningTypes => _earningTypes;
 
   String? _selectedEarningType = 'all_types_earning';
@@ -73,20 +79,36 @@ class CashInHandController extends GetxController implements GetxService {
 
   bool? _downloadLoading = false;
   bool? get downloadLoading => _downloadLoading;
+  WalletModel? _wallet;
+  WalletModel? get wallet => _wallet;
 
-  Future<ResponseModel> makeCollectCashPayment(double amount, String paymentGatewayName) async {
+  bool _walletLoading = false;
+  bool get walletLoading => _walletLoading;
+
+  Future<ResponseModel> makeCollectCashPayment(
+      double amount, String paymentGatewayName) async {
     _isLoading = true;
     update();
-    ResponseModel responseModel = await cashInHandServiceInterface.makeCollectCashPayment(amount, paymentGatewayName);
+    ResponseModel responseModel = await cashInHandServiceInterface
+        .makeCollectCashPayment(amount, paymentGatewayName);
     _isLoading = false;
     update();
     return responseModel;
   }
+   Future<void> getWallet() async {
+    _walletLoading = true;
+    update();
+    final WalletModel? wallet = await cashInHandServiceInterface.getWallet();
+    if (wallet != null) _wallet = wallet;
+    _walletLoading = false;
+    update();
+  }
 
   Future<void> getWalletPaymentList() async {
     _transactions = null;
-    List<Transactions>? transactions = await cashInHandServiceInterface.getWalletPaymentList();
-    if(transactions != null) {
+    List<Transactions>? transactions =
+        await cashInHandServiceInterface.getWalletPaymentList();
+    if (transactions != null) {
       _transactions = [];
       _transactions!.addAll(transactions);
     }
@@ -95,8 +117,9 @@ class CashInHandController extends GetxController implements GetxService {
 
   Future<void> getWalletProvidedEarningList() async {
     _walletProvidedTransactions = null;
-    List<Transactions>? walletProvidedTransactions = await cashInHandServiceInterface.getWalletProvidedEarningList();
-    if(walletProvidedTransactions != null) {
+    List<Transactions>? walletProvidedTransactions =
+        await cashInHandServiceInterface.getWalletProvidedEarningList();
+    if (walletProvidedTransactions != null) {
       _walletProvidedTransactions = [];
       _walletProvidedTransactions!.addAll(walletProvidedTransactions);
     }
@@ -106,12 +129,13 @@ class CashInHandController extends GetxController implements GetxService {
   Future<void> makeWalletAdjustment() async {
     _isLoading = true;
     update();
-    ResponseModel responseModel = await cashInHandServiceInterface.makeWalletAdjustment();
-    if(responseModel.isSuccess) {
+    ResponseModel responseModel =
+        await cashInHandServiceInterface.makeWalletAdjustment();
+    if (responseModel.isSuccess) {
       Get.find<ProfileController>().getProfile();
       Get.back();
       showCustomSnackBar(responseModel.message, isError: false);
-    }else{
+    } else {
       Get.back();
       showCustomSnackBar(responseModel.message, isError: true);
     }
@@ -119,14 +143,14 @@ class CashInHandController extends GetxController implements GetxService {
     update();
   }
 
-  void setPaymentIndex(int index){
+  void setPaymentIndex(int index) {
     _paymentIndex = index;
     update();
   }
 
-  void changeDigitalPaymentName(String? name, {bool canUpdate = true}){
+  void changeDigitalPaymentName(String? name, {bool canUpdate = true}) {
     _digitalPaymentName = name;
-    if(canUpdate) {
+    if (canUpdate) {
       update();
     }
   }
@@ -162,9 +186,13 @@ class CashInHandController extends GetxController implements GetxService {
     }
   }
 
-  Future<void> getEarningReport({required String offset, required String? type, required String? startDate, required String? endDate, bool fromFilter = false}) async {
-
-    if(offset == '1') {
+  Future<void> getEarningReport(
+      {required String offset,
+      required String? type,
+      required String? startDate,
+      required String? endDate,
+      bool fromFilter = false}) async {
+    if (offset == '1') {
       _offsetList = [];
       _offset = 1;
       _earningList = null;
@@ -173,7 +201,12 @@ class CashInHandController extends GetxController implements GetxService {
     if (!_offsetList.contains(offset)) {
       _offsetList.add(offset);
 
-      EarningReportModel? earningReportModel = await cashInHandServiceInterface.getEarningReport(offset: offset, type: type == 'all_types_earning' ? 'all' : type, startDate: startDate, endDate: endDate);
+      EarningReportModel? earningReportModel =
+          await cashInHandServiceInterface.getEarningReport(
+              offset: offset,
+              type: type == 'all_types_earning' ? 'all' : type,
+              startDate: startDate,
+              endDate: endDate);
       if (earningReportModel != null) {
         if (offset == '1') {
           _earningList = [];
@@ -185,8 +218,8 @@ class CashInHandController extends GetxController implements GetxService {
         _isFiltered = fromFilter;
         update();
       }
-    }else {
-      if(isLoading) {
+    } else {
+      if (isLoading) {
         _isLoading = false;
         update();
       }
@@ -218,7 +251,7 @@ class CashInHandController extends GetxController implements GetxService {
     _from = null;
     _to = null;
     _isFiltered = false;
-    if(isUpdate) {
+    if (isUpdate) {
       update();
     }
   }
@@ -227,12 +260,11 @@ class CashInHandController extends GetxController implements GetxService {
     _downloadLoading = true;
     update();
 
-    final response = await cashInHandServiceInterface.downloadEarningInvoice(dmId: dmId);
+    final response =
+        await cashInHandServiceInterface.downloadEarningInvoice(dmId: dmId);
 
     if (response.statusCode == 200) {
-
       try {
-
         // Get the document directory path
         final directory = await getApplicationDocumentsDirectory();
         final filePath = '${directory.path}/earning_invoice_$dmId.pdf';
@@ -246,7 +278,6 @@ class CashInHandController extends GetxController implements GetxService {
       } catch (e) {
         showCustomSnackBar('file_opening_failed'.tr);
       }
-
     } else {
       ApiChecker.checkApi(response);
     }
@@ -254,5 +285,4 @@ class CashInHandController extends GetxController implements GetxService {
     _downloadLoading = false;
     update();
   }
-
 }

@@ -20,6 +20,7 @@ class AppConstants {
   static const String configUri = '/api/v1/config';
   static const String forgetPasswordUri =
       '/api/v1/auth/delivery-man/forgot-password';
+  static const String walletUri = '/api/v1/delivery-man/wallet';
   static const String verifyTokenUri = '/api/v1/auth/delivery-man/verify-token';
   static const String resetPasswordUri =
       '/api/v1/auth/delivery-man/reset-password';

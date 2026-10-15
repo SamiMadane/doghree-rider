@@ -4,6 +4,8 @@ import 'package:wefrh_rider/features/cash_in_hand/domain/models/earning_report_m
 import 'package:wefrh_rider/features/cash_in_hand/domain/models/wallet_payment_model.dart';
 import 'package:wefrh_rider/features/cash_in_hand/domain/repositories/cash_in_hand_repository_interface.dart';
 import 'package:wefrh_rider/features/cash_in_hand/domain/services/cash_in_hand_service_interface.dart';
+import 'package:wefrh_rider/features/cash_in_hand/domain/models/wallet_model.dart';
+
 
 class CashInHandService implements CashInHandServiceInterface {
   final CashInHandRepositoryInterface cashInHandRepositoryInterface;
@@ -37,6 +39,10 @@ class CashInHandService implements CashInHandServiceInterface {
   @override
   Future<Response> downloadEarningInvoice({required int dmId}) async {
     return await cashInHandRepositoryInterface.downloadEarningInvoice(dmId: dmId);
+  }
+  @override
+  Future<WalletModel?> getWallet() async {
+    return await cashInHandRepositoryInterface.getWallet();
   }
 
 }

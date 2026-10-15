@@ -7,6 +7,8 @@ import 'package:wefrh_rider/features/cash_in_hand/domain/models/wallet_payment_m
 import 'package:wefrh_rider/features/cash_in_hand/domain/repositories/cash_in_hand_repository_interface.dart';
 import 'package:wefrh_rider/helper/route_helper.dart';
 import 'package:wefrh_rider/util/app_constants.dart';
+import 'package:wefrh_rider/features/cash_in_hand/domain/models/wallet_model.dart';
+
 
 class CashInHandRepository implements CashInHandRepositoryInterface {
   final ApiClient apiClient;
@@ -119,6 +121,14 @@ class CashInHandRepository implements CashInHandRepositoryInterface {
   @override
   Future update(Map<String, dynamic> body) {
     throw UnimplementedError();
+  }
+    @override
+  Future<WalletModel?> getWallet() async {
+    final Response response = await apiClient.getData(AppConstants.walletUri);
+    if (response.statusCode == 200 && response.body is Map) {
+      return WalletModel.fromJson(Map<String, dynamic>.from(response.body));
+    }
+    return null;
   }
 
 }
