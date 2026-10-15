@@ -8,29 +8,35 @@ class NotificationModel {
   Data? data;
   bool isRead = false;
 
-  NotificationModel({
-    this.id,
-    this.title,
-    this.description,
-    this.imageFullUrl,
-    this.createdAt,
-    this.updatedAt,
-    this.data,
-    this.isRead = false
-  });
+  NotificationModel(
+      {this.id,
+      this.title,
+      this.description,
+      this.imageFullUrl,
+      this.createdAt,
+      this.updatedAt,
+      this.data,
+      this.isRead = false});
 
   // ✨ Safe parsing لكل الحقول
   NotificationModel.fromJson(Map<String, dynamic> json) {
     id = _safeIntParse(json['id']);
-    title = json['title'];
-    description = json['description'];
-    imageFullUrl = json['image_full_url'];
+
+    final Map<String, dynamic>? dataMap =
+        json['data'] is Map ? Map<String, dynamic>.from(json['data']) : null;
+
+    title = _safeString(json['title']) ?? _safeString(dataMap?['title']);
+    description = _safeString(json['description']) ??
+        _safeString(dataMap?['description']);
+    imageFullUrl = _safeString(json['image_full_url']) ??
+        _safeString(dataMap?['image_full_url']) ??
+        _safeString(dataMap?['image']);
+
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    data = json['data'] != null ? Data.fromJson(json['data']) : null;
-    isRead = json['is_read'] ?? false;
+    data = dataMap != null ? Data.fromJson(dataMap) : null;
+    isRead = _safeBool(json['is_read']);
   }
-
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
@@ -44,6 +50,19 @@ class NotificationModel {
       data['data'] = this.data!.toJson();
     }
     return data;
+  }
+
+  static String? _safeString(dynamic value) {
+    if (value == null) return null;
+    final s = value.toString().trim();
+    return s.isEmpty ? null : s;
+  }
+
+  static bool _safeBool(dynamic value) {
+    if (value is bool) return value;
+    if (value is int) return value == 1;
+    if (value is String) return value == '1' || value.toLowerCase() == 'true';
+    return false;
   }
 
   // ✅ دالة Safe parsing موحدة
@@ -72,7 +91,7 @@ class Data {
 
   Data.fromJson(Map<String, dynamic> json) {
     type = json['type'];
-    
+
     // ✨ استخدام الدالة الموحدة لكل الحقول
     orderId = NotificationModel._safeIntParse(json['order_id']);
     customerId = NotificationModel._safeIntParse(json['customer_id']);
