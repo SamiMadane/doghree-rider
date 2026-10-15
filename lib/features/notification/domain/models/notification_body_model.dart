@@ -1,4 +1,4 @@
-enum NotificationType{
+enum NotificationType {
   message,
   order,
   general,
@@ -10,6 +10,7 @@ enum NotificationType{
   // ignore: constant_identifier_names
   cash_collect,
   unassign,
+  withdraw,
 }
 
 class NotificationBodyModel {
@@ -60,9 +61,9 @@ class NotificationBodyModel {
       NotificationType.otp.toString(): NotificationType.otp,
       NotificationType.cash_collect.toString(): NotificationType.cash_collect,
       NotificationType.unassign.toString(): NotificationType.unassign,
+      NotificationType.withdraw.toString(): NotificationType.withdraw,
     };
 
     return enumMap[enumString] ?? NotificationType.general;
   }
-
 }

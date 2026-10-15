@@ -15,6 +15,7 @@ import 'package:wefrh_rider/helper/route_helper.dart';
 import 'package:wefrh_rider/util/app_constants.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:wefrh_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
 import 'package:http/http.dart' as http;
 
 class NotificationHelper {
@@ -56,6 +57,8 @@ class NotificationHelper {
                     fromNotification: true)),
             NotificationType.general: () => Get.toNamed(
                 RouteHelper.getNotificationRoute(fromNotification: true)),
+            NotificationType.withdraw: () =>
+                Get.toNamed(RouteHelper.getCashInHandRoute()),
           };
 
           notificationActions[payload.notificationType]?.call();
@@ -108,6 +111,15 @@ class NotificationHelper {
       } else if (message.data['type'] == 'otp') {
         NotificationHelper.showNotification(
             message, flutterLocalNotificationsPlugin);
+      } else if (message.data['type'] == 'withdraw') {
+        NotificationHelper.showNotification(
+            message, flutterLocalNotificationsPlugin);
+        if (Get.isRegistered<CashInHandController>()) {
+          Get.find<CashInHandController>().getWallet();
+        }
+        if (Get.isRegistered<NotificationController>()) {
+          Get.find<NotificationController>().getNotificationList();
+        }
       } else {
         String? type = message.data['type'];
 
@@ -134,8 +146,7 @@ class NotificationHelper {
 
           final Map<NotificationType, Function> notificationActions = {
             NotificationType.order: () => Get.toNamed(
-                RouteHelper.getOrderDetailsRoute(
-                    int.parse(message.data['order_id']),
+                RouteHelper.getOrderDetailsRoute(notificationBody.orderId,
                     fromNotification: true)),
             NotificationType.order_request: () =>
                 Get.toNamed(RouteHelper.getMainRoute('order-request')),
@@ -170,8 +181,8 @@ class NotificationHelper {
       NotificationBodyModel? notificationBody =
           convertNotification(message.data);
 
-      title = message.data['title'];
-      body = message.data['body'];
+      title = message.data['title'] ?? message.notification?.title;
+      body = message.data['body'] ?? message.notification?.body ?? '';
       image = (message.data['image'] != null &&
               message.data['image'].isNotEmpty)
           ? message.data['image'].startsWith('http')
@@ -301,12 +312,15 @@ class NotificationHelper {
             notificationType: NotificationType.unassign);
       case 'order_status':
         return NotificationBodyModel(
-            orderId: int.parse(orderId),
+            orderId: int.tryParse('${orderId ?? ''}'),
             notificationType: NotificationType.order);
       case 'order_request':
         return NotificationBodyModel(
-            orderId: int.parse(orderId),
+            orderId: int.tryParse('${orderId ?? ''}'),
             notificationType: NotificationType.order_request);
+      case 'withdraw':
+        return NotificationBodyModel(
+            notificationType: NotificationType.withdraw);
       case 'block':
         return NotificationBodyModel(notificationType: NotificationType.block);
       case 'unblock':
