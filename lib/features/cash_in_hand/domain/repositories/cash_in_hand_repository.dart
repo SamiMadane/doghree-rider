@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wefrh_rider/api/api_checker.dart';
 import 'package:wefrh_rider/api/api_client.dart';
 import 'package:wefrh_rider/common/models/response_model.dart';
 import 'package:wefrh_rider/features/cash_in_hand/domain/models/earning_report_model.dart';
@@ -132,6 +133,41 @@ class CashInHandRepository implements CashInHandRepositoryInterface {
       return WalletModel.fromJson(Map<String, dynamic>.from(response.body));
     }
     return null;
+  }
+    @override
+  Future<ResponseModel> saveWalletAccount(
+      {required int methodId,
+      required Map<String, String> fields,
+      bool isDefault = false}) async {
+    final Response response = await apiClient.postData(
+      AppConstants.walletAccountsUri,
+      {
+        'withdrawal_method_id': methodId,
+        'fields': fields,
+        'is_default': isDefault,
+      },
+      handleError: false,
+    );
+    return _walletResult(response);
+  }
+
+  @override
+  Future<ResponseModel> deleteWalletAccount(int id) async {
+    final Response response = await apiClient
+        .deleteData('${AppConstants.walletAccountsUri}/$id', handleError: false);
+    return _walletResult(response);
+  }
+
+  ResponseModel _walletResult(Response response) {
+    if (response.statusCode == 401) {
+      ApiChecker.checkApi(response); // انتهاء الجلسة
+    }
+    if (response.statusCode == 200) {
+      final body = response.body;
+      return ResponseModel(true, body is Map ? body['message']?.toString() : null);
+    }
+    return ResponseModel(false, response.statusText,
+        statusCode: response.statusCode);
   }
 
 }

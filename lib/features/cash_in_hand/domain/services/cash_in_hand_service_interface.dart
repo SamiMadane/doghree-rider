@@ -12,4 +12,9 @@ abstract class CashInHandServiceInterface {
   Future<EarningReportModel?> getEarningReport({String? offset, String? type, String? startDate, String? endDate});
   Future<Response> downloadEarningInvoice({required int dmId});
   Future<WalletModel?> getWallet();
+  Future<ResponseModel> saveWalletAccount(
+    {required int methodId,
+    required Map<String, String> fields,
+    bool isDefault = false});
+Future<ResponseModel> deleteWalletAccount(int id);
 }

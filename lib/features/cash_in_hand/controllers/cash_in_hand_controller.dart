@@ -85,6 +85,9 @@ class CashInHandController extends GetxController implements GetxService {
   bool _walletLoading = false;
   bool get walletLoading => _walletLoading;
 
+  bool _accountBusy = false;
+  bool get accountBusy => _accountBusy;
+
   Future<ResponseModel> makeCollectCashPayment(
       double amount, String paymentGatewayName) async {
     _isLoading = true;
@@ -95,13 +98,41 @@ class CashInHandController extends GetxController implements GetxService {
     update();
     return responseModel;
   }
-   Future<void> getWallet() async {
+
+  Future<void> getWallet() async {
     _walletLoading = true;
     update();
     final WalletModel? wallet = await cashInHandServiceInterface.getWallet();
     if (wallet != null) _wallet = wallet;
     _walletLoading = false;
     update();
+  }
+
+  Future<bool> saveWalletAccount(
+      {required int methodId,
+      required Map<String, String> fields,
+      bool isDefault = false}) async {
+    _accountBusy = true;
+    update();
+    final ResponseModel r = await cashInHandServiceInterface.saveWalletAccount(
+        methodId: methodId, fields: fields, isDefault: isDefault);
+    if (r.isSuccess) await getWallet();
+    _accountBusy = false;
+    update();
+    showCustomSnackBar(r.message, isError: !r.isSuccess);
+    return r.isSuccess;
+  }
+
+  Future<bool> deleteWalletAccount(int id) async {
+    _accountBusy = true;
+    update();
+    final ResponseModel r =
+        await cashInHandServiceInterface.deleteWalletAccount(id);
+    if (r.isSuccess) await getWallet();
+    _accountBusy = false;
+    update();
+    showCustomSnackBar(r.message, isError: !r.isSuccess);
+    return r.isSuccess;
   }
 
   Future<void> getWalletPaymentList() async {

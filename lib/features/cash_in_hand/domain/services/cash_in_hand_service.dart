@@ -45,4 +45,17 @@ class CashInHandService implements CashInHandServiceInterface {
     return await cashInHandRepositoryInterface.getWallet();
   }
 
+  @override
+  Future<ResponseModel> saveWalletAccount(
+      {required int methodId,
+      required Map<String, String> fields,
+      bool isDefault = false}) async {
+    return await cashInHandRepositoryInterface.saveWalletAccount(
+        methodId: methodId, fields: fields, isDefault: isDefault);
+  }
+
+  @override
+  Future<ResponseModel> deleteWalletAccount(int id) async {
+    return await cashInHandRepositoryInterface.deleteWalletAccount(id);
+  }
 }
