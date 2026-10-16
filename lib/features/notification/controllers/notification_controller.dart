@@ -83,6 +83,9 @@ class NotificationController extends GetxController implements GetxService {
           snackPosition: SnackPosition.TOP,
         );
         break;
+      case NotificationType.withdraw:
+        Get.toNamed(RouteHelper.getCashInHandRoute());
+        break;
 
       case NotificationType.general:
       case NotificationType.otp:
@@ -92,27 +95,28 @@ class NotificationController extends GetxController implements GetxService {
 
   /// ✅ تحديد إشعار واحد كمقروء
   /// ✅ تحديد إشعار واحد كمقروء (نفس منطق اليوزر)
-Future<void> markNotificationAsRead(int notificationId) async {
-  bool success = await notificationServiceInterface.markNotificationAsRead(notificationId);
+  Future<void> markNotificationAsRead(int notificationId) async {
+    bool success = await notificationServiceInterface
+        .markNotificationAsRead(notificationId);
 
-  if (success) {
-    // ✨ تحديث محلي فقط - نفس اليوزر
-    if (_notificationList != null) {
-      int index = _notificationList!.indexWhere((n) => n.id == notificationId);
-      if (index != -1) {
-        _notificationList![index].isRead = true;
-        _updateHasNotification();
-        update();
-        print('✅ Notification $notificationId marked locally');
+    if (success) {
+      // ✨ تحديث محلي فقط - نفس اليوزر
+      if (_notificationList != null) {
+        int index =
+            _notificationList!.indexWhere((n) => n.id == notificationId);
+        if (index != -1) {
+          _notificationList![index].isRead = true;
+          _updateHasNotification();
+          update();
+          print('✅ Notification $notificationId marked locally');
+        }
       }
+    } else {
+      print('❌ Failed to mark notification $notificationId as read');
     }
-  } else {
-    print('❌ Failed to mark notification $notificationId as read');
   }
-}
 
-
-    /// تحديد جميع الإشعارات كمقروءة
+  /// تحديد جميع الإشعارات كمقروءة
   Future<void> markAllNotificationsAsRead() async {
     _isLoading = true;
     update();
@@ -134,6 +138,7 @@ Future<void> markNotificationAsRead(int notificationId) async {
     _isLoading = false;
     update();
   }
+
   NotificationType _convertStringToNotificationType(String type) {
     String cleanType =
         type.replaceAll('NotificationType.', '').toLowerCase().trim();

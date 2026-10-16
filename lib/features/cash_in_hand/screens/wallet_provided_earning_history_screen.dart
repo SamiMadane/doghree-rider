@@ -42,11 +42,11 @@ class _WalletProvidedHistoryScreenState
           return cashInHandController.walletProvidedTransactions != null
               ? cashInHandController.walletProvidedTransactions!.isNotEmpty
                   ? ListView.builder(
-                      itemCount: cashInHandController.transactions!.length,
+                      itemCount:cashInHandController.walletProvidedTransactions!.length,
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       itemBuilder: (context, index) {
-                        final item = cashInHandController.transactions![index];
+                        final item = cashInHandController.walletProvidedTransactions![index];
                         final status = item.status ?? '';
                         final statusColor =
                             status == 'approved' || status == 'Approved'

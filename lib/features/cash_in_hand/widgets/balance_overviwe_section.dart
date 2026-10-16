@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wefrh_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
 import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
 import 'package:wefrh_rider/common/widgets/custom_card.dart';
 import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
@@ -16,11 +17,21 @@ class BalanceOverviewSection extends StatelessWidget {
   const BalanceOverviewSection({Key? key, required this.profileController})
       : super(key: key);
 
+  String _money(double? v) =>
+      v == null ? '—' : PriceConverterHelper.convertPrice(v);
+
   @override
   Widget build(BuildContext context) {
+    final wallet = Get.find<CashInHandController>().wallet;
+    final profile = profileController.profileModel!;
+    final String? blockMessage =
+        (wallet != null && !wallet.canRequestWithdraw)
+            ? wallet.withdrawBlock?.message
+            : null;
+
     return Column(
       children: [
-        /// Current Balance Section
+        /// Available Balance Section
         CustomCard(
           width: context.width,
           fillColor: Theme.of(context).scaffoldBackgroundColor,
@@ -28,31 +39,30 @@ class BalanceOverviewSection extends StatelessWidget {
             borderRadius: BorderRadius.circular(Dimensions.r4),
             child: Stack(
               children: [
-                // المحتوى النصي
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: Dimensions.w16,
+                    vertical: Dimensions.h16,
+                  ),
                   child: Row(
                     textDirection: TextDirection.ltr,
                     children: [
                       Flexible(
-                        flex: 3, 
+                        flex: 3,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              'current_balance'.tr,
+                              'available_to_withdraw'.tr,
                               style: textRegular().copyWith(
                                 color: Theme.of(context).disabledColor,
                                 fontSize: Dimensions.fs16,
                               ),
                             ),
-                             SizedBox(
-                                height: Dimensions.h16),
+                            SizedBox(height: Dimensions.h16),
                             Text(
-                              PriceConverterHelper.convertPrice(
-                                  profileController
-                                      .profileModel!.payableBalance),
+                              _money(wallet?.availableBalance),
                               style: textBold().copyWith(
                                 fontSize: Dimensions.fs28,
                                 color: Theme.of(context)
@@ -61,8 +71,7 @@ class BalanceOverviewSection extends StatelessWidget {
                                     .color,
                               ),
                             ),
-                             SizedBox(
-                                height: Dimensions.h16),
+                            SizedBox(height: Dimensions.h16),
                             CustomButtonWidget(
                               buttonText: 'transaction'.tr,
                               fontSize: Dimensions.fs16,
@@ -77,19 +86,18 @@ class BalanceOverviewSection extends StatelessWidget {
                       ),
                       Flexible(
                         flex: 4,
-                        child: Container(), 
+                        child: Container(),
                       ),
                     ],
                   ),
                 ),
-
                 Positioned(
                   bottom: 0,
                   right: 0,
                   child: ConstrainedBox(
                     constraints: BoxConstraints(
                       maxWidth: MediaQuery.of(context).size.width * 0.5,
-                      maxHeight: 150, 
+                      maxHeight: 150,
                     ),
                     child: Image.asset(
                       ManagerAssets.balanceImage,
@@ -101,6 +109,19 @@ class BalanceOverviewSection extends StatelessWidget {
             ),
           ),
         ),
+
+        // رسالة السيرفر إذا السحب غير متاح حالياً
+        if (blockMessage != null && blockMessage.isNotEmpty) ...[
+          SizedBox(height: Dimensions.h10),
+          Text(
+            blockMessage,
+            textAlign: TextAlign.center,
+            style: textRegular().copyWith(
+              fontSize: Dimensions.fs12,
+              color: Theme.of(context).hintColor,
+            ),
+          ),
+        ],
         SizedBox(height: Dimensions.h20),
 
         /// Cash Info Section
@@ -108,7 +129,10 @@ class BalanceOverviewSection extends StatelessWidget {
           children: [
             Expanded(
               child: CustomCard(
-                padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
+                padding: EdgeInsets.symmetric(
+                  horizontal: Dimensions.w16,
+                  vertical: Dimensions.h16,
+                ),
                 fillColor: Theme.of(context).scaffoldBackgroundColor,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -122,8 +146,7 @@ class BalanceOverviewSection extends StatelessWidget {
                     ),
                     SizedBox(height: Dimensions.h16),
                     Text(
-                      PriceConverterHelper.convertPrice(
-                          profileController.profileModel!.cashInHands),
+                      _money(wallet?.cashInHand ?? profile.cashInHands),
                       style: textBold().copyWith(
                         fontSize: Dimensions.fs16,
                         color: Theme.of(context).textTheme.bodyMedium!.color,
@@ -136,7 +159,10 @@ class BalanceOverviewSection extends StatelessWidget {
             SizedBox(width: Dimensions.w16),
             Expanded(
               child: CustomCard(
-                padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
+                padding: EdgeInsets.symmetric(
+                  horizontal: Dimensions.w16,
+                  vertical: Dimensions.h16,
+                ),
                 fillColor: Theme.of(context).scaffoldBackgroundColor,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -150,8 +176,7 @@ class BalanceOverviewSection extends StatelessWidget {
                     ),
                     SizedBox(height: Dimensions.h16),
                     Text(
-                      PriceConverterHelper.convertPrice(
-                          profileController.profileModel!.totalWithdrawn),
+                      _money(wallet?.totalWithdrawn ?? profile.totalWithdrawn),
                       style: textBold().copyWith(
                         fontSize: Dimensions.fs16,
                         color: Theme.of(context).textTheme.bodyMedium!.color,

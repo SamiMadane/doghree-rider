@@ -23,6 +23,7 @@ class _CashInHandScreenState extends State<CashInHandScreen> {
     Get.find<ProfileController>().getProfile();
     Get.find<CashInHandController>().getWalletPaymentList();
     Get.find<CashInHandController>().getWalletProvidedEarningList();
+    Get.find<CashInHandController>().getWallet();
     super.initState();
   }
 
@@ -40,10 +41,10 @@ class _CashInHandScreenState extends State<CashInHandScreen> {
       ),
       body: GetBuilder<CashInHandController>(builder: (cashInHandController) {
         return GetBuilder<ProfileController>(builder: (profileController) {
-          return (profileController.profileModel != null &&
-                  cashInHandController.transactions != null)
+          return profileController.profileModel != null
               ? RefreshIndicator(
                   onRefresh: () async {
+                    Get.find<CashInHandController>().getWallet();
                     profileController.getProfile();
                     Get.find<CashInHandController>().getWalletPaymentList();
                     Get.find<CashInHandController>()

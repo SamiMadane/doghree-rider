@@ -60,10 +60,11 @@ class TransactionHistorySection extends StatelessWidget {
               style: textSemiBold().copyWith(fontSize: Dimensions.fs16),
             ),
             (cashInHandController.selectedIndex == 0 &&
-                        cashInHandController.transactions!.isEmpty) ||
+                        (cashInHandController.transactions?.isEmpty ?? true)) ||
                     (cashInHandController.selectedIndex == 1 &&
-                        cashInHandController
-                            .walletProvidedTransactions!.isEmpty)
+                        (cashInHandController
+                                .walletProvidedTransactions?.isEmpty ??
+                            true))
                 ? const SizedBox()
                 : InkWell(
                     onTap: () {
