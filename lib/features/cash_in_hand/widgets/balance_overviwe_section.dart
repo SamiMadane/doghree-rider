@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wefrh_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
+import 'package:wefrh_rider/features/cash_in_hand/widgets/wallet_account_section.dart';
 import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
 import 'package:wefrh_rider/common/widgets/custom_card.dart';
 import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
@@ -24,10 +25,9 @@ class BalanceOverviewSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final wallet = Get.find<CashInHandController>().wallet;
     final profile = profileController.profileModel!;
-    final String? blockMessage =
-        (wallet != null && !wallet.canRequestWithdraw)
-            ? wallet.withdrawBlock?.message
-            : null;
+    final String? blockMessage = (wallet != null && !wallet.canRequestWithdraw)
+        ? wallet.withdrawBlock?.message
+        : null;
 
     return Column(
       children: [
@@ -188,6 +188,8 @@ class BalanceOverviewSection extends StatelessWidget {
             ),
           ],
         ),
+        SizedBox(height: Dimensions.h20),
+        const WalletAccountSection(),
       ],
     );
   }
