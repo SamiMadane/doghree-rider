@@ -116,6 +116,7 @@ class NotificationHelper {
             message, flutterLocalNotificationsPlugin);
         if (Get.isRegistered<CashInHandController>()) {
           Get.find<CashInHandController>().getWallet();
+          Get.find<CashInHandController>().getWithdrawals();
         }
         if (Get.isRegistered<NotificationController>()) {
           Get.find<NotificationController>().getNotificationList();
@@ -164,6 +165,8 @@ class NotificationHelper {
                     fromNotification: true)),
             NotificationType.general: () => Get.toNamed(
                 RouteHelper.getNotificationRoute(fromNotification: true)),
+            NotificationType.withdraw: () =>
+                Get.toNamed(RouteHelper.getCashInHandRoute()),
           };
 
           notificationActions[notificationBody.notificationType]?.call();
