@@ -11,6 +11,8 @@ import 'package:wefrh_rider/util/dimensions.dart';
 import 'package:wefrh_rider/util/manager_assets.dart';
 import 'package:wefrh_rider/util/styles.dart';
 import 'package:wefrh_rider/helper/price_converter_helper.dart';
+import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
+import 'package:wefrh_rider/features/cash_in_hand/widgets/wallet_withdraw_sheet.dart';
 
 class BalanceOverviewSection extends StatelessWidget {
   final ProfileController profileController;
@@ -28,7 +30,12 @@ class BalanceOverviewSection extends StatelessWidget {
     final String? blockMessage = (wallet != null && !wallet.canRequestWithdraw)
         ? wallet.withdrawBlock?.message
         : null;
-
+    final bool canWithdraw = wallet != null &&
+        wallet.canRequestWithdraw &&
+        wallet.availableBalance > 0;
+    final double? cashRaw = wallet?.cashInHand ?? profile.cashInHands;
+    final bool hasCash =
+        (cashRaw ?? 0) > 0 || (profile.payableBalance ?? 0) > 0;
     return Column(
       children: [
         /// Available Balance Section
@@ -73,12 +80,31 @@ class BalanceOverviewSection extends StatelessWidget {
                             ),
                             SizedBox(height: Dimensions.h16),
                             CustomButtonWidget(
-                              buttonText: 'transaction'.tr,
+                              buttonText: 'wallet_request_withdraw'.tr,
                               fontSize: Dimensions.fs16,
-                              backgroundColor: Theme.of(context).primaryColor,
+                              backgroundColor: canWithdraw
+                                  ? Theme.of(context).primaryColor
+                                  : Theme.of(context).disabledColor,
                               onPressed: () {
-                                showCustomBottomSheet(
-                                    child: TransactionBottomSheet());
+                                if (wallet == null) return;
+                                if (!wallet.canRequestWithdraw) {
+                                  showCustomSnackBar(
+                                      wallet.withdrawBlock?.message ??
+                                          'wallet_withdraw_unavailable'.tr);
+                                  return;
+                                }
+                                if (wallet.availableBalance <= 0) {
+                                  showCustomSnackBar(
+                                      'wallet_withdraw_no_balance'.tr);
+                                  return;
+                                }
+                                if (wallet.accounts.isEmpty) {
+                                  showCustomSnackBar(
+                                      'wallet_withdraw_add_account_first'.tr);
+                                  showWalletAccountSheet();
+                                  return;
+                                }
+                                showWithdrawSheet();
                               },
                             )
                           ],
@@ -110,6 +136,7 @@ class BalanceOverviewSection extends StatelessWidget {
           ),
         ),
 
+
         // رسالة السيرفر إذا السحب غير متاح حالياً
         if (blockMessage != null && blockMessage.isNotEmpty) ...[
           SizedBox(height: Dimensions.h10),
@@ -122,6 +149,15 @@ class BalanceOverviewSection extends StatelessWidget {
             ),
           ),
         ],
+        if (hasCash)
+          Align(
+            alignment: AlignmentDirectional.centerEnd,
+            child: TextButton(
+              onPressed: () =>
+                  showCustomBottomSheet(child: TransactionBottomSheet()),
+              child: Text('wallet_settle_cash'.tr),
+            ),
+          ),
         SizedBox(height: Dimensions.h20),
 
         /// Cash Info Section

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wefrh_rider/features/cash_in_hand/widgets/balance_overviwe_section.dart';
 import 'package:wefrh_rider/features/cash_in_hand/widgets/transaction_history_section.dart';
+import 'package:wefrh_rider/features/cash_in_hand/widgets/withdrawal_history_section.dart';
 import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
 import 'package:wefrh_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
 import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
@@ -24,7 +25,22 @@ class _CashInHandScreenState extends State<CashInHandScreen> {
     Get.find<CashInHandController>().getWalletPaymentList();
     Get.find<CashInHandController>().getWalletProvidedEarningList();
     Get.find<CashInHandController>().getWallet();
+    Get.find<CashInHandController>().getWithdrawals();
     super.initState();
+  }
+    Future<void> _onRefresh() async {
+    final cash = Get.find<CashInHandController>();
+    try {
+      await Future.wait([
+        Get.find<ProfileController>().getProfile(),
+        cash.getWallet(),
+        cash.getWithdrawals(),
+        cash.getWalletPaymentList(),
+        cash.getWalletProvidedEarningList(),
+      ]);
+    } catch (e) {
+      debugPrint('REFRESH error: $e');
+    }
   }
 
   @override
@@ -43,14 +59,7 @@ class _CashInHandScreenState extends State<CashInHandScreen> {
         return GetBuilder<ProfileController>(builder: (profileController) {
           return profileController.profileModel != null
               ? RefreshIndicator(
-                  onRefresh: () async {
-                    Get.find<CashInHandController>().getWallet();
-                    profileController.getProfile();
-                    Get.find<CashInHandController>().getWalletPaymentList();
-                    Get.find<CashInHandController>()
-                        .getWalletProvidedEarningList();
-                    return await Future.delayed(const Duration(seconds: 1));
-                  },
+                  onRefresh: _onRefresh,
                   child: Container(
                     color: Theme.of(context).cardColor,
                     margin: EdgeInsets.only(top: Dimensions.h16),
@@ -61,13 +70,22 @@ class _CashInHandScreenState extends State<CashInHandScreen> {
                     child: Column(children: [
                       Expanded(
                         child: SingleChildScrollView(
-                          physics: const BouncingScrollPhysics(),
+                          physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
                           child: Column(children: [
                             BalanceOverviewSection(
                                 profileController: profileController),
                             SizedBox(height: Dimensions.h25),
-                            TransactionHistorySection(
-                                cashInHandController: cashInHandController),
+                            const WithdrawalHistorySection(),
+                            if ((cashInHandController
+                                        .transactions?.isNotEmpty ??
+                                    false) ||
+                                (cashInHandController.walletProvidedTransactions
+                                        ?.isNotEmpty ??
+                                    false)) ...[
+                              SizedBox(height: Dimensions.h25),
+                              TransactionHistorySection(
+                                  cashInHandController: cashInHandController),
+                            ],
                           ]),
                         ),
                       ),
