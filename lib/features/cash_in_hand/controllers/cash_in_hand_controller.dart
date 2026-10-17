@@ -10,6 +10,7 @@ import 'package:wefrh_rider/features/cash_in_hand/domain/models/earning_report_m
 import 'package:wefrh_rider/features/cash_in_hand/domain/models/wallet_model.dart';
 import 'package:wefrh_rider/features/cash_in_hand/domain/models/wallet_payment_model.dart';
 import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
+import 'package:wefrh_rider/features/cash_in_hand/domain/models/wallet_withdrawal_model.dart';
 import 'package:wefrh_rider/features/cash_in_hand/domain/services/cash_in_hand_service_interface.dart';
 import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
 
@@ -87,6 +88,53 @@ class CashInHandController extends GetxController implements GetxService {
 
   bool _accountBusy = false;
   bool get accountBusy => _accountBusy;
+  List<WalletWithdrawal>? _withdrawals;
+  List<WalletWithdrawal>? get withdrawals => _withdrawals;
+
+  bool _withdrawalsFailed = false;
+  bool get withdrawalsFailed => _withdrawalsFailed;
+
+  bool _withdrawBusy = false;
+  bool get withdrawBusy => _withdrawBusy;
+
+  Future<void> getWithdrawals() async {
+    try {
+      final list = await cashInHandServiceInterface.getWithdrawals();
+      if (list != null) {
+        _withdrawals = list;
+        _withdrawalsFailed = false;
+      } else {
+        _withdrawalsFailed = true;
+      }
+    } catch (e) {
+      _withdrawalsFailed = true;
+      debugPrint('WITHDRAWALS parse error: $e');
+    }
+    update();
+  }
+
+  Future<bool> requestWithdraw(
+      {required double amount, int? accountId, String? note}) async {
+    if (_withdrawBusy) return false; // يمنع الضغط المزدوج
+    _withdrawBusy = true;
+    update();
+    bool ok = false;
+    try {
+      final ResponseModel r = await cashInHandServiceInterface.requestWithdraw(
+          amount: amount, accountId: accountId, note: note);
+      ok = r.isSuccess;
+      showCustomSnackBar(ok ? 'wallet_withdraw_success'.tr : r.message,
+          isError: !ok);
+    } catch (e) {
+      showCustomSnackBar('error_occurred'.tr, isError: true);
+    }
+    // الحالة الحقيقية دائماً من السيرفر (نجاح أو رفض)
+    await getWallet();
+    await getWithdrawals();
+    _withdrawBusy = false;
+    update();
+    return ok;
+  }
 
   Future<ResponseModel> makeCollectCashPayment(
       double amount, String paymentGatewayName) async {
@@ -119,7 +167,9 @@ class CashInHandController extends GetxController implements GetxService {
     if (r.isSuccess) await getWallet();
     _accountBusy = false;
     update();
-    showCustomSnackBar(r.message, isError: !r.isSuccess);
+    showCustomSnackBar(r.isSuccess ? 'wallet_account_saved'.tr : r.message,
+        isError: !r.isSuccess); // الحفظ
+
     return r.isSuccess;
   }
 
@@ -131,7 +181,8 @@ class CashInHandController extends GetxController implements GetxService {
     if (r.isSuccess) await getWallet();
     _accountBusy = false;
     update();
-    showCustomSnackBar(r.message, isError: !r.isSuccess);
+    showCustomSnackBar(r.isSuccess ? 'wallet_account_deleted'.tr : r.message,
+        isError: !r.isSuccess); // الحذف
     return r.isSuccess;
   }
 

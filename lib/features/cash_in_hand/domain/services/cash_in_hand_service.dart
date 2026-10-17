@@ -5,6 +5,8 @@ import 'package:wefrh_rider/features/cash_in_hand/domain/models/wallet_payment_m
 import 'package:wefrh_rider/features/cash_in_hand/domain/repositories/cash_in_hand_repository_interface.dart';
 import 'package:wefrh_rider/features/cash_in_hand/domain/services/cash_in_hand_service_interface.dart';
 import 'package:wefrh_rider/features/cash_in_hand/domain/models/wallet_model.dart';
+import 'package:wefrh_rider/features/cash_in_hand/domain/models/wallet_withdrawal_model.dart';
+
 
 
 class CashInHandService implements CashInHandServiceInterface {
@@ -57,5 +59,16 @@ class CashInHandService implements CashInHandServiceInterface {
   @override
   Future<ResponseModel> deleteWalletAccount(int id) async {
     return await cashInHandRepositoryInterface.deleteWalletAccount(id);
+  }
+    @override
+  Future<ResponseModel> requestWithdraw(
+      {required double amount, int? accountId, String? note}) async {
+    return await cashInHandRepositoryInterface.requestWithdraw(
+        amount: amount, accountId: accountId, note: note);
+  }
+
+  @override
+  Future<List<WalletWithdrawal>?> getWithdrawals({int offset = 1}) async {
+    return await cashInHandRepositoryInterface.getWithdrawals(offset: offset);
   }
 }

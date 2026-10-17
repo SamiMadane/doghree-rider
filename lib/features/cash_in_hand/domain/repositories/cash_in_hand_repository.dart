@@ -1,6 +1,4 @@
-import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wefrh_rider/api/api_checker.dart';
@@ -8,6 +6,7 @@ import 'package:wefrh_rider/api/api_client.dart';
 import 'package:wefrh_rider/common/models/response_model.dart';
 import 'package:wefrh_rider/features/cash_in_hand/domain/models/earning_report_model.dart';
 import 'package:wefrh_rider/features/cash_in_hand/domain/models/wallet_payment_model.dart';
+import 'package:wefrh_rider/features/cash_in_hand/domain/models/wallet_withdrawal_model.dart';
 import 'package:wefrh_rider/features/cash_in_hand/domain/repositories/cash_in_hand_repository_interface.dart';
 import 'package:wefrh_rider/helper/route_helper.dart';
 import 'package:wefrh_rider/util/app_constants.dart';
@@ -170,4 +169,30 @@ class CashInHandRepository implements CashInHandRepositoryInterface {
         statusCode: response.statusCode);
   }
 
+  @override
+  Future<ResponseModel> requestWithdraw(
+      {required double amount, int? accountId, String? note}) async {
+    final Map<String, dynamic> body = {'amount': amount};
+    if (accountId != null) body['account_id'] = accountId;
+    if (note != null && note.trim().isNotEmpty) body['note'] = note.trim();
+    final Response response = await apiClient
+        .postData(AppConstants.walletWithdrawUri, body, handleError: false);
+    return _walletResult(response);
+  }
+
+  @override
+  Future<List<WalletWithdrawal>?> getWithdrawals({int offset = 1}) async {
+    final Response response = await apiClient
+        .getData('${AppConstants.walletWithdrawalsUri}?limit=20&offset=$offset');
+    if (response.statusCode == 200 && response.body is Map) {
+      final raw = (response.body as Map)['withdrawals'];
+      if (raw is List) {
+        return raw
+            .whereType<Map>()
+            .map((e) => WalletWithdrawal.fromJson(Map<String, dynamic>.from(e)))
+            .toList();
+      }
+    }
+    return null;
+  }
 }

@@ -3,6 +3,8 @@ import 'package:wefrh_rider/features/cash_in_hand/domain/models/earning_report_m
 import 'package:wefrh_rider/interface/repository_interface.dart';
 import 'package:wefrh_rider/features/cash_in_hand/domain/models/wallet_model.dart';
 import 'package:wefrh_rider/common/models/response_model.dart';
+import 'package:wefrh_rider/features/cash_in_hand/domain/models/wallet_withdrawal_model.dart';
+
 
 abstract class CashInHandRepositoryInterface implements RepositoryInterface {
   Future<dynamic> makeCollectCashPayment(double amount, String paymentGatewayName);
@@ -16,4 +18,7 @@ abstract class CashInHandRepositoryInterface implements RepositoryInterface {
     required Map<String, String> fields,
     bool isDefault = false});
 Future<ResponseModel> deleteWalletAccount(int id);
+Future<ResponseModel> requestWithdraw(
+    {required double amount, int? accountId, String? note});
+Future<List<WalletWithdrawal>?> getWithdrawals({int offset = 1});
 }
