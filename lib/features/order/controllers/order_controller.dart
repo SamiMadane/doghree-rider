@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:wefrh_rider/common/models/response_model.dart';
+import 'package:wefrh_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
 import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
 import 'package:wefrh_rider/features/splash/controllers/splash_controller.dart';
 import 'package:wefrh_rider/api/api_client.dart';
@@ -249,6 +250,9 @@ class OrderController extends GetxController implements GetxService {
         Get.offAllNamed(RouteHelper.getInitialRoute(fromOrderDetails: true));
       }
       Get.find<ProfileController>().getProfile();
+            if (Get.isRegistered<CashInHandController>()) {
+        Get.find<CashInHandController>().getWallet();
+      }
       getCurrentOrders();
       currentOrder.orderStatus = status;
       showCustomSnackBar(responseModel.message, isError: false);
