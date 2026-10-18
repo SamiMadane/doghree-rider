@@ -179,6 +179,9 @@ class NotificationController extends GetxController implements GetxService {
       case 'order_canceled':
         return NotificationType.unassign;
 
+      case 'withdraw':
+        return NotificationType.withdraw;
+
       default:
         print('⚠️ Unknown type: "$cleanType"');
         return NotificationType.general;
