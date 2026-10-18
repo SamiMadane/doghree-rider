@@ -278,6 +278,26 @@ class ApiErrorHandler {
     return errorMessages.join('\n');
   }
 
+  /// كل الأخطاء كأزواج (الحقل ← الرسالة)، من القائمة أو الكائن
+  static List<MapEntry<String, String>> extractErrors(dynamic body) {
+    final List<MapEntry<String, String>> out = [];
+    if (body is Map) {
+      final errors = body['errors'];
+      if (errors is List) {
+        for (final e in errors) {
+          if (e is Map && e['code'] != null) {
+            out.add(MapEntry('${e['code']}', '${e['message'] ?? ''}'));
+          }
+        }
+      } else if (errors is Map) {
+        errors.forEach((k, v) {
+          final String m = v is List && v.isNotEmpty ? '${v.first}' : '${v ?? ''}';
+          out.add(MapEntry('$k', m));
+        });
+      }
+    }
+    return out;
+  }
   /// تحديد نوع الخطأ من الكود
   static ErrorType getErrorType(int code) {
     switch (code) {

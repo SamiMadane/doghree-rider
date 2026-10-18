@@ -17,6 +17,7 @@ class ImagePickerHelper {
     CropStyle cropStyle = CropStyle.rectangle,
     bool lockAspectRatio = false,
     List<CropAspectRatioPreset>? aspectRatioPresets,
+    CropAspectRatio? aspectRatio, // نسبة ثابتة للقص (مثلاً الهوية). null = حر
   }) async {
     try {
       // 1. Pick image
@@ -36,6 +37,7 @@ class ImagePickerHelper {
         cropStyle: cropStyle,
         lockAspectRatio: lockAspectRatio,
         aspectRatioPresets: aspectRatioPresets,
+        aspectRatio: aspectRatio,
       );
 
       if (croppedFile == null) return null;
@@ -79,6 +81,7 @@ class ImagePickerHelper {
     CropStyle cropStyle = CropStyle.circle,
     bool lockAspectRatio = false,
     List<CropAspectRatioPreset>? aspectRatioPresets,
+    CropAspectRatio? aspectRatio,
   }) async {
     final ImageSource? source = await Get.bottomSheet<ImageSource>(
       Container(
@@ -180,6 +183,7 @@ class ImagePickerHelper {
       cropStyle: cropStyle,
       lockAspectRatio: lockAspectRatio,
       aspectRatioPresets: aspectRatioPresets,
+      aspectRatio: aspectRatio,
     );
   }
 
@@ -190,6 +194,7 @@ class ImagePickerHelper {
     CropStyle cropStyle = CropStyle.rectangle,
     bool lockAspectRatio = false,
     List<CropAspectRatioPreset>? aspectRatioPresets,
+    CropAspectRatio? aspectRatio, // ✨ جديد: كان ناقص من هالدالة
   }) async {
     final primaryColor = Theme.of(context).primaryColor;
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -211,6 +216,7 @@ class ImagePickerHelper {
 
     final croppedFile = await ImageCropper().cropImage(
       sourcePath: imagePath,
+      aspectRatio: aspectRatio, // ✨ جديد: هون بتنفرض نسبة القص (null = حر)
       compressQuality: 85,
       compressFormat: ImageCompressFormat.jpg, // امتداد حقيقي مسموح عند الخادم
       maxWidth: 1600,

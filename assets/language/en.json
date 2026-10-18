@@ -738,7 +738,6 @@
   "please_contact_the_admin": "Please contact the admin.",
   "insufficient_balance": "Insufficient Balance",
   "application_submitted": "Application Submitted",
-  "application_received_message": "We received your application and we will review everything and contact you soon",
-  "ex_jhon": "Ex: Jhon",
-  "ex_doe": "Ex: Doe"
+  "application_received_message": "We received your application and we will review everything and contact you soon"
+
 }

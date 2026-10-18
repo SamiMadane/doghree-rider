@@ -1,5 +1,8 @@
 import 'dart:async';
+import 'package:wefrh_rider/api/api_checker.dart';
 import 'package:wefrh_rider/api/api_client.dart';
+import 'package:wefrh_rider/api/api_error_handler.dart';
+import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
 import 'package:wefrh_rider/features/auth/domain/models/delivery_man_body_model.dart';
 import 'package:wefrh_rider/common/models/response_model.dart';
 import 'package:wefrh_rider/features/auth/domain/models/vehicle_model.dart';
@@ -8,36 +11,37 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:wefrh_rider/features/auth/domain/services/auth_service_interface.dart';
 import 'package:flutter/material.dart';
-import 'package:wefrh_rider/helper/image_picker_helper.dart'; 
-import 'package:image_cropper/image_cropper.dart'; 
+import 'package:wefrh_rider/helper/image_picker_helper.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:wefrh_rider/util/app_constants.dart';
 
 class AuthController extends GetxController implements GetxService {
   final AuthServiceInterface authServiceInterface;
-  AuthController({required this.authServiceInterface}){
+  AuthController({required this.authServiceInterface}) {
     _notification = authServiceInterface.isNotificationActive();
   }
 
   bool _isActiveRememberMe = false;
   bool get isActiveRememberMe => _isActiveRememberMe;
-  
+
   bool _isLoading = false;
   bool get isLoading => _isLoading;
-  
+
   bool _notification = true;
   bool get notification => _notification;
-  
+
   XFile? _pickedImage;
   XFile? get pickedImage => _pickedImage;
-  
+
   List<XFile> _pickedIdentities = [];
   List<XFile> get pickedIdentities => _pickedIdentities;
-  
+
   final List<String> _identityTypeList = ['passport', 'driving_license', 'nid'];
   List<String> get identityTypeList => _identityTypeList;
 
   String? _selectedIdentityType;
   String? get selectedIdentityType => _selectedIdentityType;
-  
+
   final List<String> _dmTypeList = ['freelancer', 'salary_based'];
   List<String> get dmTypeList => _dmTypeList;
 
@@ -46,44 +50,52 @@ class AuthController extends GetxController implements GetxService {
 
   String? _selectedDmTypeId;
   String? get selectedDmTypeId => _selectedDmTypeId;
-  
+
   List<VehicleModel>? _vehicles;
   List<VehicleModel>? get vehicles => _vehicles;
-  
+
   List<int?>? _vehicleIds;
   List<int?>? get vehicleIds => _vehicleIds;
 
   String? _selectedVehicleId;
   String? get selectedVehicleId => _selectedVehicleId;
-  
+
   double _dmStatus = 0.4;
   double get dmStatus => _dmStatus;
-  
+
   bool _lengthCheck = false;
   bool get lengthCheck => _lengthCheck;
-  
+
   bool _numberCheck = false;
   bool get numberCheck => _numberCheck;
-  
+
   bool _uppercaseCheck = false;
   bool get uppercaseCheck => _uppercaseCheck;
-  
+
   bool _lowercaseCheck = false;
   bool get lowercaseCheck => _lowercaseCheck;
-  
+
   bool _spatialCheck = false;
   bool get spatialCheck => _spatialCheck;
-  
+
   bool _showPassView = false;
   bool get showPassView => _showPassView;
-  
+
   bool _acceptTerms = true;
   bool get acceptTerms => _acceptTerms;
 
   bool _notificationLoading = false;
   bool get notificationLoading => _notificationLoading;
 
-  
+  Map<String, String> _fieldErrors = {};
+  String? fieldError(String key) => _fieldErrors[key];
+
+  void clearFieldError(String key) {
+    if (_fieldErrors.containsKey(key)) {
+      _fieldErrors.remove(key);
+      update();
+    }
+  }
 
   Future<ResponseModel> login(String phone, String password) async {
     _isLoading = true;
@@ -91,7 +103,8 @@ class AuthController extends GetxController implements GetxService {
     Response response = await authServiceInterface.login(phone, password);
     ResponseModel responseModel;
     if (response.statusCode == 200) {
-      authServiceInterface.saveUserToken(response.body['token'], response.body['zone_topic'], response.body['topic']);
+      authServiceInterface.saveUserToken(response.body['token'],
+          response.body['zone_topic'], response.body['topic']);
       await authServiceInterface.updateToken();
       responseModel = ResponseModel(true, 'successful');
     } else {
@@ -102,13 +115,49 @@ class AuthController extends GetxController implements GetxService {
     return responseModel;
   }
 
+  static const List<String> _step1Fields = [
+    'email',
+    'phone',
+    'password',
+    'f_name',
+    'l_name',
+    'image'
+  ];
+
+  bool _isStep1Error(String? code) =>
+      code != null &&
+      _step1Fields.any((f) => code == f || code.startsWith('$f.'));
+
   Future<void> registerDeliveryMan(DeliveryManBodyModel deliveryManBody) async {
+    if (_isLoading) return; // يمنع الضغط المزدوج
     _isLoading = true;
+    _fieldErrors = {};
     update();
-    List<MultipartBody> multiParts = authServiceInterface.prepareMultiPartsBody(_pickedImage, _pickedIdentities);
-    bool isSuccess = await authServiceInterface.registerDeliveryMan(deliveryManBody, multiParts);
-    if (isSuccess) {
-      Get.offAllNamed(RouteHelper.getDmRegistrationSuccessRoute());
+    try {
+      final List<MultipartBody> multiParts = authServiceInterface
+          .prepareMultiPartsBody(_pickedImage, _pickedIdentities);
+      final Response response = await authServiceInterface.registerDeliveryMan(
+          deliveryManBody, multiParts);
+
+      if (response.statusCode == 200) {
+        Get.offAllNamed(RouteHelper.getDmRegistrationSuccessRoute());
+      } else {
+        final errs = ApiErrorHandler.extractErrors(response.body);
+        final step1 = errs.where((e) => _isStep1Error(e.key)).toList();
+        if (step1.isNotEmpty) {
+          _fieldErrors = {for (final e in step1) e.key: e.value};
+          _dmStatus = 0.4;
+
+          showCustomSnackBar(step1.first.value.isNotEmpty
+              ? step1.first.value
+              : 'error_occurred'.tr);
+        } else {
+          ApiChecker.checkApi(response, sessionAware: false);
+        }
+      }
+    } catch (e) {
+      debugPrint('REGISTER error: $e');
+      showCustomSnackBar('error_occurred'.tr);
     }
     _isLoading = false;
     update();
@@ -145,9 +194,9 @@ class AuthController extends GetxController implements GetxService {
     await authServiceInterface.updateToken();
   }
 
-  void dmStatusChange(double value, {bool isUpdate = true}){
+  void dmStatusChange(double value, {bool isUpdate = true}) {
     _dmStatus = value;
-    if(isUpdate) {
+    if (isUpdate) {
       update();
     }
   }
@@ -170,8 +219,10 @@ class AuthController extends GetxController implements GetxService {
     return await authServiceInterface.clearSharedData();
   }
 
-  void saveUserNumberAndPassword(String number, String password, String countryDialCode, String countryCode) {
-    authServiceInterface.saveUserNumberAndPassword(number, password, countryDialCode, countryCode);
+  void saveUserNumberAndPassword(String number, String password,
+      String countryDialCode, String countryCode) {
+    authServiceInterface.saveUserNumberAndPassword(
+        number, password, countryDialCode, countryCode);
   }
 
   String getUserNumber() {
@@ -210,50 +261,65 @@ class AuthController extends GetxController implements GetxService {
 
   // ========== ✅ NEW: Pick Image with Crop Support ==========
   /// اختيار صورة الديلفري مان مع القص الاحترافي
+  static const int _maxImageBytes = 2 * 1024 * 1024;
+
+  Future<bool> _imageSizeOk(XFile file) async {
+    try {
+      return await file.length() <= _maxImageBytes;
+    } catch (_) {
+      return true;
+    }
+  }
+
   Future<void> pickDmImageWithCrop(BuildContext context) async {
-    final XFile? croppedImage = await ImagePickerHelper.showImageSourceBottomSheet(
+    final XFile? croppedImage =
+        await ImagePickerHelper.showImageSourceBottomSheet(
       context: context,
       cropStyle: CropStyle.circle, // دائري للبروفايل
       lockAspectRatio: false,
     );
-
     if (croppedImage != null) {
+      if (!await _imageSizeOk(croppedImage)) {
+        showCustomSnackBar('please_upload_lower_size_file'.tr);
+        return;
+      }
       _pickedImage = croppedImage;
       update();
     }
   }
 
-/// اختيار صور الهوية مع القص الاحترافي
-Future<void> pickIdentityImageWithCrop(BuildContext context) async {
-  final XFile? croppedImage = await ImagePickerHelper.showImageSourceBottomSheet(
-    context: context,
-    cropStyle: CropStyle.rectangle, // ⬅️ مستطيل للهويات
-    lockAspectRatio: false,
-    aspectRatioPresets: [
-      CropAspectRatioPreset.original,
-      CropAspectRatioPreset.square,
-      CropAspectRatioPreset.ratio3x2,  // ID Cards
-      CropAspectRatioPreset.ratio4x3,  // Passports
-      CropAspectRatioPreset.ratio16x9,
-    ],
-  );
+  /// اختيار صور الهوية مع القص الاحترافي
+  Future<void> pickIdentityImageWithCrop(BuildContext context) async {
+    final XFile? croppedImage =
+        await ImagePickerHelper.showImageSourceBottomSheet(
+      context: context,
+      cropStyle: CropStyle.rectangle,
+      lockAspectRatio: true,
+      aspectRatio: const CropAspectRatio(ratioX: 856, ratioY: 540),
+    );
 
-  if (croppedImage != null) {
-    _pickedIdentities.add(croppedImage);
-    update();
+    if (croppedImage != null) {
+      if (!await _imageSizeOk(croppedImage)) {
+        showCustomSnackBar('please_upload_lower_size_file'.tr);
+        return;
+      }
+      _pickedIdentities.add(croppedImage);
+      update();
+    }
   }
-}
+
   // ========== ⚠️ KEEP OLD METHOD (for backward compatibility) ==========
   void pickDmImageForRegistration(bool isLogo, bool isRemove) async {
-    if(isRemove) {
+    if (isRemove) {
       _pickedImage = null;
       _pickedIdentities = [];
-    }else {
+    } else {
       if (isLogo) {
         _pickedImage = await authServiceInterface.pickImageFromGallery();
       } else {
-        XFile? pickedIdentities = await authServiceInterface.pickImageFromGallery();
-        if(pickedIdentities != null) {
+        XFile? pickedIdentities =
+            await authServiceInterface.pickImageFromGallery();
+        if (pickedIdentities != null) {
           _pickedIdentities.add(pickedIdentities);
         }
       }
@@ -266,13 +332,13 @@ Future<void> pickIdentityImageWithCrop(BuildContext context) async {
     update();
   }
 
-  void showHidePass({bool isUpdate = true}){
-    _showPassView = ! _showPassView;
-    if(isUpdate) {
+  void showHidePass({bool isUpdate = true}) {
+    _showPassView = !_showPassView;
+    if (isUpdate) {
       update();
     }
   }
-  
+
   Future<void> setLogoutReason(String reason) async {
     await authServiceInterface.setLogoutReason(reason);
   }
@@ -285,39 +351,40 @@ Future<void> pickIdentityImageWithCrop(BuildContext context) async {
     await authServiceInterface.clearLogoutReason();
   }
 
-  void validPassCheck(String pass, {bool isUpdate = true}){
+  void validPassCheck(String pass, {bool isUpdate = true}) {
     _lengthCheck = false;
     _numberCheck = false;
     _uppercaseCheck = false;
     _lowercaseCheck = false;
     _spatialCheck = false;
 
-    if(pass.length > 7){
+    if (pass.length > 7) {
       _lengthCheck = true;
     }
-    if(pass.contains(RegExp(r'[a-z]'))){
+    if (pass.contains(RegExp(r'[a-z]'))) {
       _lowercaseCheck = true;
     }
-    if(pass.contains(RegExp(r'[A-Z]'))){
+    if (pass.contains(RegExp(r'[A-Z]'))) {
       _uppercaseCheck = true;
     }
-    if(pass.contains(RegExp(r'[ .!@#$&*~^%]'))){
+    if (pass.contains(RegExp(r'[ .!@#$&*~^%]'))) {
       _spatialCheck = true;
     }
-    if(pass.contains(RegExp(r'[\d+]'))){
+    if (pass.contains(RegExp(r'[\d+]'))) {
       _numberCheck = true;
     }
-    if(isUpdate) {
+    if (isUpdate) {
       update();
     }
   }
 
-  void resetDmRegistrationData(){
+  void resetDmRegistrationData() {
+    _fieldErrors = {};
     _pickedImage = null;
     _pickedIdentities = [];
     _selectedIdentityType = null;
-    _selectedDmType = null;
-    _selectedDmTypeId = null;
+    _selectedDmType = AppConstants.allowDmTypeSelection ? null : 'freelancer';
+    _selectedDmTypeId = AppConstants.allowDmTypeSelection ? null : '1';
     _selectedVehicleId = null;
     _dmStatus = 0.4;
     _showPassView = false;
@@ -327,5 +394,4 @@ Future<void> pickIdentityImageWithCrop(BuildContext context) async {
     _lowercaseCheck = false;
     _spatialCheck = false;
   }
-  
 }

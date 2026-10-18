@@ -10,6 +10,7 @@ import 'package:wefrh_rider/common/widgets/widget_with_label.dart';
 import 'package:wefrh_rider/features/address/controllers/address_controller.dart';
 import 'package:wefrh_rider/features/auth/controllers/auth_controller.dart';
 import 'package:wefrh_rider/features/auth/widgets/condition_check_box_widget.dart';
+import 'package:wefrh_rider/util/app_constants.dart';
 import 'package:wefrh_rider/util/dimensions.dart';
 import 'package:wefrh_rider/util/styles.dart';
 
@@ -44,18 +45,21 @@ class DmRegistrationStep2 extends StatelessWidget {
                 height: Dimensions.h16,
               ),
               // Delivery Type
-              WidgetWithLabel(
-                label: 'select_delivery_type'.tr,
-                textField: CustomDropdownButton(
-                  hintText: 'select_delivery_type'.tr,
-                  items: authController.dmTypeList,
-                  selectedValue: authController.selectedDmType,
-                  onChanged: (value) {
-                    authController.setSelectedDmType(value);
-                  },
+              // Delivery Type (مخفي حالياً: المندوب مستقل دائماً)
+              if (AppConstants.allowDmTypeSelection) ...[
+                WidgetWithLabel(
+                  label: 'select_delivery_type'.tr,
+                  textField: CustomDropdownButton(
+                    hintText: 'select_delivery_type'.tr,
+                    items: authController.dmTypeList,
+                    selectedValue: authController.selectedDmType,
+                    onChanged: (value) {
+                      authController.setSelectedDmType(value);
+                    },
+                  ),
                 ),
-              ),
-              SizedBox(height: Dimensions.h16),
+                SizedBox(height: Dimensions.h16),
+              ],
 
               // Delivery Zone
               addressController.zoneList != null
@@ -176,45 +180,47 @@ class DmRegistrationStep2 extends StatelessWidget {
                 textField: Center(
                   child: SizedBox(
                     width: double.infinity,
-                    child: GridView.builder(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 1,
-                        mainAxisExtent: 200,
-                        mainAxisSpacing: 10,
-                        crossAxisSpacing: 10,
-                      ),
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: authController.pickedIdentities.length + 1,
-                      itemBuilder: (context, index) {
-                        XFile? file =
-                            index == authController.pickedIdentities.length
-                                ? null
-                                : authController.pickedIdentities[index];
-
-                        // استخدام ImagePickerWidget
-                        return ImagePickerWidget(
-                          pickedImagePath: file?.path,
-                          placeholderText: 'upload_id_picture'.tr,
-                          height: Dimensions.h180,
-                          onPickImage: () async {
-                            if (authController.pickedIdentities.length < 6) {
-                              await authController
-                                  .pickIdentityImageWithCrop(context);
-                            } else {
-                              showCustomSnackBar('maximum_image_limit_is_6'.tr);
-                            }
-                          },
-                          onRemoveImage: () {
-                            if (file != null) {
-                              authController.removeIdentityImage(index);
-                            }
-                          },
-                          showErrorBorder: false,
-                        );
-                      },
-                    ),
+                    child: LayoutBuilder(builder: (context, constraints) {
+                      final double cardHeight = constraints.maxWidth * 540 / 856;
+                      return GridView.builder(
+                        gridDelegate:
+                            SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 1,
+                          mainAxisExtent: cardHeight,
+                          mainAxisSpacing: 10,
+                          crossAxisSpacing: 10,
+                        ),
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: authController.pickedIdentities.length + 1,
+                        itemBuilder: (context, index) {
+                          XFile? file =
+                              index == authController.pickedIdentities.length
+                                  ? null
+                                  : authController.pickedIdentities[index];
+                          return ImagePickerWidget(
+                            pickedImagePath: file?.path,
+                            placeholderText: 'upload_id_picture'.tr,
+                            height: cardHeight,
+                            onPickImage: () async {
+                              if (authController.pickedIdentities.length < 6) {
+                                await authController
+                                    .pickIdentityImageWithCrop(context);
+                              } else {
+                                showCustomSnackBar(
+                                    'maximum_image_limit_is_6'.tr);
+                              }
+                            },
+                            onRemoveImage: () {
+                              if (file != null) {
+                                authController.removeIdentityImage(index);
+                              }
+                            },
+                            showErrorBorder: false,
+                          );
+                        },
+                      );
+                    }),
                   ),
                 ),
               ),

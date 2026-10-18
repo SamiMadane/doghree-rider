@@ -38,7 +38,7 @@ class OrderStatusInfoContainer extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  processing ? 'Processing' : 'Pending',
+                  processing ? 'Processing'.tr : 'Pending'.tr,
                   style: textSemiBold().copyWith(
                     fontSize: Dimensions.fs14,
                     color: mainColor,
