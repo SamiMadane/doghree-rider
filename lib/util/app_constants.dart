@@ -144,6 +144,8 @@ static const String walletWithdrawalsUri = '/api/v1/delivery-man/wallet/withdraw
   static const String deliveryMan = 'delivery_man';
   static const String vendor = 'vendor';
 
+    static const bool allowDmTypeSelection = false;
+
   static List<LanguageModel> languages = [
     LanguageModel(
         imageUrl: ManagerAssets.english,

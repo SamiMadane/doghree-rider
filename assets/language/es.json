@@ -738,7 +738,6 @@
   "please_contact_the_admin": "Por favor, contacte con el administrador.",
   "insufficient_balance": "Saldo insuficiente",
   "application_submitted": "Solicitud enviada",
-  "application_received_message": "Hemos recibido su solicitud y revisaremos todo y nos pondremos en contacto con usted pronto",
-  "ex_jhon": "Ej: Jhon",
-  "ex_doe": "Ej: Doe"
+  "application_received_message": "Hemos recibido su solicitud y revisaremos todo y nos pondremos en contacto con usted pronto"
+
 }

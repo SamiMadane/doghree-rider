@@ -107,7 +107,7 @@ class DmRegistrationStep1 extends StatelessWidget {
           textField: CustomTextFieldWidget(
             controller: fNameController,
             labelText: 'first_name'.tr,
-            hintText: 'ex_jhon'.tr,
+            hintText: 'enter_your_first_name'.tr,
             inputType: TextInputType.name,
             capitalization: TextCapitalization.words,
             isRequired: true,
@@ -121,7 +121,7 @@ class DmRegistrationStep1 extends StatelessWidget {
           textField: CustomTextFieldWidget(
             controller: lNameController,
             labelText: 'last_name'.tr,
-            hintText: 'ex_doe'.tr,
+            hintText: 'enter_your_last_name'.tr,
             inputType: TextInputType.name,
             capitalization: TextCapitalization.words,
             isRequired: true,

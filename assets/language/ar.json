@@ -153,8 +153,8 @@
   "cannot_accept_order_without_items": "لا يمكن قبول الطلب بدون عناصر",
   "invalid_phone_number_found": "تم العثور على رقم هاتف غير صالح",
   "could_not_launch": "لا يمكن إطلاق",
-  "swipe_to_pick_up_order": "انتقد لالتقاط النظام",
-  "swipe_to_pick_up_parcel": "انتقد لالتقاط الطرود",
+  "swipe_to_pick_up_order": "اسحب لاستلام الطلب",
+  "swipe_to_pick_up_parcel": "اسحب لاستلام الطرود",
   "swipe_to_deliver_order": "اسحب لتسليم الطلب",
   "swipe_to_deliver_parcel": "اسحب لتسليم الطرود",
   "you_can_not_go_offline_now": "لا يمكنك عدم الاتصال بالإنترنت الآن لأن لديك طلبًا نشطًا.",
@@ -223,7 +223,7 @@
   "customer_location": "موقع العميل",
   "mins_ago": "قبل دقائق",
   "order_history": "تاريخ الطلب",
-  "order_is_preparing": "النظام يستعد",
+  "order_is_preparing": "الطلب قيد التحضير",
   "order_is_ready_for_handover": "الطلب جاهز للتسليم",
   "swipe_to_confirm_order": "اسحب لتأكيد الطلب",
   "swipe_to_confirm_delivery": "اسحب لتأكيد التسليم",
@@ -296,7 +296,7 @@
   "identity_type": "نوع الهوية",
   "passport": "جواز سفر",
   "driving_license": "رخصة القيادة",
-  "nid": "نيد",
+  "nid": "رقم الهوية",
   "identity_number": "رقم الهوية",
   "identity_images": "صور الهوية",
   "submit": "يُقدِّم",
@@ -738,7 +738,6 @@
   "please_contact_the_admin": "يرجى التواصل مع المسؤول.",
   "insufficient_balance": "الرصيد غير كافٍ",
   "application_submitted": "تم تقديم الطلب",
-  "application_received_message": "لقد استلمنا طلبك وسنقوم بمراجعة كل شيء والتواصل معك قريبًا",
-  "ex_jhon": "مثال: جون",
-  "ex_doe": "مثال: دو"
+  "application_received_message": "لقد استلمنا طلبك وسنقوم بمراجعة كل شيء والتواصل معك قريبًا"
+  
 }

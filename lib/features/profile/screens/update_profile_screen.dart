@@ -162,7 +162,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                 textField: CustomTextFieldWidget(
                                   controller: _fullNameController,
                                   labelText: 'full_name'.tr,
-                                  hintText: 'ex_jhon_doe'.tr,
+                                  hintText: 'full_name'.tr,
                                   inputType: TextInputType.name,
                                   capitalization: TextCapitalization.words,
                                   isRequired: true,

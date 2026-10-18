@@ -21,7 +21,7 @@ abstract class AuthServiceInterface {
   bool isNotificationActive();
   void setNotificationActive(bool isActive);
   Future<bool> clearUserNumberAndPassword();
-  Future<bool> registerDeliveryMan(
+  Future<Response> registerDeliveryMan(
       DeliveryManBodyModel deliveryManBody, List<MultipartBody> multiParts);
   Future<List<VehicleModel>?> getVehicleList();
   List<MultipartBody> prepareMultiPartsBody(

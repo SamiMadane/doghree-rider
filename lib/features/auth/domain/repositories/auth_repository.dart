@@ -21,11 +21,11 @@ class AuthRepository implements AuthRepositoryInterface {
   }
 
   @override
-  Future<bool> registerDeliveryMan(DeliveryManBodyModel deliveryManBody,
+  Future<Response> registerDeliveryMan(DeliveryManBodyModel deliveryManBody,
       List<MultipartBody> multiParts) async {
-    Response response = await apiClient.postMultipartData(
-        AppConstants.dmRegisterUri, deliveryManBody.toJson(), multiParts);
-    return (response.statusCode == 200);
+    return await apiClient.postMultipartData(
+        AppConstants.dmRegisterUri, deliveryManBody.toJson(), multiParts,
+        handleError: false);
   }
 
   @override

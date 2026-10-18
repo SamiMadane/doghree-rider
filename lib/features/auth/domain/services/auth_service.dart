@@ -17,7 +17,7 @@ class AuthService implements AuthServiceInterface {
   }
 
   @override
-  Future<bool> registerDeliveryMan(DeliveryManBodyModel deliveryManBody,
+  Future<Response> registerDeliveryMan(DeliveryManBodyModel deliveryManBody,
       List<MultipartBody> multiParts) async {
     return await authRepositoryInterface.registerDeliveryMan(
         deliveryManBody, multiParts);
