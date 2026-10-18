@@ -738,6 +738,15 @@
   "please_contact_the_admin": "দয়া করে অ্যাডমিনের সাথে যোগাযোগ করুন।",
   "insufficient_balance": "অপর্যাপ্ত ব্যালেন্স",
   "application_submitted": "আবেদন জমা দেওয়া হয়েছে",
-  "application_received_message": "আমরা আপনার আবেদন পেয়েছি এবং আমরা সবকিছু পর্যালোচনা করব এবং শীঘ্রই আপনার সাথে যোগাযোগ করব"
-  
+  "application_received_message": "আমরা আপনার আবেদন পেয়েছি এবং আমরা সবকিছু পর্যালোচনা করব এবং শীঘ্রই আপনার সাথে যোগাযোগ করব",
+  "wallet_see_all": "সব দেখুন",
+  "wallet_withdraw_details": "উত্তোলনের অনুরোধের বিবরণ",
+  "wallet_requested_at": "অনুরোধের তারিখ",
+  "wallet_paid_at": "ট্রান্সফারের তারিখ",
+  "wallet_account": "টাকা গ্রহণের অ্যাকাউন্ট",
+  "wallet_note": "আপনার নোট",
+  "wallet_payout_method": "টাকা পাঠানোর পদ্ধতি",
+  "wallet_admin_note": "প্রশাসকের নোট",
+  "wallet_payout_proof": "ট্রান্সফারের প্রমাণের ছবি",
+  "wallet_proof_unavailable": "প্রমাণটি দেখানো যাচ্ছে না"
 }

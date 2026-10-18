@@ -738,6 +738,15 @@
   "please_contact_the_admin": "Por favor, contacte con el administrador.",
   "insufficient_balance": "Saldo insuficiente",
   "application_submitted": "Solicitud enviada",
-  "application_received_message": "Hemos recibido su solicitud y revisaremos todo y nos pondremos en contacto con usted pronto"
-
+  "application_received_message": "Hemos recibido su solicitud y revisaremos todo y nos pondremos en contacto con usted pronto",
+  "wallet_see_all": "Ver todo",
+  "wallet_withdraw_details": "Detalles de la solicitud de retiro",
+  "wallet_requested_at": "Fecha de solicitud",
+  "wallet_paid_at": "Fecha de transferencia",
+  "wallet_account": "Cuenta receptora",
+  "wallet_note": "Tu nota",
+  "wallet_payout_method": "Método de pago",
+  "wallet_admin_note": "Nota del administrador",
+  "wallet_payout_proof": "Imagen del comprobante de transferencia",
+  "wallet_proof_unavailable": "No se puede mostrar el comprobante"
 }

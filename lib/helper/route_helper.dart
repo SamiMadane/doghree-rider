@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:wefrh_rider/features/auth/screens/dm_registration_success_screen.dart';
 import 'package:wefrh_rider/features/cash_in_hand/screens/my_earning_filter_screen.dart';
 import 'package:wefrh_rider/features/cash_in_hand/screens/my_earning_screen.dart';
+import 'package:wefrh_rider/features/cash_in_hand/screens/withdrawals_screen.dart';
 import 'package:wefrh_rider/features/splash/screens/language_init_screen.dart';
 import 'package:wefrh_rider/features/notification/domain/models/notification_body_model.dart';
 import 'package:wefrh_rider/features/chat/domain/models/conversation_model.dart';
@@ -79,6 +80,8 @@ class RouteHelper {
   static const String captureIdScreen = '/capture-id-screen';
   static const String previewIdScreen = '/preview-id-screen';
   static const String detailedOperationHistoryScreen = '/detailed-operation-history-screen';
+  static const String withdrawals = '/withdrawals';
+
 
   static String getDetailedOperationHistoryRoute() => detailedOperationHistoryScreen;
   static String getDetailsStatisticsRoute() => detailsStatistics;
@@ -164,6 +167,8 @@ class RouteHelper {
   static String getTaskRoute() => taskScreen;
   static String getSettingRoute() => settingScreen;
   static String getLanguageInitRoute() => languageInit;
+  static String getWithdrawalsRoute() => withdrawals;
+
 
   static List<GetPage> routes = [
     GetPage(
@@ -318,5 +323,6 @@ class RouteHelper {
         name: dmRegistrationSuccess,
         page: () => const DmRegistrationSuccessScreen()),
     GetPage(name: settingScreen, page: () => const SettingScreen()),
+    GetPage(name: withdrawals, page: () => const WithdrawalsScreen()),
   ];
 }

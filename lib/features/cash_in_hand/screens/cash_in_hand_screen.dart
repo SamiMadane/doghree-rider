@@ -21,12 +21,16 @@ class _CashInHandScreenState extends State<CashInHandScreen> {
 
   @override
   void initState() {
-    Get.find<ProfileController>().getProfile();
-    Get.find<CashInHandController>().getWalletPaymentList();
-    Get.find<CashInHandController>().getWalletProvidedEarningList();
-    Get.find<CashInHandController>().getWallet();
-    Get.find<CashInHandController>().getWithdrawals();
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      Get.find<ProfileController>().getProfile();
+      final cash = Get.find<CashInHandController>();
+      cash.getWalletPaymentList();
+      cash.getWalletProvidedEarningList();
+      cash.getWallet();
+      cash.getWithdrawals();
+    });
   }
     Future<void> _onRefresh() async {
     final cash = Get.find<CashInHandController>();

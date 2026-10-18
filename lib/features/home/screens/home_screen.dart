@@ -73,6 +73,9 @@ class _HomeScreenState extends State<HomeScreen> {
         break;
       case AppLifecycleState.resumed:
         checkPermission();
+         if (Get.isRegistered<NotificationController>()) {
+          Get.find<NotificationController>().getNotificationList(true);
+        }
         break;
       case AppLifecycleState.inactive:
         break;
@@ -273,7 +276,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final profileController = Get.find<ProfileController>();
-    final notificationController = Get.find<NotificationController>();
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: CustomAppBarWidget(
@@ -305,32 +307,35 @@ class _HomeScreenState extends State<HomeScreen> {
             )
           ],
         ),
-        actionWidget: IconButton(
-          icon: Stack(
-            children: [
-              SvgPicture.asset(
-                ManagerAssets.notificationIcon, // مسار الأيقونة
-
-                color: Theme.of(context).textTheme.bodyLarge!.color,
-              ),
-              if (notificationController.hasNotification)
-                Positioned(
-                  top: 0,
-                  right: 0,
-                  child: Container(
-                    height: 10,
-                    width: 10,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor,
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                          width: 1, color: Theme.of(context).cardColor),
-                    ),
+        actionWidget: GetBuilder<NotificationController>(
+          builder: (notificationController) {
+            return IconButton(
+              icon: Stack(
+                children: [
+                  SvgPicture.asset(
+                    ManagerAssets.notificationIcon,
+                    color: Theme.of(context).textTheme.bodyLarge!.color,
                   ),
-                ),
-            ],
-          ),
-          onPressed: () => Get.toNamed(RouteHelper.getNotificationRoute()),
+                  if (notificationController.hasNotification)
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      child: Container(
+                        height: 10,
+                        width: 10,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                              width: 1, color: Theme.of(context).cardColor),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+              onPressed: () => Get.toNamed(RouteHelper.getNotificationRoute()),
+            );
+          },
         ),
       ),
       body: RefreshIndicator(

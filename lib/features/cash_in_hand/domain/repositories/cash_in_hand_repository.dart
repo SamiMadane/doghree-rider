@@ -1,4 +1,5 @@
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wefrh_rider/api/api_checker.dart';
@@ -184,6 +185,7 @@ class CashInHandRepository implements CashInHandRepositoryInterface {
   Future<List<WalletWithdrawal>?> getWithdrawals({int offset = 1}) async {
     final Response response = await apiClient
         .getData('${AppConstants.walletWithdrawalsUri}?limit=20&offset=$offset');
+    debugPrint('WITHDRAWALS ◀ ${response.statusCode} ${response.bodyString}');
     if (response.statusCode == 200 && response.body is Map) {
       final raw = (response.body as Map)['withdrawals'];
       if (raw is List) {

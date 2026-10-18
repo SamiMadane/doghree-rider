@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
 import 'package:wefrh_rider/common/widgets/custom_card.dart';
 import 'package:wefrh_rider/common/widgets/custom_drop_down_button.dart';
-import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
 import 'package:wefrh_rider/common/widgets/custom_text_field_widget.dart';
 import 'package:wefrh_rider/common/widgets/widget_with_label.dart';
 import 'package:wefrh_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
@@ -15,6 +14,7 @@ void showWalletAccountSheet() {
   Get.bottomSheet(const WalletAccountSheet(),
       isScrollControlled: true, backgroundColor: Colors.transparent);
 }
+
 class WalletAccountSection extends StatelessWidget {
   const WalletAccountSection({super.key});
 
@@ -128,15 +128,24 @@ class WalletAccountSheet extends StatefulWidget {
 }
 
 class _WalletAccountSheetState extends State<WalletAccountSheet> {
+  // حروف من أي لغة + تشكيل + مسافة + . ' - ، بدون أرقام أو رموز
+  static final RegExp _nameRegex =
+      RegExp(r"^[\p{L}\p{M}\s.'’\-]+$", unicode: true);
+
   WalletMethod? _method;
   final Map<String, TextEditingController> _controllers = {};
   final Map<String, FocusNode> _nodes = {};
+  final Map<String, String?> _errors = {};
 
   @override
   void initState() {
     super.initState();
     final methods = Get.find<CashInHandController>().wallet?.methods ?? [];
     if (methods.isNotEmpty) _setMethod(methods.first);
+    // امسح أي خطأ سيرفر قديم من فتحة سابقة
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Get.find<CashInHandController>().clearAccountError();
+    });
   }
 
   void _disposeFields() {
@@ -148,6 +157,7 @@ class _WalletAccountSheetState extends State<WalletAccountSheet> {
     }
     _controllers.clear();
     _nodes.clear();
+    _errors.clear();
   }
 
   void _setMethod(WalletMethod method) {
@@ -178,18 +188,49 @@ class _WalletAccountSheetState extends State<WalletAccountSheet> {
     }
   }
 
+  bool _isNameField(WalletMethodField f) =>
+      f.inputName.toLowerCase().contains('name');
+
+  /// يرجّع رسالة الخطأ أو null إذا الحقل سليم
+  String? _validate(WalletMethodField f, String value) {
+    if (value.isEmpty) {
+      return f.isRequired ? 'required_fields_can_not_be_empty'.tr : null;
+    }
+    if (_isNameField(f) && !_nameRegex.hasMatch(value)) {
+      return 'wallet_name_invalid'.tr;
+    }
+    return null;
+  }
+
   Future<void> _submit() async {
     final method = _method;
     if (method == null) return;
+
     final Map<String, String> values = {};
+    final Map<String, String?> errors = {};
+    String? firstErrorField;
+
     for (final f in method.fields) {
       final v = _controllers[f.inputName]!.text.trim();
-      if (f.isRequired && v.isEmpty) {
-        showCustomSnackBar('required_fields_can_not_be_empty'.tr);
-        return;
+      final err = _validate(f, v);
+      if (err != null) {
+        errors[f.inputName] = err;
+        firstErrorField ??= f.inputName;
       }
       values[f.inputName] = v;
     }
+
+    if (errors.isNotEmpty) {
+      setState(() {
+        _errors
+          ..clear()
+          ..addAll(errors);
+      });
+      _nodes[firstErrorField]?.requestFocus();
+      return;
+    }
+    setState(_errors.clear);
+
     final c = Get.find<CashInHandController>();
     final ok = await c.saveWalletAccount(
       methodId: method.id,
@@ -201,89 +242,106 @@ class _WalletAccountSheetState extends State<WalletAccountSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final methods =
-        Get.find<CashInHandController>().wallet?.methods ?? <WalletMethod>[];
-    final fields = _method?.fields ?? <WalletMethodField>[];
+    return GetBuilder<CashInHandController>(builder: (c) {
+      final methods = c.wallet?.methods ?? <WalletMethod>[];
+      if (_method == null && methods.isNotEmpty) _setMethod(methods.first);
+      final fields = _method?.fields ?? <WalletMethodField>[];
+      final String? serverError = c.accountError;
 
-    return Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-      child: Container(
-        padding: EdgeInsets.symmetric(
-            horizontal: Dimensions.w20, vertical: Dimensions.h20),
-        decoration: BoxDecoration(
-          color: Theme.of(context).cardColor,
-          borderRadius:
-              BorderRadius.vertical(top: Radius.circular(Dimensions.r20)),
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Text('wallet_add_account'.tr,
-                    style: textBold().copyWith(fontSize: Dimensions.fs16)),
-              ),
-              SizedBox(height: Dimensions.h20),
-              if (methods.isEmpty)
-                Text('wallet_no_methods'.tr, style: textRegular())
-              else ...[
-                WidgetWithLabel(
-                  label: 'wallet_select_method'.tr,
-                  textField: CustomDropdownButton(
-                    hintText: 'wallet_select_method'.tr,
-                    dropdownMenuItems: methods
-                        .map((m) => DropdownMenuItem<String>(
-                              value: m.id.toString(),
-                              child: Text(m.methodName,
-                                  style: textRegular()
-                                      .copyWith(fontSize: Dimensions.fs14)),
-                            ))
-                        .toList(),
-                    isBorder: true,
-                    backgroundColor: Theme.of(context).cardColor,
-                    selectedValue: _method?.id.toString(),
-                    onChanged: (value) {
-                      final m = methods.firstWhere(
-                          (e) => e.id.toString() == value,
-                          orElse: () => methods.first);
-                      setState(() => _setMethod(m));
-                    },
-                  ),
+      return Padding(
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        child: Container(
+          padding: EdgeInsets.symmetric(
+              horizontal: Dimensions.w20, vertical: Dimensions.h20),
+          decoration: BoxDecoration(
+            color: Theme.of(context).cardColor,
+            borderRadius:
+                BorderRadius.vertical(top: Radius.circular(Dimensions.r20)),
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Text('wallet_add_account'.tr,
+                      style: textBold().copyWith(fontSize: Dimensions.fs16)),
                 ),
-                for (int i = 0; i < fields.length; i++) ...[
-                  SizedBox(height: Dimensions.h16),
+                SizedBox(height: Dimensions.h20),
+                if (methods.isEmpty)
+                  Text('wallet_no_methods'.tr, style: textRegular())
+                else ...[
                   WidgetWithLabel(
-                    label: fields[i].label,
-                    textField: CustomTextFieldWidget(
-                      controller: _controllers[fields[i].inputName]!,
-                      labelText: fields[i].label,
-                      hintText: fields[i].label,
-                      inputType: _keyboard(fields[i].inputType),
-                      isRequired: fields[i].isRequired,
-                      focusNode: _nodes[fields[i].inputName],
-                      nextFocus: i < fields.length - 1
-                          ? _nodes[fields[i + 1].inputName]
-                          : null,
-                      inputAction: i < fields.length - 1
-                          ? TextInputAction.next
-                          : TextInputAction.done,
+                    label: 'wallet_select_method'.tr,
+                    textField: CustomDropdownButton(
+                      hintText: 'wallet_select_method'.tr,
+                      dropdownMenuItems: methods
+                          .map((m) => DropdownMenuItem<String>(
+                                value: m.id.toString(),
+                                child: Text(m.methodName,
+                                    style: textRegular()
+                                        .copyWith(fontSize: Dimensions.fs14)),
+                              ))
+                          .toList(),
+                      isBorder: true,
+                      backgroundColor: Theme.of(context).cardColor,
+                      selectedValue: _method?.id.toString(),
+                      onChanged: (value) {
+                        final m = methods.firstWhere(
+                            (e) => e.id.toString() == value,
+                            orElse: () => methods.first);
+                        c.clearAccountError();
+                        setState(() => _setMethod(m));
+                      },
                     ),
                   ),
-                ],
-                SizedBox(height: Dimensions.h25),
-                GetBuilder<CashInHandController>(
-                  builder: (c) => CustomButtonWidget(
+                  for (int i = 0; i < fields.length; i++) ...[
+                    SizedBox(height: Dimensions.h16),
+                    WidgetWithLabel(
+                      label: fields[i].label,
+                      textField: CustomTextFieldWidget(
+                        controller: _controllers[fields[i].inputName]!,
+                        labelText: fields[i].label,
+                        hintText: fields[i].label,
+                        inputType: _keyboard(fields[i].inputType),
+                        isRequired: fields[i].isRequired,
+                        focusNode: _nodes[fields[i].inputName],
+                        errorText: _errors[fields[i].inputName],
+                        onChanged: (_) {
+                          if (_errors[fields[i].inputName] != null) {
+                            setState(() => _errors[fields[i].inputName] = null);
+                          }
+                          c.clearAccountError();
+                        },
+                        nextFocus: i < fields.length - 1
+                            ? _nodes[fields[i + 1].inputName]
+                            : null,
+                        inputAction: i < fields.length - 1
+                            ? TextInputAction.next
+                            : TextInputAction.done,
+                      ),
+                    ),
+                  ],
+                  SizedBox(height: Dimensions.h25),
+                  if (serverError != null) ...[
+                    Text(serverError,
+                        style: textRegular().copyWith(
+                            color: Theme.of(context).colorScheme.error,
+                            fontSize: Dimensions.fs12)),
+                    SizedBox(height: Dimensions.h8),
+                  ],
+                  CustomButtonWidget(
                     buttonText: 'save_changes'.tr,
                     isLoading: c.accountBusy,
                     onPressed: _submit,
                   ),
-                ),
+                ],
               ],
-            ],
+            ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 }

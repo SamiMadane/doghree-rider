@@ -72,6 +72,9 @@ class NotificationHelper {
         print("onMessage message type:${message.data['type']}");
         print("onMessage message:${message.data}");
       }
+      if (Get.isRegistered<NotificationController>()) {
+        Get.find<NotificationController>().getNotificationList(true);
+      }
 
       if (message.data['type'] == 'message' &&
           Get.currentRoute.startsWith(RouteHelper.chatScreen)) {
