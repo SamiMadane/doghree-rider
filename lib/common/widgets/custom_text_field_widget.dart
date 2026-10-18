@@ -55,6 +55,8 @@ class CustomTextFieldWidget extends StatefulWidget {
   final bool readOnly;
   final VoidCallback? onTap;
 
+    final String? errorText;
+
   const CustomTextFieldWidget({
     super.key,
     this.hintText,
@@ -95,6 +97,7 @@ class CustomTextFieldWidget extends StatefulWidget {
     this.fillColor,
     this.readOnly = false,
     this.onTap,
+    this.errorText,
   });
 
   @override
@@ -196,6 +199,16 @@ class CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
               ),
               isDense: true,
               hintText: widget.hintText,
+                            errorText: widget.errorText,
+              errorMaxLines: 2,
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(
+                    widget.borderRadius ?? Dimensions.r16),
+                borderSide: BorderSide(
+                  width: 1.5,
+                  color: Theme.of(context).colorScheme.error,
+                ),
+              ),
               fillColor: widget.fillColor ?? Theme.of(context).cardColor,
               filled: true,
               hintStyle: textRegular().copyWith(

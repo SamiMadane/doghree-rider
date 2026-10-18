@@ -96,6 +96,25 @@ class CashInHandController extends GetxController implements GetxService {
 
   bool _withdrawBusy = false;
   bool get withdrawBusy => _withdrawBusy;
+  String? _withdrawError;
+  String? get withdrawError => _withdrawError;
+
+  String? _accountError;
+  String? get accountError => _accountError;
+
+  void clearAccountError() {
+    if (_accountError != null) {
+      _accountError = null;
+      update();
+    }
+  }
+
+  void clearWithdrawError() {
+    if (_withdrawError != null) {
+      _withdrawError = null;
+      update();
+    }
+  }
 
   Future<void> getWithdrawals() async {
     try {
@@ -117,16 +136,23 @@ class CashInHandController extends GetxController implements GetxService {
       {required double amount, int? accountId, String? note}) async {
     if (_withdrawBusy) return false; // يمنع الضغط المزدوج
     _withdrawBusy = true;
+    _withdrawError = null;
     update();
     bool ok = false;
     try {
       final ResponseModel r = await cashInHandServiceInterface.requestWithdraw(
           amount: amount, accountId: accountId, note: note);
       ok = r.isSuccess;
-      showCustomSnackBar(ok ? 'wallet_withdraw_success'.tr : r.message,
-          isError: !ok);
+      if (ok) {
+        showCustomSnackBar('wallet_withdraw_success'.tr, isError: false);
+      } else {
+        final String? msg = r.message;
+        _withdrawError =
+            (msg != null && msg.trim().isNotEmpty) ? msg : 'error_occurred'.tr;
+      }
     } catch (e) {
-      showCustomSnackBar('error_occurred'.tr, isError: true);
+      debugPrint('WITHDRAW error: $e');
+      _withdrawError = 'error_occurred'.tr;
     }
     // الحالة الحقيقية دائماً من السيرفر (نجاح أو رفض)
     await getWallet();
@@ -155,23 +181,35 @@ class CashInHandController extends GetxController implements GetxService {
     _walletLoading = false;
     update();
   }
-
-  Future<bool> saveWalletAccount(
-      {required int methodId,
-      required Map<String, String> fields,
-      bool isDefault = false}) async {
-    _accountBusy = true;
-    update();
+Future<bool> saveWalletAccount(
+    {required int methodId,
+    required Map<String, String> fields,
+    bool isDefault = false}) async {
+  if (_accountBusy) return false; // يمنع الضغط المزدوج
+  _accountBusy = true;
+  _accountError = null;
+  update();
+  bool ok = false;
+  try {
     final ResponseModel r = await cashInHandServiceInterface.saveWalletAccount(
         methodId: methodId, fields: fields, isDefault: isDefault);
-    if (r.isSuccess) await getWallet();
-    _accountBusy = false;
-    update();
-    showCustomSnackBar(r.isSuccess ? 'wallet_account_saved'.tr : r.message,
-        isError: !r.isSuccess); // الحفظ
-
-    return r.isSuccess;
+    ok = r.isSuccess;
+    if (ok) {
+      await getWallet();
+      showCustomSnackBar('wallet_account_saved'.tr, isError: false);
+    } else {
+      final String? m = r.message;
+      _accountError =
+          (m != null && m.trim().isNotEmpty) ? m : 'error_occurred'.tr;
+    }
+  } catch (e) {
+    debugPrint('SAVE ACCOUNT error: $e');
+    _accountError = 'error_occurred'.tr;
   }
+  _accountBusy = false;
+  update();
+  return ok;
+}
 
   Future<bool> deleteWalletAccount(int id) async {
     _accountBusy = true;
