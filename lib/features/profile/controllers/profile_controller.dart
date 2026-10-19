@@ -10,9 +10,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:wefrh_rider/features/profile/domain/services/profile_service_interface.dart';
-import 'package:flutter/material.dart'; 
-import 'package:wefrh_rider/helper/image_picker_helper.dart'; 
-import 'package:image_cropper/image_cropper.dart'; 
+import 'package:flutter/material.dart';
+import 'package:wefrh_rider/helper/image_picker_helper.dart';
+import 'package:image_cropper/image_cropper.dart';
 
 class ProfileController extends GetxController implements GetxService {
   final ProfileServiceInterface profileServiceInterface;
@@ -38,9 +38,10 @@ class ProfileController extends GetxController implements GetxService {
   // ========== ✅ NEW: Pick Profile Image with Crop ==========
   /// اختيار صورة البروفايل مع القص الاحترافي
   Future<void> pickProfileImageWithCrop(BuildContext context) async {
-    final XFile? croppedImage = await ImagePickerHelper.showImageSourceBottomSheet(
+    final XFile? croppedImage =
+        await ImagePickerHelper.showImageSourceBottomSheet(
       context: context,
-      cropStyle: CropStyle.circle, 
+      cropStyle: CropStyle.circle,
       lockAspectRatio: false,
     );
 
@@ -146,6 +147,7 @@ class ProfileController extends GetxController implements GetxService {
 
   void stopLocationRecord() {
     _timer?.cancel();
+    _timer = null;
   }
 
   Future<void> recordLocation() async {
@@ -153,6 +155,7 @@ class ProfileController extends GetxController implements GetxService {
     String address =
         await profileServiceInterface.addressPlaceMark(locationResult);
 
+    if (_timer == null || !_timer!.isActive) return;
     _recordLocation = RecordLocationBodyModel(
       location: address,
       latitude: locationResult.latitude,

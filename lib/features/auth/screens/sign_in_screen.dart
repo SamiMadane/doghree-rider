@@ -1,4 +1,5 @@
 import 'package:country_code_picker/country_code_picker.dart';
+import 'package:wefrh_rider/api/api_checker.dart';
 import 'package:wefrh_rider/common/widgets/custom_bottom_sheet_widget.dart';
 import 'package:wefrh_rider/common/widgets/session_expired_bottom_sheet.dart';
 import 'package:wefrh_rider/features/auth/controllers/auth_controller.dart';
@@ -11,7 +12,6 @@ import 'package:wefrh_rider/util/dimensions.dart';
 import 'package:wefrh_rider/util/manager_assets.dart';
 import 'package:wefrh_rider/util/styles.dart';
 import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
-import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
 import 'package:wefrh_rider/common/widgets/custom_text_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -50,6 +50,11 @@ class _SignInScreenState extends State<SignInScreen> {
             .code;
     _phoneController.text = Get.find<AuthController>().getUserNumber();
     _passwordController.text = Get.find<AuthController>().getUserPassword();
+
+    // نظّف أي أخطاء قديمة (من التسجيل مثلاً) بعد ما ينتهي البناء
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) Get.find<AuthController>().setFieldErrors({});
+    });
   }
 
   void _checkLogoutReason() async {
@@ -65,7 +70,7 @@ class _SignInScreenState extends State<SignInScreen> {
             },
           ),
           isDismissible: false,
-          showCloseButton: false, 
+          showCloseButton: false,
         );
       });
 
@@ -80,7 +85,10 @@ class _SignInScreenState extends State<SignInScreen> {
       body: SafeArea(
           child: Center(
         child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
+          padding: EdgeInsets.symmetric(
+            horizontal: Dimensions.w16,
+            vertical: Dimensions.h16,
+          ),
           child: GetBuilder<AuthController>(builder: (authController) {
             return Column(children: [
               Image.asset(
@@ -110,6 +118,9 @@ class _SignInScreenState extends State<SignInScreen> {
                   inputType: TextInputType.phone,
                   isPhone: true,
                   isRequired: true,
+                  errorText: authController.fieldError('login_phone'),
+                  onChanged: (_) =>
+                      authController.clearFieldError('login_phone'),
                   onCountryChanged: (CountryCode countryCode) {
                     _countryDialCode = countryCode.dialCode;
                     _countryCode = countryCode.code;
@@ -133,6 +144,9 @@ class _SignInScreenState extends State<SignInScreen> {
                   inputType: TextInputType.visiblePassword,
                   isPassword: true,
                   isRequired: true,
+                  errorText: authController.fieldError('login_password'),
+                  onChanged: (_) =>
+                      authController.clearFieldError('login_password'),
                   onSubmit: (text) => GetPlatform.isWeb
                       ? _login(
                           authController,
@@ -172,9 +186,9 @@ class _SignInScreenState extends State<SignInScreen> {
                   onPressed: () =>
                       Get.toNamed(RouteHelper.getForgotPassRoute()),
                   child: Text(
-                    '${'forgot_password'.tr}',
-                    style: textMedium().copyWith(
-                        color: Theme.of(context).primaryColor),
+                    'forgot_password'.tr,
+                    style: textMedium()
+                        .copyWith(color: Theme.of(context).primaryColor),
                   ),
                 ),
               ]),
@@ -242,31 +256,42 @@ class _SignInScreenState extends State<SignInScreen> {
         await CustomValidator.isPhoneValid(numberWithCountryCode);
     numberWithCountryCode = phoneValid.phone;
 
+    // ===== تحقق محلي: الأخطاء تحت الحقول =====
+    final Map<String, String> errors = {};
     if (phone.isEmpty) {
-      showCustomSnackBar('enter_phone_number'.tr);
+      errors['login_phone'] = 'enter_phone_number'.tr;
     } else if (!phoneValid.isValid) {
-      showCustomSnackBar('invalid_phone_number'.tr);
-    } else if (password.isEmpty) {
-      showCustomSnackBar('enter_password'.tr);
-    } else if (password.length < 6) {
-      showCustomSnackBar('password_should_be'.tr);
-    } else {
-      authController
-          .login(numberWithCountryCode, password)
-          .then((status) async {
-        if (status.isSuccess) {
-          if (authController.isActiveRememberMe) {
-            authController.saveUserNumberAndPassword(
-                phone, password, countryDialCode, countryCode);
-          } else {
-            authController.clearUserNumberAndPassword();
-          }
-          await Get.find<ProfileController>().getProfile();
-          Get.offAllNamed(RouteHelper.getInitialRoute());
-        } else {
-          showCustomSnackBar(status.message);
-        }
-      });
+      errors['login_phone'] = 'invalid_phone_number'.tr;
     }
+    if (password.isEmpty) {
+      errors['login_password'] = 'enter_password'.tr;
+    } else if (password.length < 6) {
+      errors['login_password'] = 'password_should_be'.tr;
+    }
+
+    authController.setFieldErrors(errors);
+
+    if (errors.isNotEmpty) {
+      if (errors.containsKey('login_phone')) {
+        _phoneFocus.requestFocus();
+      } else {
+        _passwordFocus.requestFocus();
+      }
+      return;
+    }
+
+    authController.login(numberWithCountryCode, password).then((status) async {
+      if (status.isSuccess) {
+           ApiChecker.isLoggingOut = false;
+        if (authController.isActiveRememberMe) {
+          authController.saveUserNumberAndPassword(
+              phone, password, countryDialCode, countryCode);
+        } else {
+          authController.clearUserNumberAndPassword();
+        }
+        await Get.find<ProfileController>().getProfile();
+        Get.offAllNamed(RouteHelper.getInitialRoute());
+      } 
+    });
   }
 }

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:wefrh_rider/api/api_error_handler.dart';
 import 'package:wefrh_rider/api/error_message.dart';
@@ -11,11 +12,13 @@ import 'package:wefrh_rider/helper/route_helper.dart';
 
 class ApiChecker {
   static bool _isSessionExpiredBottomSheetShown = false;
+    static bool isLoggingOut = false;
 
   /// sessionAware=false: الـ 401 خطأ عادي (مسارات /auth/)
   static void checkApi(Response response,
       {bool showDialog = true, bool sessionAware = true}) {
     if (response.statusCode == 401 && sessionAware) {
+      if (isLoggingOut) return; 
       _handleSessionExpired(showBottomSheet: showDialog);
       return;
     }
@@ -34,6 +37,7 @@ class ApiChecker {
 
   static void _handleSessionExpired({bool showBottomSheet = true}) {
     if (_isSessionExpiredBottomSheetShown) return;
+    if (!Get.find<AuthController>().isLoggedIn()) return;
     _isSessionExpiredBottomSheetShown = true;
 
     Get.find<AuthController>().clearSharedData();
@@ -55,6 +59,8 @@ class ApiChecker {
       _isSessionExpiredBottomSheetShown = false;
       Get.offAllNamed(RouteHelper.getSignInRoute());
     }
+    debugPrint('SESSION EXPIRED triggered. token=${Get.find<AuthController>().getUserToken()}');
+debugPrint(StackTrace.current.toString());
   }
 
   static void resetDialogState() {

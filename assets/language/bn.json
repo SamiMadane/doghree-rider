@@ -737,6 +737,11 @@
   "no_payment_method_is_available": "কোনো পেমেন্ট পদ্ধতি পাওয়া যায়নি।",
   "please_contact_the_admin": "দয়া করে অ্যাডমিনের সাথে যোগাযোগ করুন।",
   "insufficient_balance": "অপর্যাপ্ত ব্যালেন্স",
+  "upload_identity_picture": "@identity-এর ছবি আপলোড করুন",
+   "email_field_is_required": "ইমেল ফিল্ড প্রয়োজন",
+  "enter_valid_email_address": "বৈধ ইমেইল ঠিকানা লিখুন",
+  "confirm_password_field_is_required": "পাসওয়ার্ড নিশ্চিতকরণ ফিল্ড প্রয়োজন",
+  "confirm_password_does_not_matched": "পাসওয়ার্ড মেলে না",
   "application_submitted": "আবেদন জমা দেওয়া হয়েছে",
   "application_received_message": "আমরা আপনার আবেদন পেয়েছি এবং আমরা সবকিছু পর্যালোচনা করব এবং শীঘ্রই আপনার সাথে যোগাযোগ করব"
   

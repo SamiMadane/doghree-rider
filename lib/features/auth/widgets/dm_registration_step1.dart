@@ -6,9 +6,11 @@ import 'package:get/get.dart';
 import 'package:wefrh_rider/common/widgets/custom_text_field_widget.dart';
 import 'package:wefrh_rider/common/widgets/widget_with_label.dart';
 import 'package:wefrh_rider/features/auth/controllers/auth_controller.dart';
+import 'package:wefrh_rider/features/auth/widgets/pass_view_widget.dart';
 import 'package:wefrh_rider/util/dimensions.dart';
 import 'package:wefrh_rider/util/manager_assets.dart';
 import 'package:wefrh_rider/util/manager_colors.dart';
+import 'package:wefrh_rider/util/styles.dart';
 
 class DmRegistrationStep1 extends StatelessWidget {
   final TextEditingController fNameController;
@@ -79,7 +81,10 @@ class DmRegistrationStep1 extends StatelessWidget {
               bottom: 0,
               right: 0,
               child: InkWell(
-                onTap: () => authController.pickDmImageWithCrop(context),
+                onTap: () {
+                  authController.clearFieldError('image'); 
+                  authController.pickDmImageWithCrop(context);
+                },
                 child: Material(
                   elevation: 4,
                   shape: const CircleBorder(),
@@ -101,6 +106,17 @@ class DmRegistrationStep1 extends StatelessWidget {
             ),
           ],
         ),
+        if (authController.fieldError('image') != null) ...[
+          SizedBox(height: Dimensions.h8),
+          Text(
+            authController.fieldError('image')!,
+            textAlign: TextAlign.center,
+            style: textRegular().copyWith(
+              fontSize: Dimensions.fs12,
+              color: Theme.of(context).colorScheme.error,
+            ),
+          ),
+        ],
         SizedBox(height: Dimensions.h25),
         WidgetWithLabel(
           label: 'first_name'.tr,
@@ -113,6 +129,8 @@ class DmRegistrationStep1 extends StatelessWidget {
             isRequired: true,
             focusNode: fNameNode,
             nextFocus: lNameNode,
+            errorText: authController.fieldError('f_name'),
+            onChanged: (_) => authController.clearFieldError('f_name'),
           ),
         ),
         SizedBox(height: Dimensions.h16),
@@ -127,6 +145,8 @@ class DmRegistrationStep1 extends StatelessWidget {
             isRequired: true,
             focusNode: lNameNode,
             nextFocus: phoneNode,
+            errorText: authController.fieldError('l_name'), 
+            onChanged: (_) => authController.clearFieldError('l_name'), 
           ),
         ),
         SizedBox(height: Dimensions.h16),
@@ -143,6 +163,8 @@ class DmRegistrationStep1 extends StatelessWidget {
             isPhone: true,
             onCountryChanged: onCountryChanged,
             countryDialCode: countryDialCode,
+            errorText: authController.fieldError('phone'),
+            onChanged: (_) => authController.clearFieldError('phone'), 
           ),
         ),
         SizedBox(height: Dimensions.h16),
@@ -156,33 +178,42 @@ class DmRegistrationStep1 extends StatelessWidget {
             isRequired: true,
             focusNode: emailNode,
             nextFocus: passwordNode,
+            errorText: authController.fieldError('email'),
+            onChanged: (_) => authController.clearFieldError('email'), 
           ),
         ),
         SizedBox(height: Dimensions.h16),
-        WidgetWithLabel(
-          label: 'password'.tr,
-          textField: CustomTextFieldWidget(
-            hintText: 'eight_characters'.tr,
-            labelText: 'password'.tr,
-            isRequired: true,
-            controller: passwordController,
-            focusNode: passwordNode,
-            nextFocus: confirmPasswordNode,
-            inputType: TextInputType.visiblePassword,
-            isPassword: true,
-            onChanged: (value) {
-              if (value != null && value.isNotEmpty) {
-                if (!authController.showPassView) {
-                  authController.showHidePass();
-                }
-                authController.validPassCheck(value);
-              } else {
-                if (authController.showPassView) {
-                  authController.showHidePass();
-                }
-              }
-            },
-          ),
+        Column(
+          children: [
+            WidgetWithLabel(
+              label: 'password'.tr,
+              textField: CustomTextFieldWidget(
+                hintText: 'eight_characters'.tr,
+                labelText: 'password'.tr,
+                isRequired: true,
+                controller: passwordController,
+                focusNode: passwordNode,
+                nextFocus: confirmPasswordNode,
+                inputType: TextInputType.visiblePassword,
+                isPassword: true,
+                errorText: authController.fieldError('password'),
+                onChanged: (value) {
+                  authController.clearFieldError('password');
+                  if (value != null && value.isNotEmpty) {
+                    if (!authController.showPassView) {
+                      authController.showHidePass();
+                    }
+                    authController.validPassCheck(value);
+                  } else {
+                    if (authController.showPassView) {
+                      authController.showHidePass();
+                    }
+                  }
+                },
+              ),
+            ),
+            authController.showPassView ? const PassViewWidget() : SizedBox(),
+          ],
         ),
         SizedBox(height: Dimensions.h16),
         WidgetWithLabel(
@@ -196,6 +227,9 @@ class DmRegistrationStep1 extends StatelessWidget {
             isPassword: true,
             focusNode: confirmPasswordNode,
             inputAction: TextInputAction.done,
+            errorText: authController.fieldError('confirm_password'),
+            onChanged: (_) =>
+                authController.clearFieldError('confirm_password'),
           ),
         ),
         SizedBox(height: Dimensions.h25),
