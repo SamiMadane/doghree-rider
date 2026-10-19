@@ -16,7 +16,7 @@ class DmRegistrationSuccessScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: CustomAppBarWidget(
-        title: 'join_delivery_partner'.tr,
+        title: 'join_as_a_delivery_man'.tr,
         isBackButtonExist: false,
      
       ),

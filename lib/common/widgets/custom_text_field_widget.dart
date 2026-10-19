@@ -57,6 +57,7 @@ class CustomTextFieldWidget extends StatefulWidget {
 
     final String? errorText;
 
+
   const CustomTextFieldWidget({
     super.key,
     this.hintText,
@@ -97,7 +98,9 @@ class CustomTextFieldWidget extends StatefulWidget {
     this.fillColor,
     this.readOnly = false,
     this.onTap,
+
     this.errorText,
+
   });
 
   @override
@@ -199,8 +202,24 @@ class CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
               ),
               isDense: true,
               hintText: widget.hintText,
-                            errorText: widget.errorText,
-              errorMaxLines: 2,
+
+
+                         error: widget.errorText == null
+                  ? null
+                  : Directionality(
+                      textDirection: Directionality.of(context),
+                      child: Align(
+                        alignment: AlignmentDirectional.centerStart,
+                        child: Text(
+                          widget.errorText!,
+                          textAlign: TextAlign.start,
+                          style: textRegular().copyWith(
+                            fontSize: Dimensions.fs12,
+                            color: Theme.of(context).colorScheme.error,
+                          ),
+                        ),
+                      ),
+                    ),
               focusedErrorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(
                     widget.borderRadius ?? Dimensions.r16),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wefrh_rider/api/api_checker.dart';
 import 'package:wefrh_rider/common/widgets/confirmation_bottom_sheet.dart';
 import 'package:wefrh_rider/common/widgets/custom_bottom_sheet_widget.dart';
 import 'package:wefrh_rider/common/widgets/custom_card.dart';
@@ -26,7 +27,10 @@ class LegalSection extends StatelessWidget {
         ),
         SizedBox(height: Dimensions.h16),
         CustomCard(
-          padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
+          padding: EdgeInsets.symmetric(
+            horizontal: Dimensions.w16,
+            vertical: Dimensions.h16,
+          ),
           isBorder: false,
           child: Column(
             children: [
@@ -48,7 +52,10 @@ class LegalSection extends StatelessWidget {
         ),
         SizedBox(height: Dimensions.h16),
         CustomCard(
-          padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
+          padding: EdgeInsets.symmetric(
+            horizontal: Dimensions.w16,
+            vertical: Dimensions.h16,
+          ),
           isBorder: false,
           child: Column(
             children: [
@@ -66,8 +73,9 @@ class LegalSection extends StatelessWidget {
                       acceptColor: Theme.of(context).colorScheme.error,
                       cancelText: 'no_stay'.tr,
                       onAccept: () {
-                        Get.find<AuthController>().clearSharedData();
+                        ApiChecker.isLoggingOut = true;
                         Get.find<ProfileController>().stopLocationRecord();
+                        Get.find<AuthController>().clearSharedData();
                         Get.offAllNamed(RouteHelper.getSignInRoute());
                       },
                       onCancel: () =>

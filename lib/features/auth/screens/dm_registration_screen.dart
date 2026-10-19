@@ -13,9 +13,9 @@ import 'package:wefrh_rider/features/splash/controllers/splash_controller.dart';
 import 'package:wefrh_rider/features/auth/domain/models/delivery_man_body_model.dart';
 import 'package:wefrh_rider/helper/custom_validator_helper.dart';
 import 'package:wefrh_rider/helper/route_helper.dart';
+import 'package:wefrh_rider/helper/validate_check.dart';
 import 'package:wefrh_rider/util/dimensions.dart';
 import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
-import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
 
 class DmRegistrationScreen extends StatefulWidget {
   const DmRegistrationScreen({super.key});
@@ -43,6 +43,8 @@ class _DmRegistrationScreenState extends State<DmRegistrationScreen> {
   final FocusNode _confirmPasswordNode = FocusNode();
   final FocusNode _identityNumberNode = FocusNode();
 
+  final ScrollController _scrollController = ScrollController();
+
   String? _countryDialCode;
 
   @override
@@ -55,6 +57,145 @@ class _DmRegistrationScreenState extends State<DmRegistrationScreen> {
     Get.find<AddressController>().resetSelectedDeliveryZone();
     Get.find<AddressController>().getZoneList();
     Get.find<AuthController>().getVehicleList();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  /// تحقق الخطوة الأولى: يرجّع (اسم الحقل ← رسالة الخطأ).
+  /// الخريطة الفاضية = كل شي سليم.
+  Map<String, String> _validateStep1(
+    AuthController auth, {
+    required String fName,
+    required String lName,
+    required String phone,
+    required bool phoneIsValid,
+    required String email,
+    required String password,
+    required String confirmPass,
+  }) {
+    final Map<String, String> errors = {};
+
+    if (auth.pickedImage == null) {
+      errors['image'] = 'pick_delivery_man_profile_image'.tr;
+    }
+
+    final String? fNameError = ValidateCheck.validateEmptyText(
+        fName, 'enter_delivery_man_first_name');
+    if (fNameError != null) errors['f_name'] = fNameError;
+
+    final String? lNameError = ValidateCheck.validateEmptyText(
+        lName, 'enter_delivery_man_last_name');
+    if (lNameError != null) errors['l_name'] = lNameError;
+
+    final String? phoneError = ValidateCheck.validatePhone(
+        phone, 'enter_delivery_man_phone_number');
+    if (phoneError != null) {
+      errors['phone'] = phoneError;
+    } else if (!phoneIsValid) {
+      errors['phone'] = 'enter_a_valid_phone_number'.tr;
+    }
+
+    // دالة التحقق من الإيميل تقبل أحرف صغيرة فقط، فنفحص النسخة الصغيرة
+    final String? emailError = ValidateCheck.validateEmail(email.toLowerCase());
+    if (emailError != null) {
+      errors['email'] = emailError;
+    } else if (email.length > 100) {
+      errors['email'] = 'enter_a_valid_email_address'.tr;
+    }
+
+    final String? passError = ValidateCheck.validatePassword(
+        password, 'enter_password_for_delivery_man');
+    if (passError != null) {
+      errors['password'] = passError;
+    } else if (!auth.spatialCheck ||
+        !auth.lowercaseCheck ||
+        !auth.uppercaseCheck ||
+        !auth.numberCheck ||
+        !auth.lengthCheck) {
+      errors['password'] = 'provide_valid_password'.tr;
+    }
+
+    final String? confirmError =
+        ValidateCheck.validateConfirmPassword(confirmPass, password);
+    if (confirmError != null) errors['confirm_password'] = confirmError;
+
+    return errors;
+  }
+
+  /// يركّز على أول حقل فيه خطأ (والصفحة بتسحب له لحالها)
+  void _focusFirstError(Map<String, String> errors) {
+    if (errors.containsKey('image')) {
+      _scrollController.animateTo(0,
+          duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
+      return;
+    }
+    final Map<String, FocusNode> order = {
+      'f_name': _fNameNode,
+      'l_name': _lNameNode,
+      'phone': _phoneNode,
+      'email': _emailNode,
+      'password': _passwordNode,
+      'confirm_password': _confirmPasswordNode,
+    };
+    for (final e in order.entries) {
+      if (errors.containsKey(e.key)) {
+        e.value.requestFocus();
+        return;
+      }
+    }
+  }
+
+  /// تحقق الخطوة الثانية: يرجّع (اسم الحقل ← رسالة الخطأ).
+  Map<String, String> _validateStep2(
+    AuthController auth,
+    AddressController address,
+    String identityNumber,
+  ) {
+    final Map<String, String> errors = {};
+
+    if (auth.selectedDmTypeId == null) {
+      errors['delivery_type'] = 'select_delivery_type'.tr;
+    }
+    if (address.selectedDeliveryZoneId == null) {
+      errors['zone_id'] = 'select_delivery_zone'.tr;
+    }
+    if (auth.selectedVehicleId == null) {
+      errors['vehicle_id'] = 'select_vehicle_type'.tr;
+    }
+    if (auth.selectedIdentityType == null) {
+      errors['identity_type'] = 'select_identity_type'.tr;
+    }
+    if (identityNumber.isEmpty) {
+      errors['identity_number'] = 'enter_delivery_man_identity_number'.tr;
+    }
+    if (auth.pickedIdentities.isEmpty) {
+      errors['identity_image'] = 'please_upload_identity_image'.tr;
+    }
+    return errors;
+  }
+
+  /// يوصّل المستخدم لأول خطأ بالخطوة الثانية
+  void _focusFirstErrorStep2(Map<String, String> errors) {
+    final bool topError = errors.containsKey('delivery_type') ||
+        errors.containsKey('zone_id') ||
+        errors.containsKey('vehicle_id') ||
+        errors.containsKey('identity_type');
+    if (topError) {
+      _scrollController.animateTo(0,
+          duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
+    } else if (errors.containsKey('identity_number')) {
+      _identityNumberNode.requestFocus();
+    } else if (errors.containsKey('identity_image')) {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
   }
 
   @override
@@ -73,7 +214,7 @@ class _DmRegistrationScreenState extends State<DmRegistrationScreen> {
       child: Scaffold(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: CustomAppBarWidget(
-          title: 'join_delivery_partner'.tr,
+          title: 'join_as_a_delivery_man'.tr,
           onBackPressed: () async {
             if (Get.find<AuthController>().dmStatus != 0.4) {
               Get.find<AuthController>().dmStatusChange(0.4);
@@ -85,16 +226,18 @@ class _DmRegistrationScreenState extends State<DmRegistrationScreen> {
         body: GetBuilder<AuthController>(builder: (authController) {
           return GetBuilder<AddressController>(builder: (addressController) {
             return Padding(
-              padding:
-                  EdgeInsets.only(top: Dimensions.h16),
+              padding: EdgeInsets.only(top: Dimensions.h16),
               child: Container(
                 color: Theme.of(context).cardColor,
                 child: Column(children: [
                   StepProgressBar(status: authController.dmStatus),
                   Expanded(
                       child: SingleChildScrollView(
-                    padding:
-                        EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
+                    controller: _scrollController,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: Dimensions.w16,
+                      vertical: Dimensions.h16,
+                    ),
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -168,64 +311,32 @@ class _DmRegistrationScreenState extends State<DmRegistrationScreen> {
                               numberWithCountryCode = phoneValid.phone;
 
                               if (authController.dmStatus == 0.4) {
-                                if (fName.isEmpty) {
-                                  showCustomSnackBar(
-                                      'enter_delivery_man_first_name'.tr);
-                                } else if (lName.isEmpty) {
-                                  showCustomSnackBar(
-                                      'enter_delivery_man_last_name'.tr);
-                                } else if (email.isEmpty) {
-                                  showCustomSnackBar(
-                                      'enter_delivery_man_email_address'.tr);
-                                } else if (!GetUtils.isEmail(email)) {
-                                  showCustomSnackBar(
-                                      'enter_a_valid_email_address'.tr);
-                                } else if (phone.isEmpty) {
-                                  showCustomSnackBar(
-                                      'enter_delivery_man_phone_number'.tr);
-                                } else if (!phoneValid.isValid) {
-                                  showCustomSnackBar(
-                                      'enter_a_valid_phone_number'.tr);
-                                } else if (password.isEmpty) {
-                                  showCustomSnackBar(
-                                      'enter_password_for_delivery_man'.tr);
-                                } else if (!authController.spatialCheck ||
-                                    !authController.lowercaseCheck ||
-                                    !authController.uppercaseCheck ||
-                                    !authController.numberCheck ||
-                                    !authController.lengthCheck) {
-                                  showCustomSnackBar(
-                                      'provide_valid_password'.tr);
-                                } else if (password != confirmPass) {
-                                  showCustomSnackBar(
-                                      'password_does_not_matched'.tr);
-                                } else if (authController.pickedImage == null) {
-                                  showCustomSnackBar(
-                                      'pick_delivery_man_profile_image'.tr);
-                                } else {
+                                // ===== الخطوة الأولى: أخطاء تحت الحقول =====
+                                final Map<String, String> errors =
+                                    _validateStep1(
+                                  authController,
+                                  fName: fName,
+                                  lName: lName,
+                                  phone: phone,
+                                  phoneIsValid: phoneValid.isValid,
+                                  email: email,
+                                  password: password,
+                                  confirmPass: confirmPass,
+                                );
+                                authController.setFieldErrors(errors);
+                                if (errors.isEmpty) {
                                   authController.dmStatusChange(0.8);
+                                } else {
+                                  _focusFirstError(errors);
                                 }
                               } else {
-                                if (authController.selectedDmTypeId == null) {
-                                  showCustomSnackBar('select_delivery_type'.tr);
-                                } else if (addressController
-                                        .selectedDeliveryZoneId ==
-                                    null) {
-                                  showCustomSnackBar('select_delivery_zone'.tr);
-                                } else if (authController.selectedVehicleId ==
-                                    null) {
-                                  showCustomSnackBar('select_vehicle_type'.tr);
-                                } else if (authController
-                                        .selectedIdentityType ==
-                                    null) {
-                                  showCustomSnackBar('select_identity_type'.tr);
-                                } else if (identityNumber.isEmpty) {
-                                  showCustomSnackBar(
-                                      'enter_delivery_man_identity_number'.tr);
-                                } else if (authController
-                                    .pickedIdentities.isEmpty) {
-                                  showCustomSnackBar(
-                                      'please_upload_identity_image'.tr);
+                                // ===== الخطوة الثانية: أخطاء تحت الحقول =====
+                                final Map<String, String> errors2 =
+                                    _validateStep2(authController,
+                                        addressController, identityNumber);
+                                authController.setFieldErrors(errors2);
+                                if (errors2.isNotEmpty) {
+                                  _focusFirstErrorStep2(errors2);
                                 } else {
                                   authController
                                       .registerDeliveryMan(DeliveryManBodyModel(
@@ -233,7 +344,7 @@ class _DmRegistrationScreenState extends State<DmRegistrationScreen> {
                                     lName: lName,
                                     password: password,
                                     phone: numberWithCountryCode,
-                                    email: email,
+                                    email: email.toLowerCase(),
                                     identityNumber: identityNumber,
                                     identityType:
                                         authController.selectedIdentityType,

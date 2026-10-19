@@ -97,23 +97,40 @@ class AuthController extends GetxController implements GetxService {
     }
   }
 
-  Future<ResponseModel> login(String phone, String password) async {
-    _isLoading = true;
+  void setFieldErrors(Map<String, String> errors) {
+    _fieldErrors = errors;
     update();
-    Response response = await authServiceInterface.login(phone, password);
-    ResponseModel responseModel;
-    if (response.statusCode == 200) {
-      authServiceInterface.saveUserToken(response.body['token'],
-          response.body['zone_topic'], response.body['topic']);
-      await authServiceInterface.updateToken();
-      responseModel = ResponseModel(true, 'successful');
-    } else {
-      responseModel = ResponseModel(false, response.statusText);
-    }
-    _isLoading = false;
-    update();
-    return responseModel;
   }
+Future<ResponseModel> login(String phone, String password) async {
+  _isLoading = true;
+  update();
+  Response response = await authServiceInterface.login(phone, password);
+  ResponseModel responseModel;
+  if (response.statusCode == 200) {
+    authServiceInterface.saveUserToken(response.body['token'],
+        response.body['zone_topic'], response.body['topic']);
+    await authServiceInterface.updateToken();
+    responseModel = ResponseModel(true, 'successful');
+  } else {
+    final String message = (response.statusText != null &&
+            response.statusText!.isNotEmpty)
+        ? response.statusText!
+        : 'error_occurred'.tr;
+
+    // فقط أخطاء بيانات الدخول بتنزل تحت الحقل، أي شي ثاني (إنترنت/سيرفر) snackbar
+    if (_isCredentialsError(response.statusCode)) {
+      _fieldErrors = {'login_password': message};
+    } else {
+      ApiChecker.checkApi(response, sessionAware: false);
+    }
+    responseModel = ResponseModel(false, message);
+  }
+  _isLoading = false;
+  update();
+  return responseModel;
+}
+
+bool _isCredentialsError(int? code) => code == 401 || code == 422;
 
   static const List<String> _step1Fields = [
     'email',
@@ -147,10 +164,6 @@ class AuthController extends GetxController implements GetxService {
         if (step1.isNotEmpty) {
           _fieldErrors = {for (final e in step1) e.key: e.value};
           _dmStatus = 0.4;
-
-          showCustomSnackBar(step1.first.value.isNotEmpty
-              ? step1.first.value
-              : 'error_occurred'.tr);
         } else {
           ApiChecker.checkApi(response, sessionAware: false);
         }
