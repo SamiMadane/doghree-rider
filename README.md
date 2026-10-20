@@ -1,8 +1,9 @@
-# wefrh_rider
+# doghree_rider
 
 A new Flutter application.
 
 ## Getting Started
+
 ## flutter sdk: 3.32.8
 
 This project is a starting point for a Flutter application.
