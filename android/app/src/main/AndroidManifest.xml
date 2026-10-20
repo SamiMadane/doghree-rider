@@ -53,7 +53,7 @@
             android:value="AIzaSyCaCSJ0BZItSyXqBv8vpD1N4WBffJeKhLQ"/>
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
-            android:value="6ammart" />
+            android:value="doghree_rider" />
 
         <activity
             android:name=".MainActivity"

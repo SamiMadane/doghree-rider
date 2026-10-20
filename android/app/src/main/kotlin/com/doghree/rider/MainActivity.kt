@@ -1,4 +1,4 @@
-package com.wefrh.Rider
+package com.doghree.rider
 
 import io.flutter.embedding.android.FlutterActivity
 
