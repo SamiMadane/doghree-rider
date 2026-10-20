@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.wefrh.Rider"
+    package="com.doghree.rider"
     xmlns:tools="http://schemas.android.com/tools">
 
     <!-- الصلاحيات -->
@@ -42,7 +42,7 @@
 
     <application
         tools:replace="android:label"
-        android:label="Wefrh Rider"
+        android:label="Doghree Rider"
         android:name="${applicationName}"
         android:extractNativeLibs="true"
         android:requestLegacyExternalStorage="true"
@@ -87,7 +87,7 @@
             android:exported="false"/>
 
         <service
-            android:name="com.wefrh.Rider.BackgroundService"
+            android:name="com.doghree.rider.BackgroundService"
             android:enabled="true"
             android:exported="false" />
 
