@@ -18,6 +18,7 @@ class AppConstants {
   }
 
   static const String configUri = '/api/v1/config';
+  static const String directionUri = '/api/v1/config/direction-api';
   static const String walletAccountsUri = '/api/v1/delivery-man/wallet/accounts';
   static const String walletWithdrawUri = '/api/v1/delivery-man/wallet/withdraw';
 static const String walletWithdrawalsUri = '/api/v1/delivery-man/wallet/withdrawals';

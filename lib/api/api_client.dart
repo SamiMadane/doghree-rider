@@ -73,11 +73,16 @@ class ApiClient extends GetxService {
           {Map<String, dynamic>? query,
           Map<String, String>? headers,
           bool handleError = true}) =>
-      _send(
-          uri,
-          () => http.get(Uri.parse(appBaseUrl + uri),
-              headers: headers ?? _mainHeaders),
-          handleError);
+      _send(uri, () {
+        var url = Uri.parse(appBaseUrl + uri);
+        if (query != null && query.isNotEmpty) {
+          url = url.replace(queryParameters: {
+            ...url.queryParameters,
+            ...query.map((k, v) => MapEntry(k, '$v')),
+          });
+        }
+        return http.get(url, headers: headers ?? _mainHeaders);
+      }, handleError);
 
   Future<Response> postData(String uri, dynamic body,
           {Map<String, String>? headers, bool handleError = true}) =>

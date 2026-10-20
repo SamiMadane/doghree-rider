@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:latlong2/latlong.dart' show LatLng;
 import 'package:image_picker/image_picker.dart';
 import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
 import 'package:wefrh_rider/features/address/domain/models/address_model.dart';
@@ -105,6 +105,8 @@ class AddressController extends GetxController implements GetxService {
     return await addressServiceInterface.saveUserAddress(userAddress, address.zoneIds);
   }
 
+  /// المسافة بالكيلومتر بين [storeLatLng] و [customerLatLng].
+  /// إذا لم يُمرَّر [customerLatLng] تُستعمل آخر نقطة مسجّلة للمندوب.
   double getRestaurantDistance(LatLng storeLatLng, {LatLng? customerLatLng}) {
     double distance = 0;
     distance = Geolocator.distanceBetween(storeLatLng.latitude, storeLatLng.longitude,

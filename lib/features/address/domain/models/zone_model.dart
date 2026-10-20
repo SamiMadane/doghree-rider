@@ -1,4 +1,4 @@
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:latlong2/latlong.dart' show LatLng;
 
 class ZoneModel {
   int? id;
@@ -80,7 +80,8 @@ class Coordinates {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['type'] = type;
     if (coordinates != null) {
-      data['coordinates'] = coordinates!.map((v) => v.toJson()).toList();
+      // latlong2 لا يملك toJson بنفس شكل Google (كان يرجع [lat, lng])، فنكتبها يدوياً بنفس الشكل القديم
+      data['coordinates'] = coordinates!.map((v) => [v.latitude, v.longitude]).toList();
     }
     return data;
   }

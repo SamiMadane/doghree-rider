@@ -1,6 +1,7 @@
 const String imagePath = 'assets/image';
 const String iconPath = 'assets/icon';
 const String lottiePath = 'assets/lottie';
+const String mapPath = 'assets/map';
 
 class ManagerAssets {
   static const String logo = '$imagePath/logo.png';
@@ -156,6 +157,11 @@ class ManagerAssets {
 // Lottie 
   static const String deliveryLottie = '$lottiePath/delivery.json';
   static const String deliveryBusLottie = '$lottiePath/deliver_bus.json';
+
+
+  static const String doghreeLightAr = '$mapPath/doghree_light_ar.json';
+  static const String doghreeLight = '$mapPath/doghree_light.json';
+
 
 }
 

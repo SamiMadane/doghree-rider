@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart' show LatLng;
 import 'package:geolocator/geolocator.dart';
+import 'package:wefrh_rider/doghree_map/doghree_map.dart';
+import 'package:wefrh_rider/doghree_map/map_safety.dart';
+import 'package:wefrh_rider/features/splash/controllers/splash_controller.dart';
 import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
 import 'package:wefrh_rider/common/widgets/custom_bottom_sheet_widget.dart';
 import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
@@ -25,7 +29,7 @@ class ClientScreen extends StatefulWidget {
 }
 
 class _ClientScreenState extends State<ClientScreen> {
-  GoogleMapController? mapController;
+  final MapController _mapController = MapController();
   LatLng? currentLocation;
 
   // موقع افتراضي (Al-Bureij Camp)
@@ -35,6 +39,29 @@ class _ClientScreenState extends State<ClientScreen> {
   void initState() {
     super.initState();
     _getCurrentLocation();
+  }
+
+  @override
+  void dispose() {
+    _mapController.dispose();
+    super.dispose();
+  }
+
+  /// يكبّر الخريطة لتشمل نقطة التوزيع وموقعي (النقاط الخاطئة تُحذف أولاً)
+  void _fitMap() {
+    final pts = usablePoints([
+      defaultLocation,
+      if (currentLocation != null) currentLocation!,
+    ]);
+    if (pts.length >= 2) {
+      _mapController.fitCamera(CameraFit.coordinates(
+        coordinates: pts,
+        padding: const EdgeInsets.all(48),
+        maxZoom: 17,
+      ));
+    } else if (pts.length == 1) {
+      _mapController.move(pts.first, 16);
+    }
   }
 
   Future<void> _getCurrentLocation() async {
@@ -55,9 +82,57 @@ class _ClientScreenState extends State<ClientScreen> {
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
 
+    if (!mounted) return;
     setState(() {
       currentLocation = LatLng(position.latitude, position.longitude);
     });
+  }
+
+  Widget _buildMap() {
+    final config = Get.find<SplashController>().doghreeMapConfig;
+    if (config == null) {
+      // إعدادات الخريطة لم تصل من /api/v1/config بعد
+      return Image.asset(ManagerAssets.mapPlaceholderImage, fit: BoxFit.cover);
+    }
+
+    // موقعي يُرسم فقط إذا كان داخل غزة (وإلا لا نشوّه الخريطة)
+    final myPoint = parsePoint(
+        currentLocation?.latitude, currentLocation?.longitude);
+
+    return DoghreeMap(
+      config: config,
+      controller: _mapController,
+      initialCenter: defaultLocation,
+      initialZoom: 14,
+      onMapReady: _fitMap,
+      children: [
+        MarkerLayer(markers: [
+          if (myPoint != null)
+            Marker(
+              point: myPoint,
+              width: 22,
+              height: 22,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Colors.white, width: 3),
+                  boxShadow: const [
+                    BoxShadow(color: Colors.black26, blurRadius: 4),
+                  ],
+                ),
+              ),
+            ),
+          Marker(
+            point: defaultLocation,
+            width: 40,
+            height: 40,
+            alignment: Alignment.topCenter, // رأس الدبوس على النقطة
+            child: const Icon(Icons.location_on, size: 40, color: Colors.red),
+          ),
+        ]),
+      ],
+    );
   }
 
   @override
@@ -193,27 +268,7 @@ class _ClientScreenState extends State<ClientScreen> {
                                       .bodyMedium
                                       ?.color,
                                 ))
-                              : GoogleMap(
-                                  onMapCreated: (controller) {
-                                    mapController = controller;
-                                  },
-                                  initialCameraPosition: CameraPosition(
-                                    target: currentLocation!,
-                                    zoom: 14,
-                                  ),
-                                  markers: {
-                                    Marker(
-                                        markerId: const MarkerId("current"),
-                                        position: currentLocation!,
-                                        infoWindow: InfoWindow(
-                                            title: "your_location".tr)),
-                                    Marker(
-                                        markerId: const MarkerId("default"),
-                                        position: defaultLocation,
-                                        infoWindow: InfoWindow(
-                                            title: "distribution_point".tr)),
-                                  },
-                                ),
+                              : _buildMap(),
                         ),
                         SizedBox(
                           height: Dimensions.h12,

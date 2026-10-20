@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:latlong2/latlong.dart' show LatLng;
+import 'package:wefrh_rider/doghree_map/map_safety.dart';
 import 'package:wefrh_rider/common/widgets/confirmation_bottom_sheet.dart';
 import 'package:wefrh_rider/common/widgets/custom_bottom_sheet_widget.dart';
 import 'package:wefrh_rider/common/widgets/custom_card.dart';
@@ -33,36 +34,40 @@ class LocationCardWidget extends StatelessWidget {
     required this.onTap,
   });
 
+  /// null = إحداثيات غير صالحة (فارغة، 0,0، أو خارج غزة) فلا نعرض رقماً خاطئاً
+  static String _distanceLabel(double? km) {
+    if (km == null) return '--';
+    return km > 1000 ? '1000+' : km.toStringAsFixed(2);
+  }
+
   @override
   Widget build(BuildContext context) {
     bool parcel = orderModel.orderType == 'parcel';
-    double restaurantDistance =
-        Get.find<AddressController>().getRestaurantDistance(
-      LatLng(
-          double.parse(parcel
-              ? orderModel.deliveryAddress?.latitude ?? '0'
-              : orderModel.storeLat ?? '0'),
-          double.parse(parcel
-              ? orderModel.deliveryAddress?.longitude ?? '0'
-              : orderModel.storeLng ?? '0')),
+    final addressController = Get.find<AddressController>();
+
+    // نقطة الاستلام (المحل، أو عنوان التوصيل في طلبات parcel كما كان سابقاً)
+    final LatLng? pickupPoint = parsePoint(
+      parcel ? orderModel.deliveryAddress?.latitude : orderModel.storeLat,
+      parcel ? orderModel.deliveryAddress?.longitude : orderModel.storeLng,
     );
-    double restaurantToCustomerDistance =
-        Get.find<AddressController>().getRestaurantDistance(
-      LatLng(
-          double.parse(parcel
-              ? orderModel.deliveryAddress?.latitude ?? '0'
-              : orderModel.storeLat ?? '0'),
-          double.parse(parcel
-              ? orderModel.deliveryAddress?.longitude ?? '0'
-              : orderModel.storeLng ?? '0')),
-      customerLatLng: LatLng(
-          double.parse(parcel
-              ? orderModel.receiverDetails?.latitude ?? '0'
-              : orderModel.deliveryAddress?.latitude ?? '0'),
-          double.parse(parcel
-              ? orderModel.receiverDetails?.longitude ?? '0'
-              : orderModel.deliveryAddress?.longitude ?? '0')),
+    // نقطة التسليم (المستلم في parcel، وإلا عنوان العميل)
+    final LatLng? dropPoint = parsePoint(
+      parcel
+          ? orderModel.receiverDetails?.latitude
+          : orderModel.deliveryAddress?.latitude,
+      parcel
+          ? orderModel.receiverDetails?.longitude
+          : orderModel.deliveryAddress?.longitude,
     );
+
+    final double? restaurantDistance = pickupPoint == null
+        ? null
+        : addressController.getRestaurantDistance(pickupPoint);
+    final double? restaurantToCustomerDistance =
+        (pickupPoint == null || dropPoint == null)
+            ? null
+            : addressController.getRestaurantDistance(pickupPoint,
+                customerLatLng: dropPoint);
 
     return Container(
       padding: EdgeInsets.symmetric(
@@ -132,7 +137,7 @@ class LocationCardWidget extends StatelessWidget {
                 ),
                 Spacer(),
                 Text(
-                  '${restaurantDistance > 1000 ? '1000+' : restaurantDistance.toStringAsFixed(2)} ${'km_away'.tr}',
+                  '${_distanceLabel(restaurantDistance)} ${'km_away'.tr}',
                   style: textMedium().copyWith(
                     fontSize: Dimensions.fs12,
                     color: ManagerColors.darkGreen,
@@ -188,7 +193,7 @@ class LocationCardWidget extends StatelessWidget {
                 ),
                 Spacer(),
                 Text(
-                  '${restaurantToCustomerDistance > 1000 ? '1000+' : restaurantToCustomerDistance.toStringAsFixed(2)} ${'km_away'.tr}',
+                  '${_distanceLabel(restaurantToCustomerDistance)} ${'km_away'.tr}',
                   style: textMedium().copyWith(
                     fontSize: Dimensions.fs12,
                     color: ManagerColors.darkGreen,

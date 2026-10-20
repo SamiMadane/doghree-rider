@@ -2,13 +2,13 @@ import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:wefrh_rider/common/widgets/confirmation_bottom_sheet.dart';
 import 'package:wefrh_rider/common/widgets/custom_bottom_sheet_widget.dart';
 import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
 import 'package:wefrh_rider/common/widgets/custom_card.dart';
 import 'package:wefrh_rider/common/widgets/custom_image_widget.dart';
 import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
+import 'package:wefrh_rider/doghree_map/map_safety.dart';
 import 'package:wefrh_rider/features/address/controllers/address_controller.dart';
 import 'package:wefrh_rider/features/splash/controllers/splash_controller.dart';
 import 'package:wefrh_rider/features/order/controllers/order_controller.dart';
@@ -44,19 +44,19 @@ class OrderRequestWidget extends StatelessWidget {
     final String? address = parcel
         ? orderModel.receiverDetails?.address
         : orderModel.deliveryAddress?.address;
-    double distance = Get.find<AddressController>().getRestaurantDistance(
-      LatLng(
-        double.parse(parcel
-            ? orderModel.deliveryAddress?.latitude ?? '0'
-            : orderModel.storeLat ?? '0'),
-        double.parse(parcel
-            ? orderModel.deliveryAddress?.longitude ?? '0'
-            : orderModel.storeLng ?? '0'),
-      ),
+
+    final p = parsePoint(
+      parcel ? orderModel.deliveryAddress?.latitude : orderModel.storeLat,
+      parcel ? orderModel.deliveryAddress?.longitude : orderModel.storeLng,
     );
+    double distance =
+        p == null ? 0 : Get.find<AddressController>().getRestaurantDistance(p);
 
     return CustomCard(
-      padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
+      padding: EdgeInsets.symmetric(
+        horizontal: Dimensions.w16,
+        vertical: Dimensions.h16,
+      ),
       margin: EdgeInsets.only(bottom: Dimensions.h16),
       child: GetBuilder<OrderController>(builder: (orderController) {
         return Column(
@@ -111,8 +111,8 @@ class OrderRequestWidget extends StatelessWidget {
                             PriceConverterHelper.convertPrice(
                                 orderModel.originalDeliveryCharge! +
                                     orderModel.dmTips!),
-                            style: textSemiBold().copyWith(
-                                fontSize: Dimensions.fs14),
+                            style: textSemiBold()
+                                .copyWith(fontSize: Dimensions.fs14),
                           )
                         : const SizedBox(),
                     SizedBox(

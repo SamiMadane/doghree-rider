@@ -10,6 +10,9 @@ import 'package:wefrh_rider/features/order/domain/models/order_model.dart';
 import 'package:wefrh_rider/features/order/domain/models/update_status_body_model.dart';
 import 'package:wefrh_rider/features/order/domain/repositories/order_repository_interface.dart';
 import 'package:wefrh_rider/util/app_constants.dart';
+import 'package:flutter/foundation.dart';
+import 'package:latlong2/latlong.dart' show LatLng;
+import 'package:wefrh_rider/doghree_map/polyline.dart';
 
 class OrderRepository implements OrderRepositoryInterface {
   final ApiClient apiClient;
@@ -140,6 +143,38 @@ class OrderRepository implements OrderRepositoryInterface {
       stringList.add(jsonEncode(ignore.toJson()));
     }
     sharedPreferences.setStringList(AppConstants.ignoreList, stringList);
+  }
+
+  @override
+  Future<List<LatLng>?> getRoute(LatLng origin, LatLng destination) async {
+    try {
+      Response response = await apiClient.getData(
+        AppConstants.directionUri,
+        query: {
+          'origin_lat': '${origin.latitude}',
+          'origin_lng': '${origin.longitude}',
+          'destination_lat': '${destination.latitude}',
+          'destination_lng': '${destination.longitude}',
+        },
+      );
+      if (response.statusCode == 200 && response.body is Map) {
+        final routes = response.body['routes'];
+        if (routes is List && routes.isNotEmpty) {
+          final encoded = routes[0]['polyline']?['encodedPolyline'];
+          if (encoded is String && encoded.isNotEmpty) {
+            final pts = decodePolyline(encoded);
+            if (pts.isNotEmpty) {
+              debugPrint(
+                  'direction-api: ${pts.length} pts, last=${pts.last}, dest=$destination');
+              return pts;
+            }
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint('Error getting directions: $e');
+    }
+    return null;
   }
 
   String _getUserToken() {

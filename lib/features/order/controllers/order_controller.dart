@@ -15,6 +15,8 @@ import 'package:wefrh_rider/util/app_constants.dart';
 import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
 import 'package:get/get.dart';
 import 'package:wefrh_rider/features/order/domain/services/order_service_interface.dart';
+import 'package:latlong2/latlong.dart' show LatLng;
+import 'package:wefrh_rider/doghree_map/map_safety.dart';
 
 class OrderController extends GetxController implements GetxService {
   final OrderServiceInterface orderServiceInterface;
@@ -67,6 +69,69 @@ class OrderController extends GetxController implements GetxService {
 
   List<XFile> _pickedPrescriptions = [];
   List<XFile> get pickedPrescriptions => _pickedPrescriptions;
+  // ---------- خريطة معاينة الطلب ----------
+  LatLng? _mapMyPoint;
+  LatLng? get mapMyPoint => _mapMyPoint;
+
+  LatLng? _mapDestPoint;
+  LatLng? get mapDestPoint => _mapDestPoint;
+
+  List<LatLng> _mapRoute = [];
+  List<LatLng> get mapRoute => _mapRoute;
+
+  bool _mapRouteIsApprox = true;
+  bool get mapRouteIsApprox => _mapRouteIsApprox;
+
+  bool _mapIsLoadingLocation = true;
+  bool get mapIsLoadingLocation => _mapIsLoadingLocation;
+
+  // الـ controller دائم (GetxService)، فنرقّم كل طلب حتى لا تُكتب نتيجة قديمة فوق الجديدة
+  int _mapRequestId = 0;
+
+  Future<void> initOrderMap(
+      {required String latitude, required String longitude}) async {
+    final int requestId = ++_mapRequestId;
+    _mapDestPoint = parsePoint(latitude, longitude);
+    _mapMyPoint = null;
+    _mapRoute = [];
+    _mapRouteIsApprox = true;
+    _mapIsLoadingLocation = true;
+    update(['order_map']);
+
+    LatLng? my = await orderServiceInterface.getCurrentPoint();
+    if (my == null) {
+      // آخر موقع أرسله التطبيق للسيرفر
+      final loc = Get.find<ProfileController>().recordLocationBody;
+      my = parsePoint(loc?.latitude, loc?.longitude);
+    }
+    if (requestId != _mapRequestId) return;
+    _mapMyPoint = my;
+    _mapIsLoadingLocation = false;
+    update(['order_map']);
+
+    final LatLng? dest = _mapDestPoint;
+    if (my == null || dest == null) return;
+
+    final List<LatLng>? real = await orderServiceInterface.getRoute(my, dest);
+    if (requestId != _mapRequestId) return;
+    _mapRouteIsApprox = orderServiceInterface.isApproxRoute(real);
+
+    try {
+      _mapRoute = orderServiceInterface.buildRoute(my, dest, real);
+    } catch (e) {
+      debugPrint('buildRoute failed: $e');
+      _mapRoute = [my, dest]; // خط مستقيم بدل لا شيء
+    }
+    update(['order_map']);
+  }
+
+  /// يُستدعى من dispose() للويدجت (بدون update)
+  void clearOrderMap() {
+    _mapRequestId++;
+    _mapMyPoint = null;
+    _mapDestPoint = null;
+    _mapRoute = [];
+  }
 
   void changeDeliveryImageStatus({bool isUpdate = true}) {
     _showDeliveryImageField = !_showDeliveryImageField;
@@ -250,7 +315,7 @@ class OrderController extends GetxController implements GetxService {
         Get.offAllNamed(RouteHelper.getInitialRoute(fromOrderDetails: true));
       }
       Get.find<ProfileController>().getProfile();
-            if (Get.isRegistered<CashInHandController>()) {
+      if (Get.isRegistered<CashInHandController>()) {
         Get.find<CashInHandController>().getWallet();
       }
       getCurrentOrders();
