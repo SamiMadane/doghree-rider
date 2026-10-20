@@ -1,19 +1,19 @@
-import 'package:wefrh_rider/common/widgets/custom_image_widget.dart';
-import 'package:wefrh_rider/common/widgets/widget_with_label.dart';
-import 'package:wefrh_rider/features/auth/controllers/auth_controller.dart';
-import 'package:wefrh_rider/features/auth/widgets/pass_view_widget.dart';
-import 'package:wefrh_rider/features/forgot_password/controllers/forgot_password_controller.dart';
-import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
-import 'package:wefrh_rider/helper/route_helper.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
-import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
-import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
-import 'package:wefrh_rider/common/widgets/custom_text_field_widget.dart';
+import 'package:doghree_rider/common/widgets/custom_image_widget.dart';
+import 'package:doghree_rider/common/widgets/widget_with_label.dart';
+import 'package:doghree_rider/features/auth/controllers/auth_controller.dart';
+import 'package:doghree_rider/features/auth/widgets/pass_view_widget.dart';
+import 'package:doghree_rider/features/forgot_password/controllers/forgot_password_controller.dart';
+import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
+import 'package:doghree_rider/helper/route_helper.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/common/widgets/custom_app_bar_widget.dart';
+import 'package:doghree_rider/common/widgets/custom_button_widget.dart';
+import 'package:doghree_rider/common/widgets/custom_snackbar_widget.dart';
+import 'package:doghree_rider/common/widgets/custom_text_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/util/manager_assets.dart';
-import 'package:wefrh_rider/util/manager_colors.dart';
+import 'package:doghree_rider/util/manager_assets.dart';
+import 'package:doghree_rider/util/manager_colors.dart';
 
 class NewPassScreen extends StatefulWidget {
   final String? resetToken;

@@ -3,9 +3,9 @@ import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/util/manager_assets.dart';
-import 'package:wefrh_rider/util/styles.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/manager_assets.dart';
+import 'package:doghree_rider/util/styles.dart';
+import 'package:doghree_rider/util/dimensions.dart';
 
 class ImagePickerHelper {
   static final ImagePicker _picker = ImagePicker();

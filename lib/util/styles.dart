@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:wefrh_rider/util/app_constants.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/app_constants.dart';
+import 'package:doghree_rider/util/dimensions.dart';
 
 TextStyle textRegular() => TextStyle(
       fontFamily: AppConstants.fontFamily,

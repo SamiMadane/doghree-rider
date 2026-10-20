@@ -1,9 +1,9 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:wefrh_rider/common/models/response_model.dart';
-import 'package:wefrh_rider/features/address/domain/models/record_location_body_model.dart';
-import 'package:wefrh_rider/features/profile/domain/models/profile_model.dart';
+import 'package:doghree_rider/common/models/response_model.dart';
+import 'package:doghree_rider/features/address/domain/models/record_location_body_model.dart';
+import 'package:doghree_rider/features/profile/domain/models/profile_model.dart';
 
 abstract class ProfileServiceInterface {
   Future<ProfileModel?> getProfileInfo();

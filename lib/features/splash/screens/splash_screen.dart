@@ -1,15 +1,15 @@
 import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:wefrh_rider/api/api_checker.dart';
-import 'package:wefrh_rider/common/widgets/no_internet_screen.dart';
-import 'package:wefrh_rider/features/auth/controllers/auth_controller.dart';
-import 'package:wefrh_rider/features/dashboard/screens/dashboard_screen.dart';
-import 'package:wefrh_rider/features/language/controllers/language_controller.dart';
-import 'package:wefrh_rider/features/splash/controllers/splash_controller.dart';
-import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
-import 'package:wefrh_rider/features/notification/domain/models/notification_body_model.dart';
-import 'package:wefrh_rider/helper/route_helper.dart';
-import 'package:wefrh_rider/util/app_constants.dart';
+import 'package:doghree_rider/api/api_checker.dart';
+import 'package:doghree_rider/common/widgets/no_internet_screen.dart';
+import 'package:doghree_rider/features/auth/controllers/auth_controller.dart';
+import 'package:doghree_rider/features/dashboard/screens/dashboard_screen.dart';
+import 'package:doghree_rider/features/language/controllers/language_controller.dart';
+import 'package:doghree_rider/features/splash/controllers/splash_controller.dart';
+import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
+import 'package:doghree_rider/features/notification/domain/models/notification_body_model.dart';
+import 'package:doghree_rider/helper/route_helper.dart';
+import 'package:doghree_rider/util/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

@@ -1,9 +1,9 @@
 import 'package:get/get.dart';
-import 'package:wefrh_rider/features/cash_in_hand/domain/models/earning_report_model.dart';
-import 'package:wefrh_rider/interface/repository_interface.dart';
-import 'package:wefrh_rider/features/cash_in_hand/domain/models/wallet_model.dart';
-import 'package:wefrh_rider/common/models/response_model.dart';
-import 'package:wefrh_rider/features/cash_in_hand/domain/models/wallet_withdrawal_model.dart';
+import 'package:doghree_rider/features/cash_in_hand/domain/models/earning_report_model.dart';
+import 'package:doghree_rider/interface/repository_interface.dart';
+import 'package:doghree_rider/features/cash_in_hand/domain/models/wallet_model.dart';
+import 'package:doghree_rider/common/models/response_model.dart';
+import 'package:doghree_rider/features/cash_in_hand/domain/models/wallet_withdrawal_model.dart';
 
 
 abstract class CashInHandRepositoryInterface implements RepositoryInterface {

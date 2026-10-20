@@ -2,15 +2,15 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/common/widgets/custom_bottom_sheet_widget.dart';
-import 'package:wefrh_rider/common/widgets/custom_confirmation_bottom_sheet.dart';
-import 'package:wefrh_rider/features/cash_in_hand/widgets/payment_loading_widget.dart';
+import 'package:doghree_rider/common/widgets/custom_bottom_sheet_widget.dart';
+import 'package:doghree_rider/common/widgets/custom_confirmation_bottom_sheet.dart';
+import 'package:doghree_rider/features/cash_in_hand/widgets/payment_loading_widget.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:wefrh_rider/helper/route_helper.dart';
-import 'package:wefrh_rider/util/app_constants.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/util/manager_colors.dart';
-import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
+import 'package:doghree_rider/helper/route_helper.dart';
+import 'package:doghree_rider/util/app_constants.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/manager_colors.dart';
+import 'package:doghree_rider/common/widgets/custom_app_bar_widget.dart';
 
 class PaymentScreen extends StatefulWidget {
   final String? redirectUrl;

@@ -1,14 +1,14 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
-import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
-import 'package:wefrh_rider/features/splash/controllers/splash_controller.dart';
-import 'package:wefrh_rider/helper/price_converter_helper.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/util/manager_assets.dart';
-import 'package:wefrh_rider/util/styles.dart';
-import 'package:wefrh_rider/features/cash_in_hand/widgets/payment_method_bottom_sheet_widget.dart';
+import 'package:doghree_rider/common/widgets/custom_snackbar_widget.dart';
+import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
+import 'package:doghree_rider/features/splash/controllers/splash_controller.dart';
+import 'package:doghree_rider/helper/price_converter_helper.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/manager_assets.dart';
+import 'package:doghree_rider/util/styles.dart';
+import 'package:doghree_rider/features/cash_in_hand/widgets/payment_method_bottom_sheet_widget.dart';
 
 class WalletAttentionAlertWidget extends StatelessWidget {
   final bool isOverFlowBlockWarning;

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/features/home/widgets/earning_tile.dart';
-import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:doghree_rider/features/home/widgets/earning_tile.dart';
+import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
+import 'package:doghree_rider/util/dimensions.dart';
 
 
 class EarningsGridSection extends StatelessWidget {

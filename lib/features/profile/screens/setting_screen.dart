@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:wefrh_rider/common/controllers/theme_controller.dart';
-import 'package:wefrh_rider/common/widgets/confirmation_bottom_sheet.dart';
-import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
-import 'package:wefrh_rider/common/widgets/custom_bottom_sheet_widget.dart';
-import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
-import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
-import 'package:wefrh_rider/features/auth/controllers/auth_controller.dart';
-import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
-import 'package:wefrh_rider/features/profile/widgets/profile_button_widget.dart';
-import 'package:wefrh_rider/helper/route_helper.dart';
-import 'package:wefrh_rider/util/app_constants.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/util/manager_assets.dart';
-import 'package:wefrh_rider/util/styles.dart';
+import 'package:doghree_rider/common/controllers/theme_controller.dart';
+import 'package:doghree_rider/common/widgets/confirmation_bottom_sheet.dart';
+import 'package:doghree_rider/common/widgets/custom_app_bar_widget.dart';
+import 'package:doghree_rider/common/widgets/custom_bottom_sheet_widget.dart';
+import 'package:doghree_rider/common/widgets/custom_button_widget.dart';
+import 'package:doghree_rider/common/widgets/custom_snackbar_widget.dart';
+import 'package:doghree_rider/features/auth/controllers/auth_controller.dart';
+import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
+import 'package:doghree_rider/features/profile/widgets/profile_button_widget.dart';
+import 'package:doghree_rider/helper/route_helper.dart';
+import 'package:doghree_rider/util/app_constants.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/manager_assets.dart';
+import 'package:doghree_rider/util/styles.dart';
 
 class SettingScreen extends StatelessWidget {
   const SettingScreen({super.key});

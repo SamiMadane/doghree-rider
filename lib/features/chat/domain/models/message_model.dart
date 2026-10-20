@@ -1,4 +1,4 @@
-import 'package:wefrh_rider/features/chat/domain/models/conversation_model.dart';
+import 'package:doghree_rider/features/chat/domain/models/conversation_model.dart';
 
 class MessageModel {
   int? totalSize;

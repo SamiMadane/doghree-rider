@@ -3,13 +3,13 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
-import 'package:wefrh_rider/doghree_map/doghree_map.dart';
-import 'package:wefrh_rider/doghree_map/map_safety.dart';
-import 'package:wefrh_rider/features/order/controllers/order_controller.dart';
-import 'package:wefrh_rider/features/splash/controllers/splash_controller.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/util/manager_assets.dart';
+import 'package:doghree_rider/common/widgets/custom_snackbar_widget.dart';
+import 'package:doghree_rider/doghree_map/doghree_map.dart';
+import 'package:doghree_rider/doghree_map/map_safety.dart';
+import 'package:doghree_rider/features/order/controllers/order_controller.dart';
+import 'package:doghree_rider/features/splash/controllers/splash_controller.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/manager_assets.dart';
 
 /// واجهة فقط. المنطق كله في OrderController (initOrderMap).
 class MapPreviewSection extends StatefulWidget {

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/util/styles.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/styles.dart';
 
 class CustomToast extends StatelessWidget {
   final String text;

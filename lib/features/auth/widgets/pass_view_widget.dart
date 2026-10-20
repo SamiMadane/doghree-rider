@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/features/auth/controllers/auth_controller.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/util/styles.dart';
+import 'package:doghree_rider/features/auth/controllers/auth_controller.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/styles.dart';
 
 class PassViewWidget extends StatelessWidget {
   const PassViewWidget({super.key});

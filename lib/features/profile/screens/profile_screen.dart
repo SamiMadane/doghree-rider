@@ -1,10 +1,10 @@
 import 'package:permission_handler/permission_handler.dart';
-import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
-import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
-import 'package:wefrh_rider/features/profile/widgets/account_section.dart';
-import 'package:wefrh_rider/features/profile/widgets/legal_section.dart';
-import 'package:wefrh_rider/features/profile/widgets/user_profile_info_card.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:doghree_rider/common/widgets/custom_app_bar_widget.dart';
+import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
+import 'package:doghree_rider/features/profile/widgets/account_section.dart';
+import 'package:doghree_rider/features/profile/widgets/legal_section.dart';
+import 'package:doghree_rider/features/profile/widgets/user_profile_info_card.dart';
+import 'package:doghree_rider/util/dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

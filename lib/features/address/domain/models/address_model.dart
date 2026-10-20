@@ -1,4 +1,4 @@
-import 'package:wefrh_rider/features/address/domain/models/zone_response_model.dart';
+import 'package:doghree_rider/features/address/domain/models/zone_response_model.dart';
 
 class AddressModel {
   int? id;

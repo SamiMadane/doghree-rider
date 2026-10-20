@@ -1,7 +1,7 @@
-import 'package:wefrh_rider/features/order/controllers/order_controller.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
-import 'package:wefrh_rider/features/order/widgets/history_order_widget.dart';
+import 'package:doghree_rider/features/order/controllers/order_controller.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/common/widgets/custom_app_bar_widget.dart';
+import 'package:doghree_rider/features/order/widgets/history_order_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

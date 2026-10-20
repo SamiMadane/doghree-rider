@@ -1,19 +1,19 @@
 import 'dart:async';
-import 'package:wefrh_rider/api/api_checker.dart';
-import 'package:wefrh_rider/api/api_client.dart';
-import 'package:wefrh_rider/api/api_error_handler.dart';
-import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
-import 'package:wefrh_rider/features/auth/domain/models/delivery_man_body_model.dart';
-import 'package:wefrh_rider/common/models/response_model.dart';
-import 'package:wefrh_rider/features/auth/domain/models/vehicle_model.dart';
-import 'package:wefrh_rider/helper/route_helper.dart';
+import 'package:doghree_rider/api/api_checker.dart';
+import 'package:doghree_rider/api/api_client.dart';
+import 'package:doghree_rider/api/api_error_handler.dart';
+import 'package:doghree_rider/common/widgets/custom_snackbar_widget.dart';
+import 'package:doghree_rider/features/auth/domain/models/delivery_man_body_model.dart';
+import 'package:doghree_rider/common/models/response_model.dart';
+import 'package:doghree_rider/features/auth/domain/models/vehicle_model.dart';
+import 'package:doghree_rider/helper/route_helper.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:wefrh_rider/features/auth/domain/services/auth_service_interface.dart';
+import 'package:doghree_rider/features/auth/domain/services/auth_service_interface.dart';
 import 'package:flutter/material.dart';
-import 'package:wefrh_rider/helper/image_picker_helper.dart';
+import 'package:doghree_rider/helper/image_picker_helper.dart';
 import 'package:image_cropper/image_cropper.dart';
-import 'package:wefrh_rider/util/app_constants.dart';
+import 'package:doghree_rider/util/app_constants.dart';
 
 class AuthController extends GetxController implements GetxService {
   final AuthServiceInterface authServiceInterface;

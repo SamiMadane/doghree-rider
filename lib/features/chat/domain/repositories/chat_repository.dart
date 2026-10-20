@@ -1,10 +1,10 @@
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:wefrh_rider/api/api_client.dart';
-import 'package:wefrh_rider/features/chat/domain/models/conversation_model.dart';
-import 'package:wefrh_rider/features/chat/domain/models/message_model.dart';
-import 'package:wefrh_rider/features/chat/domain/repositories/chat_repository_interface.dart';
-import 'package:wefrh_rider/util/app_constants.dart';
+import 'package:doghree_rider/api/api_client.dart';
+import 'package:doghree_rider/features/chat/domain/models/conversation_model.dart';
+import 'package:doghree_rider/features/chat/domain/models/message_model.dart';
+import 'package:doghree_rider/features/chat/domain/repositories/chat_repository_interface.dart';
+import 'package:doghree_rider/util/app_constants.dart';
 
 class ChatRepository implements ChatRepositoryInterface {
   final ApiClient apiClient;

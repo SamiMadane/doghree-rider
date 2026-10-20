@@ -1,5 +1,5 @@
-import 'package:wefrh_rider/common/models/response_model.dart';
-import 'package:wefrh_rider/features/profile/domain/models/profile_model.dart';
+import 'package:doghree_rider/common/models/response_model.dart';
+import 'package:doghree_rider/features/profile/domain/models/profile_model.dart';
 
 abstract class ForgotPasswordServiceInterface {
   Future<ResponseModel> changePassword(ProfileModel userInfoModel, String currentPassword, String password);

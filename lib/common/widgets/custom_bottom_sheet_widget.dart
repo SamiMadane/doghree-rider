@@ -1,7 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/dimensions.dart';
 
 Future<T?> showCustomBottomSheet<T>({
   required Widget child,

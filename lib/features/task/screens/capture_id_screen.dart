@@ -3,7 +3,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image/image.dart' as img;
-import 'package:wefrh_rider/helper/route_helper.dart';
+import 'package:doghree_rider/helper/route_helper.dart';
 
 class CaptureIdScreen extends StatefulWidget {
   @override

@@ -3,17 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:phone_numbers_parser/phone_numbers_parser.dart'; // ✅ جديد
-import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
-import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
-import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
-import 'package:wefrh_rider/features/auth/controllers/auth_controller.dart';
-import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
-import 'package:wefrh_rider/features/profile/domain/models/profile_model.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/common/widgets/custom_text_field_widget.dart';
-import 'package:wefrh_rider/common/widgets/widget_with_label.dart';
-import 'package:wefrh_rider/util/manager_assets.dart';
-import 'package:wefrh_rider/util/manager_colors.dart';
+import 'package:doghree_rider/common/widgets/custom_app_bar_widget.dart';
+import 'package:doghree_rider/common/widgets/custom_button_widget.dart';
+import 'package:doghree_rider/common/widgets/custom_snackbar_widget.dart';
+import 'package:doghree_rider/features/auth/controllers/auth_controller.dart';
+import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
+import 'package:doghree_rider/features/profile/domain/models/profile_model.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/common/widgets/custom_text_field_widget.dart';
+import 'package:doghree_rider/common/widgets/widget_with_label.dart';
+import 'package:doghree_rider/util/manager_assets.dart';
+import 'package:doghree_rider/util/manager_colors.dart';
 
 class UpdateProfileScreen extends StatefulWidget {
   const UpdateProfileScreen({super.key});

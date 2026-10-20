@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
-import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
-import 'package:wefrh_rider/common/widgets/custom_card.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/util/manager_colors.dart';
-import 'package:wefrh_rider/util/styles.dart';
-import 'package:wefrh_rider/util/theme_extension.dart';
+import 'package:doghree_rider/common/widgets/custom_app_bar_widget.dart';
+import 'package:doghree_rider/common/widgets/custom_button_widget.dart';
+import 'package:doghree_rider/common/widgets/custom_card.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/manager_colors.dart';
+import 'package:doghree_rider/util/styles.dart';
+import 'package:doghree_rider/util/theme_extension.dart';
 import 'package:get/get.dart';
 
 class SupportTeamScreen extends StatefulWidget {

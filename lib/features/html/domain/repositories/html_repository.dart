@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
-import 'package:wefrh_rider/api/api_client.dart';
-import 'package:wefrh_rider/features/html/domain/repositories/html_repository_interface.dart';
-import 'package:wefrh_rider/features/language/controllers/language_controller.dart';
-import 'package:wefrh_rider/util/app_constants.dart';
+import 'package:doghree_rider/api/api_client.dart';
+import 'package:doghree_rider/features/html/domain/repositories/html_repository_interface.dart';
+import 'package:doghree_rider/features/language/controllers/language_controller.dart';
+import 'package:doghree_rider/util/app_constants.dart';
 
 class HtmlRepository implements HtmlRepositoryInterface {
   final ApiClient apiClient;

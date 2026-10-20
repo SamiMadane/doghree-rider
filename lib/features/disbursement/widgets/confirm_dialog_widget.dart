@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/features/disbursement/controllers/disbursement_controller.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/util/styles.dart';
-import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
+import 'package:doghree_rider/features/disbursement/controllers/disbursement_controller.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/styles.dart';
+import 'package:doghree_rider/common/widgets/custom_button_widget.dart';
 
 class ConfirmDialogWidget extends StatelessWidget {
   final int id;

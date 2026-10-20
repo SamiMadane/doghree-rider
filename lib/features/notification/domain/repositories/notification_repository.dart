@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:wefrh_rider/api/api_client.dart';
-import 'package:wefrh_rider/features/notification/domain/models/notification_model.dart';
-import 'package:wefrh_rider/features/notification/domain/repositories/notification_repository_interface.dart';
-import 'package:wefrh_rider/util/app_constants.dart';
+import 'package:doghree_rider/api/api_client.dart';
+import 'package:doghree_rider/features/notification/domain/models/notification_model.dart';
+import 'package:doghree_rider/features/notification/domain/repositories/notification_repository_interface.dart';
+import 'package:doghree_rider/util/app_constants.dart';
 
 class NotificationRepository implements NotificationRepositoryInterface {
   final ApiClient apiClient;

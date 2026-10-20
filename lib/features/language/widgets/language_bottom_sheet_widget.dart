@@ -1,8 +1,8 @@
-import 'package:wefrh_rider/features/language/widgets/language_card_widget.dart';
-import 'package:wefrh_rider/util/styles.dart';
+import 'package:doghree_rider/features/language/widgets/language_card_widget.dart';
+import 'package:doghree_rider/util/styles.dart';
 import 'package:flutter/material.dart';
-import 'package:wefrh_rider/features/language/controllers/language_controller.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:doghree_rider/features/language/controllers/language_controller.dart';
+import 'package:doghree_rider/util/dimensions.dart';
 import 'package:get/get.dart';
 
 class LanguageBottomSheetWidget extends StatefulWidget {

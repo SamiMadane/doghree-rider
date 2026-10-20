@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/common/widgets/custom_bottom_sheet_widget.dart';
-import 'package:wefrh_rider/common/widgets/custom_card.dart';
-import 'package:wefrh_rider/features/task/widgets/delivered_bottom_sheet.dart';
-import 'package:wefrh_rider/features/task/widgets/reschedule_bottom_sheet.dart';
-import 'package:wefrh_rider/features/task/widgets/task_card.dart';
-import 'package:wefrh_rider/features/task/widgets/task_progress_section.dart';
-import 'package:wefrh_rider/helper/route_helper.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:doghree_rider/common/widgets/custom_bottom_sheet_widget.dart';
+import 'package:doghree_rider/common/widgets/custom_card.dart';
+import 'package:doghree_rider/features/task/widgets/delivered_bottom_sheet.dart';
+import 'package:doghree_rider/features/task/widgets/reschedule_bottom_sheet.dart';
+import 'package:doghree_rider/features/task/widgets/task_card.dart';
+import 'package:doghree_rider/features/task/widgets/task_progress_section.dart';
+import 'package:doghree_rider/helper/route_helper.dart';
+import 'package:doghree_rider/util/dimensions.dart';
 
 class ExistTaskSection extends StatelessWidget {
   const ExistTaskSection({super.key});

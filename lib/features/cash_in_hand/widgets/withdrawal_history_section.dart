@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
-import 'package:wefrh_rider/features/cash_in_hand/domain/models/wallet_withdrawal_model.dart';
-import 'package:wefrh_rider/features/cash_in_hand/screens/withdrawals_screen.dart';
-import 'package:wefrh_rider/features/cash_in_hand/widgets/withdrawal_details_sheet.dart';
-import 'package:wefrh_rider/helper/price_converter_helper.dart';
-import 'package:wefrh_rider/helper/route_helper.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/util/styles.dart';
+import 'package:doghree_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
+import 'package:doghree_rider/features/cash_in_hand/domain/models/wallet_withdrawal_model.dart';
+import 'package:doghree_rider/features/cash_in_hand/screens/withdrawals_screen.dart';
+import 'package:doghree_rider/features/cash_in_hand/widgets/withdrawal_details_sheet.dart';
+import 'package:doghree_rider/helper/price_converter_helper.dart';
+import 'package:doghree_rider/helper/route_helper.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/styles.dart';
 
 class WithdrawalHistorySection extends StatelessWidget {
   const WithdrawalHistorySection({super.key});

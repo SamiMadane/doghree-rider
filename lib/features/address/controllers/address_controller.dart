@@ -3,13 +3,13 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart' show LatLng;
 import 'package:image_picker/image_picker.dart';
-import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
-import 'package:wefrh_rider/features/address/domain/models/address_model.dart';
-import 'package:wefrh_rider/features/address/domain/models/zone_model.dart';
-import 'package:wefrh_rider/features/address/domain/models/zone_response_model.dart';
+import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
+import 'package:doghree_rider/features/address/domain/models/address_model.dart';
+import 'package:doghree_rider/features/address/domain/models/zone_model.dart';
+import 'package:doghree_rider/features/address/domain/models/zone_response_model.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/features/address/domain/services/address_service_interface.dart';
+import 'package:doghree_rider/features/address/domain/services/address_service_interface.dart';
 
 class AddressController extends GetxController implements GetxService {
   final AddressServiceInterface addressServiceInterface;

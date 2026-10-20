@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
-import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
-import 'package:wefrh_rider/features/task/widgets/connection_status_widget.dart';
-import 'package:wefrh_rider/features/task/widgets/no_task_section.dart';
-import 'package:wefrh_rider/features/task/widgets/statistics_section.dart';
-import 'package:wefrh_rider/features/task/widgets/exist_task_section.dart';
-import 'package:wefrh_rider/helper/price_converter_helper.dart';
-import 'package:wefrh_rider/helper/route_helper.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:doghree_rider/common/widgets/custom_app_bar_widget.dart';
+import 'package:doghree_rider/common/widgets/custom_button_widget.dart';
+import 'package:doghree_rider/features/task/widgets/connection_status_widget.dart';
+import 'package:doghree_rider/features/task/widgets/no_task_section.dart';
+import 'package:doghree_rider/features/task/widgets/statistics_section.dart';
+import 'package:doghree_rider/features/task/widgets/exist_task_section.dart';
+import 'package:doghree_rider/helper/price_converter_helper.dart';
+import 'package:doghree_rider/helper/route_helper.dart';
+import 'package:doghree_rider/util/dimensions.dart';
 
 class TaskScreen extends StatelessWidget {
   const TaskScreen({super.key});

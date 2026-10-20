@@ -1,14 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/api/api_error_handler.dart';
-import 'package:wefrh_rider/api/error_message.dart';
-import 'package:wefrh_rider/api/error_type.dart';
-import 'package:wefrh_rider/common/widgets/custom_bottom_sheet_widget.dart';
-import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
-import 'package:wefrh_rider/common/widgets/session_expired_bottom_sheet.dart';
-import 'package:wefrh_rider/features/auth/controllers/auth_controller.dart';
-import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
-import 'package:wefrh_rider/helper/route_helper.dart';
+import 'package:doghree_rider/api/api_error_handler.dart';
+import 'package:doghree_rider/api/error_message.dart';
+import 'package:doghree_rider/api/error_type.dart';
+import 'package:doghree_rider/common/widgets/custom_bottom_sheet_widget.dart';
+import 'package:doghree_rider/common/widgets/custom_snackbar_widget.dart';
+import 'package:doghree_rider/common/widgets/session_expired_bottom_sheet.dart';
+import 'package:doghree_rider/features/auth/controllers/auth_controller.dart';
+import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
+import 'package:doghree_rider/helper/route_helper.dart';
 
 class ApiChecker {
   static bool _isSessionExpiredBottomSheetShown = false;
@@ -68,15 +68,15 @@ debugPrint(StackTrace.current.toString());
   }
 }
 
-// import 'package:wefrh_rider/api/api_error_handler.dart';
-// import 'package:wefrh_rider/api/api_error_model.dart';
-// import 'package:wefrh_rider/api/error_type.dart';
-// import 'package:wefrh_rider/common/widgets/custom_bottom_sheet_widget.dart';
-// import 'package:wefrh_rider/common/widgets/session_expired_bottom_sheet.dart';
-// import 'package:wefrh_rider/features/auth/controllers/auth_controller.dart';
-// import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
-// import 'package:wefrh_rider/helper/route_helper.dart';
-// import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
+// import 'package:doghree_rider/api/api_error_handler.dart';
+// import 'package:doghree_rider/api/api_error_model.dart';
+// import 'package:doghree_rider/api/error_type.dart';
+// import 'package:doghree_rider/common/widgets/custom_bottom_sheet_widget.dart';
+// import 'package:doghree_rider/common/widgets/session_expired_bottom_sheet.dart';
+// import 'package:doghree_rider/features/auth/controllers/auth_controller.dart';
+// import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
+// import 'package:doghree_rider/helper/route_helper.dart';
+// import 'package:doghree_rider/common/widgets/custom_snackbar_widget.dart';
 // import 'package:get/get.dart';
 
 // class ApiChecker {

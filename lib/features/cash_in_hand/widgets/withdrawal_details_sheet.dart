@@ -1,11 +1,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/common/widgets/image_diaglog_widget.dart';
-import 'package:wefrh_rider/features/cash_in_hand/domain/models/wallet_withdrawal_model.dart';
-import 'package:wefrh_rider/helper/price_converter_helper.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/util/styles.dart';
+import 'package:doghree_rider/common/widgets/image_diaglog_widget.dart';
+import 'package:doghree_rider/features/cash_in_hand/domain/models/wallet_withdrawal_model.dart';
+import 'package:doghree_rider/helper/price_converter_helper.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/styles.dart';
 
 void showWithdrawalDetails(WalletWithdrawal item) {
   Get.bottomSheet(

@@ -1,9 +1,9 @@
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/util/manager_colors.dart';
-import 'package:wefrh_rider/util/styles.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/manager_colors.dart';
+import 'package:doghree_rider/util/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/util/theme_extension.dart';
+import 'package:doghree_rider/util/theme_extension.dart';
 
 class TitleWidget extends StatelessWidget {
   final String title;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:wefrh_rider/features/language/domain/models/language_model.dart';
-import 'package:wefrh_rider/features/language/domain/repositories/language_repository_interface.dart';
-import 'package:wefrh_rider/features/language/domain/services/language_service_interface.dart';
+import 'package:doghree_rider/features/language/domain/models/language_model.dart';
+import 'package:doghree_rider/features/language/domain/repositories/language_repository_interface.dart';
+import 'package:doghree_rider/features/language/domain/services/language_service_interface.dart';
 
 class LanguageService implements LanguageServiceInterface {
   final LanguageRepositoryInterface languageRepositoryInterface;

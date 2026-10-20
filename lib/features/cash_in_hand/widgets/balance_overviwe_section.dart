@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
-import 'package:wefrh_rider/features/cash_in_hand/widgets/wallet_account_section.dart';
-import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
-import 'package:wefrh_rider/common/widgets/custom_card.dart';
-import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
-import 'package:wefrh_rider/features/cash_in_hand/widgets/transaction_bottom_sheet.dart';
-import 'package:wefrh_rider/common/widgets/custom_bottom_sheet_widget.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/util/manager_assets.dart';
-import 'package:wefrh_rider/util/styles.dart';
-import 'package:wefrh_rider/helper/price_converter_helper.dart';
-import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
-import 'package:wefrh_rider/features/cash_in_hand/widgets/wallet_withdraw_sheet.dart';
+import 'package:doghree_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
+import 'package:doghree_rider/features/cash_in_hand/widgets/wallet_account_section.dart';
+import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
+import 'package:doghree_rider/common/widgets/custom_card.dart';
+import 'package:doghree_rider/common/widgets/custom_button_widget.dart';
+import 'package:doghree_rider/features/cash_in_hand/widgets/transaction_bottom_sheet.dart';
+import 'package:doghree_rider/common/widgets/custom_bottom_sheet_widget.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/manager_assets.dart';
+import 'package:doghree_rider/util/styles.dart';
+import 'package:doghree_rider/helper/price_converter_helper.dart';
+import 'package:doghree_rider/common/widgets/custom_snackbar_widget.dart';
+import 'package:doghree_rider/features/cash_in_hand/widgets/wallet_withdraw_sheet.dart';
 
 class BalanceOverviewSection extends StatelessWidget {
   final ProfileController profileController;

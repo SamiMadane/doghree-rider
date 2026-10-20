@@ -1,6 +1,6 @@
-import 'package:wefrh_rider/common/models/response_model.dart';
-import 'package:wefrh_rider/features/profile/domain/models/profile_model.dart';
-import 'package:wefrh_rider/interface/repository_interface.dart';
+import 'package:doghree_rider/common/models/response_model.dart';
+import 'package:doghree_rider/features/profile/domain/models/profile_model.dart';
+import 'package:doghree_rider/interface/repository_interface.dart';
 
 abstract class ForgotPasswordRepositoryInterface implements RepositoryInterface {
   Future<dynamic> changePassword(ProfileModel userInfoModel, String currentPassword, String password);

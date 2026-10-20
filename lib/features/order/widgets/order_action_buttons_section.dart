@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:wefrh_rider/features/order/widgets/cancel_confirm_row.dart';
-import 'package:wefrh_rider/features/order/widgets/complete_delivary_button.dart';
-import 'package:wefrh_rider/features/order/widgets/order_slider_button.dart';
-import 'package:wefrh_rider/features/order/widgets/order_status_info_container.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:doghree_rider/features/order/widgets/cancel_confirm_row.dart';
+import 'package:doghree_rider/features/order/widgets/complete_delivary_button.dart';
+import 'package:doghree_rider/features/order/widgets/order_slider_button.dart';
+import 'package:doghree_rider/features/order/widgets/order_status_info_container.dart';
+import 'package:doghree_rider/util/dimensions.dart';
 
 class OrderActionButtonsSection extends StatelessWidget {
   final dynamic order;

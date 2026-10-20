@@ -4,12 +4,12 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/features/order/controllers/order_controller.dart';
-import 'package:wefrh_rider/features/order/widgets/camera_button_sheet_widget.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/util/manager_assets.dart';
-import 'package:wefrh_rider/util/styles.dart';
-import 'package:wefrh_rider/util/theme_extension.dart';
+import 'package:doghree_rider/features/order/controllers/order_controller.dart';
+import 'package:doghree_rider/features/order/widgets/camera_button_sheet_widget.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/manager_assets.dart';
+import 'package:doghree_rider/util/styles.dart';
+import 'package:doghree_rider/util/theme_extension.dart';
 
 class DeliveryImagesSection extends StatelessWidget {
   final dynamic order;

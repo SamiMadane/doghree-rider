@@ -1,9 +1,9 @@
 // ملف جديد: helper/session_checker.dart
 import 'dart:async';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/api/api_client.dart';
-import 'package:wefrh_rider/features/auth/controllers/auth_controller.dart';
-import 'package:wefrh_rider/util/app_constants.dart';
+import 'package:doghree_rider/api/api_client.dart';
+import 'package:doghree_rider/features/auth/controllers/auth_controller.dart';
+import 'package:doghree_rider/util/app_constants.dart';
 
 /// مدير فحص صلاحية الجلسة بشكل دوري
 class SessionChecker extends GetxService {

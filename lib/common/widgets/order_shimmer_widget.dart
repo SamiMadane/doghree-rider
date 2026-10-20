@@ -1,9 +1,9 @@
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
-import 'package:wefrh_rider/common/widgets/custom_card.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/util/manager_colors.dart';
+import 'package:doghree_rider/common/widgets/custom_card.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/manager_colors.dart';
 
 class OrderShimmerWidget extends StatelessWidget {
   final bool isEnabled;

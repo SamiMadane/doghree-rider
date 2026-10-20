@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_utils/get_utils.dart';
-import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
-import 'package:wefrh_rider/common/widgets/custom_card.dart';
-import 'package:wefrh_rider/features/task/widgets/tip_card_widget.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/util/manager_assets.dart';
-import 'package:wefrh_rider/util/manager_colors.dart';
-import 'package:wefrh_rider/util/styles.dart';
-import 'package:wefrh_rider/util/theme_extension.dart';
+import 'package:doghree_rider/common/widgets/custom_button_widget.dart';
+import 'package:doghree_rider/common/widgets/custom_card.dart';
+import 'package:doghree_rider/features/task/widgets/tip_card_widget.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/manager_assets.dart';
+import 'package:doghree_rider/util/manager_colors.dart';
+import 'package:doghree_rider/util/styles.dart';
+import 'package:doghree_rider/util/theme_extension.dart';
 
 class NoTaskSection extends StatelessWidget {
   const NoTaskSection({super.key});

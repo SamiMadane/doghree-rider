@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/util/manager_colors.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/manager_colors.dart';
 
 class StepProgressBar extends StatelessWidget {
   final double status;

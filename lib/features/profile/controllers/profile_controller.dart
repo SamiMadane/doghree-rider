@@ -1,17 +1,17 @@
 import 'dart:async';
-import 'package:wefrh_rider/common/models/response_model.dart';
-import 'package:wefrh_rider/features/auth/controllers/auth_controller.dart';
-import 'package:wefrh_rider/features/address/domain/models/record_location_body_model.dart';
-import 'package:wefrh_rider/features/splash/controllers/splash_controller.dart';
-import 'package:wefrh_rider/features/profile/domain/models/profile_model.dart';
-import 'package:wefrh_rider/helper/route_helper.dart';
-import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
+import 'package:doghree_rider/common/models/response_model.dart';
+import 'package:doghree_rider/features/auth/controllers/auth_controller.dart';
+import 'package:doghree_rider/features/address/domain/models/record_location_body_model.dart';
+import 'package:doghree_rider/features/splash/controllers/splash_controller.dart';
+import 'package:doghree_rider/features/profile/domain/models/profile_model.dart';
+import 'package:doghree_rider/helper/route_helper.dart';
+import 'package:doghree_rider/common/widgets/custom_snackbar_widget.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:wefrh_rider/features/profile/domain/services/profile_service_interface.dart';
+import 'package:doghree_rider/features/profile/domain/services/profile_service_interface.dart';
 import 'package:flutter/material.dart';
-import 'package:wefrh_rider/helper/image_picker_helper.dart';
+import 'package:doghree_rider/helper/image_picker_helper.dart';
 import 'package:image_cropper/image_cropper.dart';
 
 class ProfileController extends GetxController implements GetxService {

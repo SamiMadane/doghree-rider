@@ -1,8 +1,8 @@
-import 'package:wefrh_rider/features/language/domain/models/language_model.dart';
-import 'package:wefrh_rider/util/app_constants.dart';
+import 'package:doghree_rider/features/language/domain/models/language_model.dart';
+import 'package:doghree_rider/util/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/features/language/domain/services/language_service_interface.dart';
+import 'package:doghree_rider/features/language/domain/services/language_service_interface.dart';
 
 class LocalizationController extends GetxController implements GetxService {
   final LanguageServiceInterface languageServiceInterface;

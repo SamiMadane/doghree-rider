@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
-import 'package:wefrh_rider/util/manager_colors.dart';
+import 'package:doghree_rider/util/manager_colors.dart';
 import 'package:vibration/vibration.dart';
 
 class SliderButton extends StatefulWidget {

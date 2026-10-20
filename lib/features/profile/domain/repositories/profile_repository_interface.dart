@@ -1,7 +1,7 @@
-import 'package:wefrh_rider/interface/repository_interface.dart';
+import 'package:doghree_rider/interface/repository_interface.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:wefrh_rider/features/address/domain/models/record_location_body_model.dart';
-import 'package:wefrh_rider/features/profile/domain/models/profile_model.dart';
+import 'package:doghree_rider/features/address/domain/models/record_location_body_model.dart';
+import 'package:doghree_rider/features/profile/domain/models/profile_model.dart';
 
 abstract class ProfileRepositoryInterface implements RepositoryInterface {
   Future<dynamic> getProfileInfo();

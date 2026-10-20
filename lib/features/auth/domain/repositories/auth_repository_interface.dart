@@ -1,6 +1,6 @@
-import 'package:wefrh_rider/api/api_client.dart';
-import 'package:wefrh_rider/features/auth/domain/models/delivery_man_body_model.dart';
-import 'package:wefrh_rider/interface/repository_interface.dart';
+import 'package:doghree_rider/api/api_client.dart';
+import 'package:doghree_rider/features/auth/domain/models/delivery_man_body_model.dart';
+import 'package:doghree_rider/interface/repository_interface.dart';
 
 abstract class AuthRepositoryInterface implements RepositoryInterface {
   Future<dynamic> login(String phone, String password);

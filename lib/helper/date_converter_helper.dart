@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:wefrh_rider/features/splash/controllers/splash_controller.dart';
+import 'package:doghree_rider/features/splash/controllers/splash_controller.dart';
 
 class DateConverterHelper {
   /// تهيئة بيانات التواريخ حسب لغة التطبيق

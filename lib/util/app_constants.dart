@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import 'package:wefrh_rider/features/language/domain/models/language_model.dart';
-import 'package:wefrh_rider/util/manager_assets.dart';
+import 'package:doghree_rider/features/language/domain/models/language_model.dart';
+import 'package:doghree_rider/util/manager_assets.dart';
 
 class AppConstants {
   static const String appName = 'Wefrh Rider';

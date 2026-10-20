@@ -1,13 +1,13 @@
 import 'dart:async';
-import 'package:wefrh_rider/common/widgets/empty_state_widget.dart';
-import 'package:wefrh_rider/features/order/controllers/order_controller.dart';
-import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
-import 'package:wefrh_rider/features/order/widgets/order_requset_widget.dart';
+import 'package:doghree_rider/common/widgets/empty_state_widget.dart';
+import 'package:doghree_rider/features/order/controllers/order_controller.dart';
+import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/common/widgets/custom_app_bar_widget.dart';
+import 'package:doghree_rider/features/order/widgets/order_requset_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/util/manager_assets.dart';
+import 'package:doghree_rider/util/manager_assets.dart';
 
 class AvailableOrdersScreen extends StatefulWidget {
   final Function onTap;

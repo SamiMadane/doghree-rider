@@ -1,9 +1,9 @@
-import 'package:wefrh_rider/features/notification/domain/models/notification_body_model.dart';
-import 'package:wefrh_rider/features/notification/domain/models/notification_model.dart';
-import 'package:wefrh_rider/helper/date_converter_helper.dart';
+import 'package:doghree_rider/features/notification/domain/models/notification_body_model.dart';
+import 'package:doghree_rider/features/notification/domain/models/notification_model.dart';
+import 'package:doghree_rider/helper/date_converter_helper.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/features/notification/domain/services/notification_service_interface.dart';
-import 'package:wefrh_rider/helper/route_helper.dart';
+import 'package:doghree_rider/features/notification/domain/services/notification_service_interface.dart';
+import 'package:doghree_rider/helper/route_helper.dart';
 
 class NotificationController extends GetxController implements GetxService {
   final NotificationServiceInterface notificationServiceInterface;

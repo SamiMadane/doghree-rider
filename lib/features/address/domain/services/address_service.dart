@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
-import 'package:wefrh_rider/features/address/domain/models/zone_model.dart';
-import 'package:wefrh_rider/features/address/domain/repositories/address_repository_interface.dart';
-import 'package:wefrh_rider/features/address/domain/services/address_service_interface.dart';
+import 'package:doghree_rider/features/address/domain/models/zone_model.dart';
+import 'package:doghree_rider/features/address/domain/repositories/address_repository_interface.dart';
+import 'package:doghree_rider/features/address/domain/services/address_service_interface.dart';
 
 class AddressService implements AddressServiceInterface {
   final AddressRepositoryInterface addressRepositoryInterface;

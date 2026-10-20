@@ -1,4 +1,4 @@
-import 'package:wefrh_rider/interface/repository_interface.dart';
+import 'package:doghree_rider/interface/repository_interface.dart';
 
 abstract class DisbursementRepositoryInterface implements RepositoryInterface {
   Future<dynamic> addWithdraw(Map<String?, String> data);

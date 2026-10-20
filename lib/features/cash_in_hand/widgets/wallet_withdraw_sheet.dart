@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
-import 'package:wefrh_rider/common/widgets/custom_card.dart';
-import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
-import 'package:wefrh_rider/common/widgets/custom_text_field_widget.dart';
-import 'package:wefrh_rider/common/widgets/widget_with_label.dart';
-import 'package:wefrh_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
-import 'package:wefrh_rider/features/cash_in_hand/domain/models/wallet_model.dart';
-import 'package:wefrh_rider/helper/price_converter_helper.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/util/styles.dart';
+import 'package:doghree_rider/common/widgets/custom_button_widget.dart';
+import 'package:doghree_rider/common/widgets/custom_card.dart';
+import 'package:doghree_rider/common/widgets/custom_snackbar_widget.dart';
+import 'package:doghree_rider/common/widgets/custom_text_field_widget.dart';
+import 'package:doghree_rider/common/widgets/widget_with_label.dart';
+import 'package:doghree_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
+import 'package:doghree_rider/features/cash_in_hand/domain/models/wallet_model.dart';
+import 'package:doghree_rider/helper/price_converter_helper.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/styles.dart';
 
 void showWithdrawSheet() {
   Get.bottomSheet(const WalletWithdrawSheet(),

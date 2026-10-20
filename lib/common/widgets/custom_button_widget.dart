@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/dimensions.dart';
 
 class CustomButtonWidget extends StatelessWidget {
   final Function? onPressed;

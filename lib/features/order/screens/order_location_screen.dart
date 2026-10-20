@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
-import 'package:wefrh_rider/doghree_map/doghree_map.dart';
-import 'package:wefrh_rider/doghree_map/map_config.dart';
-import 'package:wefrh_rider/doghree_map/map_safety.dart';
-import 'package:wefrh_rider/features/order/controllers/order_controller.dart';
-import 'package:wefrh_rider/features/order/domain/models/order_model.dart';
-import 'package:wefrh_rider/features/order/widgets/location_card_widget.dart';
-import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
-import 'package:wefrh_rider/features/splash/controllers/splash_controller.dart';
-import 'package:wefrh_rider/util/manager_assets.dart';
+import 'package:doghree_rider/common/widgets/custom_app_bar_widget.dart';
+import 'package:doghree_rider/doghree_map/doghree_map.dart';
+import 'package:doghree_rider/doghree_map/map_config.dart';
+import 'package:doghree_rider/doghree_map/map_safety.dart';
+import 'package:doghree_rider/features/order/controllers/order_controller.dart';
+import 'package:doghree_rider/features/order/domain/models/order_model.dart';
+import 'package:doghree_rider/features/order/widgets/location_card_widget.dart';
+import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
+import 'package:doghree_rider/features/splash/controllers/splash_controller.dart';
+import 'package:doghree_rider/util/manager_assets.dart';
 
 class OrderLocationScreen extends StatefulWidget {
   final OrderModel orderModel;

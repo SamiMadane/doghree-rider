@@ -1,11 +1,11 @@
 import 'package:get/get.dart';
-import 'package:wefrh_rider/features/language/domain/models/language_model.dart';
-import 'package:wefrh_rider/features/splash/screens/splash_screen.dart';
-import 'package:wefrh_rider/util/styles.dart';
+import 'package:doghree_rider/features/language/domain/models/language_model.dart';
+import 'package:doghree_rider/features/splash/screens/splash_screen.dart';
+import 'package:doghree_rider/util/styles.dart';
 import 'package:flutter/material.dart';
-import 'package:wefrh_rider/features/language/controllers/language_controller.dart';
-import 'package:wefrh_rider/util/app_constants.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:doghree_rider/features/language/controllers/language_controller.dart';
+import 'package:doghree_rider/util/app_constants.dart';
+import 'package:doghree_rider/util/dimensions.dart';
 
 class LanguageCardWidget extends StatelessWidget {
   final LanguageModel languageModel;

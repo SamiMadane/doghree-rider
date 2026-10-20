@@ -2,14 +2,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/common/widgets/custom_card.dart';
-import 'package:wefrh_rider/features/task/controllers/task_controller.dart';
-import 'package:wefrh_rider/features/task/widgets/tip_card_widget.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/util/manager_assets.dart';
-import 'package:wefrh_rider/util/manager_colors.dart';
-import 'package:wefrh_rider/util/styles.dart';
-import 'package:wefrh_rider/util/theme_extension.dart';
+import 'package:doghree_rider/common/widgets/custom_card.dart';
+import 'package:doghree_rider/features/task/controllers/task_controller.dart';
+import 'package:doghree_rider/features/task/widgets/tip_card_widget.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/manager_assets.dart';
+import 'package:doghree_rider/util/manager_colors.dart';
+import 'package:doghree_rider/util/styles.dart';
+import 'package:doghree_rider/util/theme_extension.dart';
 
 class ConnectionBottomSheet extends StatelessWidget {
   final TaskController controller;

@@ -7,7 +7,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:vector_map_tiles/vector_map_tiles.dart';
 import 'package:vector_map_tiles_pmtiles/vector_map_tiles_pmtiles.dart';
 import 'package:vector_tile_renderer/vector_tile_renderer.dart' as vtr;
-import 'package:wefrh_rider/util/manager_assets.dart';
+import 'package:doghree_rider/util/manager_assets.dart';
 
 import 'map_config.dart';
 import 'map_safety.dart';

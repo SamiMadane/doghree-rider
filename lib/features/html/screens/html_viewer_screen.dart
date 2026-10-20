@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
-import 'package:wefrh_rider/common/widgets/custom_image_widget.dart';
-import 'package:wefrh_rider/features/html/controllers/html_controller.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
+import 'package:doghree_rider/common/widgets/custom_image_widget.dart';
+import 'package:doghree_rider/features/html/controllers/html_controller.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/common/widgets/custom_app_bar_widget.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/util/manager_assets.dart';
+import 'package:doghree_rider/util/manager_assets.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:wefrh_rider/util/styles.dart';
+import 'package:doghree_rider/util/styles.dart';
 
 
 class HtmlViewerScreen extends StatefulWidget {

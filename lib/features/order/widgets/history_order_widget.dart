@@ -1,11 +1,11 @@
-import 'package:wefrh_rider/common/widgets/custom_card.dart';
-import 'package:wefrh_rider/features/order/domain/models/order_model.dart';
-import 'package:wefrh_rider/helper/date_converter_helper.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/util/manager_colors.dart';
-import 'package:wefrh_rider/util/styles.dart';
-import 'package:wefrh_rider/common/widgets/custom_image_widget.dart';
-import 'package:wefrh_rider/features/order/screens/order_details_screen.dart';
+import 'package:doghree_rider/common/widgets/custom_card.dart';
+import 'package:doghree_rider/features/order/domain/models/order_model.dart';
+import 'package:doghree_rider/helper/date_converter_helper.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/manager_colors.dart';
+import 'package:doghree_rider/util/styles.dart';
+import 'package:doghree_rider/common/widgets/custom_image_widget.dart';
+import 'package:doghree_rider/features/order/screens/order_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
