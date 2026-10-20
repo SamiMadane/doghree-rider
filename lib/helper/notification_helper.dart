@@ -216,7 +216,7 @@ class NotificationHelper {
       FlutterLocalNotificationsPlugin fln) async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
-      'wefrh',
+      'doghree_rider',
       AppConstants.appName,
       playSound: true,
       importance: Importance.max,
