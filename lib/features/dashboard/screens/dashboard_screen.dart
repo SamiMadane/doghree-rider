@@ -2,11 +2,11 @@ import 'dart:async';
 import 'dart:io';
 import 'package:doghree_rider/common/widgets/custom_bottom_sheet_widget.dart';
 import 'package:doghree_rider/features/auth/controllers/auth_controller.dart';
+import 'package:doghree_rider/features/dashboard/widgets/bottom_nav_road_indicator.dart';
 import 'package:doghree_rider/features/dashboard/widgets/lottie_bottom_sheet_order_request.dart';
 import 'package:doghree_rider/features/order/controllers/order_controller.dart';
 import 'package:doghree_rider/features/disbursement/helper/disbursement_helper.dart';
 import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
-import 'package:doghree_rider/features/task/screens/task_screen.dart';
 import 'package:doghree_rider/helper/notification_helper.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
 import 'package:doghree_rider/main.dart';
@@ -54,7 +54,6 @@ class DashboardScreenState extends State<DashboardScreen> {
       const HomeScreen(),
       AvailableOrdersScreen(onTap: () => _setPage(0)),
       const OrderScreen(),
-      TaskScreen(),
       const ProfileScreen(),
     ];
 
@@ -86,7 +85,7 @@ class DashboardScreenState extends State<DashboardScreen> {
           child: LottieBottomSheetOrderRequest(
             isRequest: true,
             onAccept: () => _navigateRequestPage(),
-            onReject: () {}, 
+            onReject: () {},
             orderId: int.parse(message.data['order_id'].toString()),
             isParcel: isParcel,
           ),
@@ -141,13 +140,15 @@ class DashboardScreenState extends State<DashboardScreen> {
 
   @override
   void dispose() {
-    super.dispose();
     _stream.cancel();
     Get.find<SessionChecker>().stopSessionCheck();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final ColorScheme cs = Theme.of(context).colorScheme;
+
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
@@ -166,11 +167,12 @@ class DashboardScreenState extends State<DashboardScreen> {
           }
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text('back_press_again_to_exit'.tr,
-                style: const TextStyle(color: Colors.white)),
+                style: TextStyle(color: cs.surface)),
             behavior: SnackBarBehavior.floating,
-            backgroundColor: Colors.green,
+            backgroundColor: cs.onSurface,
             duration: const Duration(seconds: 2),
-            margin: EdgeInsets.symmetric(horizontal:Dimensions.w10 ,vertical: Dimensions.h10,),
+            margin: EdgeInsets.symmetric(
+                horizontal: Dimensions.w10, vertical: Dimensions.h10),
           ));
           _canExit = true;
 
@@ -183,84 +185,82 @@ class DashboardScreenState extends State<DashboardScreen> {
         // إضافة resizeToAvoidBottomInset لمنع دفع Bottom Nav عند ظهور الكيبورد
         resizeToAvoidBottomInset: false,
         bottomNavigationBar: GetPlatform.isDesktop
-            ? const SizedBox()
-            : SafeArea(
-                // SafeArea لحماية Bottom Nav من الدخول تحت شاشة الجهاز
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).cardColor,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Theme.of(context).shadowColor.withOpacity(0.1),
-                        blurRadius: 10,
-                        spreadRadius: 0,
-                        offset: const Offset(0, -2),
-                      ),
-                    ],
+    ? const SizedBox()
+    : SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+          child: Container(
+            height: 76,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: cs.shadow.withValues(
+                    alpha: Theme.of(context).brightness == Brightness.dark
+                        ? 0.0
+                        : 0.12,
                   ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(0),
-                      topRight: Radius.circular(0),
-                    ),
-                    child: BottomAppBar(
-                      elevation: 0,
-                      height: 65, // ارتفاع ثابت مناسب
-                      padding: EdgeInsets.zero,
-                      color: Theme.of(context).cardColor,
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            BottomNavItemWidget(
-                              label: 'home'.tr,
-                              isSelected: _pageIndex == 0,
-                              onTap: () => _setPage(0),
-                              selectedIcon: ManagerAssets.homeSelectedIcon,
-                              unSelectedIcon: ManagerAssets.homeIcon,
-                            ),
-                            BottomNavItemWidget(
-                              label: 'orders'.tr,
-                              isSelected: _pageIndex == 1,
-                              pageIndex: 1,
-                              onTap: () {
-                                _navigateRequestPage();
-                              },
-                              selectedIcon: ManagerAssets.orderSelectedIcon,
-                              unSelectedIcon: ManagerAssets.orderIcon,
-                            ),
-                            BottomNavItemWidget(
-                              label: 'my_orders'.tr,
-                              isSelected: _pageIndex == 2,
-                              onTap: () => _setPage(2),
-                              selectedIcon: ManagerAssets.myOrderSelectedIcon,
-                              unSelectedIcon: ManagerAssets.myOrderIcon,
-                            ),
-                            BottomNavItemWidget(
-                              label: 'task'.tr,
-                              isSelected: _pageIndex == 3,
-                              onTap: () => _setPage(3),
-                              selectedIcon: ManagerAssets.taskSelectedIcon,
-                              unSelectedIcon: ManagerAssets.taskIcon,
-                            ),
-                            BottomNavItemWidget(
-                              label: 'profile'.tr,
-                              isSelected: _pageIndex == 4,
-                              onTap: () => _setPage(4),
-                              selectedIcon: ManagerAssets.profileSelectedIcon,
-                              unSelectedIcon: ManagerAssets.userIcon,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
+                  blurRadius: 18,
+                  offset: const Offset(0, 6),
                 ),
+              ],
+            ),
+            child: Material(
+              color: Theme.of(context).cardColor,
+              clipBehavior: Clip.antiAlias,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(24),
+                side: BorderSide(color: cs.outline),
               ),
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: Row(
+                      children: [
+                        BottomNavItemWidget(
+                          label: 'home'.tr,
+                          isSelected: _pageIndex == 0,
+                          onTap: () => _setPage(0),
+                          selectedIcon: ManagerAssets.homeSelectedIcon,
+                          unSelectedIcon: ManagerAssets.homeIcon,
+                        ),
+                        BottomNavItemWidget(
+                          label: 'orders'.tr,
+                          isSelected: _pageIndex == 1,
+                          pageIndex: 1,
+                          onTap: () => _navigateRequestPage(),
+                          selectedIcon: ManagerAssets.orderSelectedIcon,
+                          unSelectedIcon: ManagerAssets.orderIcon,
+                        ),
+                        BottomNavItemWidget(
+                          label: 'my_orders'.tr,
+                          isSelected: _pageIndex == 2,
+                          onTap: () => _setPage(2),
+                          selectedIcon: ManagerAssets.myOrderSelectedIcon,
+                          unSelectedIcon: ManagerAssets.myOrderIcon,
+                        ),
+                        BottomNavItemWidget(
+                          label: 'profile'.tr,
+                          isSelected: _pageIndex == 3,
+                          onTap: () => _setPage(3),
+                          selectedIcon: ManagerAssets.profileSelectedIcon,
+                          unSelectedIcon: ManagerAssets.userIcon,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Positioned.fill(
+                    child: BottomNavRoadIndicator(
+                      index: _pageIndex,
+                      count: _screens.length,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
         body: PageView.builder(
           controller: _pageController,
           itemCount: _screens.length,
