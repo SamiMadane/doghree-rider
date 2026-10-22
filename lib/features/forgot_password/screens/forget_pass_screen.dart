@@ -22,7 +22,7 @@ class ForgetPassScreen extends StatefulWidget {
 }
 
 class _ForgetPassScreenState extends State<ForgetPassScreen> {
-    final FocusNode _phoneFocus = FocusNode();
+  final FocusNode _phoneFocus = FocusNode();
 
   final TextEditingController _numberController = TextEditingController();
   String? _countryDialCode = CountryCode.fromCountryCode(
@@ -34,22 +34,28 @@ class _ForgetPassScreenState extends State<ForgetPassScreen> {
 
   @override
   Widget build(BuildContext context) {
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       backgroundColor: Theme.of(context).cardColor,
-      appBar: CustomAppBarWidget(
-     
-      ),
+      appBar: CustomAppBarWidget(),
       body: Center(
         child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
+          padding: EdgeInsets.symmetric(
+            horizontal: Dimensions.w16,
+            vertical: Dimensions.h16,
+          ),
           child: Column(children: [
-            Image.asset(ManagerAssets.logo),
+            Image.asset(
+              isDark ? ManagerAssets.logoDark : ManagerAssets.logo,
+              width: Dimensions.w140,
+              height: Dimensions.h140,
+            ),
             SizedBox(
               height: Dimensions.h25,
             ),
             Text('forgot_password'.tr,
-                style: textMedium().copyWith(
-                    fontSize: Dimensions.fs18),
+                style: textMedium().copyWith(fontSize: Dimensions.fs22),
                 textAlign: TextAlign.center),
             SizedBox(
               height: Dimensions.h16,
@@ -57,8 +63,9 @@ class _ForgetPassScreenState extends State<ForgetPassScreen> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 30),
               child: Text('please_enter_mobile'.tr,
-                  style: textMedium().copyWith(
-                      color: Theme.of(context).disabledColor),
+                  style: textRegular().copyWith(
+                      color: Theme.of(context).hintColor,
+                      fontSize: Dimensions.fs16),
                   textAlign: TextAlign.center),
             ),
             SizedBox(
@@ -80,9 +87,7 @@ class _ForgetPassScreenState extends State<ForgetPassScreen> {
                 },
                 countryDialCode: _countryCode ??
                     CountryCode.fromCountryCode(
-                            Get.find<SplashController>()
-                                .configModel!
-                                .country!)
+                            Get.find<SplashController>().configModel!.country!)
                         .code,
                 inputAction: TextInputAction.done,
                 onSubmit: (text) =>

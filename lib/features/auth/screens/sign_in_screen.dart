@@ -10,6 +10,7 @@ import 'package:doghree_rider/helper/custom_validator_helper.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
 import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/util/manager_assets.dart';
+import 'package:doghree_rider/util/manager_colors.dart';
 import 'package:doghree_rider/util/styles.dart';
 import 'package:doghree_rider/common/widgets/custom_button_widget.dart';
 import 'package:doghree_rider/common/widgets/custom_text_field_widget.dart';
@@ -80,6 +81,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
   @override
   Widget build(BuildContext context) {
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       backgroundColor: Theme.of(context).cardColor,
       body: SafeArea(
@@ -92,20 +94,22 @@ class _SignInScreenState extends State<SignInScreen> {
           child: GetBuilder<AuthController>(builder: (authController) {
             return Column(children: [
               Image.asset(
-                ManagerAssets.logo,
+                isDark?ManagerAssets.logoDark:ManagerAssets.logo,
+                width: Dimensions.w140,
+                height: Dimensions.h140,
               ),
               SizedBox(
-                height: Dimensions.h20,
+                height: Dimensions.h10,
               ),
               Text('sign_in_account'.tr,
-                  style: textBold().copyWith(fontSize: Dimensions.fs18)),
+                  style: textBold().copyWith(fontSize: Dimensions.fs22)),
               SizedBox(
                 height: Dimensions.h4,
               ),
               Text('enter_details_continue'.tr,
                   style: textRegular().copyWith(
-                      color: Theme.of(context).disabledColor,
-                      fontSize: Dimensions.fs14)),
+                      color: Theme.of(context).hintColor,
+                      fontSize: Dimensions.fs16)),
               SizedBox(height: Dimensions.h25),
               WidgetWithLabel(
                 label: 'mobile_number'.tr,
@@ -175,7 +179,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                     title: Text('remember_me'.tr,
                         style: textMedium().copyWith(
-                          color: Theme.of(context).disabledColor,
+                          color: Theme.of(context).hintColor,
                         )),
                     contentPadding: EdgeInsets.zero,
                     dense: true,
@@ -185,11 +189,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 TextButton(
                   onPressed: () =>
                       Get.toNamed(RouteHelper.getForgotPassRoute()),
-                  child: Text(
-                    'forgot_password'.tr,
-                    style: textMedium()
-                        .copyWith(color: Theme.of(context).primaryColor),
-                  ),
+                  child: Text('forgot_password'.tr, style: textMedium()),
                 ),
               ]),
               SizedBox(height: Dimensions.h16),
@@ -224,12 +224,12 @@ class _SignInScreenState extends State<SignInScreen> {
                         TextSpan(
                             text: '${'join_as_a'.tr} ',
                             style: textMedium().copyWith(
-                                color: Theme.of(context).disabledColor,
+                                color: Theme.of(context).hintColor,
                                 fontSize: Dimensions.fs16)),
                         TextSpan(
                             text: 'delivery_man'.tr,
                             style: textMedium().copyWith(
-                                color: Theme.of(context).disabledColor,
+                                color: Theme.of(context).colorScheme.tertiary,
                                 fontSize: Dimensions.fs16)),
                       ])),
                     )
@@ -282,7 +282,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
     authController.login(numberWithCountryCode, password).then((status) async {
       if (status.isSuccess) {
-           ApiChecker.isLoggingOut = false;
+        ApiChecker.isLoggingOut = false;
         if (authController.isActiveRememberMe) {
           authController.saveUserNumberAndPassword(
               phone, password, countryDialCode, countryCode);
@@ -291,7 +291,7 @@ class _SignInScreenState extends State<SignInScreen> {
         }
         await Get.find<ProfileController>().getProfile();
         Get.offAllNamed(RouteHelper.getInitialRoute());
-      } 
+      }
     });
   }
 }
