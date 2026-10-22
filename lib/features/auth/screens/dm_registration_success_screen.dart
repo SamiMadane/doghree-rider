@@ -29,10 +29,11 @@ class DmRegistrationSuccessScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const CustomAssetImageWidget(
+               CustomAssetImageWidget(
                 image: ManagerAssets.applicationSubmittedImage,
-                height: 200,
-                width: 200,
+                fit: BoxFit.contain,
+                height: Dimensions.h300,  
+                width: Dimensions.w300,
               ),
               SizedBox(height: Dimensions.h20),
               Text(
@@ -52,7 +53,7 @@ class DmRegistrationSuccessScreen extends StatelessWidget {
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 50),
+              SizedBox(height: Dimensions.h50),
               CustomButtonWidget(
                 buttonText: 'go_back_to_login_page'.tr,
                 onPressed: () {
