@@ -395,7 +395,7 @@ class LocationPermissionManager extends GetxController {
             width: 25,
             height: 25,
             decoration: BoxDecoration(
-              color: cs.primary,
+              color: Color.lerp(cs.primaryContainer, cs.primary, 0.5),
               shape: BoxShape.circle,
             ),
             child: Center(
@@ -443,12 +443,12 @@ class LocationPermissionManager extends GetxController {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 7),
+            padding: const EdgeInsets.only(top: 3),
             child: Container(
               width: 7,
               height: 7,
               decoration: BoxDecoration(
-                color: cs.primary,
+                color: Color.lerp(cs.primaryContainer, cs.primary, 0.5),
                 shape: BoxShape.circle,
               ),
             ),
