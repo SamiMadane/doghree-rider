@@ -61,7 +61,7 @@
   "processing": "Processing",
   "confirmed": "Confirmed",
   "handover": "Handover",
-    "wallet_see_all": "See All",
+  "wallet_see_all": "See All",
   "wallet_withdraw_details": "Withdrawal Request Details",
   "wallet_requested_at": "Request Date",
   "wallet_paid_at": "Transfer Date",
@@ -213,6 +213,9 @@
   "enter_current_password": "Enter current password",
   "additional_charge": "Additional charge",
   "edit": "Edit",
+  "your_earnings_today": "Your Earnings Today",
+  "your_earnings_week": "Your Earnings This Week",
+  "your_earnings_month": "Your Earnings This Month",
   "legal": "Legal",
   "order_items": "Order Items",
   "account_setting": "Account Settings",
@@ -754,5 +757,4 @@
   "insufficient_balance": "Insufficient Balance",
   "application_submitted": "Application Submitted",
   "application_received_message": "We received your application and we will review everything and contact you soon"
-
 }
