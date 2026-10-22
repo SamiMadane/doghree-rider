@@ -240,7 +240,7 @@ class CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
                         text: widget.labelText ?? '',
                         style: textRegular().copyWith(
                           fontSize: widget.labelTextSize ?? Dimensions.fs14,
-                          color: Theme.of(context).hintColor.withAlpha(180),
+                          color: Theme.of(context).hintColor,
                         ),
                       ),
                       if (widget.isRequired && widget.labelText != null)

@@ -37,14 +37,14 @@ class ManagerColors {
   static const Color disabledButtonDarkMode = Color(0xFF374151);
 
 // Blue Family
-  static const Color blueBgLightMode = Color(0x3306238D);
-  static const Color blueBgDarkMode = Color(0xFF0F1E3D);
-  static const Color darkBlueLightMode = Color(0xFF2B3E82);
-  static const Color blueLightMode = Color(0xFF1E36A4);
-  static const Color darkBlueDarkMode = Color(0xFF93C5FD);
-  static const Color blueDarkMode = Color(0xFF60A5FA);
-  static const Color naturalBlueLightMode = Color(0xFF2E68E5);
-  static const Color naturalBlueDarkMode = Color(0xFF60A5FA);
+  static const Color blueBgLightMode = Color(0xFFFFF1CC); // was 0x3306238D
+  static const Color blueBgDarkMode = Color(0xFF3D341F); // was 0xFF0F1E3D
+  static const Color darkBlueLightMode = Color(0xFF1B1B1B); // was 0xFF2B3E82
+  static const Color blueLightMode = Color(0xFF8A5F00); // was 0xFF1E36A4
+  static const Color darkBlueDarkMode = Color(0xFFFFFFFF); // was 0xFF93C5FD
+  static const Color blueDarkMode = Color(0xFFFFC233); // was 0xFF60A5FA
+  static const Color naturalBlueLightMode = Color(0xFF8A5F00); // was 0xFF2E68E5
+  static const Color naturalBlueDarkMode = Color(0xFFFFC233); // was 0xFF60A5FA
 
 // Red Family
   static const Color redLightMode = Color(0xFFEF4444);
@@ -55,21 +55,24 @@ class ManagerColors {
   static const Color red = Color(0xFFE64849);
   static const Color redCircle = Color(0xFFFFD9D7);
 
-  static const Color primaryLight = Color(0xFF0146C7);
-  static const Color primaryBgLight = Color(0x330146C7);
+  // new: text/icons on yellow
+  static const Color onPrimary = Color(0xFF1B1B1B);
 
-  static const Color primaryDark = Color(0xFF4A90E2);
-  static const Color primaryBgDark = Color(0x334A90E2);
+  static const Color primaryLight = Color(0xFFFFC233); // was 0xFF0146C7
+  static const Color primaryBgLight = Color(0xFFFFF1CC); // was 0x330146C7
+
+  static const Color primaryDark = Color(0xFFFFC233); // was 0xFF4A90E2
+  static const Color primaryBgDark = Color(0xFF3D341F); // was 0x334A90E2
 
   static const Color scaffoldBgLight = Color(0xFFF7F7F7);
   static const Color cardLight = Color(0xFFFFFFFF);
   static const Color disabledLight = Color(0xFF6C7278);
-  static const Color Strock1Light = Color(0xFFC3CAD9);
-  static const Color Strock2Light = Color(0xFFE5E8F4);
+  static const Color Strock1Light = Color(0xFFA8A8A8);
+  static const Color Strock2Light = Color(0xFFD0D0D0);
   static const Color hintLight = Color(0xFF6C7278);
   static const Color shadowLight = Color(0x13000000);
   static const Color iconLight = Color(0xFF292D32);
-  static const Color TextColorLight = Color(0xFF2B3141);
+  static const Color TextColorLight = Color(0xFF1B1B1B); // was 0xFF2B3141
   static const Color senderMessageBgLight = Color(0xFFF8F8F8);
   static const Color receiverMessageBgLight = Color(0xFF2B3141);
   static const Color bottomAppBarLight = Colors.white;
@@ -78,8 +81,8 @@ class ManagerColors {
   static const Color scaffoldBgDark = Color(0xFF161617);
   static const Color cardDark = Color(0xFF000000);
   static const Color disabledDark = Color(0xFFF0F0F0);
-  static const Color Strock1Dark = Color(0xFFC3CAD9);
-  static const Color Strock2Dark = Color(0xFF2A2D3A);
+  static const Color Strock1Dark = Color(0xFF6B6B6B);
+  static const Color Strock2Dark = Color(0xFF3A3A3A);
   static const Color hintDark = Color(0xFFBEBEBE);
   static const Color shadowDark = Color(0x1FFFFFFF);
   static const Color TextColorDark = Color(0xFFFFFFFF);
@@ -95,6 +98,6 @@ class ManagerColors {
 
   // 🔹 Additional Colors (optional, used in UI components)
   static const Color fabColor = primaryLight;
-  static const Color textButtonLight = primaryLight;
-  static const Color textButtonDark = Color(0xFF54B46B);
+  static const Color textButtonLight = Color(0xFF8A5F00); // was primaryLight (yellow text on white is unreadable)
+  static const Color textButtonDark = Color(0xFFFFC233); // was 0xFF54B46B
 }

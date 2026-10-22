@@ -21,7 +21,7 @@ class WidgetWithLabel extends StatelessWidget {
           label,
           style: textMedium(),
         ),
-        SizedBox(height: Dimensions.h10),
+        SizedBox(height: Dimensions.h8),
         textField,
       ],
     );

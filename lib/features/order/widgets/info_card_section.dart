@@ -45,7 +45,10 @@ class InfoCardSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomCard(
-      padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
+      padding: EdgeInsets.symmetric(
+        horizontal: Dimensions.w16,
+        vertical: Dimensions.h16,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -64,11 +67,10 @@ class InfoCardSection extends StatelessWidget {
             children: [
               ClipOval(
                 child: CustomImageWidget(
-                  width: Dimensions.w50,
-                  height: Dimensions.h50,
-                  fit: BoxFit.cover,
-                  image: image 
-                ),
+                    width: Dimensions.w50,
+                    height: Dimensions.h50,
+                    fit: BoxFit.cover,
+                    image: image),
               ),
               SizedBox(width: Dimensions.w16),
               Expanded(
@@ -185,7 +187,10 @@ class InfoCardSection extends StatelessWidget {
                         ManagerAssets.messageIcon,
                         height: 22,
                         width: 22,
-                        color: ManagerColors.white,
+                        colorFilter: const ColorFilter.mode(
+                          ManagerColors.onPrimary,
+                          BlendMode.srcIn,
+                        ),
                       ),
                     ),
                   ),
