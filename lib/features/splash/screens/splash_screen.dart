@@ -8,8 +8,10 @@ import 'package:doghree_rider/features/language/controllers/language_controller.
 import 'package:doghree_rider/features/splash/controllers/splash_controller.dart';
 import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
 import 'package:doghree_rider/features/notification/domain/models/notification_body_model.dart';
+import 'package:doghree_rider/features/splash/widgets/doghree_splash_animation.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
 import 'package:doghree_rider/util/app_constants.dart';
+import 'package:doghree_rider/util/manager_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -25,7 +27,9 @@ class SplashScreenState extends State<SplashScreen> {
   final GlobalKey<ScaffoldState> _globalKey = GlobalKey();
   StreamSubscription<List<ConnectivityResult>>? _onConnectivityChanged;
 
-  bool _loadFailed = false; // حالة الفشل
+  bool _loadFailed = false;
+  bool _isLoading = true;
+  VoidCallback? _pendingNavigation;
 
   @override
   void initState() {
@@ -100,12 +104,14 @@ class SplashScreenState extends State<SplashScreen> {
   void _loadConfig() async {
     setState(() {
       _loadFailed = false;
+      _isLoading = true;
     });
 
     bool success = await Get.find<SplashController>().getConfigData();
+    if (!mounted) return;
 
     if (success) {
-      _route(); // التوجيه بعد تحميل البيانات
+      _route();
     } else {
       setState(() {
         _loadFailed = true;
@@ -113,42 +119,56 @@ class SplashScreenState extends State<SplashScreen> {
     }
   }
 
-  void _route() async {
+  Future<void> _route() async {
+    final config = Get.find<SplashController>().configModel;
 
-    Timer(const Duration(seconds: 1), () async {
-      final config = Get.find<SplashController>().configModel;
+    if (config == null) {
+      _finishLoading(() => Get.offAllNamed(RouteHelper.getSignInRoute()));
+      return;
+    }
 
-      if (config == null) {
-        Get.offAllNamed(RouteHelper.getSignInRoute());
+    double? minimumVersion = _getMinimumVersion();
+    bool isMaintenanceMode = config.maintenanceMode ?? false;
+    bool needsUpdate = AppConstants.appVersion < (minimumVersion ?? 0);
+
+    if (needsUpdate || isMaintenanceMode) {
+      _finishLoading(
+          () => Get.offNamed(RouteHelper.getUpdateRoute(needsUpdate)));
+      return;
+    }
+
+    // فحص صلاحية الجلسة قبل التوجيه
+    if (Get.find<AuthController>().isLoggedIn()) {
+      bool isSessionValid = await _validateSession();
+      if (!mounted) return;
+
+      if (!isSessionValid) {
+        // الجلسة منتهية - الانتقال لتسجيل الدخول بدون Dialog
+        _finishLoading(() {
+          ApiChecker.resetDialogState();
+          Get.offAllNamed(RouteHelper.getSignInRoute());
+        });
         return;
       }
+    }
 
-      double? minimumVersion = _getMinimumVersion();
-      bool isMaintenanceMode = config.maintenanceMode ?? false;
-      bool needsUpdate = AppConstants.appVersion < (minimumVersion ?? 0);
+    if (widget.body != null) {
+      _finishLoading(() => _handleNotificationRouting(widget.body));
+    } else {
+      _finishLoading(_handleDefaultRouting);
+    }
+  }
 
-      if (needsUpdate || isMaintenanceMode) {
-        Get.offNamed(RouteHelper.getUpdateRoute(needsUpdate));
-      } else {
-        // فحص صلاحية الجلسة قبل التوجيه
-        if (Get.find<AuthController>().isLoggedIn()) {
-          bool isSessionValid = await _validateSession();
+  /// التحميل خلص: نخزّن التوجيه وننهي الأنيميشن. التوجيه الفعلي بيصير بعد الكشف.
+  void _finishLoading(VoidCallback navigate) {
+    _pendingNavigation = navigate;
+    setState(() => _isLoading = false);
+  }
 
-          if (!isSessionValid) {
-            // الجلسة منتهية - الانتقال لتسجيل الدخول بدون Dialog
-            ApiChecker.resetDialogState();
-            Get.offAllNamed(RouteHelper.getSignInRoute());
-            return;
-          }
-        }
-
-        if (widget.body != null) {
-          await _handleNotificationRouting(widget.body);
-        } else {
-          _handleDefaultRouting();
-        }
-      }
-    });
+  void _onSplashAnimationFinished() {
+    final VoidCallback? navigate = _pendingNavigation;
+    _pendingNavigation = null;
+    navigate?.call();
   }
 
   double? _getMinimumVersion() {
@@ -197,35 +217,23 @@ class SplashScreenState extends State<SplashScreen> {
       Get.offNamed(RouteHelper.getSignInRoute());
     }
   }
-
-  @override
+ @override
   Widget build(BuildContext context) {
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: Theme.of(context).cardColor,
       key: _globalKey,
-      body: Center(
-        child: _loadFailed
-            ? _buildNoInternetScreen()
-            : buildLoadingWidget(context),
-      ),
-    );
-  }
-
-  Widget buildLoadingWidget(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    return Container(
-      color: Theme.of(context).cardColor,
-      child: Center(
-        child: Image.asset(
-          // ✅ استخدم اللوجو المناسب حسب الثيم
-          isDark
-              ? 'assets/image/rider_splash_dark.png'
-              : 'assets/image/rider_splash_light.png',
-          width: MediaQuery.of(context).size.width * 0.7,
-          fit: BoxFit.contain,
-        ),
-      ),
+      backgroundColor: _loadFailed
+          ? Theme.of(context).cardColor
+          : (isDark ? ManagerColors.onPrimary : ManagerColors.primaryLight),
+      body: _loadFailed
+          ? Center(child: _buildNoInternetScreen())
+          : DoghreeSplashAnimation(
+              isLoading: _isLoading,
+              onFinished: _onSplashAnimationFinished,
+              frameSize: 300,        // عدّله بعد المقارنة مع الـ native
+              // debugGeometry: true,   // للمعايرة مرة وحدة
+            ),
     );
   }
 

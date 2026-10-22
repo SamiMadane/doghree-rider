@@ -5,6 +5,11 @@ const String mapPath = 'assets/map';
 
 class ManagerAssets {
   static const String logo = '$imagePath/logo.png';
+  static const String logoDark = '$imagePath/logo_dark.png';
+  static const String logoDoghreeLight = '$imagePath/logo_doghree_light.png';
+  static const String logoDoghreeDark = '$imagePath/logo_doghree_dark.png';
+  static const String splashAnimLight = '$imagePath/splash_anim_light.png';
+  static const String splashanimDark = '$imagePath/splash_anim_dark.png';
   static const String call = '$imagePath/call.png';
   static const String lock = '$imagePath/lock.png';
   static const String english = '$imagePath/english.png';
@@ -68,8 +73,6 @@ class ManagerAssets {
   static const String emptyPaymentIcon = '$imagePath/empty_payment_icon.png';
   static const String applicationSubmittedImage =
       '$imagePath/application_submitted.png';
-  static const String splashLogoLightImage = '$imagePath/splash_logo_light.png';
-  static const String splashLogoDarkImage = '$imagePath/splash_logo_dark.png';
   static const String greenCardImage = '$imagePath/green_card.png';
   static const String blueCardImage = '$imagePath/blue_card.png';
   static const String orangeCardImage = '$imagePath/orange_card.png';
