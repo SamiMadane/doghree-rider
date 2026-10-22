@@ -6,7 +6,7 @@ import 'package:doghree_rider/common/widgets/custom_image_widget.dart';
 import 'package:doghree_rider/features/auth/controllers/auth_controller.dart';
 import 'package:doghree_rider/features/home/widgets/active_order_section.dart';
 import 'package:doghree_rider/features/home/widgets/cash_in_hand_section.dart';
-import 'package:doghree_rider/features/home/widgets/earning_grid_section.dart';
+import 'package:doghree_rider/features/home/widgets/earnings_section.dart';
 import 'package:doghree_rider/features/home/widgets/online_status_section.dart';
 import 'package:doghree_rider/features/home/widgets/profile_order_section.dart';
 import 'package:doghree_rider/features/notification/controllers/notification_controller.dart';
@@ -382,7 +382,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Column(
                           children: [
                             const StatusSwitchSection(),
-                            EarningsGridSection(
+                            EarningsSection(
                               profileController: profileController,
                               showEarnings: showTotalEarnings,
                             ),
