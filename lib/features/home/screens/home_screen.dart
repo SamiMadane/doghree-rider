@@ -73,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
         break;
       case AppLifecycleState.resumed:
         checkPermission();
-         if (Get.isRegistered<NotificationController>()) {
+        if (Get.isRegistered<NotificationController>()) {
           Get.find<NotificationController>().getNotificationList(true);
         }
         break;
@@ -311,6 +311,7 @@ class _HomeScreenState extends State<HomeScreen> {
           builder: (notificationController) {
             return IconButton(
               icon: Stack(
+                clipBehavior: Clip.none,
                 children: [
                   SvgPicture.asset(
                     ManagerAssets.notificationIcon,
@@ -324,10 +325,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         height: 10,
                         width: 10,
                         decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor,
+                          color: Theme.of(context).colorScheme.primary,
                           shape: BoxShape.circle,
                           border: Border.all(
-                              width: 1, color: Theme.of(context).cardColor),
+                            width: 1,
+                            color: Theme.of(context).colorScheme.onPrimary,
+                          ),
                         ),
                       ),
                     ),
@@ -449,13 +452,16 @@ class _HomeScreenState extends State<HomeScreen> {
                         vertical: Dimensions.h4,
                       ),
                       decoration: BoxDecoration(
-                        color: ManagerColors.orangeLightMode
-                            .withOpacity(0.2), // أصفر فاتح شفاف
+                        color: Color.lerp(
+                          Theme.of(context).colorScheme.primaryContainer,
+                          Theme.of(context).colorScheme.primary,
+                          0.5,
+                        ),
                         shape: BoxShape.circle,
                       ),
                       child: SvgPicture.asset(
                         ManagerAssets.warningIcon,
-                        color: ManagerColors.orangeLightMode,
+                        color: Theme.of(context).colorScheme.onPrimary,
                       )),
                   SizedBox(width: 10),
                   // النص + السهم
