@@ -11,6 +11,7 @@ class ManagerAssets {
   static const String splashAnimLight = '$imagePath/splash_anim_light.png';
   static const String splashanimDark = '$imagePath/splash_anim_dark.png';
   static const String call = '$imagePath/call.png';
+  static const String doghreeCoins = '$imagePath/doghree_coins.png';
   static const String lock = '$imagePath/lock.png';
   static const String english = '$imagePath/english.png';
   static const String arabic = '$imagePath/arabic.png';
