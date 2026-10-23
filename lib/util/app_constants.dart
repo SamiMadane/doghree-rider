@@ -19,9 +19,12 @@ class AppConstants {
 
   static const String configUri = '/api/v1/config';
   static const String directionUri = '/api/v1/config/direction-api';
-  static const String walletAccountsUri = '/api/v1/delivery-man/wallet/accounts';
-  static const String walletWithdrawUri = '/api/v1/delivery-man/wallet/withdraw';
-static const String walletWithdrawalsUri = '/api/v1/delivery-man/wallet/withdrawals';
+  static const String walletAccountsUri =
+      '/api/v1/delivery-man/wallet/accounts';
+  static const String walletWithdrawUri =
+      '/api/v1/delivery-man/wallet/withdraw';
+  static const String walletWithdrawalsUri =
+      '/api/v1/delivery-man/wallet/withdrawals';
   static const String forgetPasswordUri =
       '/api/v1/auth/delivery-man/forgot-password';
   static const String walletUri = '/api/v1/delivery-man/wallet';
@@ -145,7 +148,7 @@ static const String walletWithdrawalsUri = '/api/v1/delivery-man/wallet/withdraw
   static const String deliveryMan = 'delivery_man';
   static const String vendor = 'vendor';
 
-    static const bool allowDmTypeSelection = false;
+  static const bool allowDmTypeSelection = false;
 
   static List<LanguageModel> languages = [
     LanguageModel(
@@ -158,15 +161,5 @@ static const String walletWithdrawalsUri = '/api/v1/delivery-man/wallet/withdraw
         languageName: 'العربية',
         countryCode: 'SA',
         languageCode: 'ar'),
-    LanguageModel(
-        imageUrl: ManagerAssets.spanish,
-        languageName: 'Spanish',
-        countryCode: 'ES',
-        languageCode: 'es'),
-    LanguageModel(
-        imageUrl: ManagerAssets.bengali,
-        languageName: 'Bengali',
-        countryCode: 'BN',
-        languageCode: 'bn'),
   ];
 }
