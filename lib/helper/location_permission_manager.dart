@@ -395,7 +395,7 @@ class LocationPermissionManager extends GetxController {
             width: 25,
             height: 25,
             decoration: BoxDecoration(
-              color: Color.lerp(cs.primaryContainer, cs.primary, 0.5),
+              color: Color.lerp(cs.primaryContainer, cs.primary, 0.7),
               shape: BoxShape.circle,
             ),
             child: Center(
@@ -448,7 +448,7 @@ class LocationPermissionManager extends GetxController {
               width: 7,
               height: 7,
               decoration: BoxDecoration(
-                color: Color.lerp(cs.primaryContainer, cs.primary, 0.5),
+                color: Color.lerp(cs.primaryContainer, cs.primary, 0.7),
                 shape: BoxShape.circle,
               ),
             ),
