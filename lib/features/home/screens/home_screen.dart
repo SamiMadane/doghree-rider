@@ -1,3 +1,4 @@
+import 'package:doghree_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:doghree_rider/common/widgets/custom_app_bar_widget.dart';
@@ -5,7 +6,6 @@ import 'package:doghree_rider/common/widgets/custom_button_widget.dart';
 import 'package:doghree_rider/common/widgets/custom_image_widget.dart';
 import 'package:doghree_rider/features/auth/controllers/auth_controller.dart';
 import 'package:doghree_rider/features/home/widgets/active_order_section.dart';
-import 'package:doghree_rider/features/home/widgets/cash_in_hand_section.dart';
 import 'package:doghree_rider/features/home/widgets/earnings_section.dart';
 import 'package:doghree_rider/features/home/widgets/online_status_section.dart';
 import 'package:doghree_rider/features/home/widgets/profile_order_section.dart';
@@ -16,7 +16,6 @@ import 'package:doghree_rider/helper/route_helper.dart';
 import 'package:doghree_rider/util/app_constants.dart';
 import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/util/manager_assets.dart';
-import 'package:doghree_rider/util/manager_colors.dart';
 import 'package:doghree_rider/util/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -54,6 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _loadData() async {
     Get.find<OrderController>().getIgnoreList();
     Get.find<OrderController>().removeFromIgnoreList();
+    Get.find<CashInHandController>().getWallet();
     await Get.find<ProfileController>().getProfile();
     await Get.find<OrderController>().getCurrentOrders();
     await Get.find<NotificationController>().getNotificationList();
@@ -388,9 +388,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             ActiveOrderSection(),
                             ProfileOrdersSection(
-                              profileController: profileController,
-                            ),
-                            CashInHandSection(
                               profileController: profileController,
                             ),
                           ],

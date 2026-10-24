@@ -44,13 +44,13 @@ class TitleWidget extends StatelessWidget {
                     CircleAvatar(
                       radius: Dimensions.r8,
                       backgroundColor:
-                          backGroundColorOfCount ?? ManagerColors.darkGreen,
+                          backGroundColorOfCount ?? Theme.of(context).colorScheme.primary,
                       child: Text(
                         '$orderCount',
                         style: countStyle ??
                             textSemiBold().copyWith(
                               fontSize: Dimensions.fs12,
-                              color: ManagerColors.white,
+                              color: Theme.of(context).colorScheme.onPrimary,
                             ),
                       ),
                     ),

@@ -17,26 +17,33 @@ class OrderCardWidget extends StatelessWidget {
   final OrderModel order;
   final int index;
   final bool isRunningOrder;
+  final EdgeInsetsGeometry? margin;
 
   const OrderCardWidget({
     super.key,
     required this.order,
     required this.index,
     this.isRunningOrder = true,
+    this.margin,
   });
 
   @override
   Widget build(BuildContext context) {
     bool parcel = order.orderType == 'parcel';
+    final bool paid = order.paymentStatus == 'paid';
 
     return CustomCard(
       width: MediaQuery.of(context).size.width,
-      padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
-      margin: EdgeInsetsDirectional.only(end: Dimensions.w16),
+      padding: EdgeInsets.symmetric(
+        horizontal: Dimensions.w16,
+        vertical: Dimensions.h16,
+      ),
+      margin: margin ?? EdgeInsetsDirectional.only(end: Dimensions.w16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // ID + حالة الدفع
+// ID + حالة الدفع
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -45,17 +52,17 @@ class OrderCardWidget extends StatelessWidget {
                   text: TextSpan(
                     children: [
                       TextSpan(
-                        text: '${'id_label'.tr}: ', // هذا نص الـ Label للترجمة
+                        text: '${'id_label'.tr}: ',
                         style: textSemiBold().copyWith(
                           fontSize: Dimensions.fs14,
-                          color: Theme.of(context).hintColor, // لون رمادي
+                          color: Theme.of(context).hintColor,
                         ),
                       ),
                       TextSpan(
-                        text: '#${order.id}', 
+                        text: '#${order.id}',
                         style: textSemiBold().copyWith(
                           fontSize: Dimensions.fs14,
-                          color: ManagerColors.darkGreen, 
+                          color: Theme.of(context).colorScheme.tertiary,
                         ),
                       ),
                     ],
@@ -65,18 +72,34 @@ class OrderCardWidget extends StatelessWidget {
               CustomCard(
                 isBorder: false,
                 autoWidth: true,
-                padding:
-                    EdgeInsets.symmetric(horizontal: Dimensions.w12, vertical: Dimensions.h4),
-                fillColor: order.paymentStatus == 'paid'
-                    ? ManagerColors.greenLightMode
+                padding: EdgeInsets.symmetric(
+                  horizontal: Dimensions.w12,
+                  vertical: Dimensions.h4,
+                ),
+                fillColor: paid
+                    ? ManagerColors.success
                     : Theme.of(context).colorScheme.error,
                 borderRadius: Dimensions.r20,
-                child: Text(
-                  order.paymentStatus == 'paid' ? 'paid'.tr : 'unpaid'.tr,
-                  style: textMedium().copyWith(
-                    color: ManagerColors.white,
-                    fontSize: Dimensions.fs14,
-                  ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 6,
+                      height: 6,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: ManagerColors.onPrimary,
+                      ),
+                    ),
+                    SizedBox(width: Dimensions.w4),
+                    Text(
+                      paid ? 'paid'.tr : 'unpaid'.tr,
+                      style: textBold().copyWith(
+                        color: ManagerColors.onPrimary,
+                        fontSize: Dimensions.fs12,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -91,8 +114,7 @@ class OrderCardWidget extends StatelessWidget {
                 children: [
                   ClipOval(
                     child: CustomImageWidget(
-                        image:
-                            order.storeLogoFullUrl,
+                        image: order.storeLogoFullUrl,
                         width: Dimensions.w28,
                         height: Dimensions.h28),
                   ),
@@ -124,7 +146,10 @@ class OrderCardWidget extends StatelessWidget {
                     SizedBox(height: Dimensions.h4),
                     if (parcel)
                       Container(
-                        padding: EdgeInsets.symmetric(horizontal:Dimensions.w4 ,vertical: Dimensions.h4,),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: Dimensions.w4,
+                          vertical: Dimensions.h4,
+                        ),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(Dimensions.r4),
                           color:

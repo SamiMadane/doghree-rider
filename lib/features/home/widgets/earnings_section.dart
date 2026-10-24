@@ -1,8 +1,12 @@
+import 'package:doghree_rider/util/manager_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:doghree_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
 import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
 import 'package:doghree_rider/helper/price_converter_helper.dart';
+import 'package:doghree_rider/helper/route_helper.dart';
 import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/util/manager_assets.dart';
 import 'package:doghree_rider/util/styles.dart';
@@ -22,6 +26,9 @@ class EarningsSection extends StatefulWidget {
 }
 
 class _EarningsSectionState extends State<EarningsSection> {
+  /// أيقونة المحفظة (صف «المتاح للسحب»). غيّرها من هون.
+  static const IconData _withdrawIcon = Icons.account_balance_wallet_outlined;
+
   int _period = 0; // 0 اليوم، 1 الأسبوع، 2 الشهر
 
   @override
@@ -63,8 +70,8 @@ class _EarningsSectionState extends State<EarningsSection> {
           children: [
             // هالة العملات (بتنقصّ من زاوية الكرت)
             PositionedDirectional(
-              end: -40,
-              top: -18,
+              end: -45,
+              top: -26,
               width: 150,
               height: 150,
               child: DecoratedBox(
@@ -75,10 +82,10 @@ class _EarningsSectionState extends State<EarningsSection> {
               ),
             ),
             PositionedDirectional(
-              end: 8,
-              top: 6,
-              width: 96,
-              height: 96,
+              end: 6,
+              top: 2,
+              width: 95,
+              height: 95,
               child: IgnorePointer(
                 child: Image.asset(
                   ManagerAssets.doghreeCoins,
@@ -91,16 +98,15 @@ class _EarningsSectionState extends State<EarningsSection> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // ===== القسم الأول: الأرباح كلها + الإجمالي =====
                 Padding(
-                  padding:
-                      const EdgeInsetsDirectional.fromSTEB(20, 18, 20, 0),
+                  padding: const EdgeInsetsDirectional.fromSTEB(20, 18, 20, 0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // العنوان + العين + الرقم (بعيد عن الصورة)
                       Padding(
-                        padding:
-                            const EdgeInsetsDirectional.only(end: 108),
+                        padding: const EdgeInsetsDirectional.only(end: 108),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -163,51 +169,156 @@ class _EarningsSectionState extends State<EarningsSection> {
                           ),
                         ),
                       ),
+                      const SizedBox(height: 16),
+                      // الإجمالي: معلومة ثانوية، فخطه أصغر من «المتاح للسحب»
+                      Row(
+                        children: [
+                          Container(
+                            width: 14,
+                            height: 14,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: theme.primaryColor,
+                              border: Border.all(color: cs.onSurface, width: 2),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'total_earnings'.tr,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: textMedium().copyWith(
+                                fontSize: Dimensions.fs13,
+                                color: cs.onSurfaceVariant,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            (show && profile.balance != null)
+                                ? PriceConverterHelper.convertPrice(
+                                    profile.balance)
+                                : '*****',
+                            style: textBold().copyWith(
+                              fontSize: Dimensions.fs14,
+                              color: cs.onSurface,
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 16),
-                // شريط الإجمالي
-                Container(
-                  color: theme.scaffoldBackgroundColor,
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 20, vertical: 14),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 14,
-                        height: 14,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: theme.primaryColor,
-                          border:
-                              Border.all(color: cs.onSurface, width: 2),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          'total_earnings'.tr,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: textMedium().copyWith(
-                            fontSize: Dimensions.fs13,
-                            color: cs.onSurfaceVariant,
-                          ),
-                        ),
-                      ),
-                      Text(
-                        (show && profile.balance != null)
-                            ? PriceConverterHelper.convertPrice(
-                                profile.balance)
-                            : '*****',
-                        style: textBold().copyWith(
-                          fontSize: Dimensions.fs16,
-                          color: cs.onSurface,
-                        ),
-                      ),
-                    ],
+
+                // ===== الفاصل: شحطات الطريق =====
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  child: _DashedLine(
+                    color: cs.onSurfaceVariant.withValues(alpha: 0.35),
                   ),
+                ),
+
+                // ===== القسم الثاني: المتاح للسحب + عرض التفاصيل =====
+                GetBuilder<CashInHandController>(
+                  builder: (c) {
+                    final wallet = c.wallet;
+                    // احتياط: يظهر فقط إذا رجع الدفع النقدي
+                    final double cash =
+                        wallet?.cashInHand ?? profile.cashInHands ?? 0;
+
+                    return InkWell(
+                      onTap: () =>
+                          Get.toNamed(RouteHelper.getCashInHandRoute()),
+                      child: Padding(
+                        padding:
+                            const EdgeInsetsDirectional.fromSTEB(20, 2, 20, 14),
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: Dimensions.w6,
+                                vertical: Dimensions.h6,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Color.lerp(
+                                  cs.primaryContainer,
+                                  cs.primary,
+                                  0.7,
+                                ),
+                                shape: BoxShape.circle,
+                              ),
+                              child: SvgPicture.asset(
+                                ManagerAssets.walletWithdrawIcon,
+                                width: Dimensions.w20,
+                                height:Dimensions.h20,
+                                colorFilter: ColorFilter.mode(
+                                    ManagerColors.black,
+                                    BlendMode.srcIn),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'available_to_withdraw'.tr,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: textMedium().copyWith(
+                                      fontSize: Dimensions.fs13,
+                                      color: cs.onSurfaceVariant,
+                                    ),
+                                  ),
+                                  // المبلغ القابل للسحب: ثاني أهم رقم بالكرت
+                                  Text(
+                                    wallet == null
+                                        ? '—'
+                                        : (show
+                                            ? PriceConverterHelper.convertPrice(
+                                                wallet.availableBalance)
+                                            : '*****'),
+                                    style: textBold().copyWith(
+                                      fontSize: 20,
+                                      color: cs.onSurface,
+                                    ),
+                                  ),
+                                  if (cash > 0)
+                                    Text(
+                                      '${'cash_in_your_hand'.tr}: ${show ? PriceConverterHelper.convertPrice(cash) : '*****'}',
+                                      style: textRegular().copyWith(
+                                        fontSize: Dimensions.fs12,
+                                        color: cs.onSurfaceVariant,
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  'view_details'.tr,
+                                  style: textBold().copyWith(
+                                    fontSize: Dimensions.fs12,
+                                    color: cs.tertiary,
+                                  ),
+                                ),
+                                const SizedBox(width: 2),
+                                // chevron_right ينعكس تلقائياً بالعربي
+                                Icon(
+                                  Icons.chevron_right_rounded,
+                                  size: 18,
+                                  color: cs.tertiary,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
@@ -231,6 +342,40 @@ class _EarningsSectionState extends State<EarningsSection> {
       curve: Curves.easeOutCubic,
       builder: (_, value, __) =>
           Text(PriceConverterHelper.convertPrice(value), style: style),
+    );
+  }
+}
+
+/// خط شحطات بسيط من ويدجتس Flutter العادية (Row + مربعات صغيرة).
+/// Flutter ما عندها خط منقط جاهز، وهاي أبسط طريقة.
+class _DashedLine extends StatelessWidget {
+  final Color color;
+  const _DashedLine({required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        const double dash = 7;
+        const double gap = 7;
+        final int count = ((constraints.maxWidth + gap) / (dash + gap)).floor();
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: List<Widget>.generate(
+            count,
+            (_) => SizedBox(
+              width: dash,
+              height: 2,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: color,
+                  borderRadius: BorderRadius.circular(1),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

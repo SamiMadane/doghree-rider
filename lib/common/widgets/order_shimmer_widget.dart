@@ -7,14 +7,22 @@ import 'package:doghree_rider/util/manager_colors.dart';
 
 class OrderShimmerWidget extends StatelessWidget {
   final bool isEnabled;
-  const OrderShimmerWidget({super.key, required this.isEnabled});
+  final EdgeInsetsGeometry? margin;
 
+  const OrderShimmerWidget({
+    super.key,
+    required this.isEnabled,
+    this.margin,
+  });
   @override
   Widget build(BuildContext context) {
     return CustomCard(
       width: MediaQuery.of(context).size.width,
-      padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
-      margin: EdgeInsetsDirectional.only(end: Dimensions.w16),
+      padding: EdgeInsets.symmetric(
+        horizontal: Dimensions.w16,
+        vertical: Dimensions.h16,
+      ),
+      margin: margin ?? EdgeInsetsDirectional.only(end: Dimensions.w16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

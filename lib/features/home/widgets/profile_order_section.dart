@@ -4,8 +4,9 @@ import 'package:get/get.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
 import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/manager_assets.dart';
 
-const double _kTopHeight = 128; // tear line sits at this height
+const double _kTopHeight = 128; 
 const double _kBottomHeight = 92;
 const double _kNotch = 11;
 const double _kRadius = 22;
@@ -89,22 +90,24 @@ class _TicketTop extends StatelessWidget {
 
     return Stack(
       children: [
-        // Target watermark on the end side (left in RTL), cropped by the card.
+        // الطرود "واقفة" على خط التمزيق
         PositionedDirectional(
-          end: -34,
-          top: -8,
-          width: 160,
-          height: 160,
-          child: CustomPaint(
-            painter: _TargetWatermarkPainter(
-              base: scheme.onSurface,
-              ring: theme.primaryColor,
+          end: 20,
+          bottom: 20,
+          width: 112,
+          height: 104,
+          child: IgnorePointer(
+            child: Image.asset(
+              ManagerAssets.doghreeParcelsImage,
+              fit: BoxFit.contain,
+              alignment: Alignment.bottomCenter,
+              errorBuilder: (_, __, ___) => const SizedBox.shrink(),
             ),
           ),
         ),
         Positioned.fill(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(22, 20, 22, 18),
+            padding: const EdgeInsetsDirectional.fromSTEB(22, 20, 134, 18),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -231,8 +234,7 @@ Path _ticketPath(Size size) {
       const Radius.circular(_kRadius),
     ));
   final notches = Path()
-    ..addOval(Rect.fromCircle(
-        center: Offset(0, _kTopHeight), radius: _kNotch))
+    ..addOval(Rect.fromCircle(center: Offset(0, _kTopHeight), radius: _kNotch))
     ..addOval(Rect.fromCircle(
         center: Offset(size.width, _kTopHeight), radius: _kNotch));
   return Path.combine(PathOperation.difference, body, notches);
@@ -283,32 +285,3 @@ class _TicketBorderPainter extends CustomPainter {
       o.border != border || o.tear != tear;
 }
 
-/// ───────────── Target watermark (the logo's wheel, very light) ─────────────
-class _TargetWatermarkPainter extends CustomPainter {
-  final Color base; // outer ring + center dot
-  final Color ring; // yellow ring
-  _TargetWatermarkPainter({required this.base, required this.ring});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final Offset c = size.center(Offset.zero);
-    final double r = size.width / 2;
-    Path circle(double rad) =>
-        Path()..addOval(Rect.fromCircle(center: c, radius: rad));
-
-    // Same proportions as the logo wheel: ring edge at 65%, dot at 35%.
-    final Path outer =
-        Path.combine(PathOperation.difference, circle(r), circle(r * 0.65));
-    final Path mid = Path.combine(
-        PathOperation.difference, circle(r * 0.65), circle(r * 0.35));
-    final Path dot = circle(r * 0.35);
-
-    canvas.drawPath(outer, Paint()..color = base.withValues(alpha: 0.05));
-    canvas.drawPath(mid, Paint()..color = ring.withValues(alpha: 0.20));
-    canvas.drawPath(dot, Paint()..color = base.withValues(alpha: 0.05));
-  }
-
-  @override
-  bool shouldRepaint(_TargetWatermarkPainter o) =>
-      o.base != base || o.ring != ring;
-}
