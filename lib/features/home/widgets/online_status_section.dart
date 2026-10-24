@@ -1,3 +1,4 @@
+import 'package:doghree_rider/common/widgets/custom_switch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -163,14 +164,9 @@ class StatusSwitchSection extends StatelessWidget {
     final ColorScheme cs = theme.colorScheme;
     final bool isDark = theme.brightness == Brightness.dark;
 
-    // نقطة الحالة: أخضر عند الاتصال (دلالة "شغّال")، رمادي عند الانقطاع
     final Color dotColor = isActive
         ? (isDark ? ManagerColors.greenDarkMode : ManagerColors.greenLightMode)
         : cs.onSurfaceVariant;
-
-    // السويتش: فاتح = أسفلت + إبهام أصفر | داكن = أصفر + إبهام أسفلت
-    final Color onTrack = isDark ? cs.primary : cs.onSurface;
-    final Color onThumb = isDark ? cs.onPrimary : cs.primary;
 
     return Container(
       padding: EdgeInsets.symmetric(
@@ -195,23 +191,12 @@ class StatusSwitchSection extends StatelessWidget {
               ),
             ),
           ),
-          Switch(
+          CustomSwitch(
             value: isActive,
             onChanged: (bool v) {
               HapticFeedback.selectionClick();
               _onToggle(v, profileController, orderController);
             },
-            thumbColor: WidgetStateProperty.resolveWith<Color>(
-              (states) => states.contains(WidgetState.selected)
-                  ? onThumb
-                  : theme.cardColor,
-            ),
-            trackColor: WidgetStateProperty.resolveWith<Color>(
-              (states) =>
-                  states.contains(WidgetState.selected) ? onTrack : cs.outline,
-            ),
-            trackOutlineColor:
-                const WidgetStatePropertyAll<Color>(Colors.transparent),
           ),
         ],
       ),
