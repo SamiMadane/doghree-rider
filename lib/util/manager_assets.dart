@@ -10,9 +10,7 @@ class ManagerAssets {
   static const String logoDoghreeDark = '$imagePath/logo_doghree_dark.png';
   static const String splashAnimLight = '$imagePath/splash_anim_light.png';
   static const String splashanimDark = '$imagePath/splash_anim_dark.png';
-  static const String call = '$imagePath/call.png';
   static const String doghreeCoins = '$imagePath/doghree_coins.png';
-  static const String lock = '$imagePath/lock.png';
   static const String english = '$imagePath/english.png';
   static const String arabic = '$imagePath/arabic.png';
 
@@ -36,15 +34,9 @@ class ManagerAssets {
   static const String warning = '$imagePath/warning.png';
   static const String list = '$imagePath/list.png';
   static const String placeholder = '$imagePath/placeholder.jpg';
-  static const String money = '$imagePath/money.png';
-  static const String profileBg = '$imagePath/profile_bg.png';
-  static const String support = '$imagePath/support.png';
 
-  static const String user = '$imagePath/user.png';
-  static const String wallet = '$imagePath/wallet.png';
   static const String update = '$imagePath/update.png';
   static const String maintenance = '$imagePath/maintenance.png';
-  static const String send = '$imagePath/send.png';
   static const String notificationPlaceholder =
       '$imagePath/notification_placeholder.jpg';
   static const String deliveredSuccess = '$imagePath/delivered_success.gif';
