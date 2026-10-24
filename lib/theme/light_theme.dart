@@ -3,6 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:doghree_rider/util/manager_colors.dart';
 import 'package:doghree_rider/util/theme_extension.dart';
 
+// new: shared border for input fields (radius 12 per brand guide)
+OutlineInputBorder _inputBorder(Color color, [double width = 1]) =>
+    OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: color, width: width),
+    );
+
 // Primary button (light): asphalt + white. Pressed: yellow + asphalt.
 final ButtonStyle _primaryButtonLight = ButtonStyle(
   elevation: const WidgetStatePropertyAll<double>(0),
@@ -55,7 +62,7 @@ final ButtonStyle _ctaButtonLight = ButtonStyle(
 );
 
 ThemeData light = ThemeData(
-  fontFamily: 'Roboto', // fonts: postponed
+  fontFamily: 'Roboto', // fonts: postponed (target: Tajawal + Lemonada for displayLarge/headlineLarge)
   primaryColor: ManagerColors.primaryLight,
   disabledColor: ManagerColors.disabledLight,
   brightness: Brightness.light,
@@ -63,6 +70,7 @@ ThemeData light = ThemeData(
   cardColor: ManagerColors.cardLight,
   shadowColor: ManagerColors.shadowLight,
   scaffoldBackgroundColor: ManagerColors.scaffoldBgLight,
+  dividerColor: ManagerColors.Strock2Light, // new
   colorScheme: const ColorScheme.light(
     primary: ManagerColors.primaryLight,
     onPrimary: ManagerColors.onPrimary,
@@ -107,11 +115,64 @@ ThemeData light = ThemeData(
       textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
     ),
   ),
+  // new: input fields per brand guide (radius 12, focused border asphalt 1.6)
+  inputDecorationTheme: InputDecorationTheme(
+    filled: true,
+    fillColor: ManagerColors.cardLight,
+    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+    hintStyle: const TextStyle(
+      fontSize: 14,
+      fontWeight: FontWeight.w400,
+      color: ManagerColors.hintLight,
+    ),
+    labelStyle: const TextStyle(
+      fontSize: 14,
+      fontWeight: FontWeight.w500,
+      color: ManagerColors.hintLight,
+    ),
+    floatingLabelStyle: const TextStyle(
+      fontSize: 14,
+      fontWeight: FontWeight.w700,
+      color: ManagerColors.TextColorLight,
+    ),
+    errorStyle: const TextStyle(
+      fontSize: 12,
+      fontWeight: FontWeight.w500,
+      color: ManagerColors.error,
+    ),
+    border: _inputBorder(ManagerColors.Strock2Light),
+    enabledBorder: _inputBorder(ManagerColors.Strock2Light),
+    focusedBorder: _inputBorder(ManagerColors.onPrimary, 1.6),
+    errorBorder: _inputBorder(ManagerColors.error),
+    focusedErrorBorder: _inputBorder(ManagerColors.error, 1.6),
+  ),
+  // new: chips (yellowSoft when selected, stadium shape)
+  chipTheme: ChipThemeData(
+    backgroundColor: ManagerColors.cardLight,
+    selectedColor: ManagerColors.primaryBgLight,
+    checkmarkColor: ManagerColors.onPrimary,
+    labelStyle: const TextStyle(
+      fontSize: 13,
+      fontWeight: FontWeight.w500,
+      color: ManagerColors.TextColorLight,
+    ),
+    side: const BorderSide(color: ManagerColors.Strock2Light),
+    shape: const StadiumBorder(),
+    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+  ),
+  // new: cards use cardLight explicitly
+  cardTheme: const CardThemeData(
+    color: ManagerColors.cardLight,
+    surfaceTintColor: ManagerColors.cardLight,
+  ),
   popupMenuTheme: const PopupMenuThemeData(
     color: ManagerColors.cardLight,
     surfaceTintColor: ManagerColors.cardLight,
   ),
-  dialogTheme: const DialogThemeData(surfaceTintColor: ManagerColors.cardLight),
+  dialogTheme: const DialogThemeData(
+    backgroundColor: ManagerColors.cardLight, // new
+    surfaceTintColor: ManagerColors.cardLight,
+  ),
   floatingActionButtonTheme: FloatingActionButtonThemeData(
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(500)),
     backgroundColor: ManagerColors.fabColor,
@@ -136,6 +197,7 @@ ThemeData light = ThemeData(
     color: ManagerColors.Strock2Light,
   ),
   iconTheme: const IconThemeData(color: ManagerColors.iconLight),
+  primaryIconTheme: const IconThemeData(color: ManagerColors.iconLight), // new (existed only in dark)
   textTheme: const TextTheme(
     bodyMedium: TextStyle(color: ManagerColors.TextColorLight),
   ),
