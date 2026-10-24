@@ -30,6 +30,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:doghree_rider/util/styles.dart';
 import 'package:doghree_rider/util/theme_extension.dart';
+import 'package:doghree_rider/util/manager_colors.dart';
 
 class OrderDetailsScreen extends StatefulWidget {
   final int? orderId;
@@ -86,14 +87,16 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
     super.didChangeAppLifecycleState(state);
     if (state == AppLifecycleState.paused) {
       _timer?.cancel();
+    } else if (state == AppLifecycleState.resumed) {
+      _startApiCalling();
     }
   }
 
   @override
   void dispose() {
+    _timer?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
-    _timer?.cancel();
   }
 
   @override
@@ -532,8 +535,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                       .orderAttachmentFullUrl!.isNotEmpty)
                               ? PrescriptionSection(
                                   attachments: controllerOrderModel
-                                      .orderAttachmentFullUrl ?? [],
-                                      prescriptionNote: controllerOrderModel.prescriptionNote,)
+                                          .orderAttachmentFullUrl ??
+                                      [],
+                                  prescriptionNote:
+                                      controllerOrderModel.prescriptionNote,
+                                )
                               : const SizedBox(),
                           (controllerOrderModel.orderStatus == 'delivered' &&
                                   controllerOrderModel.orderProofFullUrl !=
@@ -615,14 +621,15 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                   heroAttributes: PhotoViewHeroAttributes(tag: imageUrl),
                 ),
               ),
-              Positioned(
-                  top: 0,
-                  right: 0,
-                  child: IconButton(
-                    splashRadius: 5,
-                    onPressed: () => Get.back(),
-                    icon: const Icon(Icons.cancel, color: Colors.red),
-                  )),
+              PositionedDirectional(
+                top: 0,
+                end: 0,
+                child: IconButton(
+                  splashRadius: Dimensions.r5,
+                  onPressed: () => Get.back(),
+                  icon: const Icon(Icons.cancel, color: ManagerColors.error),
+                ),
+              ),
             ]),
           );
         },

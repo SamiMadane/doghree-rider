@@ -44,6 +44,15 @@ class InfoCardSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final Color muted = theme.colorScheme.onSurfaceVariant;
+    final Color? ink = theme.textTheme.bodyMedium?.color;
+
+    TextStyle detail() => textMedium().copyWith(
+          fontSize: Dimensions.fs11,
+          color: muted,
+        );
+
     return CustomCard(
       padding: EdgeInsets.symmetric(
         horizontal: Dimensions.w16,
@@ -52,25 +61,22 @@ class InfoCardSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // عنوان القسم
           Text(
             title,
-            style: textSemiBold().copyWith(
-              fontSize: Dimensions.fs16,
-            ),
+            style: textSemiBold().copyWith(fontSize: Dimensions.fs16),
           ),
           SizedBox(height: Dimensions.h16),
 
-          // صورة واسم وعنوان رئيسي
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ClipOval(
                 child: CustomImageWidget(
-                    width: Dimensions.w50,
-                    height: Dimensions.h50,
-                    fit: BoxFit.cover,
-                    image: image),
+                  width: Dimensions.w50,
+                  height: Dimensions.w50,
+                  fit: BoxFit.cover,
+                  image: image,
+                ),
               ),
               SizedBox(width: Dimensions.w16),
               Expanded(
@@ -89,49 +95,37 @@ class InfoCardSection extends StatelessWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // العنوان الرئيسي
                           if (address!.address != null &&
                               address!.address!.isNotEmpty)
                             Text(
                               address!.address!,
                               style: textMedium().copyWith(
                                 fontSize: Dimensions.fs12,
-                                color: Theme.of(context).disabledColor,
+                                color: muted,
                               ),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
                           SizedBox(height: Dimensions.h4),
-
-                          // التفاصيل الأخرى
                           Wrap(
                             children: [
                               if (address!.streetNumber != null &&
                                   address!.streetNumber!.isNotEmpty)
                                 Text(
                                   '${'street_number'.tr}: ${address!.streetNumber!}, ',
-                                  style: textMedium().copyWith(
-                                    fontSize: Dimensions.fs10,
-                                    color: Theme.of(context).disabledColor,
-                                  ),
+                                  style: detail(),
                                 ),
                               if (address!.house != null &&
                                   address!.house!.isNotEmpty)
                                 Text(
                                   '${'house'.tr}: ${address!.house!}, ',
-                                  style: textMedium().copyWith(
-                                    fontSize: Dimensions.fs10,
-                                    color: Theme.of(context).disabledColor,
-                                  ),
+                                  style: detail(),
                                 ),
                               if (address!.floor != null &&
                                   address!.floor!.isNotEmpty)
                                 Text(
                                   '${'floor'.tr}: ${address!.floor!}',
-                                  style: textMedium().copyWith(
-                                    fontSize: Dimensions.fs10,
-                                    color: Theme.of(context).disabledColor,
-                                  ),
+                                  style: detail(),
                                 ),
                             ],
                           ),
@@ -142,9 +136,8 @@ class InfoCardSection extends StatelessWidget {
               )
             ],
           ),
-          if (showButton) SizedBox(height: Dimensions.h16),
+          SizedBox(height: Dimensions.h16),
 
-          // أزرار Call, Chat, Direction
           if (showButton)
             Row(
               children: [
@@ -160,33 +153,33 @@ class InfoCardSection extends StatelessWidget {
                         }
                       },
                       buttonText: 'call'.tr,
-                      fontColor: Theme.of(context).textTheme.bodyMedium!.color,
+                      fontColor: ink,
                       transparent: true,
                       isBorder: true,
-                      borderColor:
-                          Theme.of(context).textTheme.bodyMedium!.color,
-                      height: 45,
+                      borderColor: ink,
+                      height: Dimensions.h45,
                       icon: SvgPicture.asset(
                         ManagerAssets.callIcon,
-                        height: 22,
-                        width: 22,
-                        color: Theme.of(context).textTheme.bodyMedium?.color,
+                        height: Dimensions.h22,
+                        width: Dimensions.w22,
+                        colorFilter: ColorFilter.mode(
+                          ink ?? ManagerColors.onPrimary,
+                          BlendMode.srcIn,
+                        ),
                       ),
                     ),
                   ),
-                SizedBox(
-                  width: Dimensions.w16,
-                ),
+                SizedBox(width: Dimensions.w16),
                 if (isStore && isChatAllow && !order.isGuest!)
                   Expanded(
                     child: CustomButtonWidget(
                       onPressed: messageOnTap as void Function()?,
                       buttonText: 'chat'.tr,
-                      height: 45,
+                      height: Dimensions.h45,
                       icon: SvgPicture.asset(
                         ManagerAssets.messageIcon,
-                        height: 22,
-                        width: 22,
+                        height: Dimensions.h22,
+                        width: Dimensions.w22,
                         colorFilter: const ColorFilter.mode(
                           ManagerColors.onPrimary,
                           BlendMode.srcIn,
@@ -196,15 +189,15 @@ class InfoCardSection extends StatelessWidget {
                   ),
               ],
             ),
-          if (!showButton) SizedBox(height: Dimensions.h16),
 
-          // رسالة عند عدم وجود بيانات
           if ((name == null || name!.isEmpty) && (address == null))
             Center(
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: Dimensions.h10),
-                child: Text('no_store_data_found'.tr,
-                    style: textRegular().copyWith(fontSize: Dimensions.fs12)),
+                child: Text(
+                  'no_store_data_found'.tr,
+                  style: textRegular().copyWith(fontSize: Dimensions.fs12),
+                ),
               ),
             ),
         ],

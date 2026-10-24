@@ -17,8 +17,13 @@ class OrderIdSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
     return CustomCard(
-      padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
+      padding: EdgeInsets.symmetric(
+        horizontal: Dimensions.w16,
+        vertical: Dimensions.h16,
+      ),
       borderRadius: Dimensions.r16,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -27,17 +32,17 @@ class OrderIdSection extends StatelessWidget {
             text: TextSpan(
               children: [
                 TextSpan(
-                  text: '${'id_label'.tr}: ', // ترجم الكلمة ID
+                  text: '${'id_label'.tr}: ',
                   style: textSemiBold().copyWith(
                     fontSize: Dimensions.fs14,
-                    color: Theme.of(context).hintColor,
+                    color: scheme.onSurfaceVariant,
                   ),
                 ),
                 TextSpan(
                   text: '#$orderId',
                   style: textSemiBold().copyWith(
                     fontSize: Dimensions.fs14,
-                    color: ManagerColors.darkGreen,
+                    color: scheme.tertiary,
                   ),
                 ),
               ],
@@ -45,17 +50,18 @@ class OrderIdSection extends StatelessWidget {
           ),
           CustomCard(
             isBorder: false,
-            padding: EdgeInsets.symmetric(
-                horizontal: Dimensions.w10, vertical: Dimensions.h10),
-            fillColor: isPaid
-                ? ManagerColors.darkGreen
-                : Theme.of(context).colorScheme.error,
             autoWidth: true,
+            padding: EdgeInsets.symmetric(
+              horizontal: Dimensions.w12,
+              vertical: Dimensions.h6,
+            ),
+            borderRadius: Dimensions.r20,
+            fillColor: isPaid ? ManagerColors.success : ManagerColors.error,
             child: Center(
               child: Text(
                 isPaid ? 'paid'.tr : 'unpaid'.tr,
                 style: textBold().copyWith(
-                  color: ManagerColors.white,
+                  color: ManagerColors.onPrimary,
                   fontSize: Dimensions.fs14,
                 ),
               ),

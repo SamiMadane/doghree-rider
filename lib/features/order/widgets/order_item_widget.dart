@@ -5,7 +5,6 @@ import 'package:doghree_rider/features/order/domain/models/order_details_model.d
 import 'package:doghree_rider/features/order/domain/models/order_model.dart';
 import 'package:doghree_rider/helper/price_converter_helper.dart';
 import 'package:doghree_rider/util/dimensions.dart';
-import 'package:doghree_rider/util/manager_colors.dart';
 import 'package:doghree_rider/util/styles.dart';
 import 'package:doghree_rider/common/widgets/custom_image_widget.dart';
 
@@ -21,6 +20,8 @@ class OrderItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
     String addOnText = '';
     for (var addOn in orderDetails.addOns ?? []) {
       addOnText =
@@ -49,6 +50,11 @@ class OrderItemWidget extends StatelessWidget {
       }
     }
 
+    final EdgeInsetsGeometry extrasPadding = EdgeInsetsDirectional.only(
+      start: Dimensions.w60,
+      top: Dimensions.h4,
+    );
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -58,8 +64,8 @@ class OrderItemWidget extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(Dimensions.r8),
                 child: CustomImageWidget(
-                  height: 70,
-                  width: 70,
+                  height: Dimensions.w70,
+                  width: Dimensions.w70,
                   fit: BoxFit.cover,
                   image: '${orderDetails.itemDetails!.imageFullUrl}',
                 ),
@@ -101,12 +107,10 @@ class OrderItemWidget extends StatelessWidget {
                               : 'veg'.tr,
                       style: textRegular().copyWith(
                         fontSize: Dimensions.fs13,
-                        color: ManagerColors.darkGreen,
+                        color: scheme.tertiary,
                       ),
                     ),
-                    SizedBox(
-                      height: Dimensions.h4,
-                    ),
+                    SizedBox(height: Dimensions.h4),
                   ],
                   Row(
                     children: [
@@ -124,16 +128,16 @@ class OrderItemWidget extends StatelessWidget {
                           style: textMedium().copyWith(
                             decoration: TextDecoration.lineThrough,
                             fontSize: Dimensions.fs12,
-                            color: Theme.of(context).disabledColor,
+                            color: scheme.onSurfaceVariant,
                           ),
                         ),
                       ],
-                      Spacer(),
+                      const Spacer(),
                       Text(
                         '${orderDetails.quantity} ${orderDetails.quantity! > 1 ? 'items'.tr : 'item'.tr}',
                         style: textMedium().copyWith(
                           fontSize: Dimensions.fs12,
-                          color: ManagerColors.darkGreen,
+                          color: scheme.tertiary,
                         ),
                       ),
                     ],
@@ -145,22 +149,24 @@ class OrderItemWidget extends StatelessWidget {
         ),
         if (addOnText.isNotEmpty)
           Padding(
-            padding: EdgeInsets.only(left: 60, top: Dimensions.h4),
+            padding: extrasPadding,
             child: Text(
-              'addons'.tr + ': ' + addOnText,
+              '${'addons'.tr}: $addOnText',
               style: textRegular().copyWith(
-                  fontSize: Dimensions.fs12,
-                  color: Theme.of(context).disabledColor),
+                fontSize: Dimensions.fs12,
+                color: scheme.onSurfaceVariant,
+              ),
             ),
           ),
         if (variationText.isNotEmpty)
           Padding(
-            padding: EdgeInsets.only(left: 60, top: Dimensions.h4),
+            padding: extrasPadding,
             child: Text(
-              'variations'.tr + ': ' + variationText,
+              '${'variations'.tr}: $variationText',
               style: textRegular().copyWith(
-                  fontSize: Dimensions.fs12,
-                  color: Theme.of(context).disabledColor),
+                fontSize: Dimensions.fs12,
+                color: scheme.onSurfaceVariant,
+              ),
             ),
           ),
       ],
