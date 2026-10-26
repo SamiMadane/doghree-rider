@@ -9,6 +9,7 @@ import 'package:doghree_rider/util/styles.dart';
 import 'package:doghree_rider/common/widgets/custom_image_widget.dart';
 import 'package:doghree_rider/common/widgets/image_diaglog_widget.dart';
 import 'package:doghree_rider/util/theme_extension.dart';
+import 'package:intl/intl.dart' as intl;
 
 class MessageBubbleWidget extends StatelessWidget {
   final Message message;
@@ -26,6 +27,7 @@ class MessageBubbleWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ColorScheme cs = Theme.of(context).colorScheme;
     final customColor = Theme.of(context).extension<CustomColorsExtension>()!;
     bool isReply = message.senderId == user!.id;
     final hasImages =
@@ -53,7 +55,7 @@ class MessageBubbleWidget extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: isReply
                           ? customColor.receiverMessageBg
-                          : customColor.senderMessageBg,
+                          : cs.primaryContainer,
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(Dimensions.r16),
                         topRight: Radius.circular(Dimensions.r16),
@@ -65,8 +67,10 @@ class MessageBubbleWidget extends StatelessWidget {
                             : Radius.circular(0),
                       ),
                     ),
-                    padding:
-                        EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: Dimensions.w16,
+                      vertical: Dimensions.h16,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -83,6 +87,10 @@ class MessageBubbleWidget extends StatelessWidget {
                         if (hasText)
                           Text(
                             message.message!,
+                            textDirection: intl.Bidi.detectRtlDirectionality(
+                                    message.message!)
+                                ? TextDirection.rtl
+                                : TextDirection.ltr,
                             style: textRegular().copyWith(
                               fontSize: Dimensions.fs16,
                               color: isReply
@@ -114,7 +122,7 @@ class MessageBubbleWidget extends StatelessWidget {
                         message.isSeen == 1 ? Icons.done_all : Icons.done,
                         size: 14,
                         color: message.isSeen == 1
-                            ? ManagerColors.darkGreen
+                            ? cs.tertiary
                             : Theme.of(context).hintColor,
                       ),
                       SizedBox(width: 3),

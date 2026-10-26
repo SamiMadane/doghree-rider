@@ -17,6 +17,7 @@ final ButtonStyle _primaryButtonLight = ButtonStyle(
   padding: const WidgetStatePropertyAll<EdgeInsetsGeometry>(
     EdgeInsets.symmetric(horizontal: 24),
   ),
+  
   shape: WidgetStatePropertyAll<OutlinedBorder>(
     RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
   ),
@@ -86,6 +87,9 @@ ThemeData light = ThemeData(
     outline: ManagerColors.Strock2Light,
     error: ManagerColors.error,
     onError: ManagerColors.white,
+  ),
+  progressIndicatorTheme: const ProgressIndicatorThemeData(
+    color: ManagerColors.onPrimary,
   ),
   appBarTheme: const AppBarTheme(
     backgroundColor: ManagerColors.primaryLight,

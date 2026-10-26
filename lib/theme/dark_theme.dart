@@ -31,7 +31,8 @@ final ButtonStyle _ctaButtonDark = ButtonStyle(
   }),
   foregroundColor: WidgetStateProperty.resolveWith<Color>((states) {
     if (states.contains(WidgetState.disabled)) {
-      return const Color(0x991B1B1B); // was ManagerColors.hintDark (asphalt 60% on faded yellow)
+      return const Color(
+          0x991B1B1B); // was ManagerColors.hintDark (asphalt 60% on faded yellow)
     }
     return ManagerColors.onPrimary;
   }),
@@ -39,7 +40,8 @@ final ButtonStyle _ctaButtonDark = ButtonStyle(
 );
 
 ThemeData dark = ThemeData(
-  fontFamily: 'Roboto', // fonts: postponed (target: Tajawal + Lemonada for displayLarge/headlineLarge)
+  fontFamily:
+      'Roboto', // fonts: postponed (target: Tajawal + Lemonada for displayLarge/headlineLarge)
   primaryColor: ManagerColors.primaryDark,
   disabledColor: ManagerColors.disabledDark,
   brightness: Brightness.dark,
@@ -65,6 +67,8 @@ ThemeData dark = ThemeData(
     error: ManagerColors.error,
     onError: ManagerColors.white,
   ),
+  progressIndicatorTheme:
+      const ProgressIndicatorThemeData(color: ManagerColors.primaryDark),
   appBarTheme: const AppBarTheme(
     backgroundColor: ManagerColors.cardDark,
     foregroundColor: ManagerColors.white,
