@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "696479427007",
-    "project_id": "serious-venture-434014-q3",
-    "storage_bucket": "serious-venture-434014-q3.firebasestorage.app"
+    "project_number": "584280254928",
+    "project_id": "doghree-app",
+    "storage_bucket": "doghree-app.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:696479427007:android:5c22bd1037d746be0cd90a",
+        "mobilesdk_app_id": "1:584280254928:android:141142f9e2790c993971d5",
         "android_client_info": {
           "package_name": "com.doghree.rider"
         }
@@ -15,26 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyA9r4E873RMreR9D-60tDHjz9No57fAbNk"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:696479427007:android:a0c47c88575bc6e00cd90a",
-        "android_client_info": {
-          "package_name": "com.wefrh.user"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyA9r4E873RMreR9D-60tDHjz9No57fAbNk"
+          "current_key": "AIzaSyAbBtDTCzx8XA7EYEGR00aaoKawpWJgVyU"
         }
       ],
       "services": {
