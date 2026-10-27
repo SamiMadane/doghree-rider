@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:doghree_rider/common/widgets/custom_button_widget.dart';
 import 'package:doghree_rider/features/notification/controllers/notification_controller.dart';
 import 'package:doghree_rider/features/order/widgets/collect_money_delivery_sheet_widget.dart';

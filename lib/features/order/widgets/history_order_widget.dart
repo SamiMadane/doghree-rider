@@ -4,6 +4,7 @@ import 'package:doghree_rider/features/order/screens/order_details_screen.dart';
 import 'package:doghree_rider/features/order/widgets/order_status_helper.dart';
 import 'package:doghree_rider/helper/date_converter_helper.dart';
 import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -52,7 +53,8 @@ class HistoryOrderWidget extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Container(width: Dimensions.w4, color: orderModel.statusColor),
+                    Container(
+                        width: Dimensions.w4, color: orderModel.statusColor),
                     Expanded(
                       child: Padding(
                         padding: EdgeInsets.symmetric(
@@ -82,17 +84,21 @@ class HistoryOrderWidget extends StatelessWidget {
                                             children: [
                                               TextSpan(
                                                 text: '${'id_label'.tr}: ',
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.w500,
-                                                  color:
-                                                      scheme.onSurfaceVariant,
+                                                style: textRegular().copyWith(
+                                                  // was textSemiBold
+                                                  fontSize: Dimensions.fs14,
+                                                  color: Theme.of(context)
+                                                      .hintColor,
                                                 ),
                                               ),
                                               TextSpan(
                                                 text: '#${orderModel.id}',
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.w800,
-                                                  color: scheme.tertiary,
+                                                style: textBold().copyWith(
+                                                  // was textSemiBold
+                                                  fontSize: Dimensions.fs14,
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .onSurface, 
                                                 ),
                                               ),
                                             ],

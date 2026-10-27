@@ -33,16 +33,16 @@ class OrderIdSection extends StatelessWidget {
               children: [
                 TextSpan(
                   text: '${'id_label'.tr}: ',
-                  style: textSemiBold().copyWith(
+                  style: textRegular().copyWith(
                     fontSize: Dimensions.fs14,
-                    color: scheme.onSurfaceVariant,
+                    color: Theme.of(context).hintColor,
                   ),
                 ),
                 TextSpan(
-                  text: '#$orderId',
-                  style: textSemiBold().copyWith(
+                  text: '#${orderId}',
+                  style: textBold().copyWith(
                     fontSize: Dimensions.fs14,
-                    color: scheme.tertiary,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
               ],

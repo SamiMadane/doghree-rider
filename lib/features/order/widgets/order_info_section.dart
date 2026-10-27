@@ -80,9 +80,9 @@ class OrderInfoSection extends StatelessWidget {
                       child: Center(
                         child: Text(
                           _paymentLabel,
-                          style: textMedium().copyWith(
-                            fontSize: Dimensions.fs11,
-                            color: scheme.tertiary,
+                          style: textBold().copyWith(
+                            fontSize: Dimensions.fs12, 
+                            color: scheme.onPrimaryContainer, 
                           ),
                         ),
                       ),
@@ -172,7 +172,8 @@ class OrderInfoSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: textSemiBold().copyWith(fontSize: Dimensions.fs16)),
+          Text(title,
+              style: textSemiBold().copyWith(fontSize: Dimensions.fs16)),
           SizedBox(height: Dimensions.h8),
           Text(
             text,

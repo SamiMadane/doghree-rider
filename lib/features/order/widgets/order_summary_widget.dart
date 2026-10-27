@@ -31,7 +31,10 @@ class OrderSummaryWidget extends StatelessWidget {
     return GetBuilder<OrderController>(builder: (orderController) {
       return CustomCard(
         width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
+        padding: EdgeInsets.symmetric(
+          horizontal: Dimensions.w16,
+          vertical: Dimensions.h16,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -45,16 +48,18 @@ class OrderSummaryWidget extends StatelessWidget {
                       children: [
                         TextSpan(
                           text: '${'id_label'.tr}: ',
-                          style: textSemiBold().copyWith(
+                          style: textRegular().copyWith(
+                            // was textSemiBold
                             fontSize: Dimensions.fs14,
                             color: Theme.of(context).hintColor,
                           ),
                         ),
                         TextSpan(
                           text: '#${order.id}',
-                          style: textSemiBold().copyWith(
+                          style: textBold().copyWith(
+                            // was textSemiBold
                             fontSize: Dimensions.fs14,
-                            color: ManagerColors.darkGreen,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
                       ],
@@ -64,8 +69,8 @@ class OrderSummaryWidget extends StatelessWidget {
                 CustomCard(
                   isBorder: false,
                   autoWidth: true,
-                  padding:
-                      EdgeInsets.symmetric(horizontal: Dimensions.w12, vertical: Dimensions.h4),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: Dimensions.w12, vertical: Dimensions.h4),
                   fillColor: order.paymentStatus == 'paid'
                       ? ManagerColors.greenLightMode
                       : Theme.of(context).colorScheme.error,
@@ -73,7 +78,7 @@ class OrderSummaryWidget extends StatelessWidget {
                   child: Text(
                     order.paymentStatus == 'paid' ? 'paid'.tr : 'unpaid'.tr,
                     style: textMedium().copyWith(
-                      color: ManagerColors.white,
+                      color: ManagerColors.onPrimary,
                       fontSize: Dimensions.fs14,
                     ),
                   ),
@@ -90,8 +95,7 @@ class OrderSummaryWidget extends StatelessWidget {
                   children: [
                     ClipOval(
                       child: CustomImageWidget(
-                        image:
-                            order.storeLogoFullUrl,
+                        image: order.storeLogoFullUrl,
                         width: Dimensions.w28,
                         height: Dimensions.h28,
                       ),
@@ -132,7 +136,10 @@ class OrderSummaryWidget extends StatelessWidget {
                       SizedBox(height: Dimensions.h4),
                       if (parcel)
                         Container(
-                          padding: EdgeInsets.symmetric(horizontal:Dimensions.w4 ,vertical: Dimensions.h4,),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: Dimensions.w4,
+                            vertical: Dimensions.h4,
+                          ),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(Dimensions.r4),
                             color:

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:doghree_rider/common/widgets/confirmation_bottom_sheet.dart';
 import 'package:doghree_rider/common/widgets/custom_bottom_sheet_widget.dart';
-import 'package:doghree_rider/features/language/controllers/language_controller.dart';
 import 'package:doghree_rider/features/order/controllers/order_controller.dart';
 import 'package:doghree_rider/common/widgets/slider_button_widget.dart';
 import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';

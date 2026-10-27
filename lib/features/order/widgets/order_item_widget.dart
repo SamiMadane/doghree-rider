@@ -107,7 +107,7 @@ class OrderItemWidget extends StatelessWidget {
                               : 'veg'.tr,
                       style: textRegular().copyWith(
                         fontSize: Dimensions.fs13,
-                        color: scheme.tertiary,
+                        color: scheme.onSurfaceVariant,
                       ),
                     ),
                     SizedBox(height: Dimensions.h4),
@@ -135,9 +135,10 @@ class OrderItemWidget extends StatelessWidget {
                       const Spacer(),
                       Text(
                         '${orderDetails.quantity} ${orderDetails.quantity! > 1 ? 'items'.tr : 'item'.tr}',
-                        style: textMedium().copyWith(
-                          fontSize: Dimensions.fs12,
-                          color: scheme.tertiary,
+                        style: textBold().copyWith(
+                          // was textMedium
+                          fontSize: Dimensions.fs13,
+                          color: scheme.onSurface, 
                         ),
                       ),
                     ],
