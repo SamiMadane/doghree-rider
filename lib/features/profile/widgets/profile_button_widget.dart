@@ -1,12 +1,9 @@
 import 'package:doghree_rider/common/widgets/custom_switch.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/util/manager_assets.dart';
-import 'package:doghree_rider/util/manager_colors.dart';
 import 'package:doghree_rider/util/styles.dart';
-import 'package:doghree_rider/util/theme_extension.dart';
 
 class ProfileButtonWidget extends StatelessWidget {
   final IconData? iconData;
@@ -35,8 +32,6 @@ class ProfileButtonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
-    final customColor = theme.extension<CustomColorsExtension>()!;
     final bool rtl = Directionality.of(context) == TextDirection.rtl;
 
     final Color ink = theme.textTheme.bodyMedium!.color!;

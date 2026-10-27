@@ -13,35 +13,54 @@ class UserProfileInfoCard extends StatelessWidget {
   final ProfileController profileController;
 
   const UserProfileInfoCard({super.key, required this.profileController});
+
+  /// Network photo when available, otherwise a local (offline) avatar.
+  Widget _buildAvatar(BuildContext context, String? imageUrl) {
+    final ColorScheme scheme = Theme.of(context).colorScheme;
+    final double size = Dimensions.w50;
+
+    if (imageUrl == null || imageUrl.isEmpty) {
+      return Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: scheme.primaryContainer,
+        ),
+        child: Icon(
+          Icons.person_rounded,
+          size: size * 0.6,
+          color: scheme.tertiary,
+        ),
+      );
+    }
+
+    return ClipOval(
+      child: CustomImageWidget(
+        width: size,
+        height: size,
+        fit: BoxFit.cover,
+        image: imageUrl,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final profile = profileController.profileModel;
+
     return Column(
       children: [
-        // الكارد الرئيسي (صورة، اسم، رقم، زر تعديل)
         CustomCard(
-          padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
+          padding: EdgeInsets.symmetric(
+            horizontal: Dimensions.w16,
+            vertical: Dimensions.h16,
+          ),
           isBorder: false,
           child: Row(
             children: [
               /// صورة المستخدم
-              profile?.imageFullUrl != null
-                  ? ClipOval(
-                      child: CustomImageWidget(
-                        width: 50,
-                        height: 50,
-                        image: profile!.imageFullUrl!,
-                      ),
-                    )
-                  : ClipOval(
-                      child: CustomImageWidget(
-                        width: 50,
-                        height: 50,
-                        fit: BoxFit.cover,
-                        image:
-                            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRU1ftWhltEa8iosdj8uKtRnm5fE-Sd_oKQaA&s',
-                      ),
-                    ),
+              _buildAvatar(context, profile?.imageFullUrl),
 
               SizedBox(width: Dimensions.w16),
 
@@ -52,14 +71,12 @@ class UserProfileInfoCard extends StatelessWidget {
                   children: [
                     Text(
                       '${profile?.fName ?? ""} ${profile?.lName ?? ""}',
-                      style: textSemiBold().copyWith(
-                          fontSize: Dimensions.fs16),
+                      style: textSemiBold().copyWith(fontSize: Dimensions.fs16),
                     ),
                     SizedBox(height: Dimensions.h4),
                     Text(
                       profile?.phone ?? "",
-                      style: textRegular().copyWith(
-                          fontSize: Dimensions.fs14),
+                      style: textRegular().copyWith(fontSize: Dimensions.fs14),
                     ),
                   ],
                 ),
@@ -67,7 +84,7 @@ class UserProfileInfoCard extends StatelessWidget {
 
               /// زر تعديل الملف الشخصي
               CustomButtonWidget(
-                width: 100,
+                width: Dimensions.w100,
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 fontColor: Theme.of(context).textTheme.bodyMedium!.color,
                 radius: Dimensions.r24,
