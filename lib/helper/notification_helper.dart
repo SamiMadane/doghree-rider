@@ -242,7 +242,7 @@ class NotificationHelper {
     );
     AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
-      '6ammart',
+      'doghree_rider',
       AppConstants.appName,
       importance: Importance.max,
       styleInformation: bigTextStyleInformation,
@@ -278,7 +278,7 @@ class NotificationHelper {
     );
     final AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
-      '6ammart',
+      'doghree_rider',
       AppConstants.appName,
       largeIcon: FilePathAndroidBitmap(largeIconPath),
       priority: Priority.max,
