@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:wefrh_rider/api/api_client.dart';
-import 'package:wefrh_rider/features/language/domain/repositories/language_repository_interface.dart';
-import 'package:wefrh_rider/util/app_constants.dart';
+import 'package:doghree_rider/api/api_client.dart';
+import 'package:doghree_rider/features/language/domain/repositories/language_repository_interface.dart';
+import 'package:doghree_rider/util/app_constants.dart';
 
 class LanguageRepository implements LanguageRepositoryInterface {
   final ApiClient apiClient;

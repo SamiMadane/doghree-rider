@@ -1,18 +1,18 @@
 import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:wefrh_rider/api/api_client.dart';
-import 'package:wefrh_rider/common/models/response_model.dart';
-import 'package:wefrh_rider/features/order/domain/models/ignore_model.dart';
-import 'package:wefrh_rider/features/order/domain/models/order_cancellation_body.dart';
-import 'package:wefrh_rider/features/order/domain/models/order_details_model.dart';
-import 'package:wefrh_rider/features/order/domain/models/order_model.dart';
-import 'package:wefrh_rider/features/order/domain/models/update_status_body_model.dart';
-import 'package:wefrh_rider/features/order/domain/repositories/order_repository_interface.dart';
-import 'package:wefrh_rider/util/app_constants.dart';
+import 'package:doghree_rider/api/api_client.dart';
+import 'package:doghree_rider/common/models/response_model.dart';
+import 'package:doghree_rider/features/order/domain/models/ignore_model.dart';
+import 'package:doghree_rider/features/order/domain/models/order_cancellation_body.dart';
+import 'package:doghree_rider/features/order/domain/models/order_details_model.dart';
+import 'package:doghree_rider/features/order/domain/models/order_model.dart';
+import 'package:doghree_rider/features/order/domain/models/update_status_body_model.dart';
+import 'package:doghree_rider/features/order/domain/repositories/order_repository_interface.dart';
+import 'package:doghree_rider/util/app_constants.dart';
 import 'package:flutter/foundation.dart';
 import 'package:latlong2/latlong.dart' show LatLng;
-import 'package:wefrh_rider/doghree_map/polyline.dart';
+import 'package:doghree_rider/doghree_map/polyline.dart';
 
 class OrderRepository implements OrderRepositoryInterface {
   final ApiClient apiClient;

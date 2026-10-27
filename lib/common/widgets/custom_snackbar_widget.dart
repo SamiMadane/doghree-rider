@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/common/widgets/custom_toast.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:doghree_rider/common/widgets/custom_toast.dart';
+import 'package:doghree_rider/util/dimensions.dart';
 
 void showCustomSnackBar(
   String? message, {

@@ -5,17 +5,17 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:wefrh_rider/features/auth/controllers/auth_controller.dart';
-import 'package:wefrh_rider/features/chat/controllers/chat_controller.dart';
-import 'package:wefrh_rider/features/dashboard/screens/dashboard_screen.dart';
-import 'package:wefrh_rider/features/notification/controllers/notification_controller.dart';
-import 'package:wefrh_rider/features/order/controllers/order_controller.dart';
-import 'package:wefrh_rider/features/notification/domain/models/notification_body_model.dart';
-import 'package:wefrh_rider/helper/route_helper.dart';
-import 'package:wefrh_rider/util/app_constants.dart';
+import 'package:doghree_rider/features/auth/controllers/auth_controller.dart';
+import 'package:doghree_rider/features/chat/controllers/chat_controller.dart';
+import 'package:doghree_rider/features/dashboard/screens/dashboard_screen.dart';
+import 'package:doghree_rider/features/notification/controllers/notification_controller.dart';
+import 'package:doghree_rider/features/order/controllers/order_controller.dart';
+import 'package:doghree_rider/features/notification/domain/models/notification_body_model.dart';
+import 'package:doghree_rider/helper/route_helper.dart';
+import 'package:doghree_rider/util/app_constants.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:wefrh_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
+import 'package:doghree_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
 import 'package:http/http.dart' as http;
 
 class NotificationHelper {
@@ -216,7 +216,7 @@ class NotificationHelper {
       FlutterLocalNotificationsPlugin fln) async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
-      'wefrh',
+      'doghree_rider',
       AppConstants.appName,
       playSound: true,
       importance: Importance.max,

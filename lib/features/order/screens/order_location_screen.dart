@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
-import 'package:wefrh_rider/doghree_map/doghree_map.dart';
-import 'package:wefrh_rider/doghree_map/map_config.dart';
-import 'package:wefrh_rider/doghree_map/map_safety.dart';
-import 'package:wefrh_rider/features/order/controllers/order_controller.dart';
-import 'package:wefrh_rider/features/order/domain/models/order_model.dart';
-import 'package:wefrh_rider/features/order/widgets/location_card_widget.dart';
-import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
-import 'package:wefrh_rider/features/splash/controllers/splash_controller.dart';
-import 'package:wefrh_rider/util/manager_assets.dart';
+import 'package:doghree_rider/common/widgets/custom_app_bar_widget.dart';
+import 'package:doghree_rider/doghree_map/doghree_map_view.dart';
+import 'package:doghree_rider/doghree_map/map_config.dart';
+import 'package:doghree_rider/doghree_map/map_safety.dart';
+import 'package:doghree_rider/features/order/controllers/order_controller.dart';
+import 'package:doghree_rider/features/order/domain/models/order_model.dart';
+import 'package:doghree_rider/features/order/widgets/location_card_widget.dart';
+import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
+import 'package:doghree_rider/features/splash/controllers/splash_controller.dart';
+import 'package:doghree_rider/util/manager_assets.dart';
 
 class OrderLocationScreen extends StatefulWidget {
   final OrderModel orderModel;
@@ -31,7 +30,7 @@ class OrderLocationScreen extends StatefulWidget {
 }
 
 class _OrderLocationScreenState extends State<OrderLocationScreen> {
-  final MapController _controller = MapController();
+  DoghreeMapHandle? _map;
 
   bool get _parcel => widget.orderModel.orderType == 'parcel';
 
@@ -50,78 +49,68 @@ class _OrderLocationScreenState extends State<OrderLocationScreen> {
     return parsePoint(loc?.latitude, loc?.longitude);
   }
 
+  List<DoghreeMarker> get _markers => [
+        if (_deliveryP != null)
+          DoghreeMarker(
+              id: 'delivery',
+              point: _deliveryP!,
+              asset: ManagerAssets.customerMarker),
+        if (_pickupP != null)
+          DoghreeMarker(
+              id: 'pickup',
+              point: _pickupP!,
+              asset: _parcel
+                  ? ManagerAssets.userMarker
+                  : ManagerAssets.restaurantMarker),
+        if (_riderP != null)
+          DoghreeMarker(
+              id: 'rider', point: _riderP!, asset: ManagerAssets.yourMarker),
+      ];
+
   void _fit() {
     final pts = usablePoints([
       if (_deliveryP != null) _deliveryP!,
       if (_pickupP != null) _pickupP!,
       if (_riderP != null) _riderP!,
     ]);
-    if (pts.length >= 2) {
-      _controller.fitCamera(CameraFit.coordinates(
-        coordinates: pts,
-        padding: const EdgeInsets.fromLTRB(48, 48, 48, 220), // مساحة للكارد
-      ));
-    } else if (pts.length == 1) {
-      _controller.move(pts.first, 16);
-    }
+    // الكارد صار تحت الخريطة (Column) فلا حاجة لمساحة إضافية في الأسفل
+    _map?.fitPoints(pts, padding: const EdgeInsets.all(56));
   }
 
   @override
   Widget build(BuildContext context) {
-    // إذا الـ config لسا ما وصل: {} بيعطي خريطة raster بالمركز الافتراضي
+    // إذا الـ config لسا ما وصل: {} بيعطي الخريطة الاحتياطية بالمركز الافتراضي
     final mapConfig = Get.find<SplashController>().doghreeMapConfig ??
         DoghreeMapConfig.fromConfigJson(const {});
 
     return Scaffold(
       appBar: CustomAppBarWidget(title: 'order_location'.tr),
       body: SafeArea(
-        child: Stack(children: [
-          DoghreeMap(
-            config: mapConfig,
-            controller: _controller,
-            initialCenter: _deliveryP, // null → مركز غزة تلقائيًا
-            initialZoom: 14,
-            onMapReady: _fit,
-            children: [
-              MarkerLayer(markers: [
-                if (_deliveryP != null)
-                  Marker(
-                    point: _deliveryP!,
-                    width: 40,
-                    height: 40,
-                    child: Image.asset(ManagerAssets.customerMarker),
-                  ),
-                if (_pickupP != null)
-                  Marker(
-                    point: _pickupP!,
-                    width: 40,
-                    height: 40,
-                    child: Image.asset(_parcel
-                        ? ManagerAssets.userMarker
-                        : ManagerAssets.restaurantMarker),
-                  ),
-                if (_riderP != null)
-                  Marker(
-                    point: _riderP!,
-                    width: 40,
-                    height: 40,
-                    child: Image.asset(ManagerAssets.yourMarker),
-                  ),
-              ]),
-            ],
-          ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: LocationCardWidget(
-              orderModel: widget.orderModel,
-              orderController: widget.orderController,
-              onTap: widget.onTap,
-              index: widget.index,
+        child: Column(
+          children: [
+            Expanded(
+              child: DoghreeMapView(
+                config: mapConfig,
+                initialCenter: _deliveryP, // null → مركز غزة تلقائيًا
+                initialZoom: 14,
+                markers: _markers,
+                onReady: (h) {
+                  _map = h;
+                  _fit();
+                },
+              ),
             ),
-          ),
-        ]),
+            SizedBox(
+              width: double.infinity,
+              child: LocationCardWidget(
+                orderModel: widget.orderModel,
+                orderController: widget.orderController,
+                onTap: widget.onTap,
+                index: widget.index,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

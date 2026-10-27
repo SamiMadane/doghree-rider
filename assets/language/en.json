@@ -61,7 +61,7 @@
   "processing": "Processing",
   "confirmed": "Confirmed",
   "handover": "Handover",
-    "wallet_see_all": "See All",
+  "wallet_see_all": "See All",
   "wallet_withdraw_details": "Withdrawal Request Details",
   "wallet_requested_at": "Request Date",
   "wallet_paid_at": "Transfer Date",
@@ -172,7 +172,7 @@
   "swipe_to_pick_up_parcel": "Swipe to pick up parcel",
   "swipe_to_deliver_order": "Swipe to deliver order",
   "swipe_to_deliver_parcel": "Swipe to deliver parcel",
-  "you_can_not_go_offline_now": "You have an active order and cannot go offline at this time.",
+  "you_can_not_go_offline_now": "You have an active order. Deliver it first, then you can stop receiving orders.",
   "make_yourself_online_first": "Make yourself online first",
   "order_details": "Order Details",
   "total_amount": "Total Amount",
@@ -213,6 +213,9 @@
   "enter_current_password": "Enter current password",
   "additional_charge": "Additional charge",
   "edit": "Edit",
+  "your_earnings_today": "Your Earnings Today",
+  "your_earnings_week": "Your Earnings This Week",
+  "your_earnings_month": "Your Earnings This Month",
   "legal": "Legal",
   "order_items": "Order Items",
   "account_setting": "Account Settings",
@@ -710,7 +713,7 @@
   "limit_exceeded": "Limit Exceeded",
   "go_offline": "Go Offline?",
   "yes_proceed": "Yes, Proceed",
-  "you_cant_go_offline": "You can’t Go Offline.",
+  "you_cant_go_offline": "You can't go offline right now",
   "location_access_needed": "Location Access Needed",
   "allow_location_permission": "Allow Location Permission",
   "min_ago": "min ago",
@@ -754,5 +757,4 @@
   "insufficient_balance": "Insufficient Balance",
   "application_submitted": "Application Submitted",
   "application_received_message": "We received your application and we will review everything and contact you soon"
-
 }

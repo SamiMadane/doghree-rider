@@ -1,8 +1,8 @@
-import 'package:wefrh_rider/features/cash_in_hand/domain/models/withdraw_method_model.dart';
-import 'package:wefrh_rider/features/disbursement/domain/repositories/disbursement_repository_interface.dart';
-import 'package:wefrh_rider/features/disbursement/domain/models/disbursement_method_model.dart' as disburse;
-import 'package:wefrh_rider/features/disbursement/domain/models/disbursement_report_model.dart' as report;
-import 'package:wefrh_rider/features/disbursement/domain/services/disbursement_service_interface.dart';
+import 'package:doghree_rider/features/cash_in_hand/domain/models/withdraw_method_model.dart';
+import 'package:doghree_rider/features/disbursement/domain/repositories/disbursement_repository_interface.dart';
+import 'package:doghree_rider/features/disbursement/domain/models/disbursement_method_model.dart' as disburse;
+import 'package:doghree_rider/features/disbursement/domain/models/disbursement_report_model.dart' as report;
+import 'package:doghree_rider/features/disbursement/domain/services/disbursement_service_interface.dart';
 
 class DisbursementService implements DisbursementServiceInterface {
   final DisbursementRepositoryInterface disbursementRepositoryInterface;

@@ -1,11 +1,11 @@
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:wefrh_rider/api/api_client.dart';
-import 'package:wefrh_rider/features/notification/domain/models/notification_body_model.dart';
-import 'package:wefrh_rider/features/chat/domain/models/conversation_model.dart';
-import 'package:wefrh_rider/features/chat/domain/models/message_model.dart';
-import 'package:wefrh_rider/features/chat/domain/services/chat_service_interface.dart';
-import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
+import 'package:doghree_rider/api/api_client.dart';
+import 'package:doghree_rider/features/notification/domain/models/notification_body_model.dart';
+import 'package:doghree_rider/features/chat/domain/models/conversation_model.dart';
+import 'package:doghree_rider/features/chat/domain/models/message_model.dart';
+import 'package:doghree_rider/features/chat/domain/services/chat_service_interface.dart';
+import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
 
 class ChatController extends GetxController implements GetxService {
   final ChatServiceInterface chatServiceInterface;
@@ -50,6 +50,25 @@ class ChatController extends GetxController implements GetxService {
   MessageModel? _messageModel;
   MessageModel? get messageModel => _messageModel;
 
+  int _searchRequestId = 0;
+
+  Future<void> searchConversation(String name) async {
+    final int requestId = ++_searchRequestId;
+    _searchConversationModel = ConversationsModel();
+    update();
+    final ConversationsModel? result =
+        await chatServiceInterface.searchConversationList(name);
+    if (requestId != _searchRequestId) return;
+    _searchConversationModel = result ?? ConversationsModel(conversations: []);
+    update();
+  }
+
+  void removeSearchMode() {
+    _searchRequestId++;
+    _searchConversationModel = null;
+    update();
+  }
+
   Future<void> getConversationList(int offset) async {
     _searchConversationModel = null;
     _conversationModel = null;
@@ -65,22 +84,6 @@ class ChatController extends GetxController implements GetxService {
             .addAll(conversationModel.conversations!);
       }
     }
-    update();
-  }
-
-  Future<void> searchConversation(String name) async {
-    _searchConversationModel = ConversationsModel();
-    update();
-    ConversationsModel? searchConversationModel =
-        await chatServiceInterface.searchConversationList(name);
-    if (searchConversationModel != null) {
-      _searchConversationModel = searchConversationModel;
-    }
-    update();
-  }
-
-  void removeSearchMode() {
-    _searchConversationModel = null;
     update();
   }
 

@@ -1,4 +1,4 @@
-import 'package:wefrh_rider/interface/repository_interface.dart';
+import 'package:doghree_rider/interface/repository_interface.dart';
 
 abstract class SplashRepositoryInterface extends RepositoryInterface {
   Future<dynamic> getConfigData();

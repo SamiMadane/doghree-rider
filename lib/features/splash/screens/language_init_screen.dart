@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/features/language/controllers/language_controller.dart';
-import 'package:wefrh_rider/features/language/widgets/language_bottom_sheet_widget.dart';
-import 'package:wefrh_rider/features/splash/screens/splash_screen.dart';
+import 'package:doghree_rider/features/language/controllers/language_controller.dart';
+import 'package:doghree_rider/features/language/widgets/language_bottom_sheet_widget.dart';
+import 'package:doghree_rider/features/splash/screens/splash_screen.dart';
 
 class LanguageInitScreen extends StatefulWidget {
   const LanguageInitScreen({super.key});

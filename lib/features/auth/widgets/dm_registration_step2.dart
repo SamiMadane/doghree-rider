@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
-import 'package:wefrh_rider/common/widgets/custom_drop_down_button.dart';
-import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
-import 'package:wefrh_rider/common/widgets/custom_text_field_widget.dart';
-import 'package:wefrh_rider/common/widgets/image_picker_widget.dart';
-import 'package:wefrh_rider/common/widgets/widget_with_label.dart';
-import 'package:wefrh_rider/features/address/controllers/address_controller.dart';
-import 'package:wefrh_rider/features/auth/controllers/auth_controller.dart';
-import 'package:wefrh_rider/features/auth/widgets/condition_check_box_widget.dart';
-import 'package:wefrh_rider/util/app_constants.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/util/styles.dart';
+import 'package:doghree_rider/common/widgets/custom_drop_down_button.dart';
+import 'package:doghree_rider/common/widgets/custom_snackbar_widget.dart';
+import 'package:doghree_rider/common/widgets/custom_text_field_widget.dart';
+import 'package:doghree_rider/common/widgets/image_picker_widget.dart';
+import 'package:doghree_rider/common/widgets/widget_with_label.dart';
+import 'package:doghree_rider/features/address/controllers/address_controller.dart';
+import 'package:doghree_rider/features/auth/controllers/auth_controller.dart';
+import 'package:doghree_rider/features/auth/widgets/condition_check_box_widget.dart';
+import 'package:doghree_rider/util/app_constants.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/styles.dart';
 
 class DmRegistrationStep2 extends StatelessWidget {
   final TextEditingController identityNumberController;

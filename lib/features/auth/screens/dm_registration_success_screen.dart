@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
-import 'package:wefrh_rider/common/widgets/custom_asset_image_widget.dart';
-import 'package:wefrh_rider/helper/route_helper.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/util/manager_assets.dart';
-import 'package:wefrh_rider/util/styles.dart';
-import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
+import 'package:doghree_rider/common/widgets/custom_app_bar_widget.dart';
+import 'package:doghree_rider/common/widgets/custom_asset_image_widget.dart';
+import 'package:doghree_rider/helper/route_helper.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/manager_assets.dart';
+import 'package:doghree_rider/util/styles.dart';
+import 'package:doghree_rider/common/widgets/custom_button_widget.dart';
 
 class DmRegistrationSuccessScreen extends StatelessWidget {
   const DmRegistrationSuccessScreen({super.key});
@@ -29,10 +29,11 @@ class DmRegistrationSuccessScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const CustomAssetImageWidget(
+               CustomAssetImageWidget(
                 image: ManagerAssets.applicationSubmittedImage,
-                height: 200,
-                width: 200,
+                fit: BoxFit.contain,
+                height: Dimensions.h300,  
+                width: Dimensions.w300,
               ),
               SizedBox(height: Dimensions.h20),
               Text(
@@ -52,7 +53,7 @@ class DmRegistrationSuccessScreen extends StatelessWidget {
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 50),
+              SizedBox(height: Dimensions.h50),
               CustomButtonWidget(
                 buttonText: 'go_back_to_login_page'.tr,
                 onPressed: () {

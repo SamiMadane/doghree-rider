@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/common/widgets/custom_bottom_sheet_widget.dart';
-import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
-import 'package:wefrh_rider/util/app_constants.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/util/manager_assets.dart';
-import 'package:wefrh_rider/util/styles.dart';
+import 'package:doghree_rider/common/widgets/custom_bottom_sheet_widget.dart';
+import 'package:doghree_rider/common/widgets/custom_button_widget.dart';
+import 'package:doghree_rider/util/app_constants.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/manager_assets.dart';
+import 'package:doghree_rider/util/styles.dart';
 
 class LocationPermissionManager extends GetxController {
   static LocationPermissionManager get to => Get.find();
@@ -256,15 +256,7 @@ class LocationPermissionManager extends GetxController {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  TextButton(
-                    onPressed: () => Get.back(),
-                    child: Text(
-                      'cancel'.tr,
-                      style: textMedium().copyWith(
-                        color: Theme.of(Get.context!).disabledColor,
-                      ),
-                    ),
-                  ),
+                  _secondaryButton('cancel'.tr),
                   SizedBox(width: Dimensions.w10),
                   CustomButtonWidget(
                     autoWidth: true,
@@ -363,15 +355,7 @@ class LocationPermissionManager extends GetxController {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  TextButton(
-                    onPressed: () => Get.back(),
-                    child: Text(
-                      'skip'.tr,
-                      style: textMedium().copyWith(
-                        color: Theme.of(Get.context!).disabledColor,
-                      ),
-                    ),
-                  ),
+                  _secondaryButton('skip'.tr),
                   SizedBox(width: Dimensions.w10),
                   CustomButtonWidget(
                     autoWidth: true,
@@ -398,57 +382,73 @@ class LocationPermissionManager extends GetxController {
 
   /// بناء خطوة واحدة
   Widget _buildStep(String number, String text) {
+    final ColorScheme cs = Get.theme.colorScheme;
+    final TextStyle base = textMedium().copyWith(
+      fontSize: Dimensions.fs14,
+      color: cs.onSurface,
+    );
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 24,
-            height: 24,
+            width: 25,
+            height: 25,
             decoration: BoxDecoration(
-              color: Get.theme.primaryColor.withOpacity(0.1),
+              color: Color.lerp(cs.primaryContainer, cs.primary, 0.7),
               shape: BoxShape.circle,
             ),
             child: Center(
               child: Text(
                 number,
                 style: textBold().copyWith(
-                  fontSize: Dimensions.fs12,
-                  color: Get.theme.primaryColor,
+                  fontSize: Dimensions.fs13,
+                  color: cs.onPrimary,
                 ),
               ),
             ),
           ),
           SizedBox(width: Dimensions.w10),
-          Expanded(
-            child: Text(
-              text,
-              style: textMedium().copyWith(
-                fontSize: Dimensions.fs14,
-                color: Get.theme.textTheme.bodyLarge?.color,
-              ),
-            ),
-          ),
+          Expanded(child: Text.rich(_highlightQuoted(text, base))),
         ],
       ),
     );
   }
 
+  /// الكلمة بين علامتي التنصيص تصير عريضة (الأذونات، الموقع، السماح طوال الوقت)
+  TextSpan _highlightQuoted(String text, TextStyle base) {
+    final RegExp quoted = RegExp(r'["“”«]([^"“”«»]+)["“”»]');
+    final List<InlineSpan> spans = <InlineSpan>[];
+    int last = 0;
+    for (final Match m in quoted.allMatches(text)) {
+      if (m.start > last) {
+        spans.add(TextSpan(text: text.substring(last, m.start)));
+      }
+      spans.add(TextSpan(
+        text: m.group(1),
+        style: textBold().copyWith(fontSize: base.fontSize, color: base.color),
+      ));
+      last = m.end;
+    }
+    if (last < text.length) spans.add(TextSpan(text: text.substring(last)));
+    return TextSpan(style: base, children: spans);
+  }
+
   /// بناء نص معلوماتي
   Widget _buildInfoText(String text) {
+    final ColorScheme cs = Get.theme.colorScheme;
     return Padding(
-      padding: EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.only(bottom: 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsets.only(top: 6),
+            padding: const EdgeInsets.only(top: 3),
             child: Container(
-              width: 6,
-              height: 6,
+              width: 7,
+              height: 7,
               decoration: BoxDecoration(
-                color: Get.theme.primaryColor,
+                color: Color.lerp(cs.primaryContainer, cs.primary, 0.7),
                 shape: BoxShape.circle,
               ),
             ),
@@ -459,11 +459,22 @@ class LocationPermissionManager extends GetxController {
               text,
               style: textRegular().copyWith(
                 fontSize: Dimensions.fs13,
-                color: Get.theme.textTheme.bodyMedium?.color,
+                color: cs.onSurfaceVariant,
               ),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _secondaryButton(String text) {
+    final ColorScheme cs = Get.theme.colorScheme;
+    return TextButton(
+      onPressed: () => Get.back(),
+      child: Text(
+        text,
+        style: textBold().copyWith(color: cs.tertiary),
       ),
     );
   }

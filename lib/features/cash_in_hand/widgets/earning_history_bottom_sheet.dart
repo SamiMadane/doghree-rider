@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/features/cash_in_hand/domain/models/earning_report_model.dart';
-import 'package:wefrh_rider/helper/date_converter_helper.dart';
-import 'package:wefrh_rider/helper/price_converter_helper.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/util/styles.dart';
+import 'package:doghree_rider/features/cash_in_hand/domain/models/earning_report_model.dart';
+import 'package:doghree_rider/helper/date_converter_helper.dart';
+import 'package:doghree_rider/helper/price_converter_helper.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/styles.dart';
 
 class EarningHistoryBottomSheet extends StatelessWidget {
   final Data? data;

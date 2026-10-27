@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/manager_colors.dart';
 
 class CustomButtonWidget extends StatelessWidget {
   final Function? onPressed;
@@ -54,19 +55,35 @@ class CustomButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final bool isDark = theme.brightness == Brightness.dark;
+
     final Color effectiveBgColor = onPressed == null
-        ? Theme.of(context).disabledColor
+        ? theme.disabledColor
         : transparent
             ? Colors.transparent
-            : backgroundColor ?? color ?? Theme.of(context).primaryColor;
+            : backgroundColor ?? color ?? theme.primaryColor;
+
+    // Text/icon ON a filled background: asphalt on light backgrounds
+    // (yellow included), white on dark ones. Never white on yellow.
+    final Color onBgColor =
+        ThemeData.estimateBrightnessForColor(effectiveBgColor) ==
+                Brightness.light
+            ? ManagerColors.onPrimary
+            : Colors.white;
+
+    // Text/icon on a transparent button (sits on the page background):
+    // yellow text on white is forbidden, so light mode uses textAccent.
+    final Color accentColor =
+        isDark ? ManagerColors.primaryDark : ManagerColors.textButtonLight;
 
     final Color effectiveTextColor = textColor ??
         fontColor ??
         (transparent || isViewReply
-            ? Theme.of(context).primaryColor
+            ? accentColor
             : onPressed == null
-                ? Theme.of(context).cardColor
-                : Colors.white);
+                ? theme.cardColor
+                : onBgColor);
 
     // Check if there's an icon
     final bool hasIcon = icon != null || iconData != null || isLoading;
@@ -120,17 +137,19 @@ class CustomButtonWidget extends StatelessWidget {
           if (icon != null)
             Padding(
               padding: EdgeInsetsDirectional.only(end: Dimensions.w8),
-              child: icon!,
+              child: IconTheme(
+                data: IconThemeData(
+                  color: iconColor ?? (transparent ? accentColor : onBgColor),
+                ),
+                child: icon!,
+              ),
             ),
           if (icon == null && iconData != null)
             Padding(
               padding: EdgeInsetsDirectional.only(end: Dimensions.w8),
               child: Icon(
                 iconData,
-                color: iconColor ??
-                    (transparent
-                        ? Theme.of(context).primaryColor
-                        : Colors.white),
+                color: iconColor ?? (transparent ? accentColor : onBgColor),
               ),
             ),
           buildText(),
@@ -149,8 +168,8 @@ class CustomButtonWidget extends StatelessWidget {
           style: TextButton.styleFrom(
             backgroundColor: effectiveBgColor,
             // إذا في icon، استخدم padding عادي، وإلا استخدم padding صفر
-            padding: autoWidth && !hasIcon 
-                ? EdgeInsets.symmetric(horizontal: 12) 
+            padding: autoWidth && !hasIcon
+                ? EdgeInsets.symmetric(horizontal: 12)
                 : EdgeInsets.symmetric(horizontal: 16),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(radius),

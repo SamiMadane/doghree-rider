@@ -1,19 +1,18 @@
-import 'package:wefrh_rider/common/widgets/custom_image_widget.dart';
-import 'package:wefrh_rider/common/widgets/widget_with_label.dart';
-import 'package:wefrh_rider/features/auth/controllers/auth_controller.dart';
-import 'package:wefrh_rider/features/auth/widgets/pass_view_widget.dart';
-import 'package:wefrh_rider/features/forgot_password/controllers/forgot_password_controller.dart';
-import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
-import 'package:wefrh_rider/helper/route_helper.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
-import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
-import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
-import 'package:wefrh_rider/common/widgets/custom_text_field_widget.dart';
+import 'package:doghree_rider/common/widgets/custom_image_widget.dart';
+import 'package:doghree_rider/common/widgets/widget_with_label.dart';
+import 'package:doghree_rider/features/auth/controllers/auth_controller.dart';
+import 'package:doghree_rider/features/auth/widgets/pass_view_widget.dart';
+import 'package:doghree_rider/features/forgot_password/controllers/forgot_password_controller.dart';
+import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
+import 'package:doghree_rider/helper/route_helper.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/common/widgets/custom_app_bar_widget.dart';
+import 'package:doghree_rider/common/widgets/custom_button_widget.dart';
+import 'package:doghree_rider/common/widgets/custom_snackbar_widget.dart';
+import 'package:doghree_rider/common/widgets/custom_text_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/util/manager_assets.dart';
-import 'package:wefrh_rider/util/manager_colors.dart';
+import 'package:doghree_rider/util/manager_assets.dart';
 
 class NewPassScreen extends StatefulWidget {
   final String? resetToken;
@@ -32,6 +31,11 @@ class NewPassScreen extends StatefulWidget {
 }
 
 class _NewPassScreenState extends State<NewPassScreen> {
+  // Field error keys live in the controller.
+  static const String _kCurrent = AuthController.currentPasswordKey;
+  static const String _kNew = AuthController.newPasswordKey;
+  static const String _kConfirm = AuthController.confirmPasswordKey;
+
   final TextEditingController currentPasswordController =
       TextEditingController();
   final TextEditingController newPasswordController = TextEditingController();
@@ -45,9 +49,25 @@ class _NewPassScreenState extends State<NewPassScreen> {
   @override
   void initState() {
     super.initState();
-    if (Get.find<AuthController>().showPassView) {
-      Get.find<AuthController>().showHidePass();
+    final AuthController auth = Get.find<AuthController>();
+    if (auth.showPassView) {
+      auth.showHidePass();
     }
+    // Drop stale errors left by other screens (login/registration).
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) auth.setFieldErrors({});
+    });
+  }
+
+  @override
+  void dispose() {
+    currentPasswordController.dispose();
+    newPasswordController.dispose();
+    confirmPasswordController.dispose();
+    currentPasswordNode.dispose();
+    newPasswordNode.dispose();
+    confirmPasswordNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -64,74 +84,87 @@ class _NewPassScreenState extends State<NewPassScreen> {
             children: [
               Expanded(
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: Dimensions.w16,
+                    vertical: Dimensions.h16,
+                  ),
                   margin: EdgeInsets.only(top: Dimensions.h16),
                   color: Theme.of(context).cardColor,
-                  child: Column(
-                    children: [
-                      // Current Password (only when changing password)
-                      if (widget.fromPasswordChange)
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        // Current Password (only when changing password)
+                        if (widget.fromPasswordChange) ...[
+                          WidgetWithLabel(
+                            label: 'current_password'.tr,
+                            textField: CustomTextFieldWidget(
+                              labelText: 'enter_password'.tr,
+                              hintText: 'enter_your_current_password'.tr,
+                              controller: currentPasswordController,
+                              focusNode: currentPasswordNode,
+                              nextFocus: newPasswordNode,
+                              inputType: TextInputType.visiblePassword,
+                              isPassword: true,
+                              errorText: authController.fieldError(_kCurrent),
+                              onChanged: (_) =>
+                                  authController.clearFieldError(_kCurrent),
+                            ),
+                          ),
+                          SizedBox(height: Dimensions.h16),
+                        ],
+
+                        // New Password
                         WidgetWithLabel(
-                          label: 'current_password'.tr,
+                          label: 'new_password'.tr,
                           textField: CustomTextFieldWidget(
                             labelText: 'enter_password'.tr,
-                            hintText: 'enter_your_current_password'.tr,
-                            controller: currentPasswordController,
-                            focusNode: currentPasswordNode,
-                            nextFocus: newPasswordNode,
+                            hintText: 'enter_your_new_password'.tr,
+                            controller: newPasswordController,
+                            focusNode: newPasswordNode,
+                            nextFocus: confirmPasswordNode,
                             inputType: TextInputType.visiblePassword,
                             isPassword: true,
+                            errorText: authController.fieldError(_kNew),
+                            onChanged: (value) {
+                              authController.clearFieldError(_kNew);
+                              if (value.isNotEmpty) {
+                                if (!authController.showPassView) {
+                                  authController.showHidePass();
+                                }
+                                authController.validPassCheck(value);
+                              } else {
+                                if (authController.showPassView) {
+                                  authController.showHidePass();
+                                }
+                              }
+                            },
                           ),
                         ),
-                      if (widget.fromPasswordChange)
+                        if (authController.showPassView)
+                          const Align(
+                            alignment: AlignmentDirectional.centerStart,
+                            child: PassViewWidget(),
+                          ),
                         SizedBox(height: Dimensions.h16),
 
-                      // New Password
-                      WidgetWithLabel(
-                        label: 'new_password'.tr,
-                        textField: CustomTextFieldWidget(
-                          labelText: 'enter_password'.tr,
-                          hintText: 'enter_your_new_password'.tr,
-                          controller: newPasswordController,
-                          focusNode: newPasswordNode,
-                          nextFocus: confirmPasswordNode,
-                          inputType: TextInputType.visiblePassword,
-                          isPassword: true,
-                          onChanged: (value) {
-                            if (value.isNotEmpty) {
-                              if (!authController.showPassView) {
-                                authController.showHidePass();
-                              }
-                              authController.validPassCheck(value);
-                            } else {
-                              if (authController.showPassView) {
-                                authController.showHidePass();
-                              }
-                            }
-                          },
+                        // Confirm Password
+                        WidgetWithLabel(
+                          label: 'confirm_password'.tr,
+                          textField: CustomTextFieldWidget(
+                            labelText: 'enter_password'.tr,
+                            hintText: 're_enter_your_new_password'.tr,
+                            controller: confirmPasswordController,
+                            focusNode: confirmPasswordNode,
+                            inputAction: TextInputAction.done,
+                            inputType: TextInputType.visiblePassword,
+                            isPassword: true,
+                            errorText: authController.fieldError(_kConfirm),
+                            onChanged: (_) =>
+                                authController.clearFieldError(_kConfirm),
+                          ),
                         ),
-                      ),
-                      if (authController.showPassView)
-                        const Align(
-                          alignment: Alignment.centerLeft,
-                          child: PassViewWidget(),
-                        ),
-                      SizedBox(height: Dimensions.h16),
-
-                      // Confirm Password
-                      WidgetWithLabel(
-                        label: 'confirm_password'.tr,
-                        textField: CustomTextFieldWidget(
-                          labelText: 'enter_password'.tr,
-                          hintText: 're_enter_your_new_password'.tr,
-                          controller: confirmPasswordController,
-                          focusNode: confirmPasswordNode,
-                          inputAction: TextInputAction.done,
-                          inputType: TextInputType.visiblePassword,
-                          isPassword: true,
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -141,7 +174,10 @@ class _NewPassScreenState extends State<NewPassScreen> {
                 builder: (forgotPasswordController) {
                   return SafeArea(
                     child: Container(
-                      padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: Dimensions.w16,
+                        vertical: Dimensions.h16,
+                      ),
                       decoration: BoxDecoration(
                         color: Theme.of(context).cardColor,
                         boxShadow: [
@@ -172,38 +208,37 @@ class _NewPassScreenState extends State<NewPassScreen> {
   }
 
   void _resetPassword(AuthController authController) {
-    String currentPassword = currentPasswordController.text.trim();
-    String password = newPasswordController.text.trim();
-    String confirmPassword = confirmPasswordController.text.trim();
+    // All validation rules live in AuthController.
+    final bool valid = authController.validatePasswordForm(
+      requireCurrent: widget.fromPasswordChange,
+      currentPassword: currentPasswordController.text,
+      newPassword: newPasswordController.text,
+      confirmPassword: confirmPasswordController.text,
+    );
 
-    // Validation checks
-    if (widget.fromPasswordChange && currentPassword.isEmpty) {
-      showCustomSnackBar('enter_current_password'.tr);
-      return;
-    } else if (password.isEmpty) {
-      showCustomSnackBar('enter_password'.tr);
-      return;
-    } else if (password.length < 8) {
-      showCustomSnackBar('password_should_be'.tr);
-      return;
-    } else if (password != confirmPassword) {
-      showCustomSnackBar('password_does_not_matched'.tr);
-      return;
-    } else if (!authController.spatialCheck ||
-        !authController.lowercaseCheck ||
-        !authController.uppercaseCheck ||
-        !authController.numberCheck ||
-        !authController.lengthCheck) {
-      showCustomSnackBar('provide_valid_password'.tr);
+    if (!valid) {
+      _focusFirstError(authController);
       return;
     }
 
-    // Proceed with password change/reset
+    final String currentPassword = currentPasswordController.text.trim();
+    final String password = newPasswordController.text.trim();
+    final String confirmPassword = confirmPasswordController.text.trim();
+
     if (widget.fromPasswordChange) {
       _changeUserPassword(currentPassword, password);
     } else {
       _resetUserPassword(password, confirmPassword);
     }
+  }
+
+  void _focusFirstError(AuthController authController) {
+    final Map<String, FocusNode> nodes = {
+      _kCurrent: currentPasswordNode,
+      _kNew: newPasswordNode,
+      _kConfirm: confirmPasswordNode,
+    };
+    nodes[authController.firstFieldErrorKey]?.requestFocus();
   }
 
   void _changeUserPassword(String currentPassword, String password) {
@@ -217,7 +252,7 @@ class _NewPassScreenState extends State<NewPassScreen> {
       if (success) {
         _showSuccessBottomSheet();
       }
-      // Error messages are handled in the controller
+      // Server errors are shown by the controller (snackbar).
     });
   }
 
@@ -247,7 +282,10 @@ class _NewPassScreenState extends State<NewPassScreen> {
       enableDrag: false,
       backgroundColor: Colors.transparent,
       builder: (context) => Container(
-        padding: EdgeInsets.symmetric(horizontal: Dimensions.w20, vertical: Dimensions.h20),
+        padding: EdgeInsets.symmetric(
+          horizontal: Dimensions.w20,
+          vertical: Dimensions.h20,
+        ),
         decoration: BoxDecoration(
           color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.only(
@@ -258,28 +296,23 @@ class _NewPassScreenState extends State<NewPassScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Success Icon
             CustomImageWidget(
               image: ManagerAssets.changePasswordImage,
-              height: Dimensions.h220,
-              width: Dimensions.w220,
+              height: Dimensions.h200,
+              width: Dimensions.w200,
               fit: BoxFit.contain,
             ),
             SizedBox(height: Dimensions.h20),
-
-            // Success Message
             Text(
               'password_changed_successfully'.tr,
               style: TextStyle(
                 fontSize: Dimensions.fs18,
                 fontWeight: FontWeight.w600,
-                color: ManagerColors.darkGreen,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: Dimensions.h30),
-
-            // Go Back Button
             CustomButtonWidget(
               buttonText: 'go_back'.tr,
               backgroundColor: Theme.of(context).primaryColor,

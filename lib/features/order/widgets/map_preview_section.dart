@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
-import 'package:wefrh_rider/doghree_map/doghree_map.dart';
-import 'package:wefrh_rider/doghree_map/map_safety.dart';
-import 'package:wefrh_rider/features/order/controllers/order_controller.dart';
-import 'package:wefrh_rider/features/splash/controllers/splash_controller.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/util/manager_assets.dart';
+import 'package:doghree_rider/common/widgets/custom_snackbar_widget.dart';
+import 'package:doghree_rider/doghree_map/doghree_map_view.dart';
+import 'package:doghree_rider/doghree_map/map_safety.dart';
+import 'package:doghree_rider/features/order/controllers/order_controller.dart';
+import 'package:doghree_rider/features/splash/controllers/splash_controller.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/manager_assets.dart';
 
 /// واجهة فقط. المنطق كله في OrderController (initOrderMap).
 class MapPreviewSection extends StatefulWidget {
@@ -30,9 +29,8 @@ class MapPreviewSection extends StatefulWidget {
 
 class _MapPreviewSectionState extends State<MapPreviewSection> {
   static const String _id = 'order_map';
-  final MapController _mapController = MapController();
   final OrderController _c = Get.find<OrderController>();
-  bool _mapReady = false;
+  DoghreeMapHandle? _map;
 
   @override
   void initState() {
@@ -56,11 +54,10 @@ class _MapPreviewSectionState extends State<MapPreviewSection> {
 
   void _centerOnCurrentLocation() {
     final p = _c.mapMyPoint;
-    if (p != null && _mapReady) _mapController.move(p, 17);
+    if (p != null) _map?.moveTo(p, zoom: 17);
   }
 
   void _fitBounds() {
-    if (!_mapReady) return;
     // بعد انتهاء الإطار الحالي حتى يكون حجم الخريطة نهائياً
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
@@ -72,15 +69,7 @@ class _MapPreviewSectionState extends State<MapPreviewSection> {
                 if (_c.mapDestPoint != null) _c.mapDestPoint!,
               ],
       );
-      if (pts.length >= 2) {
-        _mapController.fitCamera(CameraFit.coordinates(
-          coordinates: pts,
-          padding: const EdgeInsets.fromLTRB(48, 56, 48, 48),
-          maxZoom: 17,
-        ));
-      } else if (pts.length == 1) {
-        _mapController.move(pts.first, 16);
-      }
+      _map?.fitPoints(pts, padding: const EdgeInsets.fromLTRB(48, 56, 48, 48));
     });
   }
 
@@ -109,52 +98,23 @@ class _MapPreviewSectionState extends State<MapPreviewSection> {
     final dest = c.mapDestPoint;
     if (config == null || dest == null) return _placeholder();
 
-    return DoghreeMap(
+    return DoghreeMapView(
       config: config,
-      controller: _mapController,
       initialCenter: dest,
       initialZoom: 15,
-      onMapReady: () {
-        _mapReady = true;
+        captureGestures: true, 
+      routePoints: c.mapRoute,
+      routeColor: c.mapRouteIsApprox ? Colors.orange : Colors.blue,
+      markers: [
+        if (c.mapMyPoint != null)
+          DoghreeMarker.dot(id: 'me', point: c.mapMyPoint!),
+        DoghreeMarker(
+            id: 'dest', point: dest, asset: ManagerAssets.customerMarker),
+      ],
+      onReady: (h) {
+        _map = h;
         _fitBounds();
       },
-      children: [
-        if (c.mapRoute.length >= 2)
-          PolylineLayer(polylines: [
-            Polyline(
-              points: c.mapRoute,
-              strokeWidth: 5,
-              color: c.mapRouteIsApprox ? Colors.orange : Colors.blue,
-              borderStrokeWidth: 2,
-              borderColor: Colors.white,
-            ),
-          ]),
-        MarkerLayer(markers: [
-          if (c.mapMyPoint != null)
-            Marker(
-              point: c.mapMyPoint!,
-              width: 22,
-              height: 22,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white, width: 3),
-                  boxShadow: const [
-                    BoxShadow(color: Colors.black26, blurRadius: 4),
-                  ],
-                ),
-              ),
-            ),
-          Marker(
-            point: dest,
-            width: 40,
-            height: 40,
-            alignment: Alignment.topCenter, // رأس الدبوس على النقطة
-            child: const Icon(Icons.location_on, size: 40, color: Colors.red),
-          ),
-        ]),
-      ],
     );
   }
 
@@ -261,7 +221,6 @@ class _MapPreviewSectionState extends State<MapPreviewSection> {
 
   @override
   void dispose() {
-    _mapController.dispose();
     _c.clearOrderMap();
     super.dispose();
   }

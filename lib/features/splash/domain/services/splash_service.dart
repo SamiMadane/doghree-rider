@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import 'package:wefrh_rider/features/splash/domain/repositories/splash_repository_interface.dart';
-import 'package:wefrh_rider/features/splash/domain/services/splash_service_interface.dart';
+import 'package:doghree_rider/features/splash/domain/repositories/splash_repository_interface.dart';
+import 'package:doghree_rider/features/splash/domain/services/splash_service_interface.dart';
 
 class SplashService implements SplashServiceInterface {
   final SplashRepositoryInterface navigationHandlerRepositoryInterface;

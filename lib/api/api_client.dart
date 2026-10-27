@@ -10,11 +10,11 @@ import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as p;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:wefrh_rider/api/api_checker.dart';
-import 'package:wefrh_rider/api/api_error_handler.dart';
-import 'package:wefrh_rider/api/error_message.dart';
-import 'package:wefrh_rider/api/error_type.dart';
-import 'package:wefrh_rider/util/app_constants.dart';
+import 'package:doghree_rider/api/api_checker.dart';
+import 'package:doghree_rider/api/api_error_handler.dart';
+import 'package:doghree_rider/api/error_message.dart';
+import 'package:doghree_rider/api/error_type.dart';
+import 'package:doghree_rider/util/app_constants.dart';
 
 class ApiClient extends GetxService {
   final String appBaseUrl;

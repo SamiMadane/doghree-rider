@@ -2,11 +2,11 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:wefrh_rider/api/api_client.dart';
-import 'package:wefrh_rider/features/auth/domain/models/delivery_man_body_model.dart';
-import 'package:wefrh_rider/features/auth/domain/models/vehicle_model.dart';
-import 'package:wefrh_rider/features/auth/domain/repositories/auth_repository_interface.dart';
-import 'package:wefrh_rider/util/app_constants.dart';
+import 'package:doghree_rider/api/api_client.dart';
+import 'package:doghree_rider/features/auth/domain/models/delivery_man_body_model.dart';
+import 'package:doghree_rider/features/auth/domain/models/vehicle_model.dart';
+import 'package:doghree_rider/features/auth/domain/repositories/auth_repository_interface.dart';
+import 'package:doghree_rider/util/app_constants.dart';
 
 class AuthRepository implements AuthRepositoryInterface {
   final ApiClient apiClient;

@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:wefrh_rider/api/api_client.dart';
-import 'package:wefrh_rider/common/models/response_model.dart';
-import 'package:wefrh_rider/features/profile/domain/models/profile_model.dart';
-import 'package:wefrh_rider/util/app_constants.dart';
+import 'package:doghree_rider/api/api_client.dart';
+import 'package:doghree_rider/common/models/response_model.dart';
+import 'package:doghree_rider/features/profile/domain/models/profile_model.dart';
+import 'package:doghree_rider/util/app_constants.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:wefrh_rider/features/forgot_password/domain/repositories/forgot_password_repository_interface.dart';
+import 'package:doghree_rider/features/forgot_password/domain/repositories/forgot_password_repository_interface.dart';
 
 class ForgotPasswordRepository implements ForgotPasswordRepositoryInterface {
   final ApiClient apiClient;

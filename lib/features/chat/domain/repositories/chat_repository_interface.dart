@@ -1,5 +1,5 @@
-import 'package:wefrh_rider/api/api_client.dart';
-import 'package:wefrh_rider/interface/repository_interface.dart';
+import 'package:doghree_rider/api/api_client.dart';
+import 'package:doghree_rider/interface/repository_interface.dart';
 
 abstract class ChatRepositoryInterface implements RepositoryInterface {
   Future<dynamic> getConversationList(int offset);

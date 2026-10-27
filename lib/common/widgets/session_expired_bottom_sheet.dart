@@ -1,23 +1,24 @@
+import 'package:doghree_rider/common/widgets/custom_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/util/manager_assets.dart';
-import 'package:wefrh_rider/util/manager_colors.dart';
-import 'package:wefrh_rider/util/styles.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/manager_assets.dart';
+import 'package:doghree_rider/util/styles.dart';
 
 /// Dialog احترافي لانتهاء الجلسة
 class SessionExpiredBottomSheet extends StatelessWidget {
   final VoidCallback onConfirm;
 
   const SessionExpiredBottomSheet({
-    Key? key,
+    super.key,
     required this.onConfirm,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: Dimensions.w20, vertical: Dimensions.h20),
+      padding: EdgeInsets.symmetric(
+          horizontal: Dimensions.w20, vertical: Dimensions.h20),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -32,7 +33,7 @@ class SessionExpiredBottomSheet extends StatelessWidget {
             'weve_logged_you_out'.tr,
             style: textBold().copyWith(
               fontSize: 22,
-              color: ManagerColors.error,
+              color: Theme.of(context).textTheme.bodyMedium?.color
             ),
             textAlign: TextAlign.center,
           ),
@@ -44,7 +45,7 @@ class SessionExpiredBottomSheet extends StatelessWidget {
             'new_device_logged_in'.tr,
             style: textRegular().copyWith(
               fontSize: Dimensions.fs15,
-              color: Theme.of(context).disabledColor,
+              color: Theme.of(context).hintColor,
               height: 1.5,
             ),
             textAlign: TextAlign.center,
@@ -53,33 +54,11 @@ class SessionExpiredBottomSheet extends StatelessWidget {
           SizedBox(height: Dimensions.h25),
 
           // زر مخصص
-          _buildConfirmButton(context),
+          CustomButtonWidget(
+            onPressed: onConfirm,
+            buttonText: 'ok'.tr,
+          )
         ],
-      ),
-    );
-  }
-
-  Widget _buildConfirmButton(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      height: 50,
-      child: ElevatedButton(
-        onPressed: onConfirm,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Theme.of(context).primaryColor,
-          foregroundColor: Colors.white,
-          elevation: 0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-        child: Text(
-          'ok'.tr,
-          style: textBold().copyWith(
-            fontSize: 16,
-            color: Colors.white,
-          ),
-        ),
       ),
     );
   }

@@ -1,12 +1,12 @@
-import 'package:wefrh_rider/common/widgets/empty_state_widget.dart';
-import 'package:wefrh_rider/features/notification/controllers/notification_controller.dart';
-import 'package:wefrh_rider/helper/date_converter_helper.dart';
-import 'package:wefrh_rider/helper/route_helper.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/util/manager_assets.dart';
-import 'package:wefrh_rider/util/styles.dart';
-import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
-import 'package:wefrh_rider/common/widgets/custom_image_widget.dart';
+import 'package:doghree_rider/common/widgets/empty_state_widget.dart';
+import 'package:doghree_rider/features/notification/controllers/notification_controller.dart';
+import 'package:doghree_rider/helper/date_converter_helper.dart';
+import 'package:doghree_rider/helper/route_helper.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/manager_assets.dart';
+import 'package:doghree_rider/util/styles.dart';
+import 'package:doghree_rider/common/widgets/custom_app_bar_widget.dart';
+import 'package:doghree_rider/common/widgets/custom_image_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -30,6 +30,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final ColorScheme scheme = Theme.of(context).colorScheme;
+
     return Scaffold(
       appBar: CustomAppBarWidget(
         title: 'notifications'.tr,
@@ -40,35 +42,32 @@ class _NotificationScreenState extends State<NotificationScreen> {
             Get.back();
           }
         },
-        
       ),
       body: GetBuilder<NotificationController>(builder: (controller) {
         final notifications = controller.notificationList;
-        
+
         // ✅ Loading state
         if (controller.isLoading || notifications == null) {
           return const Center(child: CircularProgressIndicator());
         }
-        
+
         // ✅ Empty state
         if (notifications.isEmpty) {
           return Container(
-                    margin: EdgeInsets.only(top: Dimensions.h16),
-                    color: Theme.of(context).cardColor,
-                    child: EmptyStateWidget(
-                      image: ManagerAssets.noNotificationImage,
-                      imageScale: 1.1,
-                      title: 'no_notifications'.tr,
-                      description: 'no_new_notifications_yet'.tr,
-                      buttonText: 'back_to_home_screen'.tr,
-                      onButtonPressed: () {
-                        Get.offAllNamed(RouteHelper.getInitialRoute());
-                      },
-                    ),
-                  );
+            margin: EdgeInsets.only(top: Dimensions.h16),
+            color: Theme.of(context).cardColor,
+            child: EmptyStateWidget(
+              image: ManagerAssets.noNotificationImage,
+              imageScale: 1.1,
+              title: 'no_notifications'.tr,
+              description: 'no_new_notifications_yet'.tr,
+              buttonText: 'back_to_home_screen'.tr,
+              onButtonPressed: () {
+                Get.offAllNamed(RouteHelper.getInitialRoute());
+              },
+            ),
+          );
         }
-
-        List<DateTime> dateTimeList = [];
 
         return RefreshIndicator(
           onRefresh: () async {
@@ -81,15 +80,19 @@ class _NotificationScreenState extends State<NotificationScreen> {
               itemCount: notifications.length,
               itemBuilder: (context, index) {
                 final notification = notifications[index];
-                DateTime originalDateTime =
-                    DateConverterHelper.dateTimeStringToDate(notification.createdAt!);
-                DateTime convertedDate = DateTime(
-                    originalDateTime.year, originalDateTime.month, originalDateTime.day);
+                final DateTime date = DateConverterHelper.dateTimeStringToDate(
+                    notification.createdAt!);
 
-                bool addTitle = false;
-                if (!dateTimeList.contains(convertedDate)) {
-                  addTitle = true;
-                  dateTimeList.add(convertedDate);
+                // ✅ عنوان التاريخ: يظهر لما يختلف يوم الإشعار عن اللي قبله.
+                // (بدل قائمة تتراكم أثناء البناء وكانت تخفي العنوان بعد السكرول)
+                bool addTitle = true;
+                if (index > 0) {
+                  final DateTime prev =
+                      DateConverterHelper.dateTimeStringToDate(
+                          notifications[index - 1].createdAt!);
+                  addTitle = !(prev.year == date.year &&
+                      prev.month == date.month &&
+                      prev.day == date.day);
                 }
 
                 // ✅ Server-side isRead مش SharedPreferences
@@ -100,15 +103,15 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   children: [
                     if (addTitle)
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: Dimensions.w16,
+                          vertical: Dimensions.h16,
+                        ),
                         child: Text(
-                          DateConverterHelper.convertTodayYesterdayDate(notification.createdAt!),
+                          DateConverterHelper.convertTodayYesterdayDate(
+                              notification.createdAt!),
                           style: textRegular().copyWith(
-                            color: Theme.of(context)
-                                .textTheme
-                                .bodyLarge
-                                ?.color
-                                ?.withAlpha(180),
+                            color: scheme.onSurfaceVariant,
                           ),
                         ),
                       ),
@@ -120,11 +123,15 @@ class _NotificationScreenState extends State<NotificationScreen> {
                       child: Column(
                         children: [
                           Container(
-                            padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: Dimensions.w16,
+                              vertical: Dimensions.h16,
+                            ),
                             // ✅ Background color بناءً على isRead
                             color: isSeen
                                 ? null
-                                : Theme.of(context).primaryColor.withAlpha(10),
+                                : scheme.primaryContainer
+                                    .withValues(alpha: 0.6),
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -133,27 +140,35 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                   ClipOval(
                                     child: CustomImageWidget(
                                       image: notification.imageFullUrl!,
-                                      height: 60,
-                                      width: 60,
+                                      height: Dimensions.w60,
+                                      width: Dimensions.w60,
                                       fit: BoxFit.cover,
                                     ),
                                   )
                                 else if (!isSeen)
                                   Container(
-                                    height: 12,
-                                    width: 12,
-                                    margin: EdgeInsets.only(top: 4),
-                                    decoration: const BoxDecoration(
-                                      color: Colors.green,
+                                    height: Dimensions.w14,
+                                    width: Dimensions.w14,
+                                    margin: EdgeInsets.only(top: Dimensions.h4),
+                                    decoration: BoxDecoration(
+                                      color: scheme.primary,
                                       shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color:
+                                            scheme.brightness == Brightness.dark
+                                                ? Colors.white
+                                                : scheme.onPrimary,
+                                        width: 2,
+                                      ),
                                     ),
                                   )
                                 else
-                                  SizedBox(width: 12),
+                                  SizedBox(width: Dimensions.w14),
                                 SizedBox(width: Dimensions.w16),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Row(
                                         children: [
@@ -164,15 +179,11 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                                 fontSize: Dimensions.fs14,
                                                 // ✅ Title style بناءً على isRead
                                                 color: isSeen
-                                                    ? Theme.of(context)
-                                                        .textTheme
-                                                        .bodyLarge
-                                                        ?.color
-                                                        ?.withAlpha(128)
-                                                    : null,
+                                                    ? scheme.onSurfaceVariant
+                                                    : scheme.onSurface,
                                                 fontWeight: isSeen
                                                     ? FontWeight.w500
-                                                    : FontWeight.w600,
+                                                    : FontWeight.w700,
                                               ),
                                               maxLines: 2,
                                               overflow: TextOverflow.ellipsis,
@@ -180,11 +191,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                           ),
                                           SizedBox(width: Dimensions.w10),
                                           Text(
-                                            DateConverterHelper.convertTimeDifference(
-                                                notification.createdAt!),
+                                            DateConverterHelper
+                                                .convertTimeDifference(
+                                                    notification.createdAt!),
                                             style: textMedium().copyWith(
                                               fontSize: Dimensions.fs12,
-                                              color: Theme.of(context).hintColor,
+                                              color: scheme.onSurfaceVariant,
                                             ),
                                           ),
                                         ],
@@ -196,12 +208,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                           fontSize: Dimensions.fs14,
                                           // ✅ Description style بناءً على isRead
                                           color: isSeen
-                                              ? Theme.of(context).disabledColor
-                                              : Theme.of(context)
-                                                  .textTheme
-                                                  .bodyLarge
-                                                  ?.color
-                                                  ?.withAlpha(180),
+                                              ? scheme.onSurfaceVariant
+                                                  .withValues(alpha: 0.8)
+                                              : scheme.onSurface,
                                         ),
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,

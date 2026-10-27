@@ -1,5 +1,5 @@
-import 'package:wefrh_rider/interface/repository_interface.dart';
-import 'package:wefrh_rider/features/notification/domain/models/notification_model.dart';
+import 'package:doghree_rider/interface/repository_interface.dart';
+import 'package:doghree_rider/features/notification/domain/models/notification_model.dart';
 
 abstract class NotificationRepositoryInterface extends RepositoryInterface {
   // ✅ الجديد - Server-side read status

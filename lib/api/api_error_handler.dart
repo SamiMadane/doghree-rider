@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/api/error_message.dart';
-import 'package:wefrh_rider/api/error_type.dart';
+import 'package:doghree_rider/api/error_message.dart';
+import 'package:doghree_rider/api/error_type.dart';
 import 'api_error_model.dart';
 
 class ApiErrorHandler {

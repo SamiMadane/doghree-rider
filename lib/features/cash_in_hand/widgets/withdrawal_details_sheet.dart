@@ -1,18 +1,24 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/common/widgets/image_diaglog_widget.dart';
-import 'package:wefrh_rider/features/cash_in_hand/domain/models/wallet_withdrawal_model.dart';
-import 'package:wefrh_rider/helper/price_converter_helper.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/util/styles.dart';
+import 'package:doghree_rider/common/widgets/custom_bottom_sheet_widget.dart';
+import 'package:doghree_rider/common/widgets/image_diaglog_widget.dart';
+import 'package:doghree_rider/features/cash_in_hand/domain/models/wallet_withdrawal_model.dart';
+import 'package:doghree_rider/helper/price_converter_helper.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/manager_colors.dart';
+import 'package:doghree_rider/util/styles.dart';
+import 'package:doghree_rider/util/theme_extension.dart';
 
+/// شعارات وسائل السحب (اختياري). المفتاح = جزء من اسم الوسيلة.
+/// لما تجهّز الشعارات ضيفها هون، وإذا ما انضافت بتظهر أول حرف من الاسم.
+/// مثال:
+///   'جوال': ManagerAssets.jawwalPayLogo,
+///   'فلسطين': ManagerAssets.bankOfPalestineLogo,
+const Map<String, String> _methodLogos = <String, String>{};
+
+/// نفس شيت التطبيق (showCustomBottomSheet)
 void showWithdrawalDetails(WalletWithdrawal item) {
-  Get.bottomSheet(
-    WithdrawalDetailsSheet(item: item),
-    isScrollControlled: true,
-    backgroundColor: Colors.transparent,
-  );
+  showCustomBottomSheet(child: WithdrawalDetailsSheet(item: item));
 }
 
 String _two(int n) => n.toString().padLeft(2, '0');
@@ -25,30 +31,17 @@ String _fmt(DateTime? d) => d == null
 class WithdrawalDetailsSheet extends StatelessWidget {
   final WalletWithdrawal item;
 
-  const WithdrawalDetailsSheet({
-    super.key,
-    required this.item,
-  });
+  const WithdrawalDetailsSheet({super.key, required this.item});
 
-  Color _statusColor(BuildContext context) {
+  // ألوان الحالة من ManagerColors عبر ثيم التطبيق
+  Color _statusColor(CustomColorsExtension c) {
     switch (item.status) {
       case 'paid':
-        return const Color(0xFF15966A);
+        return c.green;
       case 'rejected':
-        return const Color(0xFFE05252);
+        return c.red;
       default:
-        return const Color(0xFFE99A27);
-    }
-  }
-
-  IconData _statusIcon() {
-    switch (item.status) {
-      case 'paid':
-        return Icons.check_circle_outline_rounded;
-      case 'rejected':
-        return Icons.cancel_outlined;
-      default:
-        return Icons.schedule_rounded;
+        return c.orange;
     }
   }
 
@@ -65,456 +58,421 @@ class WithdrawalDetailsSheet extends StatelessWidget {
     }
   }
 
-  Widget _sectionTitle(
-    BuildContext context,
-    String title,
-    IconData icon,
-  ) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: Dimensions.h12),
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final ColorScheme cs = theme.colorScheme;
+    final CustomColorsExtension colors =
+        theme.extension<CustomColorsExtension>()!;
+    final bool paid = item.status == 'paid';
+    final bool rejected = item.status == 'rejected';
+    final String? proof = item.payoutProofUrl;
+
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.8,
+      ),
+      child: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(
+          horizontal: Dimensions.w20,
+          vertical: Dimensions.h16,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Text(
+                'wallet_withdraw_details'.tr,
+                style: textBold().copyWith(fontSize: Dimensions.fs16),
+              ),
+            ),
+            SizedBox(height: Dimensions.h20),
+
+            // المبلغ + الحالة
+            Row(
+              children: [
+                Expanded(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: AlignmentDirectional.centerStart,
+                    child: Text(
+                      PriceConverterHelper.convertPrice(item.amount),
+                      textDirection: TextDirection.ltr,
+                      style: textBold().copyWith(
+                        fontSize: 34,
+                        height: 1.2,
+                        color: cs.onSurface,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: Dimensions.w12),
+                _StatusPill(label: _statusText, color: _statusColor(colors)),
+              ],
+            ),
+
+            SizedBox(height: Dimensions.h16),
+            _DashedLine(color: colors.strock1),
+            SizedBox(height: Dimensions.h20),
+
+            // سبب الرفض: كتلة كاملة العرض، تتحمل أي طول
+            if (rejected && _has(item.rejectionReason)) ...[
+              _TextBlock(
+                label: 'wallet_rejection_reason'.tr,
+                text: item.rejectionReason!,
+                accent: colors.red,
+              ),
+              SizedBox(height: Dimensions.h20),
+            ],
+
+            // حساب السحب
+            _MethodRow(name: item.methodName, summary: item.accountSummary),
+
+            // معلومات قصيرة: عنوان + قيمة
+            _InfoRow(
+                label: 'wallet_requested_at'.tr,
+                value: _fmt(item.requestedAt),
+                ltr: true),
+            if (paid)
+              _InfoRow(
+                  label: 'wallet_paid_at'.tr,
+                  value: _fmt(item.paidAt),
+                  ltr: true),
+            if (paid) ...[
+              _InfoRow(
+                  label: 'wallet_payout_method'.tr,
+                  value: item.payoutMethodLabel),
+              _InfoRow(
+                  label: 'wallet_reference'.tr,
+                  value: item.payoutReference,
+                  ltr: true),
+            ],
+
+            // ملاحظات طويلة: عنوان فوق والنص تحته
+            if (_has(item.note))
+              _TextBlock(label: 'wallet_note'.tr, text: item.note!),
+            if ((paid || rejected) && _has(item.adminNote))
+              _TextBlock(
+                  label: 'wallet_admin_note'.tr, text: item.adminNote!),
+
+            if (proof != null && proof.isNotEmpty) _Proof(url: proof),
+            SizedBox(height: Dimensions.h8),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+bool _has(String? v) => v != null && v.trim().isNotEmpty;
+
+/// شارة الحالة: نفس شارات التطبيق (خلفية الحالة + نص أسفلت)
+class _StatusPill extends StatelessWidget {
+  final String label;
+  final Color color;
+  const _StatusPill({required this.label, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: Dimensions.w12, vertical: 5),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(999),
+      ),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            icon,
-            size: 19,
-            color: Theme.of(context).colorScheme.primary,
+          Container(
+            width: 6,
+            height: 6,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: ManagerColors.onPrimary,
+            ),
           ),
-          SizedBox(width: Dimensions.w8),
+          const SizedBox(width: 6),
           Text(
-            title,
+            label,
             style: textSemiBold().copyWith(
-              fontSize: Dimensions.fs14,
-              color: Theme.of(context).colorScheme.onSurface,
+              fontSize: Dimensions.fs13,
+              color: ManagerColors.onPrimary,
             ),
           ),
         ],
       ),
     );
   }
+}
 
-  Widget _detailRow(
-    BuildContext context, {
-    required String label,
-    required String? value,
-    IconData? icon,
-    bool ltr = false,
-  }) {
-    if (value == null || value.trim().isEmpty) {
-      return const SizedBox.shrink();
+/// حساب السحب: دائرة (شعار أو أول حرف) + اسم الوسيلة + تفاصيل الحساب
+class _MethodRow extends StatelessWidget {
+  final String name;
+  final String summary;
+  const _MethodRow({required this.name, required this.summary});
+
+  String? get _logo {
+    for (final MapEntry<String, String> e in _methodLogos.entries) {
+      if (name.contains(e.key)) return e.value;
     }
+    return null;
+  }
 
-    final theme = Theme.of(context);
+  @override
+  Widget build(BuildContext context) {
+    if (name.isEmpty && summary.isEmpty) return const SizedBox.shrink();
 
+    final ThemeData theme = Theme.of(context);
+    final ColorScheme cs = theme.colorScheme;
+    final CustomColorsExtension colors =
+        theme.extension<CustomColorsExtension>()!;
+    final String? logo = _logo;
+
+    return Padding(
+      padding: EdgeInsets.only(bottom: Dimensions.h20),
+      child: Row(
+        children: [
+          Container(
+            width: 44,
+            height: 44,
+            alignment: Alignment.center,
+            padding: EdgeInsets.all(logo == null ? 0 : 8),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: logo == null ? cs.primaryContainer : cs.surface,
+              border: logo == null ? null : Border.all(color: colors.strock2),
+            ),
+            child: logo != null
+                ? Image.asset(logo, fit: BoxFit.contain)
+                : Text(
+                    name.isEmpty ? '•' : String.fromCharCode(name.runes.first),
+                    style: textBold().copyWith(
+                      fontSize: Dimensions.fs16,
+                      color: cs.onPrimaryContainer,
+                    ),
+                  ),
+          ),
+          SizedBox(width: Dimensions.w12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (name.isNotEmpty)
+                  Text(
+                    name,
+                    style: textBold().copyWith(
+                      fontSize: Dimensions.fs14,
+                      color: cs.onSurface,
+                    ),
+                  ),
+                if (summary.isNotEmpty) ...[
+                  SizedBox(height: Dimensions.h4),
+                  Text(
+                    summary,
+                    style: textRegular().copyWith(
+                      fontSize: Dimensions.fs13,
+                      color: cs.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// سطر قصير: العنوان بالبداية والقيمة بالنهاية
+class _InfoRow extends StatelessWidget {
+  final String label;
+  final String? value;
+  final bool ltr;
+  const _InfoRow({required this.label, required this.value, this.ltr = false});
+
+  @override
+  Widget build(BuildContext context) {
+    final String text = value?.trim() ?? '';
+    if (text.isEmpty) return const SizedBox.shrink();
+
+    final ColorScheme cs = Theme.of(context).colorScheme;
     return Padding(
       padding: EdgeInsets.only(bottom: Dimensions.h16),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (icon != null) ...[
-            Icon(
-              icon,
-              size: 18,
-              color: theme.hintColor,
+          Text(
+            label,
+            style: textRegular().copyWith(
+              fontSize: Dimensions.fs13,
+              color: cs.onSurfaceVariant,
             ),
-            SizedBox(width: Dimensions.w10),
-          ],
+          ),
+          SizedBox(width: Dimensions.w16),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: textRegular().copyWith(
-                    fontSize: Dimensions.fs12,
-                    color: theme.hintColor,
-                  ),
+            child: Align(
+              alignment: AlignmentDirectional.centerEnd,
+              child: Text(
+                text,
+                textDirection: ltr ? TextDirection.ltr : null,
+                style: textMedium().copyWith(
+                  fontSize: Dimensions.fs14,
+                  height: 1.4,
+                  color: cs.onSurface,
                 ),
-                SizedBox(height: Dimensions.h4),
-                Text(
-                  value,
-                  textDirection: ltr ? TextDirection.ltr : null,
-                  textAlign: ltr ? TextAlign.start : null,
-                  style: textMedium().copyWith(
-                    fontSize: Dimensions.fs14,
-                    height: 1.4,
-                    color: theme.colorScheme.onSurface,
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
         ],
       ),
     );
   }
+}
 
-  Widget _sectionCard({
-    required BuildContext context,
-    required Widget child,
-  }) {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(Dimensions.w16),
-      decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        borderRadius: BorderRadius.circular(Dimensions.r16),
-        border: Border.all(
-          color: Theme.of(context).dividerColor.withOpacity(0.35),
+/// نص طويل: العنوان فوق والنص كامل العرض، مع خط جانبي اختياري
+class _TextBlock extends StatelessWidget {
+  final String label;
+  final String text;
+  final Color? accent;
+  const _TextBlock({required this.label, required this.text, this.accent});
+
+  @override
+  Widget build(BuildContext context) {
+    final ColorScheme cs = Theme.of(context).colorScheme;
+    final Widget content = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: textRegular().copyWith(
+            fontSize: Dimensions.fs13,
+            color: cs.onSurfaceVariant,
+          ),
         ),
-      ),
-      child: child,
+        SizedBox(height: Dimensions.h4),
+        Text(
+          text.trim(),
+          style: textMedium().copyWith(
+            fontSize: Dimensions.fs14,
+            height: 1.5,
+            color: cs.onSurface,
+          ),
+        ),
+      ],
+    );
+
+    return Padding(
+      padding: EdgeInsets.only(bottom: Dimensions.h16),
+      child: accent == null
+          ? content
+          : IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Container(
+                    width: 3,
+                    decoration: BoxDecoration(
+                      color: accent,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                  SizedBox(width: Dimensions.w12),
+                  Expanded(child: content),
+                ],
+              ),
+            ),
     );
   }
+}
 
-  Widget _buildProof(BuildContext context, String proof) {
-    final theme = Theme.of(context);
+/// إثبات الدفع
+class _Proof extends StatelessWidget {
+  final String url;
+  const _Proof({required this.url});
 
+  @override
+  Widget build(BuildContext context) {
+    final ColorScheme cs = Theme.of(context).colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _sectionTitle(
-          context,
+        Text(
           'wallet_payout_proof'.tr,
-          Icons.receipt_long_rounded,
+          style: textRegular().copyWith(
+            fontSize: Dimensions.fs13,
+            color: cs.onSurfaceVariant,
+          ),
         ),
+        SizedBox(height: Dimensions.h8),
         GestureDetector(
           onTap: () => showDialog(
             context: context,
-            builder: (_) => ImageDialogWidget(imageUrl: proof),
+            builder: (_) => ImageDialogWidget(imageUrl: url),
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(Dimensions.r12),
-            child: Stack(
-              alignment: Alignment.bottomCenter,
-              children: [
-                Image.network(
-                  proof,
-                  width: double.infinity,
+            child: Image.network(
+              url,
+              width: double.infinity,
+              height: Dimensions.h180,
+              fit: BoxFit.cover,
+              loadingBuilder: (context, child, progress) {
+                if (progress == null) return child;
+                return SizedBox(
                   height: Dimensions.h180,
-                  fit: BoxFit.cover,
-                  loadingBuilder: (context, child, progress) {
-                    if (progress == null) return child;
-
-                    return SizedBox(
-                      height: Dimensions.h180,
-                      child: const Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    );
-                  },
-                  errorBuilder: (_, __, ___) => Container(
-                    height: Dimensions.h180,
-                    width: double.infinity,
-                    alignment: Alignment.center,
-                    color: theme.scaffoldBackgroundColor,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.broken_image_outlined,
-                          size: 32,
-                          color: theme.hintColor,
-                        ),
-                        SizedBox(height: Dimensions.h8),
-                        Text(
-                          'wallet_proof_unavailable'.tr,
-                          style: textRegular().copyWith(
-                            color: theme.hintColor,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  child: const Center(child: CircularProgressIndicator()),
+                );
+              },
+              errorBuilder: (_, __, ___) => Container(
+                height: Dimensions.h180,
+                width: double.infinity,
+                alignment: Alignment.center,
+                color: Theme.of(context).scaffoldBackgroundColor,
+                child: Text(
+                  'wallet_proof_unavailable'.tr,
+                  style: textRegular().copyWith(color: cs.onSurfaceVariant),
                 ),
-                IgnorePointer(
-                  child: Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.symmetric(
-                      vertical: Dimensions.h10,
-                    ),
-                    color: Colors.black.withOpacity(0.55),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(
-                          Icons.zoom_in_rounded,
-                          color: Colors.white,
-                          size: 18,
-                        ),
-                        SizedBox(width: Dimensions.w6),
-                        Text(
-                          'wallet_payout_proof'.tr,
-                          style: textMedium().copyWith(
-                            color: Colors.white,
-                            fontSize: Dimensions.fs12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
         ),
       ],
     );
   }
+}
+
+/// خط شحطات بسيط (Row + مربعات صغيرة)
+class _DashedLine extends StatelessWidget {
+  final Color color;
+  const _DashedLine({required this.color});
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final statusColor = _statusColor(context);
-    final proof = item.payoutProofUrl;
-
-    final account = [
-      item.methodName,
-      item.accountSummary,
-    ].where((value) => value.isNotEmpty).join(' · ');
-
-    return Container(
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.88,
-      ),
-      decoration: BoxDecoration(
-        color: theme.cardColor,
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(Dimensions.r24),
-        ),
-      ),
-      child: SafeArea(
-        top: false,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(
-                top: Dimensions.h12,
-                bottom: Dimensions.h8,
-              ),
-              child: Container(
-                width: 38,
-                height: 4,
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        const double dash = 7;
+        const double gap = 7;
+        final int count =
+            ((constraints.maxWidth + gap) / (dash + gap)).floor();
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: List<Widget>.generate(
+            count,
+            (_) => SizedBox(
+              width: dash,
+              height: 2,
+              child: DecoratedBox(
                 decoration: BoxDecoration(
-                  color: theme.dividerColor,
-                  borderRadius: BorderRadius.circular(10),
+                  color: color,
+                  borderRadius: BorderRadius.circular(1),
                 ),
               ),
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: Dimensions.w20,
-                vertical: Dimensions.h8,
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    width: 42,
-                    height: 42,
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.primary.withOpacity(0.09),
-                      borderRadius: BorderRadius.circular(
-                        Dimensions.r12,
-                      ),
-                    ),
-                    child: Icon(
-                      Icons.account_balance_wallet_outlined,
-                      color: theme.colorScheme.primary,
-                      size: 23,
-                    ),
-                  ),
-                  SizedBox(width: Dimensions.w12),
-                  Expanded(
-                    child: Text(
-                      'wallet_withdraw_details'.tr,
-                      style: textBold().copyWith(
-                        fontSize: Dimensions.fs16,
-                        color: theme.colorScheme.onSurface,
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: Get.back,
-                    tooltip: MaterialLocalizations.of(context)
-                        .closeButtonTooltip,
-                    icon: Icon(
-                      Icons.close_rounded,
-                      color: theme.hintColor,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Divider(
-              height: 1,
-              color: theme.dividerColor.withOpacity(0.4),
-            ),
-            Flexible(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.fromLTRB(
-                  Dimensions.w20,
-                  Dimensions.h16,
-                  Dimensions.w20,
-                  Dimensions.h24,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Amount and status
-                    Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.all(Dimensions.w20),
-                      decoration: BoxDecoration(
-                        color: theme.colorScheme.primary.withOpacity(0.055),
-                        borderRadius: BorderRadius.circular(
-                          Dimensions.r16,
-                        ),
-                        border: Border.all(
-                          color: theme.colorScheme.primary.withOpacity(0.12),
-                        ),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'wallet_withdraw_details'.tr,
-                            style: textRegular().copyWith(
-                              color: theme.hintColor,
-                              fontSize: Dimensions.fs12,
-                            ),
-                          ),
-                          SizedBox(height: Dimensions.h8),
-                          Text(
-                            PriceConverterHelper.convertPrice(item.amount),
-                            textDirection: TextDirection.ltr,
-                            style: textBold().copyWith(
-                              fontSize: Dimensions.fs24,
-                              color: theme.colorScheme.onSurface,
-                            ),
-                          ),
-                          SizedBox(height: Dimensions.h16),
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: Dimensions.w12,
-                              vertical: Dimensions.h8,
-                            ),
-                            decoration: BoxDecoration(
-                              color: statusColor.withOpacity(0.10),
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  _statusIcon(),
-                                  size: 17,
-                                  color: statusColor,
-                                ),
-                                SizedBox(width: Dimensions.w6),
-                                Text(
-                                  _statusText,
-                                  style: textSemiBold().copyWith(
-                                    color: statusColor,
-                                    fontSize: Dimensions.fs12,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    SizedBox(height: Dimensions.h20),
-
-                    // Request information
-                    _sectionCard(
-                      context: context,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _sectionTitle(
-                            context,
-                            'wallet_withdraw_details'.tr,
-                            Icons.receipt_outlined,
-                          ),
-                          _detailRow(
-                            context,
-                            label: 'wallet_requested_at'.tr,
-                            value: _fmt(item.requestedAt),
-                            icon: Icons.calendar_today_outlined,
-                            ltr: true,
-                          ),
-                          if (item.status == 'paid')
-                            _detailRow(
-                              context,
-                              label: 'wallet_paid_at'.tr,
-                              value: _fmt(item.paidAt),
-                              icon: Icons.event_available_outlined,
-                              ltr: true,
-                            ),
-                          _detailRow(
-                            context,
-                            label: 'wallet_account'.tr,
-                            value: account,
-                            icon: Icons.account_balance_outlined,
-                          ),
-                          _detailRow(
-                            context,
-                            label: 'wallet_note'.tr,
-                            value: item.note,
-                            icon: Icons.sticky_note_2_outlined,
-                          ),
-                          if (item.status == 'paid') ...[
-                            _detailRow(
-                              context,
-                              label: 'wallet_payout_method'.tr,
-                              value: item.payoutMethodLabel,
-                              icon: Icons.payments_outlined,
-                            ),
-                            _detailRow(
-                              context,
-                              label: 'wallet_reference'.tr,
-                              value: item.payoutReference,
-                              icon: Icons.tag_rounded,
-                              ltr: true,
-                            ),
-                            _detailRow(
-                              context,
-                              label: 'wallet_admin_note'.tr,
-                              value: item.adminNote,
-                              icon: Icons.support_agent_rounded,
-                            ),
-                          ],
-                          if (item.status == 'rejected') ...[
-                            _detailRow(
-                              context,
-                              label: 'wallet_rejection_reason'.tr,
-                              value: item.rejectionReason,
-                              icon: Icons.info_outline_rounded,
-                            ),
-                            _detailRow(
-                              context,
-                              label: 'wallet_admin_note'.tr,
-                              value: item.adminNote,
-                              icon: Icons.support_agent_rounded,
-                            ),
-                          ],
-                        ],
-                      ),
-                    ),
-
-                    if (proof != null && proof.isNotEmpty) ...[
-                      SizedBox(height: Dimensions.h20),
-                      _buildProof(context, proof),
-                    ],
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

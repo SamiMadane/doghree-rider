@@ -3,14 +3,13 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/common/widgets/custom_text_field_widget.dart';
-import 'package:wefrh_rider/common/widgets/widget_with_label.dart';
-import 'package:wefrh_rider/features/auth/controllers/auth_controller.dart';
-import 'package:wefrh_rider/features/auth/widgets/pass_view_widget.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/util/manager_assets.dart';
-import 'package:wefrh_rider/util/manager_colors.dart';
-import 'package:wefrh_rider/util/styles.dart';
+import 'package:doghree_rider/common/widgets/custom_text_field_widget.dart';
+import 'package:doghree_rider/common/widgets/widget_with_label.dart';
+import 'package:doghree_rider/features/auth/controllers/auth_controller.dart';
+import 'package:doghree_rider/features/auth/widgets/pass_view_widget.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/manager_assets.dart';
+import 'package:doghree_rider/util/styles.dart';
 
 class DmRegistrationStep1 extends StatelessWidget {
   final TextEditingController fNameController;
@@ -82,7 +81,7 @@ class DmRegistrationStep1 extends StatelessWidget {
               right: 0,
               child: InkWell(
                 onTap: () {
-                  authController.clearFieldError('image'); 
+                  authController.clearFieldError('image');
                   authController.pickDmImageWithCrop(context);
                 },
                 child: Material(
@@ -97,7 +96,10 @@ class DmRegistrationStep1 extends StatelessWidget {
                       child: Center(
                           child: SvgPicture.asset(
                         ManagerAssets.editIcon,
-                        color: ManagerColors.orangeLightMode,
+                        colorFilter: ColorFilter.mode(
+                          Theme.of(context).colorScheme.primary,
+                          BlendMode.srcIn,
+                        ),
                       )),
                     ),
                   ),
@@ -145,8 +147,8 @@ class DmRegistrationStep1 extends StatelessWidget {
             isRequired: true,
             focusNode: lNameNode,
             nextFocus: phoneNode,
-            errorText: authController.fieldError('l_name'), 
-            onChanged: (_) => authController.clearFieldError('l_name'), 
+            errorText: authController.fieldError('l_name'),
+            onChanged: (_) => authController.clearFieldError('l_name'),
           ),
         ),
         SizedBox(height: Dimensions.h16),
@@ -164,7 +166,7 @@ class DmRegistrationStep1 extends StatelessWidget {
             onCountryChanged: onCountryChanged,
             countryDialCode: countryDialCode,
             errorText: authController.fieldError('phone'),
-            onChanged: (_) => authController.clearFieldError('phone'), 
+            onChanged: (_) => authController.clearFieldError('phone'),
           ),
         ),
         SizedBox(height: Dimensions.h16),
@@ -179,7 +181,7 @@ class DmRegistrationStep1 extends StatelessWidget {
             focusNode: emailNode,
             nextFocus: passwordNode,
             errorText: authController.fieldError('email'),
-            onChanged: (_) => authController.clearFieldError('email'), 
+            onChanged: (_) => authController.clearFieldError('email'),
           ),
         ),
         SizedBox(height: Dimensions.h16),

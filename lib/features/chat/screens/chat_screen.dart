@@ -3,22 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
-import 'package:wefrh_rider/features/auth/controllers/auth_controller.dart';
-import 'package:wefrh_rider/features/chat/controllers/chat_controller.dart';
-import 'package:wefrh_rider/features/notification/domain/models/notification_body_model.dart';
-import 'package:wefrh_rider/features/chat/domain/models/conversation_model.dart';
-import 'package:wefrh_rider/helper/responsive_helper.dart';
-import 'package:wefrh_rider/helper/route_helper.dart';
-import 'package:wefrh_rider/util/app_constants.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/util/manager_assets.dart';
-import 'package:wefrh_rider/util/styles.dart';
-import 'package:wefrh_rider/common/widgets/custom_image_widget.dart';
-import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
-import 'package:wefrh_rider/common/widgets/paginated_list_view_widget.dart';
-import 'package:wefrh_rider/features/chat/widgets/message_bubble_widget.dart';
-import 'package:wefrh_rider/util/theme_extension.dart';
+import 'package:doghree_rider/common/widgets/custom_app_bar_widget.dart';
+import 'package:doghree_rider/features/auth/controllers/auth_controller.dart';
+import 'package:doghree_rider/features/chat/controllers/chat_controller.dart';
+import 'package:doghree_rider/features/notification/domain/models/notification_body_model.dart';
+import 'package:doghree_rider/features/chat/domain/models/conversation_model.dart';
+import 'package:doghree_rider/helper/responsive_helper.dart';
+import 'package:doghree_rider/helper/route_helper.dart';
+import 'package:doghree_rider/util/app_constants.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/manager_assets.dart';
+import 'package:doghree_rider/util/styles.dart';
+import 'package:doghree_rider/common/widgets/custom_image_widget.dart';
+import 'package:doghree_rider/common/widgets/custom_snackbar_widget.dart';
+import 'package:doghree_rider/common/widgets/paginated_list_view_widget.dart';
+import 'package:doghree_rider/features/chat/widgets/message_bubble_widget.dart';
+import 'package:doghree_rider/util/theme_extension.dart';
 
 class ChatScreen extends StatefulWidget {
   final NotificationBodyModel? notificationBody;
@@ -54,6 +54,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     final customColor = Theme.of(context).extension<CustomColorsExtension>()!;
+    final ColorScheme cs = Theme.of(context).colorScheme;
 
     return GetBuilder<ChatController>(builder: (chatController) {
       // String? baseUrl = '';
@@ -94,7 +95,8 @@ class _ChatScreenState extends State<ChatScreen> {
                         ? '${chatController.messageModel!.conversation!.receiver!.fName ?? ''} '
                             '${chatController.messageModel!.conversation!.receiver!.lName ?? ''}'
                         : 'receiver_name'.tr,
-                    style: Theme.of(context).textTheme.titleMedium,
+                    style: textBold().copyWith(
+                        fontSize: Dimensions.fs16, color: cs.onSurface),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
@@ -294,9 +296,8 @@ class _ChatScreenState extends State<ChatScreen> {
                                     child: Container(
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(
-                                            Dimensions.r16),
-                                        border: Border.all(
-                                            color: customColor.strock1),
+                                            Dimensions.r20),
+                                        border: Border.all(color: cs.outline),
                                       ),
                                       child: TextField(
                                         controller: _inputMessageController,
@@ -330,8 +331,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                                 ManagerAssets.attachedIcon,
                                                 width: Dimensions.w20,
                                                 height: Dimensions.h20,
-                                                color:
-                                                    Theme.of(context).hintColor,
+                                               colorFilter: ColorFilter.mode(Theme.of(context).hintColor, BlendMode.srcIn),
                                               ),
                                             ),
                                           ),
@@ -401,28 +401,42 @@ class _ChatScreenState extends State<ChatScreen> {
                                                     'write_somethings'.tr);
                                               }
                                             },
-                                            child: SvgPicture.asset(
-                                              ManagerAssets.sendIcon,
-                                              width: 25,
-                                              height: 25,
-                                              color: chatController
-                                                      .isSendButtonActive
-                                                  ? Theme.of(context)
-                                                      .primaryColor
-                                                  : Get.isDarkMode
-                                                      ? Colors.white
-                                                      : Theme.of(context)
-                                                          .hintColor,
+                                            child: AnimatedContainer(
+                                              duration: const Duration(
+                                                  milliseconds: 200),
+                                              width: Dimensions.w40,
+                                              height: Dimensions.w40,
+                                              alignment: Alignment.center,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: chatController
+                                                        .isSendButtonActive
+                                                    ? cs.primary
+                                                    : cs.outline,
+                                              ),
+                                              child: SvgPicture.asset(
+                                                ManagerAssets.sendIcon,
+                                                width: Dimensions.w20,
+                                                height: Dimensions.w20,
+                                                colorFilter: ColorFilter.mode(
+                                                  chatController
+                                                          .isSendButtonActive
+                                                      ? cs.onPrimary
+                                                      : cs.onSurfaceVariant,
+                                                  BlendMode.srcIn,
+                                                ),
+                                              ),
                                             ),
                                           )
-                                        : Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: Dimensions.w16),
-                                            child: SizedBox(
-                                              width: 25,
-                                              height: 25,
-                                              child:
-                                                  CircularProgressIndicator(),
+                                        : SizedBox(
+                                            width: Dimensions.w40,
+                                            height: Dimensions.w40,
+                                            child: Padding(
+                                              padding: EdgeInsets.all(
+                                                  Dimensions.w10),
+                                              child: CircularProgressIndicator(
+                                                  strokeWidth: 2.5,
+                                                  color: cs.onSurface),
                                             ),
                                           );
                                   }),

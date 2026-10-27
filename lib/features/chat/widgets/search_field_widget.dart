@@ -1,49 +1,66 @@
 import 'package:flutter/material.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/util/styles.dart';
-import 'package:wefrh_rider/util/theme_extension.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/styles.dart';
 
-class SearchFieldWidget extends StatefulWidget {
+class SearchFieldWidget extends StatelessWidget {
   final TextEditingController controller;
   final String hint;
   final Widget suffixIcon;
   final Function iconPressed;
   final Function? onSubmit;
   final Function? onChanged;
-  const SearchFieldWidget({super.key, required this.controller, required this.hint, required this.suffixIcon,
-    required this.iconPressed, this.onSubmit, this.onChanged});
+  const SearchFieldWidget({
+    super.key,
+    required this.controller,
+    required this.hint,
+    required this.suffixIcon,
+    required this.iconPressed,
+    this.onSubmit,
+    this.onChanged,
+  });
 
-  @override
-  State<SearchFieldWidget> createState() => _SearchFieldWidgetState();
-}
-
-class _SearchFieldWidgetState extends State<SearchFieldWidget> {
   @override
   Widget build(BuildContext context) {
-    final customColor = Theme.of(context).extension<CustomColorsExtension>()!;
+    final ThemeData theme = Theme.of(context);
+    final ColorScheme cs = theme.colorScheme;
+    final bool isDark = theme.brightness == Brightness.dark;
 
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color:customColor.strock1),
-        borderRadius: BorderRadius.circular(Dimensions.r16),
+    OutlineInputBorder border(Color color, [double width = 1]) =>
+        OutlineInputBorder(
+          borderRadius: BorderRadius.circular(Dimensions.r20),
+          borderSide: BorderSide(color: color, width: width),
+        );
+
+    return TextField(
+      controller: controller,
+      textInputAction: TextInputAction.search,
+      style: textRegular().copyWith(
+        fontSize: Dimensions.fs14,
+        color: cs.onSurface,
       ),
-      child: TextField(
-        controller: widget.controller,
-        textInputAction: TextInputAction.search,
-        decoration: InputDecoration(
-          hintText: widget.hint,
-          hintStyle: textMedium().copyWith(fontSize: Dimensions.fs14, color: Theme.of(context).disabledColor),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(Dimensions.r16), borderSide: BorderSide.none),
-          filled: true, fillColor: Theme.of(context).cardColor,
-          isDense: true,
-          suffixIcon: IconButton(
-            onPressed: widget.iconPressed as void Function()?,
-            icon: widget.suffixIcon,
-          ),
+      decoration: InputDecoration(
+        hintText: hint,
+        hintStyle: textMedium().copyWith(
+          fontSize: Dimensions.fs14,
+          color: cs.onSurfaceVariant,
         ),
-        onSubmitted: widget.onSubmit as void Function(String)?,
-        onChanged: widget.onChanged as void Function(String)?,
+        filled: true,
+        fillColor: theme.cardColor,
+        isDense: true,
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: Dimensions.w16,
+          vertical: Dimensions.h10,
+        ),
+        border: border(cs.outline),
+        enabledBorder: border(cs.outline),
+        focusedBorder: border(isDark ? cs.primary : cs.onSurface, 1.6),
+        suffixIcon: IconButton(
+          onPressed: iconPressed as void Function()?,
+          icon: suffixIcon,
+        ),
       ),
+      onSubmitted: onSubmit as void Function(String)?,
+      onChanged: onChanged as void Function(String)?,
     );
   }
 }

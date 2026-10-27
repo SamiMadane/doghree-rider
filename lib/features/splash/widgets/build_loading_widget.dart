@@ -2,9 +2,9 @@
 // import 'dart:math';
 // import 'package:flutter/material.dart';
 // import 'package:get/get.dart';
-// import 'package:wefrh_rider/util/dimensions.dart';
-// import 'package:wefrh_rider/util/manager_assets.dart';
-// import 'package:wefrh_rider/util/styles.dart';
+// import 'package:doghree_rider/util/dimensions.dart';
+// import 'package:doghree_rider/util/manager_assets.dart';
+// import 'package:doghree_rider/util/styles.dart';
 
 // Widget buildLoadingWidget(BuildContext context) {
 //   return Container(

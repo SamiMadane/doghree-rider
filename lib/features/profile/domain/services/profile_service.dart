@@ -1,14 +1,14 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:wefrh_rider/api/api_client.dart';
-import 'package:wefrh_rider/common/models/response_model.dart';
-import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
-import 'package:wefrh_rider/features/address/domain/models/record_location_body_model.dart';
-import 'package:wefrh_rider/features/profile/domain/models/profile_model.dart';
-import 'package:wefrh_rider/features/profile/domain/repositories/profile_repository_interface.dart';
-import 'package:wefrh_rider/features/profile/domain/services/profile_service_interface.dart';
-import 'package:wefrh_rider/helper/location_permission_manager.dart';
+import 'package:doghree_rider/api/api_client.dart';
+import 'package:doghree_rider/common/models/response_model.dart';
+import 'package:doghree_rider/common/widgets/custom_snackbar_widget.dart';
+import 'package:doghree_rider/features/address/domain/models/record_location_body_model.dart';
+import 'package:doghree_rider/features/profile/domain/models/profile_model.dart';
+import 'package:doghree_rider/features/profile/domain/repositories/profile_repository_interface.dart';
+import 'package:doghree_rider/features/profile/domain/services/profile_service_interface.dart';
+import 'package:doghree_rider/helper/location_permission_manager.dart';
 import 'package:flutter/foundation.dart' show debugPrint;
 
 class ProfileService implements ProfileServiceInterface {

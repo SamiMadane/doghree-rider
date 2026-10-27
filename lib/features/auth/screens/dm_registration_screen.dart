@@ -2,20 +2,20 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
+import 'package:doghree_rider/common/widgets/custom_app_bar_widget.dart';
 
-import 'package:wefrh_rider/features/auth/controllers/auth_controller.dart';
-import 'package:wefrh_rider/features/address/controllers/address_controller.dart';
-import 'package:wefrh_rider/features/auth/widgets/dm_registration_step1.dart';
-import 'package:wefrh_rider/features/auth/widgets/dm_registration_step2.dart';
-import 'package:wefrh_rider/common/widgets/step_progress_bar%20.dart';
-import 'package:wefrh_rider/features/splash/controllers/splash_controller.dart';
-import 'package:wefrh_rider/features/auth/domain/models/delivery_man_body_model.dart';
-import 'package:wefrh_rider/helper/custom_validator_helper.dart';
-import 'package:wefrh_rider/helper/route_helper.dart';
-import 'package:wefrh_rider/helper/validate_check.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
+import 'package:doghree_rider/features/auth/controllers/auth_controller.dart';
+import 'package:doghree_rider/features/address/controllers/address_controller.dart';
+import 'package:doghree_rider/features/auth/widgets/dm_registration_step1.dart';
+import 'package:doghree_rider/features/auth/widgets/dm_registration_step2.dart';
+import 'package:doghree_rider/common/widgets/step_progress_bar%20.dart';
+import 'package:doghree_rider/features/splash/controllers/splash_controller.dart';
+import 'package:doghree_rider/features/auth/domain/models/delivery_man_body_model.dart';
+import 'package:doghree_rider/helper/custom_validator_helper.dart';
+import 'package:doghree_rider/helper/route_helper.dart';
+import 'package:doghree_rider/helper/validate_check.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/common/widgets/custom_button_widget.dart';
 
 class DmRegistrationScreen extends StatefulWidget {
   const DmRegistrationScreen({super.key});

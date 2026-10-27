@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:wefrh_rider/common/controllers/theme_controller.dart';
-import 'package:wefrh_rider/common/widgets/confirmation_bottom_sheet.dart';
-import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
-import 'package:wefrh_rider/common/widgets/custom_bottom_sheet_widget.dart';
-import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
-import 'package:wefrh_rider/common/widgets/custom_snackbar_widget.dart';
-import 'package:wefrh_rider/features/auth/controllers/auth_controller.dart';
-import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
-import 'package:wefrh_rider/features/profile/widgets/profile_button_widget.dart';
-import 'package:wefrh_rider/helper/route_helper.dart';
-import 'package:wefrh_rider/util/app_constants.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/util/manager_assets.dart';
-import 'package:wefrh_rider/util/styles.dart';
+import 'package:doghree_rider/common/controllers/theme_controller.dart';
+import 'package:doghree_rider/common/widgets/confirmation_bottom_sheet.dart';
+import 'package:doghree_rider/common/widgets/custom_app_bar_widget.dart';
+import 'package:doghree_rider/common/widgets/custom_bottom_sheet_widget.dart';
+import 'package:doghree_rider/common/widgets/custom_button_widget.dart';
+import 'package:doghree_rider/common/widgets/custom_snackbar_widget.dart';
+import 'package:doghree_rider/features/auth/controllers/auth_controller.dart';
+import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
+import 'package:doghree_rider/features/profile/widgets/profile_button_widget.dart';
+import 'package:doghree_rider/helper/route_helper.dart';
+import 'package:doghree_rider/util/app_constants.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/manager_assets.dart';
+import 'package:doghree_rider/util/styles.dart';
 
 class SettingScreen extends StatelessWidget {
   const SettingScreen({super.key});
@@ -22,6 +22,8 @@ class SettingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profileController = Get.find<ProfileController>();
+    final scheme = Theme.of(context).colorScheme;
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: CustomAppBarWidget(
@@ -33,19 +35,20 @@ class SettingScreen extends StatelessWidget {
         padding: EdgeInsets.only(top: Dimensions.h16),
         child: Container(
           color: Theme.of(context).cardColor,
-          padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
+          padding: EdgeInsets.symmetric(
+            horizontal: Dimensions.w16,
+            vertical: Dimensions.h16,
+          ),
           child: Column(
             children: [
               ProfileButtonWidget(
                 svgPath: ManagerAssets.moonIcon,
                 title: 'dark_mode'.tr,
                 isButtonActive: Get.isDarkMode,
-                onTap: () {
-                  Get.find<ThemeController>().toggleTheme();
-                },
+                onTap: () => Get.find<ThemeController>().toggleTheme(),
               ),
               SizedBox(height: Dimensions.h4),
-              Divider(),
+              const Divider(),
               GetBuilder<AuthController>(builder: (authController) {
                 return ProfileButtonWidget(
                   svgPath: ManagerAssets.notificationIcon,
@@ -55,7 +58,7 @@ class SettingScreen extends StatelessWidget {
                     showCustomBottomSheet(
                         child: ConfirmationBottomSheet(
                       title: 'are_you_sure_you_want_to_enable_notification'.tr,
-                      iconSize: 60,
+                      iconSize: Dimensions.w60,
                       acceptText: !authController.notification
                           ? 'yes_enable'.tr
                           : 'yes_disable'.tr,
@@ -79,31 +82,27 @@ class SettingScreen extends StatelessWidget {
                 );
               }),
               SizedBox(height: Dimensions.h4),
-              Divider(),
+              const Divider(),
               GetBuilder<ProfileController>(builder: (profileController) {
                 return ProfileButtonWidget(
                   svgPath: ManagerAssets.notification2Icon,
                   title: 'background_notification'.tr,
                   isButtonActive: profileController.backgroundNotification,
-                  onTap: () {
-                    showBgNotificationBottomSheet(
-                        profileController.backgroundNotification);
-                  },
+                  onTap: () => showBgNotificationBottomSheet(
+                      profileController.backgroundNotification),
                 );
               }),
               SizedBox(height: Dimensions.h4),
-              Divider(),
+              const Divider(),
               SizedBox(height: Dimensions.h10),
               ProfileButtonWidget(
                 svgPath: ManagerAssets.keyIcon,
                 title: 'change_password'.tr,
                 showTrailing: false,
-                onTap: () {
-                  Get.toNamed(RouteHelper.getResetPasswordRoute(
-                      '', '', 'password-change'));
-                },
+                onTap: () => Get.toNamed(
+                    RouteHelper.getResetPasswordRoute('', '', 'password-change')),
               ),
-              Spacer(),
+              const Spacer(),
               Center(
                 child: TextButton(
                   onPressed: () {
@@ -115,20 +114,16 @@ class SettingScreen extends StatelessWidget {
                         acceptText: 'yes_delete_it'.tr,
                         cancelText: 'no_cancel'.tr,
                         hasCancel: true,
-                        onAccept: () {
-                          profileController.deleteDriver();
-                        },
-                        onCancel: () {
-                          Get.back();
-                        },
-                        acceptColor: Theme.of(context).colorScheme.error,
+                        onAccept: () => profileController.deleteDriver(),
+                        onCancel: () => Get.back(),
+                        acceptColor: scheme.error,
                       ),
                     );
                   },
                   child: Text(
                     'delete_your_account'.tr,
                     style: textMedium().copyWith(
-                      color: Colors.red,
+                      color: scheme.error,
                       fontSize: Dimensions.fs16,
                     ),
                   ),
@@ -153,8 +148,10 @@ void checkBatteryPermission() async {
 }
 
 void showBgNotificationBottomSheet(bool allow) {
+  final ThemeData theme = Theme.of(Get.context!);
+
   showCustomBottomSheet(
-    showCloseButton: false, 
+    showCloseButton: false,
     child: SafeArea(
       child: Padding(
         padding: EdgeInsets.symmetric(
@@ -167,8 +164,8 @@ void showBgNotificationBottomSheet(bool allow) {
               children: [
                 Image.asset(
                   ManagerAssets.logo,
-                  width: 70,
-                  height: 70,
+                  width: Dimensions.w60,
+                  height: Dimensions.w60,
                 ),
                 SizedBox(width: Dimensions.w16),
                 Expanded(
@@ -187,53 +184,57 @@ void showBgNotificationBottomSheet(bool allow) {
                     children: [
                       SizedBox(height: Dimensions.h16),
                       Text(
-                        "follow_these_steps".tr,
-                        style: textBold().copyWith(
-                          fontSize: Dimensions.fs15,
-                        ),
+                        'follow_these_steps'.tr,
+                        style: textBold().copyWith(fontSize: Dimensions.fs15),
                       ),
                       SizedBox(height: Dimensions.h10),
-                      _buildStep("1", "${AppConstants.appName}"),
-                      _buildStep("2", "battery".tr),
-                      _buildStep("3", "select_optimized".tr),
+                      _buildStep(theme, '1', AppConstants.appName),
+                      _buildStep(theme, '2', 'battery'.tr),
+                      _buildStep(theme, '3', 'select_optimized'.tr),
                     ],
                   )
                 : const SizedBox(),
             SizedBox(height: Dimensions.h20),
             _buildInfoText(
-                "you_will_be_able_to_get_order_notification_even_if_you_are_not_in_the_app"
-                    .tr),
+              theme,
+              'you_will_be_able_to_get_order_notification_even_if_you_are_not_in_the_app'
+                  .tr,
+            ),
             _buildInfoText(
-                "${AppConstants.appName} ${!allow ? 'will_run_notification_service_in_the_background_always'.tr : 'will_not_run_notification_service_in_the_background_always'.tr}"),
-            _buildInfoText(!allow
-                ? "notification_will_always_send_alert_from_the_background".tr
-                : 'notification_will_not_always_send_alert_from_the_background'
-                    .tr),
+              theme,
+              '${AppConstants.appName} ${!allow ? 'will_run_notification_service_in_the_background_always'.tr : 'will_not_run_notification_service_in_the_background_always'.tr}',
+            ),
+            _buildInfoText(
+              theme,
+              !allow
+                  ? 'notification_will_always_send_alert_from_the_background'.tr
+                  : 'notification_will_not_always_send_alert_from_the_background'
+                      .tr,
+            ),
             SizedBox(height: Dimensions.h20),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 TextButton(
                   onPressed: () => Navigator.pop(Get.context!),
-                  child: Text("cancel".tr,
-                      style: textMedium().copyWith(
-                          color: Theme.of(Get.context!).primaryColor)),
+                  child: Text(
+                    'cancel'.tr,
+                    style: textMedium()
+                        .copyWith(color: theme.colorScheme.tertiary),
+                  ),
                 ),
                 SizedBox(width: Dimensions.w10),
                 CustomButtonWidget(
-                  width: 100,
+                  width: Dimensions.w100,
                   onPressed: () async {
                     final profileController = Get.find<ProfileController>();
 
                     if (allow) {
                       openAppSettings();
-                      if (await Permission
-                          .ignoreBatteryOptimizations.status.isGranted) {
-                        profileController.setBackgroundNotificationActive(true);
-                      } else {
-                        profileController
-                            .setBackgroundNotificationActive(false);
-                      }
+                      profileController.setBackgroundNotificationActive(
+                        await Permission
+                            .ignoreBatteryOptimizations.status.isGranted,
+                      );
                       Get.back();
                     } else {
                       if (await Permission
@@ -242,15 +243,10 @@ void showBgNotificationBottomSheet(bool allow) {
                       } else {
                         await Permission.ignoreBatteryOptimizations.request();
                       }
-
-                      if (await Permission
-                          .ignoreBatteryOptimizations.status.isGranted) {
-                        profileController.setBackgroundNotificationActive(true);
-                      } else {
-                        profileController
-                            .setBackgroundNotificationActive(false);
-                      }
-
+                      profileController.setBackgroundNotificationActive(
+                        await Permission
+                            .ignoreBatteryOptimizations.status.isGranted,
+                      );
                       Get.back();
                     }
                   },
@@ -267,35 +263,36 @@ void showBgNotificationBottomSheet(bool allow) {
   });
 }
 
-Widget _buildInfoText(String text) {
+Widget _buildInfoText(ThemeData theme, String text) {
   return Container(
     width: double.infinity,
-    padding: EdgeInsets.symmetric(horizontal:Dimensions.w10 ,vertical: Dimensions.h10,),
+    padding: EdgeInsets.symmetric(
+      horizontal: Dimensions.w10,
+      vertical: Dimensions.h10,
+    ),
     margin: EdgeInsets.only(bottom: Dimensions.h10),
     decoration: BoxDecoration(
-      color: Theme.of(Get.context!).disabledColor.withValues(alpha: 0.2),
-      borderRadius: BorderRadius.circular(8.0),
+      color: theme.scaffoldBackgroundColor,
+      borderRadius: BorderRadius.circular(Dimensions.r8),
+      border: Border.all(color: theme.colorScheme.outline),
     ),
-    child: Text(
-      text,
-      style: textRegular(),
-    ),
+    child: Text(text, style: textRegular()),
   );
 }
 
-Widget _buildStep(String number, String text) {
+Widget _buildStep(ThemeData theme, String number, String text) {
   return Padding(
     padding: EdgeInsets.symmetric(vertical: Dimensions.h4),
     child: Row(
       children: [
         CircleAvatar(
-          radius: 12,
-          backgroundColor: Theme.of(Get.context!).primaryColor,
+          radius: Dimensions.r12,
+          backgroundColor: theme.primaryColor,
           child: Text(
             number,
             style: textBold().copyWith(
-              fontSize: 12,
-              color: Colors.white,
+              fontSize: Dimensions.fs12,
+              color: theme.colorScheme.onPrimary,
             ),
           ),
         ),
@@ -305,7 +302,7 @@ Widget _buildStep(String number, String text) {
             text,
             style: textMedium().copyWith(
               fontSize: Dimensions.fs13,
-              color: Theme.of(Get.context!).primaryColor,
+              color: theme.colorScheme.onSurface,
             ),
           ),
         ),

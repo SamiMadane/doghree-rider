@@ -1,9 +1,10 @@
-import 'package:wefrh_rider/features/notification/domain/models/notification_body_model.dart';
-import 'package:wefrh_rider/features/notification/domain/models/notification_model.dart';
-import 'package:wefrh_rider/helper/date_converter_helper.dart';
+import 'package:doghree_rider/common/widgets/custom_snackbar_widget.dart';
+import 'package:doghree_rider/features/notification/domain/models/notification_body_model.dart';
+import 'package:doghree_rider/features/notification/domain/models/notification_model.dart';
+import 'package:doghree_rider/helper/date_converter_helper.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/features/notification/domain/services/notification_service_interface.dart';
-import 'package:wefrh_rider/helper/route_helper.dart';
+import 'package:doghree_rider/features/notification/domain/services/notification_service_interface.dart';
+import 'package:doghree_rider/helper/route_helper.dart';
 
 class NotificationController extends GetxController implements GetxService {
   final NotificationServiceInterface notificationServiceInterface;
@@ -19,6 +20,8 @@ class NotificationController extends GetxController implements GetxService {
   bool get isLoading => _isLoading;
   bool _hideNotificationButton = false;
   bool get hideNotificationButton => _hideNotificationButton;
+
+  
 
   /// ✅ معالجة النقر على الإشعار - Server-side
   Future<void> handleNotificationTap(NotificationModel notification) async {
@@ -77,11 +80,7 @@ class NotificationController extends GetxController implements GetxService {
 
       case NotificationType.block:
       case NotificationType.unblock:
-        Get.snackbar(
-          'notification'.tr,
-          notification.description ?? '',
-          snackPosition: SnackPosition.TOP,
-        );
+        showCustomSnackBar(notification.description ?? '', isError: false);
         break;
       case NotificationType.withdraw:
         Get.toNamed(RouteHelper.getCashInHandRoute());

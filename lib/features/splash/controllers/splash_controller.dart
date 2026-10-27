@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:wefrh_rider/common/models/config_model.dart';
+import 'package:doghree_rider/common/models/config_model.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/doghree_map/map_config.dart';
-import 'package:wefrh_rider/features/splash/domain/services/splash_service_interface.dart';
+import 'package:doghree_rider/doghree_map/map_config.dart';
+import 'package:doghree_rider/features/splash/domain/services/splash_service_interface.dart';
 
 class SplashController extends GetxController implements GetxService {
   final SplashServiceInterface navigationHandlerServiceInterface;

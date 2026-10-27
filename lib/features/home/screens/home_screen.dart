@@ -1,23 +1,22 @@
+import 'package:doghree_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
-import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
-import 'package:wefrh_rider/common/widgets/custom_image_widget.dart';
-import 'package:wefrh_rider/features/auth/controllers/auth_controller.dart';
-import 'package:wefrh_rider/features/home/widgets/active_order_section.dart';
-import 'package:wefrh_rider/features/home/widgets/cash_in_hand_section.dart';
-import 'package:wefrh_rider/features/home/widgets/earning_grid_section.dart';
-import 'package:wefrh_rider/features/home/widgets/online_status_section.dart';
-import 'package:wefrh_rider/features/home/widgets/profile_order_section.dart';
-import 'package:wefrh_rider/features/notification/controllers/notification_controller.dart';
-import 'package:wefrh_rider/features/order/controllers/order_controller.dart';
-import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
-import 'package:wefrh_rider/helper/route_helper.dart';
-import 'package:wefrh_rider/util/app_constants.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/util/manager_assets.dart';
-import 'package:wefrh_rider/util/manager_colors.dart';
-import 'package:wefrh_rider/util/styles.dart';
+import 'package:doghree_rider/common/widgets/custom_app_bar_widget.dart';
+import 'package:doghree_rider/common/widgets/custom_button_widget.dart';
+import 'package:doghree_rider/common/widgets/custom_image_widget.dart';
+import 'package:doghree_rider/features/auth/controllers/auth_controller.dart';
+import 'package:doghree_rider/features/home/widgets/active_order_section.dart';
+import 'package:doghree_rider/features/home/widgets/earnings_section.dart';
+import 'package:doghree_rider/features/home/widgets/online_status_section.dart';
+import 'package:doghree_rider/features/home/widgets/profile_order_section.dart';
+import 'package:doghree_rider/features/notification/controllers/notification_controller.dart';
+import 'package:doghree_rider/features/order/controllers/order_controller.dart';
+import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
+import 'package:doghree_rider/helper/route_helper.dart';
+import 'package:doghree_rider/util/app_constants.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/manager_assets.dart';
+import 'package:doghree_rider/util/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -54,6 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _loadData() async {
     Get.find<OrderController>().getIgnoreList();
     Get.find<OrderController>().removeFromIgnoreList();
+    Get.find<CashInHandController>().getWallet();
     await Get.find<ProfileController>().getProfile();
     await Get.find<OrderController>().getCurrentOrders();
     await Get.find<NotificationController>().getNotificationList();
@@ -73,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
         break;
       case AppLifecycleState.resumed:
         checkPermission();
-         if (Get.isRegistered<NotificationController>()) {
+        if (Get.isRegistered<NotificationController>()) {
           Get.find<NotificationController>().getNotificationList(true);
         }
         break;
@@ -311,6 +311,7 @@ class _HomeScreenState extends State<HomeScreen> {
           builder: (notificationController) {
             return IconButton(
               icon: Stack(
+                clipBehavior: Clip.none,
                 children: [
                   SvgPicture.asset(
                     ManagerAssets.notificationIcon,
@@ -324,10 +325,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         height: 10,
                         width: 10,
                         decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor,
+                          color: Theme.of(context).colorScheme.primary,
                           shape: BoxShape.circle,
                           border: Border.all(
-                              width: 1, color: Theme.of(context).cardColor),
+                            width: 1,
+                            color: Theme.of(context).colorScheme.onPrimary,
+                          ),
                         ),
                       ),
                     ),
@@ -379,15 +382,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Column(
                           children: [
                             const StatusSwitchSection(),
-                            EarningsGridSection(
+                            EarningsSection(
                               profileController: profileController,
                               showEarnings: showTotalEarnings,
                             ),
                             ActiveOrderSection(),
                             ProfileOrdersSection(
-                              profileController: profileController,
-                            ),
-                            CashInHandSection(
                               profileController: profileController,
                             ),
                           ],
@@ -449,13 +449,16 @@ class _HomeScreenState extends State<HomeScreen> {
                         vertical: Dimensions.h4,
                       ),
                       decoration: BoxDecoration(
-                        color: ManagerColors.orangeLightMode
-                            .withOpacity(0.2), // أصفر فاتح شفاف
+                        color: Color.lerp(
+                          Theme.of(context).colorScheme.primaryContainer,
+                          Theme.of(context).colorScheme.primary,
+                          0.5,
+                        ),
                         shape: BoxShape.circle,
                       ),
                       child: SvgPicture.asset(
                         ManagerAssets.warningIcon,
-                        color: ManagerColors.orangeLightMode,
+                        color: Theme.of(context).colorScheme.onPrimary,
                       )),
                   SizedBox(width: 10),
                   // النص + السهم

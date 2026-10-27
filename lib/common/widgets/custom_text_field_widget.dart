@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/util/manager_assets.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/util/styles.dart';
+import 'package:doghree_rider/util/manager_assets.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/styles.dart';
 
 class CustomTextFieldWidget extends StatefulWidget {
   final String? hintText;
@@ -240,7 +240,7 @@ class CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
                         text: widget.labelText ?? '',
                         style: textRegular().copyWith(
                           fontSize: widget.labelTextSize ?? Dimensions.fs14,
-                          color: Theme.of(context).hintColor.withAlpha(180),
+                          color: Theme.of(context).hintColor,
                         ),
                       ),
                       if (widget.isRequired && widget.labelText != null)

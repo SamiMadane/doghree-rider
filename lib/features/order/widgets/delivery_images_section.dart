@@ -4,12 +4,13 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/features/order/controllers/order_controller.dart';
-import 'package:wefrh_rider/features/order/widgets/camera_button_sheet_widget.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/util/manager_assets.dart';
-import 'package:wefrh_rider/util/styles.dart';
-import 'package:wefrh_rider/util/theme_extension.dart';
+import 'package:doghree_rider/features/order/controllers/order_controller.dart';
+import 'package:doghree_rider/features/order/widgets/camera_button_sheet_widget.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/manager_assets.dart';
+import 'package:doghree_rider/util/manager_colors.dart';
+import 'package:doghree_rider/util/styles.dart';
+import 'package:doghree_rider/util/theme_extension.dart';
 
 class DeliveryImagesSection extends StatelessWidget {
   final dynamic order;
@@ -23,12 +24,15 @@ class DeliveryImagesSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final customColor = Theme.of(context).extension<CustomColorsExtension>()!;
+    final theme = Theme.of(context);
+    final customColor = theme.extension<CustomColorsExtension>()!;
     final orderController = Get.find<OrderController>();
 
     if (!showDeliveryConfirmImage || order.orderStatus == 'delivered') {
       return const SizedBox();
     }
+
+    final double tile = Dimensions.w100;
 
     return Container(
       padding: EdgeInsets.only(top: Dimensions.h16),
@@ -37,17 +41,15 @@ class DeliveryImagesSection extends StatelessWidget {
         children: [
           Text(
             'completed_after_delivery_picture'.tr,
-            style:
-                textSemiBold().copyWith(fontSize: Dimensions.fs16),
+            style: textSemiBold().copyWith(fontSize: Dimensions.fs16),
           ),
           SizedBox(height: Dimensions.h16),
           SizedBox(
-            height: 100,
+            height: tile,
             child: ListView(
               scrollDirection: Axis.horizontal,
               physics: const BouncingScrollPhysics(),
               children: [
-                // زر إضافة صورة دائمًا على اليسار
                 InkWell(
                   onTap: () {
                     if (GetPlatform.isIOS) {
@@ -63,28 +65,31 @@ class DeliveryImagesSection extends StatelessWidget {
                       strokeWidth: 1,
                       strokeCap: StrokeCap.butt,
                       dashPattern: const [8, 5],
-                      padding: EdgeInsets.all(5),
-                      radius:  Radius.circular(Dimensions.r10),
+                      padding: EdgeInsets.all(Dimensions.w5),
+                      radius: Radius.circular(Dimensions.r10),
                     ),
                     child: SizedBox(
-                      height: 100,
-                      width: 100,
+                      height: tile,
+                      width: tile,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           SvgPicture.asset(
                             ManagerAssets.cameraIcon,
-                            height: 30,
-                            width: 30,
-                            color:
-                                Theme.of(context).textTheme.bodyMedium?.color,
+                            height: Dimensions.w30,
+                            width: Dimensions.w30,
+                            colorFilter: ColorFilter.mode(
+                              theme.textTheme.bodyMedium?.color ??
+                                  ManagerColors.onPrimary,
+                              BlendMode.srcIn,
+                            ),
                           ),
-                          const SizedBox(height: 6),
+                          SizedBox(height: Dimensions.h6),
                           Text(
                             'add_a_photo'.tr,
                             style: textRegular().copyWith(
                               fontSize: Dimensions.fs14,
-                              color: Theme.of(context).hintColor,
+                              color: theme.colorScheme.onSurfaceVariant,
                             ),
                           ),
                         ],
@@ -92,60 +97,54 @@ class DeliveryImagesSection extends StatelessWidget {
                     ),
                   ),
                 ),
-
                 SizedBox(width: Dimensions.w10),
-
-                // الصور المضافة تظهر بعد زر الإضافة
                 ...orderController.pickedPrescriptions.map((file) {
                   return Stack(
                     children: [
                       Container(
-                        margin: EdgeInsets.only(
-                            right: Dimensions.w10),
-                        decoration: BoxDecoration(
-                          borderRadius:
-                              BorderRadius.circular(Dimensions.r10),
-                        ),
+                        margin: EdgeInsetsDirectional.only(
+                            end: Dimensions.w10),
                         child: ClipRRect(
                           borderRadius:
                               BorderRadius.circular(Dimensions.r10),
                           child: GetPlatform.isWeb
                               ? Image.network(
                                   file.path,
-                                  width: 100,
-                                  height: 100,
+                                  width: tile,
+                                  height: tile,
                                   fit: BoxFit.cover,
                                 )
                               : Image.file(
                                   File(file.path),
-                                  width: 100,
-                                  height: 100,
+                                  width: tile,
+                                  height: tile,
                                   fit: BoxFit.cover,
                                 ),
                         ),
                       ),
-                      // زر الحذف
-                      Positioned(
-                        top: 4,
-                        right: 12,
+                      PositionedDirectional(
+                        top: Dimensions.h4,
+                        end: Dimensions.w14,
                         child: InkWell(
-                          onTap: () {
-                            orderController.removePrescriptionImage(file);
-                          },
+                          onTap: () =>
+                              orderController.removePrescriptionImage(file),
                           child: Container(
-                            decoration: BoxDecoration(
+                            padding: EdgeInsets.all(Dimensions.w4),
+                            decoration: const BoxDecoration(
                               shape: BoxShape.circle,
-                              color: Colors.black.withOpacity(0.7),
+                              color: ManagerColors.onPrimary,
                             ),
-                            padding: EdgeInsets.all(4),
-                            child: const Icon(Icons.close,
-                                color: Colors.white, size: 16),
+                            child: Icon(
+                              Icons.close,
+                              color: ManagerColors.white,
+                              size: Dimensions.fs16,
+                            ),
                           ),
                         ),
                       ),
                     ],
                   );
-                }).toList(),
+                }),
               ],
             ),
           ),

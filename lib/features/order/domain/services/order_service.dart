@@ -1,18 +1,18 @@
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:wefrh_rider/api/api_client.dart';
-import 'package:wefrh_rider/common/models/response_model.dart';
-import 'package:wefrh_rider/features/order/domain/models/ignore_model.dart';
-import 'package:wefrh_rider/features/order/domain/models/order_cancellation_body.dart';
-import 'package:wefrh_rider/features/order/domain/models/order_details_model.dart';
-import 'package:wefrh_rider/features/order/domain/models/order_model.dart';
-import 'package:wefrh_rider/features/order/domain/models/update_status_body_model.dart';
-import 'package:wefrh_rider/features/order/domain/repositories/order_repository_interface.dart';
-import 'package:wefrh_rider/features/order/domain/services/order_service_interface.dart';
+import 'package:doghree_rider/api/api_client.dart';
+import 'package:doghree_rider/common/models/response_model.dart';
+import 'package:doghree_rider/features/order/domain/models/ignore_model.dart';
+import 'package:doghree_rider/features/order/domain/models/order_cancellation_body.dart';
+import 'package:doghree_rider/features/order/domain/models/order_details_model.dart';
+import 'package:doghree_rider/features/order/domain/models/order_model.dart';
+import 'package:doghree_rider/features/order/domain/models/update_status_body_model.dart';
+import 'package:doghree_rider/features/order/domain/repositories/order_repository_interface.dart';
+import 'package:doghree_rider/features/order/domain/services/order_service_interface.dart';
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart' show LatLng;
-import 'package:wefrh_rider/doghree_map/map_safety.dart';
+import 'package:doghree_rider/doghree_map/map_safety.dart';
 import 'package:latlong2/latlong.dart' show LatLng, Distance;
 
 class OrderService implements OrderServiceInterface {

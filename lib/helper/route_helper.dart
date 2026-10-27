@@ -1,43 +1,37 @@
 import 'dart:convert';
-import 'package:wefrh_rider/features/auth/screens/dm_registration_success_screen.dart';
-import 'package:wefrh_rider/features/cash_in_hand/screens/my_earning_filter_screen.dart';
-import 'package:wefrh_rider/features/cash_in_hand/screens/my_earning_screen.dart';
-import 'package:wefrh_rider/features/cash_in_hand/screens/withdrawals_screen.dart';
-import 'package:wefrh_rider/features/splash/screens/language_init_screen.dart';
-import 'package:wefrh_rider/features/notification/domain/models/notification_body_model.dart';
-import 'package:wefrh_rider/features/chat/domain/models/conversation_model.dart';
-import 'package:wefrh_rider/features/auth/screens/sign_in_screen.dart';
-import 'package:wefrh_rider/features/auth/screens/dm_registration_screen.dart';
-import 'package:wefrh_rider/features/cash_in_hand/screens/cash_in_hand_screen.dart';
-import 'package:wefrh_rider/features/cash_in_hand/screens/transaction_history_screen.dart';
-import 'package:wefrh_rider/features/cash_in_hand/screens/wallet_provided_earning_history_screen.dart';
-import 'package:wefrh_rider/features/cash_in_hand/screens/payment_screen.dart';
-import 'package:wefrh_rider/features/cash_in_hand/widgets/payment_successful_widget.dart';
-import 'package:wefrh_rider/features/chat/screens/chat_screen.dart';
-import 'package:wefrh_rider/features/chat/screens/conversation_screen.dart';
-import 'package:wefrh_rider/features/dashboard/screens/dashboard_screen.dart';
-import 'package:wefrh_rider/features/disbursement/screens/add_withdraw_method_screen.dart';
-import 'package:wefrh_rider/features/disbursement/screens/disbursement_screen.dart';
-import 'package:wefrh_rider/features/disbursement/screens/withdraw_method_screen.dart';
-import 'package:wefrh_rider/features/forgot_password/screens/forget_pass_screen.dart';
-import 'package:wefrh_rider/features/forgot_password/screens/new_pass_screen.dart';
-import 'package:wefrh_rider/features/forgot_password/screens/verification_screen.dart';
-import 'package:wefrh_rider/features/html/screens/html_viewer_screen.dart';
-import 'package:wefrh_rider/features/language/screens/language_screen.dart';
-import 'package:wefrh_rider/features/notification/screens/notification_screen.dart';
-import 'package:wefrh_rider/features/order/screens/order_details_screen.dart';
-import 'package:wefrh_rider/features/order/screens/running_order_screen.dart';
-import 'package:wefrh_rider/features/profile/screens/setting_screen.dart';
-import 'package:wefrh_rider/features/profile/screens/update_profile_screen.dart';
-import 'package:wefrh_rider/features/splash/screens/splash_screen.dart';
-import 'package:wefrh_rider/features/task/screens/capture_id_screen.dart';
-import 'package:wefrh_rider/features/task/screens/client_screen.dart';
-import 'package:wefrh_rider/features/task/screens/operation_history_screen.dart';
-import 'package:wefrh_rider/features/task/screens/details_statistics_screen.dart';
-import 'package:wefrh_rider/features/task/screens/finish_shift_screen.dart';
-import 'package:wefrh_rider/features/task/screens/preview_id_screen.dart';
-import 'package:wefrh_rider/features/task/screens/support_team_screen.dart';
-import 'package:wefrh_rider/features/update/screens/update_screen.dart';
+import 'package:doghree_rider/features/auth/screens/dm_registration_success_screen.dart';
+import 'package:doghree_rider/features/cash_in_hand/screens/my_earning_filter_screen.dart';
+import 'package:doghree_rider/features/cash_in_hand/screens/my_earning_screen.dart';
+import 'package:doghree_rider/features/cash_in_hand/screens/withdrawals_screen.dart';
+import 'package:doghree_rider/features/splash/screens/language_init_screen.dart';
+import 'package:doghree_rider/features/notification/domain/models/notification_body_model.dart';
+import 'package:doghree_rider/features/chat/domain/models/conversation_model.dart';
+import 'package:doghree_rider/features/auth/screens/sign_in_screen.dart';
+import 'package:doghree_rider/features/auth/screens/dm_registration_screen.dart';
+import 'package:doghree_rider/features/cash_in_hand/screens/cash_in_hand_screen.dart';
+import 'package:doghree_rider/features/cash_in_hand/screens/transaction_history_screen.dart';
+import 'package:doghree_rider/features/cash_in_hand/screens/wallet_provided_earning_history_screen.dart';
+import 'package:doghree_rider/features/cash_in_hand/screens/payment_screen.dart';
+import 'package:doghree_rider/features/cash_in_hand/widgets/payment_successful_widget.dart';
+import 'package:doghree_rider/features/chat/screens/chat_screen.dart';
+import 'package:doghree_rider/features/chat/screens/conversation_screen.dart';
+import 'package:doghree_rider/features/dashboard/screens/dashboard_screen.dart';
+import 'package:doghree_rider/features/disbursement/screens/add_withdraw_method_screen.dart';
+import 'package:doghree_rider/features/disbursement/screens/disbursement_screen.dart';
+import 'package:doghree_rider/features/disbursement/screens/withdraw_method_screen.dart';
+import 'package:doghree_rider/features/forgot_password/screens/forget_pass_screen.dart';
+import 'package:doghree_rider/features/forgot_password/screens/new_pass_screen.dart';
+import 'package:doghree_rider/features/forgot_password/screens/verification_screen.dart';
+import 'package:doghree_rider/features/html/screens/html_viewer_screen.dart';
+import 'package:doghree_rider/features/language/screens/language_screen.dart';
+import 'package:doghree_rider/features/notification/screens/notification_screen.dart';
+import 'package:doghree_rider/features/order/screens/order_details_screen.dart';
+import 'package:doghree_rider/features/order/screens/running_order_screen.dart';
+import 'package:doghree_rider/features/profile/screens/setting_screen.dart';
+import 'package:doghree_rider/features/profile/screens/update_profile_screen.dart';
+import 'package:doghree_rider/features/splash/screens/splash_screen.dart';
+
+import 'package:doghree_rider/features/update/screens/update_screen.dart';
 import 'package:get/get.dart';
 
 class RouteHelper {
@@ -73,23 +67,8 @@ class RouteHelper {
   static const String taskScreen = '/task';
   static const String settingScreen = '/setting';
   static String languageInit = '/language-init';
-  static const String detailsStatistics = '/details-statistics';
-  static const String clientScreen = '/client-screen';
-  static const String supportTeamScreen = '/support-team-screen';
-  static const String finishShiftScreen = '/finish-shift-screen';
-  static const String captureIdScreen = '/capture-id-screen';
-  static const String previewIdScreen = '/preview-id-screen';
-  static const String detailedOperationHistoryScreen = '/detailed-operation-history-screen';
+
   static const String withdrawals = '/withdrawals';
-
-
-  static String getDetailedOperationHistoryRoute() => detailedOperationHistoryScreen;
-  static String getDetailsStatisticsRoute() => detailsStatistics;
-  static String getClientScreenRoute() => clientScreen;
-  static String getCaptureIdRoute() => captureIdScreen;
-  static String getPreviewIdRoute() => previewIdScreen;
-  static String getSupportTeamRoute() => supportTeamScreen;
-  static String getFinishShiftRoute() => finishShiftScreen;
 
   static String getInitialRoute({bool? fromOrderDetails}) =>
       '$initial?from_order_details=${fromOrderDetails.toString()}';
@@ -169,20 +148,7 @@ class RouteHelper {
   static String getLanguageInitRoute() => languageInit;
   static String getWithdrawalsRoute() => withdrawals;
 
-
   static List<GetPage> routes = [
-    GetPage(
-        name: detailsStatistics, page: () => const DetailsStatisticsScreen()),
-        
-    GetPage(name: detailedOperationHistoryScreen, page: () => const DetailedOperationHistoryScreen()),
-    GetPage(name: clientScreen, page: () => const ClientScreen()),
-    GetPage(name: captureIdScreen, page: () => CaptureIdScreen()),
-    GetPage(
-      name: previewIdScreen,
-      page: () => PreviewIdScreen(image: Get.arguments),
-    ),
-    GetPage(name: supportTeamScreen, page: () => const SupportTeamScreen()),
-    GetPage(name: finishShiftScreen, page: () => const FinishShiftScreen()),
     GetPage(name: languageInit, page: () => const LanguageInitScreen()),
     GetPage(
         name: initial,

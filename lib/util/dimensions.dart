@@ -66,6 +66,8 @@ class Dimensions {
   static double h90 = 90.h;
   static double h100 = 100.h;
   static double h120 = 120.h;
+  static double h130 = 130.h;
+  static double h140 = 140.h;
   static double h150 = 150.h;
   static double h160 = 160.h;
   static double h180 = 180.h;
@@ -74,6 +76,7 @@ class Dimensions {
   static double h240 = 240.h;
   static double h260 = 260.h;
   static double h280 = 280.h;
+  static double h300 = 300.h;
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   // 📐 Width (w) - للعروض والـ Padding الأفقي
@@ -113,8 +116,12 @@ class Dimensions {
   static double w90 = 90.w;
   static double w100 = 100.w;
   static double w120 = 120.w;
+  static double w130 = 130.w;
+  static double w140 = 140.w;
+  static double w150 = 150.w;
   static double w200 = 200.w;
   static double w220 = 220.w;
+  static double w300 = 300.w;
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   // 🔵 Border Radius (r) - للدوائر والحواف

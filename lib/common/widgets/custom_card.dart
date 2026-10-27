@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/util/theme_extension.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/theme_extension.dart';
 
 class CustomCard extends StatelessWidget {
   final Widget? child;

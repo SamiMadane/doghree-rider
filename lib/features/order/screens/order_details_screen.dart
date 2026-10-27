@@ -1,35 +1,36 @@
 import 'dart:async';
 import 'package:photo_view/photo_view.dart';
-import 'package:wefrh_rider/common/widgets/custom_bottom_sheet_widget.dart';
+import 'package:doghree_rider/common/widgets/custom_bottom_sheet_widget.dart';
 
-import 'package:wefrh_rider/features/order/controllers/order_controller.dart';
-import 'package:wefrh_rider/features/order/widgets/additional_note_section.dart';
-import 'package:wefrh_rider/features/order/widgets/delivery_images_section.dart';
-import 'package:wefrh_rider/features/order/widgets/map_preview_section.dart';
-import 'package:wefrh_rider/features/order/widgets/order_action_buttons_section.dart';
-import 'package:wefrh_rider/features/order/widgets/order_id_section.dart';
-import 'package:wefrh_rider/features/order/widgets/order_info_section.dart';
-import 'package:wefrh_rider/features/order/widgets/order_item_widget.dart';
-import 'package:wefrh_rider/features/order/widgets/order_proof_section.dart';
-import 'package:wefrh_rider/features/order/widgets/order_summary_widget.dart';
-import 'package:wefrh_rider/features/order/widgets/payment_details_section.dart';
-import 'package:wefrh_rider/features/order/widgets/prescription_section.dart';
-import 'package:wefrh_rider/features/profile/controllers/profile_controller.dart';
-import 'package:wefrh_rider/features/splash/controllers/splash_controller.dart';
-import 'package:wefrh_rider/features/notification/domain/models/notification_body_model.dart';
-import 'package:wefrh_rider/features/chat/domain/models/conversation_model.dart';
-import 'package:wefrh_rider/features/order/domain/models/order_details_model.dart';
-import 'package:wefrh_rider/features/order/domain/models/order_model.dart';
-import 'package:wefrh_rider/helper/route_helper.dart';
-import 'package:wefrh_rider/util/app_constants.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/util/manager_assets.dart';
-import 'package:wefrh_rider/common/widgets/custom_app_bar_widget.dart';
-import 'package:wefrh_rider/features/order/widgets/info_card_section.dart';
+import 'package:doghree_rider/features/order/controllers/order_controller.dart';
+import 'package:doghree_rider/features/order/widgets/additional_note_section.dart';
+import 'package:doghree_rider/features/order/widgets/delivery_images_section.dart';
+import 'package:doghree_rider/features/order/widgets/map_preview_section.dart';
+import 'package:doghree_rider/features/order/widgets/order_action_buttons_section.dart';
+import 'package:doghree_rider/features/order/widgets/order_id_section.dart';
+import 'package:doghree_rider/features/order/widgets/order_info_section.dart';
+import 'package:doghree_rider/features/order/widgets/order_item_widget.dart';
+import 'package:doghree_rider/features/order/widgets/order_proof_section.dart';
+import 'package:doghree_rider/features/order/widgets/order_summary_widget.dart';
+import 'package:doghree_rider/features/order/widgets/payment_details_section.dart';
+import 'package:doghree_rider/features/order/widgets/prescription_section.dart';
+import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
+import 'package:doghree_rider/features/splash/controllers/splash_controller.dart';
+import 'package:doghree_rider/features/notification/domain/models/notification_body_model.dart';
+import 'package:doghree_rider/features/chat/domain/models/conversation_model.dart';
+import 'package:doghree_rider/features/order/domain/models/order_details_model.dart';
+import 'package:doghree_rider/features/order/domain/models/order_model.dart';
+import 'package:doghree_rider/helper/route_helper.dart';
+import 'package:doghree_rider/util/app_constants.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/manager_assets.dart';
+import 'package:doghree_rider/common/widgets/custom_app_bar_widget.dart';
+import 'package:doghree_rider/features/order/widgets/info_card_section.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/util/styles.dart';
-import 'package:wefrh_rider/util/theme_extension.dart';
+import 'package:doghree_rider/util/styles.dart';
+import 'package:doghree_rider/util/theme_extension.dart';
+import 'package:doghree_rider/util/manager_colors.dart';
 
 class OrderDetailsScreen extends StatefulWidget {
   final int? orderId;
@@ -86,14 +87,16 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
     super.didChangeAppLifecycleState(state);
     if (state == AppLifecycleState.paused) {
       _timer?.cancel();
+    } else if (state == AppLifecycleState.resumed) {
+      _startApiCalling();
     }
   }
 
   @override
   void dispose() {
+    _timer?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
-    _timer?.cancel();
   }
 
   @override
@@ -532,8 +535,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                       .orderAttachmentFullUrl!.isNotEmpty)
                               ? PrescriptionSection(
                                   attachments: controllerOrderModel
-                                      .orderAttachmentFullUrl ?? [],
-                                      prescriptionNote: controllerOrderModel.prescriptionNote,)
+                                          .orderAttachmentFullUrl ??
+                                      [],
+                                  prescriptionNote:
+                                      controllerOrderModel.prescriptionNote,
+                                )
                               : const SizedBox(),
                           (controllerOrderModel.orderStatus == 'delivered' &&
                                   controllerOrderModel.orderProofFullUrl !=
@@ -615,14 +621,15 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                   heroAttributes: PhotoViewHeroAttributes(tag: imageUrl),
                 ),
               ),
-              Positioned(
-                  top: 0,
-                  right: 0,
-                  child: IconButton(
-                    splashRadius: 5,
-                    onPressed: () => Get.back(),
-                    icon: const Icon(Icons.cancel, color: Colors.red),
-                  )),
+              PositionedDirectional(
+                top: 0,
+                end: 0,
+                child: IconButton(
+                  splashRadius: Dimensions.r5,
+                  onPressed: () => Get.back(),
+                  icon: const Icon(Icons.cancel, color: ManagerColors.error),
+                ),
+              ),
             ]),
           );
         },

@@ -1,11 +1,11 @@
 import 'package:get/get.dart';
-import 'package:wefrh_rider/common/models/response_model.dart';
-import 'package:wefrh_rider/features/cash_in_hand/domain/models/earning_report_model.dart';
-import 'package:wefrh_rider/features/cash_in_hand/domain/models/wallet_payment_model.dart';
-import 'package:wefrh_rider/features/cash_in_hand/domain/repositories/cash_in_hand_repository_interface.dart';
-import 'package:wefrh_rider/features/cash_in_hand/domain/services/cash_in_hand_service_interface.dart';
-import 'package:wefrh_rider/features/cash_in_hand/domain/models/wallet_model.dart';
-import 'package:wefrh_rider/features/cash_in_hand/domain/models/wallet_withdrawal_model.dart';
+import 'package:doghree_rider/common/models/response_model.dart';
+import 'package:doghree_rider/features/cash_in_hand/domain/models/earning_report_model.dart';
+import 'package:doghree_rider/features/cash_in_hand/domain/models/wallet_payment_model.dart';
+import 'package:doghree_rider/features/cash_in_hand/domain/repositories/cash_in_hand_repository_interface.dart';
+import 'package:doghree_rider/features/cash_in_hand/domain/services/cash_in_hand_service_interface.dart';
+import 'package:doghree_rider/features/cash_in_hand/domain/models/wallet_model.dart';
+import 'package:doghree_rider/features/cash_in_hand/domain/models/wallet_withdrawal_model.dart';
 
 
 

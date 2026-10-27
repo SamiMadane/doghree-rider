@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wefrh_rider/common/widgets/custom_button_widget.dart';
-import 'package:wefrh_rider/common/widgets/empty_state_widget.dart';
-import 'package:wefrh_rider/helper/price_converter_helper.dart';
-import 'package:wefrh_rider/helper/route_helper.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/util/manager_assets.dart';
-import 'package:wefrh_rider/util/manager_colors.dart';
-import 'package:wefrh_rider/util/styles.dart';
-import 'package:wefrh_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
+import 'package:doghree_rider/common/widgets/custom_button_widget.dart';
+import 'package:doghree_rider/common/widgets/empty_state_widget.dart';
+import 'package:doghree_rider/helper/price_converter_helper.dart';
+import 'package:doghree_rider/helper/route_helper.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/manager_assets.dart';
+import 'package:doghree_rider/util/manager_colors.dart';
+import 'package:doghree_rider/util/styles.dart';
+import 'package:doghree_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
 
 class TransactionHistorySection extends StatelessWidget {
   final CashInHandController cashInHandController;
@@ -118,17 +118,18 @@ class _TransactionToggleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;     
     return CustomButtonWidget(
       buttonText: text,
       fontSize: Dimensions.fs13,
       height: Dimensions.h40,
       autoWidth: true,
-      backgroundColor: isSelected
-          ? Theme.of(context).textTheme.bodyMedium!.color
-          : Theme.of(context).cardColor,
+      backgroundColor:
+          isSelected ? (isDark ? cs.primary : cs.onSurface) : cs.surface,
       fontColor: isSelected
-          ? Theme.of(context).cardColor
-          : Theme.of(context).disabledColor,
+          ? (isDark ? cs.onPrimary : cs.surface)
+          : cs.onSurfaceVariant,
       isBold: isSelected,
       isBorder: !isSelected,
       onPressed: onTap,

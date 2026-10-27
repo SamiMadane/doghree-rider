@@ -1,4 +1,4 @@
-import 'package:wefrh_rider/api/error_type.dart';
+import 'package:doghree_rider/api/error_type.dart';
 
 import 'package:get/get.dart';
 

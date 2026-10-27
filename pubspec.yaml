@@ -1,4 +1,4 @@
-name: wefrh_rider
+name: doghree_rider
 description: A new Flutter application.
 publish_to: 'none' #
 version: 1.0.0+1
@@ -59,6 +59,7 @@ dependencies:
   flutter_screenutil: ^5.9.3
   flutter_launcher_icons: ^0.14.4
   image_cropper: ^11.0.0
+  maplibre_gl: ^0.27.1
 
 
 
@@ -75,16 +76,18 @@ dev_dependencies:
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: "assets/icon/wefrh_logo.png"
+  image_path: "assets/icon/logo_1024_square.png"
   remove_alpha_ios: true
-  adaptive_icon_background: "#0246c7"
-  adaptive_icon_foreground: "assets/icon/wefrh_logo.png"
+  background_color_ios: "#FFC233"
+  adaptive_icon_background: "#FFC233"
+  adaptive_icon_foreground: "assets/icon/adaptive_foreground.png"
 
 flutter:
   uses-material-design: true
 
   assets:
     - assets/image/
+    - assets/animations/
     - assets/language/
     - assets/icon/
     - assets/lottie/

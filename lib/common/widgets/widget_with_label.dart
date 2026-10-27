@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
-import 'package:wefrh_rider/util/styles.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/styles.dart';
 
 class WidgetWithLabel extends StatelessWidget {
   final String label;
@@ -21,7 +21,7 @@ class WidgetWithLabel extends StatelessWidget {
           label,
           style: textMedium(),
         ),
-        SizedBox(height: Dimensions.h10),
+        SizedBox(height: Dimensions.h8),
         textField,
       ],
     );

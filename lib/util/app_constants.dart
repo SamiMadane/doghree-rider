@@ -1,9 +1,9 @@
 import 'package:get/get.dart';
-import 'package:wefrh_rider/features/language/domain/models/language_model.dart';
-import 'package:wefrh_rider/util/manager_assets.dart';
+import 'package:doghree_rider/features/language/domain/models/language_model.dart';
+import 'package:doghree_rider/util/manager_assets.dart';
 
 class AppConstants {
-  static const String appName = 'Wefrh Rider';
+  static const String appName = 'Doghree Rider';
   static const double appVersion = 3.3;
 
   ///Flutter sdk 3.32.8
@@ -19,9 +19,12 @@ class AppConstants {
 
   static const String configUri = '/api/v1/config';
   static const String directionUri = '/api/v1/config/direction-api';
-  static const String walletAccountsUri = '/api/v1/delivery-man/wallet/accounts';
-  static const String walletWithdrawUri = '/api/v1/delivery-man/wallet/withdraw';
-static const String walletWithdrawalsUri = '/api/v1/delivery-man/wallet/withdrawals';
+  static const String walletAccountsUri =
+      '/api/v1/delivery-man/wallet/accounts';
+  static const String walletWithdrawUri =
+      '/api/v1/delivery-man/wallet/withdraw';
+  static const String walletWithdrawalsUri =
+      '/api/v1/delivery-man/wallet/withdrawals';
   static const String forgetPasswordUri =
       '/api/v1/auth/delivery-man/forgot-password';
   static const String walletUri = '/api/v1/delivery-man/wallet';
@@ -104,21 +107,21 @@ static const String walletWithdrawalsUri = '/api/v1/delivery-man/wallet/withdraw
       '/api/v1/delivery-man/message/search-list';
 
   /// Shared Key
-  static const String theme = 'wefrh_rider_theme';
-  static const String token = 'wefrh_rider_token';
-  static const String countryCode = 'wefrh_rider_country_code';
-  static const String languageCode = 'wefrh_rider_language_code';
+  static const String theme = 'doghree_rider_theme';
+  static const String token = 'doghree_rider_token';
+  static const String countryCode = 'doghree_rider_country_code';
+  static const String languageCode = 'doghree_rider_language_code';
   static const String cacheCountryCode = 'cache_country_code';
   static const String cacheLanguageCode = 'cache_language_code';
-  static const String userPassword = 'wefrh_rider_user_password';
-  static const String userAddress = 'wefrh_rider_user_address';
-  static const String userNumber = 'wefrh_rider_user_number';
+  static const String userPassword = 'doghree_rider_user_password';
+  static const String userAddress = 'doghree_rider_user_address';
+  static const String userNumber = 'doghree_rider_user_number';
   static const String userCountryDialCode =
-      'wefrh_rider_user_country_dial_code';
-  static const String userCountryCode = 'wefrh_rider_user_country_code';
-  static const String notification = 'wefrh_rider_notification';
-  static const String notificationCount = 'wefrh_rider_notification_count';
-  static const String ignoreList = 'wefrh_rider_ignore_list';
+      'doghree_rider_user_country_dial_code';
+  static const String userCountryCode = 'doghree_rider_user_country_code';
+  static const String notification = 'doghree_rider_notification';
+  static const String notificationCount = 'doghree_rider_notification_count';
+  static const String ignoreList = 'doghree_rider_ignore_list';
   static const String topic = 'all_zone_delivery_man';
   static const String zoneTopic = 'zone_topic';
   static const String vehicleWiseTopic = 'vehicle_wise_topic';
@@ -145,7 +148,7 @@ static const String walletWithdrawalsUri = '/api/v1/delivery-man/wallet/withdraw
   static const String deliveryMan = 'delivery_man';
   static const String vendor = 'vendor';
 
-    static const bool allowDmTypeSelection = false;
+  static const bool allowDmTypeSelection = false;
 
   static List<LanguageModel> languages = [
     LanguageModel(
@@ -158,15 +161,5 @@ static const String walletWithdrawalsUri = '/api/v1/delivery-man/wallet/withdraw
         languageName: 'العربية',
         countryCode: 'SA',
         languageCode: 'ar'),
-    LanguageModel(
-        imageUrl: ManagerAssets.spanish,
-        languageName: 'Spanish',
-        countryCode: 'ES',
-        languageCode: 'es'),
-    LanguageModel(
-        imageUrl: ManagerAssets.bengali,
-        languageName: 'Bengali',
-        countryCode: 'BN',
-        languageCode: 'bn'),
   ];
 }

@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:wefrh_rider/common/widgets/dotted_border_widget.dart';
-import 'package:wefrh_rider/util/dimensions.dart';
+import 'package:doghree_rider/common/widgets/dotted_border_widget.dart';
+import 'package:doghree_rider/util/dimensions.dart';
 
 class ImagePickerWidget extends StatelessWidget {
   final String? pickedImagePath;
