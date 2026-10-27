@@ -16,9 +16,29 @@ import 'package:doghree_rider/util/app_constants.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:doghree_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:doghree_rider/firebase_options.dart';
 import 'package:http/http.dart' as http;
 
 class NotificationHelper {
+  static const String channelId = 'doghree_rider';
+
+  static Future<void> createChannel(FlutterLocalNotificationsPlugin fln) async {
+    final channel = AndroidNotificationChannel(
+      channelId,
+      AppConstants.appName,
+      importance: Importance.max,
+      playSound: true,
+      sound: const RawResourceAndroidNotificationSound('notification'),
+    );
+    await fln
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(channel);
+  }
+    static int _newId() =>
+      DateTime.now().millisecondsSinceEpoch.remainder(100000);
+
   static Future<void> initialize(
       FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin) async {
     var androidInitialize =
@@ -26,11 +46,11 @@ class NotificationHelper {
     var iOSInitialize = const DarwinInitializationSettings();
     var initializationsSettings =
         InitializationSettings(android: androidInitialize, iOS: iOSInitialize);
-    flutterLocalNotificationsPlugin
+    await flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()!
-        .requestNotificationsPermission();
-    flutterLocalNotificationsPlugin.initialize(initializationsSettings,
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.requestNotificationsPermission();
+    await flutterLocalNotificationsPlugin.initialize(initializationsSettings,
         onDidReceiveNotificationResponse: (load) async {
       try {
         if (load.payload!.isNotEmpty) {
@@ -66,7 +86,7 @@ class NotificationHelper {
       } catch (_) {}
       return;
     });
-
+    await createChannel(flutterLocalNotificationsPlugin);
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (kDebugMode) {
         print("onMessage message type:${message.data['type']}");
@@ -225,7 +245,7 @@ class NotificationHelper {
     );
     const NotificationDetails platformChannelSpecifics =
         NotificationDetails(android: androidPlatformChannelSpecifics);
-    await fln.show(0, title, body, platformChannelSpecifics,
+    await fln.show(_newId(), title, body, platformChannelSpecifics,
         payload: jsonEncode(notificationBody.toJson()));
   }
 
@@ -252,7 +272,8 @@ class NotificationHelper {
     );
     NotificationDetails platformChannelSpecifics =
         NotificationDetails(android: androidPlatformChannelSpecifics);
-    await fln.show(0, title, body, platformChannelSpecifics,
+    await fln.show(_newId()
+    , title, body, platformChannelSpecifics,
         payload: notificationBody != null
             ? jsonEncode(notificationBody.toJson())
             : null);
@@ -289,7 +310,7 @@ class NotificationHelper {
     );
     final NotificationDetails platformChannelSpecifics =
         NotificationDetails(android: androidPlatformChannelSpecifics);
-    await fln.show(0, title, body, platformChannelSpecifics,
+    await fln.show(_newId(), title, body, platformChannelSpecifics,
         payload: notificationBody != null
             ? jsonEncode(notificationBody.toJson())
             : null);
@@ -320,6 +341,11 @@ class NotificationHelper {
         return NotificationBodyModel(
             orderId: int.tryParse('${orderId ?? ''}'),
             notificationType: NotificationType.order);
+      case 'assign':
+        return NotificationBodyModel(
+            orderId: int.tryParse('${orderId ?? ''}'),
+            notificationType: NotificationType.order);
+      case 'new_order':
       case 'order_request':
         return NotificationBodyModel(
             orderId: int.tryParse('${orderId ?? ''}'),
@@ -362,19 +388,28 @@ class NotificationHelper {
 @pragma('vm:entry-point')
 Future<dynamic> myBackgroundMessageHandler(RemoteMessage message) async {
   debugPrint("onBackground: ${message.data}");
-  NotificationBodyModel? notificationBody =
-      NotificationHelper.convertNotification(message.data);
+  await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform);
 
-  if (notificationBody != null &&
-      (notificationBody.notificationType == NotificationType.order ||
-          notificationBody.notificationType ==
-              NotificationType.order_request)) {
+  final String? type = message.data['type']?.toString();
+  final int? orderId = int.tryParse('${message.data['order_id'] ?? ''}');
+
+  if (type == 'assign' || type == 'new_order' || type == 'order_request') {
     FlutterForegroundTask.initCommunicationPort();
-
     _initService();
-
-    await _startService(notificationBody.orderId.toString(),
-        notificationBody.notificationType!);
+    await _startService(
+      orderId.toString(),
+      type == 'assign'
+          ? NotificationType.order
+          : NotificationType.order_request,
+    );
+  }    else if (GetPlatform.isAndroid && message.notification == null) {
+    // data-only: النظام ما بعرضه، فنعرضه إحنا
+    final fln = FlutterLocalNotificationsPlugin();
+    await fln.initialize(const InitializationSettings(
+        android: AndroidInitializationSettings('ic_notification')));
+    await NotificationHelper.createChannel(fln);
+    await NotificationHelper.showNotification(message, fln);
   }
 }
 
