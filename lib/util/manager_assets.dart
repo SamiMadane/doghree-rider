@@ -1,9 +1,12 @@
 const String imagePath = 'assets/image';
+const String animationPath = 'assets/animations';
 const String iconPath = 'assets/icon';
 const String lottiePath = 'assets/lottie';
 const String mapPath = 'assets/map';
 
 class ManagerAssets {
+  static const String deliveredSuccessAnim = '$animationPath/delivered_success.gif';
+
   static const String logo = '$imagePath/logo.png';
   static const String logoDark = '$imagePath/logo_dark.png';
   static const String logoDoghreeLight = '$imagePath/logo_doghree_light.png';
@@ -39,7 +42,6 @@ class ManagerAssets {
   static const String maintenance = '$imagePath/maintenance.png';
   static const String notificationPlaceholder =
       '$imagePath/notification_placeholder.jpg';
-  static const String deliveredSuccess = '$imagePath/delivered_success.gif';
   static const String transactionReportIcon =
       '$imagePath/transaction_report_icon.png';
   static const String onHoldTransactionIcon =
@@ -69,10 +71,10 @@ class ManagerAssets {
   static const String mapPlaceholderImage = '$imagePath/map_placeholder.png';
 
   static const String sessionExpiredImage = '$imagePath/session_expired.png';
+  static const String noInternetImage = '$imagePath/no_internet.png';
 
-  ///Svg Images
 
-  static const String noInternetImage = '$imagePath/no_internet.svg';
+
 
   // icons
   static const String arrowBackIcon = '$iconPath/arrow_left.svg';

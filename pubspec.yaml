@@ -59,6 +59,7 @@ dependencies:
   flutter_screenutil: ^5.9.3
   flutter_launcher_icons: ^0.14.4
   image_cropper: ^11.0.0
+  maplibre_gl: ^0.27.1
 
 
 
@@ -86,6 +87,7 @@ flutter:
 
   assets:
     - assets/image/
+    - assets/animations/
     - assets/language/
     - assets/icon/
     - assets/lottie/
