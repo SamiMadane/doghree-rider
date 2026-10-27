@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:camera/camera.dart';
+import 'package:doghree_rider/firebase_options.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:doghree_rider/features/auth/controllers/auth_controller.dart';
@@ -33,15 +34,10 @@ Future<void> main() async {
 
   if (GetPlatform.isAndroid) {
     await Firebase.initializeApp(
-      options: const FirebaseOptions(
-        apiKey: "AIzaSyA9r4E873RMreR9D-60tDHjz9No57fAbNk",
-        appId: "1:696479427007:android:5c22bd1037d746be0cd90a",
-        messagingSenderId: "696479427007",
-        projectId: "serious-venture-434014-q3",
-      ),
+      options: DefaultFirebaseOptions.currentPlatform,
     );
   } else {
-    await Firebase.initializeApp();
+    await Firebase.initializeApp(); // iOS: بيقرأ GoogleService-Info.plist
   }
 
   Map<String, Map<String, String>> languages = await di.init();
@@ -57,7 +53,9 @@ Future<void> main() async {
       await NotificationHelper.initialize(flutterLocalNotificationsPlugin);
       FirebaseMessaging.onBackgroundMessage(myBackgroundMessageHandler);
     }
-  } catch (_) {}
+  } catch (e, s) {
+    debugPrint('❌ Notification init failed: $e\n$s');
+  }
 
   await DateConverterHelper.initLocaleDateFormatting();
   Get.put(LocationPermissionManager(), permanent: true);
