@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/util/manager_assets.dart';
-import 'package:doghree_rider/util/manager_colors.dart';
 import 'package:doghree_rider/util/styles.dart';
 
 /// Dialog احترافي لانتهاء الجلسة
@@ -11,9 +10,9 @@ class SessionExpiredBottomSheet extends StatelessWidget {
   final VoidCallback onConfirm;
 
   const SessionExpiredBottomSheet({
-    Key? key,
+    super.key,
     required this.onConfirm,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

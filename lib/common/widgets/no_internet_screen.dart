@@ -35,7 +35,7 @@ class NoInternetScreen extends StatelessWidget {
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(height: Dimensions.h16),
-                    SvgPicture.asset(
+                    Image.asset(
                       ManagerAssets.noInternetImage,
                       fit: BoxFit.contain,
                     ),

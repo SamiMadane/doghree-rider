@@ -1,14 +1,14 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
-import 'package:doghree_rider/util/app_constants.dart';
 import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/util/manager_assets.dart';
 import 'package:doghree_rider/util/styles.dart';
-class CustomAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
+
+class CustomAppBarWidget extends StatelessWidget
+    implements PreferredSizeWidget {
   final String? title;
   final Widget? titleWidget;
   final bool isBackButtonExist;
@@ -38,11 +38,21 @@ class CustomAppBarWidget extends StatelessWidget implements PreferredSizeWidget 
 
   @override
   Widget build(BuildContext context) {
-    final Color resolvedTitleColor =
-        titleColor ?? Theme.of(context).textTheme.bodyMedium!.color!;
+    final ThemeData theme = Theme.of(context);
 
-    final Color resolvedIconColor =
-        iconColor ?? Theme.of(context).iconTheme.color!;
+    final Color background = backGroundColor ?? theme.cardColor;
+    final Color foreground = titleColor ?? theme.textTheme.bodyMedium!.color!;
+    final Color resolvedIconColor = iconColor ?? foreground;
+
+    // Status-bar icons follow the real background, even for custom colours.
+    final bool lightBackground =
+        ThemeData.estimateBrightnessForColor(background) == Brightness.light;
+    final SystemUiOverlayStyle overlayStyle = (lightBackground
+            ? SystemUiOverlayStyle.dark
+            : SystemUiOverlayStyle.light)
+        .copyWith(statusBarColor: Colors.transparent);
+
+    final bool rtl = Directionality.of(context) == TextDirection.rtl;
 
     return AppBar(
       title: titleWidget ??
@@ -51,25 +61,22 @@ class CustomAppBarWidget extends StatelessWidget implements PreferredSizeWidget 
                   title!,
                   style: textSemiBold().copyWith(
                     fontSize: Dimensions.fs18,
-                    color: resolvedTitleColor,
+                    color: foreground,
                   ),
                 )
               : null),
       bottom: bottom,
       centerTitle: centerTitle,
       leadingWidth: 50,
-      leading: (isBackButtonExist
+      leading: isBackButtonExist
           ? IconButton(
-              icon: Get.locale?.languageCode ==
-                      AppConstants.languages[1].languageCode
-                  ? SvgPicture.asset(
-                      ManagerAssets.arrowRightIcon,
-                      color: resolvedIconColor,
-                    )
-                  : SvgPicture.asset(
-                      ManagerAssets.arrowBackIcon,
-                      color: resolvedIconColor,
-                    ),
+              icon: SvgPicture.asset(
+                rtl
+                    ? ManagerAssets.arrowRightIcon
+                    : ManagerAssets.arrowBackIcon,
+                colorFilter:
+                    ColorFilter.mode(resolvedIconColor, BlendMode.srcIn),
+              ),
               onPressed: () {
                 if (onBackPressed != null) {
                   onBackPressed!();
@@ -80,19 +87,21 @@ class CustomAppBarWidget extends StatelessWidget implements PreferredSizeWidget 
                 }
               },
             )
-          : null),
-      backgroundColor: backGroundColor ?? Theme.of(context).cardColor,
-      surfaceTintColor: Theme.of(context).cardColor,
-      shadowColor: Theme.of(context).disabledColor.withAlpha(128),
+          : null,
+      backgroundColor: background,
+      surfaceTintColor: Colors.transparent,
+      shadowColor: theme.shadowColor,
+      systemOverlayStyle: overlayStyle,
       elevation: elevation ?? 0,
       scrolledUnderElevation: 0,
-      actions: [
-        Padding(
-          padding: EdgeInsetsDirectional.only(end: Dimensions.w16),
-
-          child: actionWidget ?? const SizedBox(),
-        ),
-      ],
+      actions: actionWidget == null
+          ? null
+          : [
+              Padding(
+                padding: EdgeInsetsDirectional.only(end: Dimensions.w16),
+                child: actionWidget,
+              ),
+            ],
     );
   }
 
