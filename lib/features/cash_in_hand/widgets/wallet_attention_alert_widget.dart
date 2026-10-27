@@ -16,13 +16,15 @@ class WalletAttentionAlertWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+
     return GetBuilder<ProfileController>(
       builder: (profileController) {
         return Container(
           width: context.width * 0.95,
           padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
           decoration: BoxDecoration(
-            color: const Color(0xfffff1f1),
+            color: cs.error.withValues(alpha: 0.10),  
             borderRadius: BorderRadius.circular(Dimensions.r10),
           ),
           child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -32,7 +34,7 @@ class WalletAttentionAlertWidget extends StatelessWidget {
               Image.asset(ManagerAssets.attentionWarningIcon, width: 20, height: 20),
               SizedBox(width: Dimensions.w10),
 
-              Text('attention_please'.tr, style: textBold().copyWith(fontSize: Dimensions.fs12, color: Colors.black)),
+              Text('attention_please'.tr, style: textBold().copyWith(fontSize: Dimensions.fs12, color: cs.onSurface,  )),
 
             ]),
             SizedBox(height: Dimensions.h10),
@@ -41,14 +43,14 @@ class WalletAttentionAlertWidget extends StatelessWidget {
               textAlign: TextAlign.justify,
               text: TextSpan(
                 text: '${'over_flow_block_warning_message'.tr}  ',
-                style: textRegular().copyWith(fontSize: Dimensions.fs12, color: Colors.black),
+                style: textRegular().copyWith(fontSize: Dimensions.fs12, color: cs.onSurface),
                 children: [
                   TextSpan(
                     recognizer: TapGestureRecognizer()..onTap = () {
                       if(profileController.profileModel!.showPayNowButton!) {
                         showModalBottomSheet(
                           isScrollControlled: true, useRootNavigator: true, context: context,
-                          backgroundColor: Colors.white,
+                          backgroundColor: Theme.of(context).cardColor, 
                           shape:  RoundedRectangleBorder(
                             borderRadius: BorderRadius.only(topLeft: Radius.circular(Dimensions.r20), topRight: Radius.circular(Dimensions.r20)),
                           ),
@@ -68,11 +70,11 @@ class WalletAttentionAlertWidget extends StatelessWidget {
                       }
                     },
                     text: 'pay_the_due'.tr,
-                    style: textRegular().copyWith(fontSize: Dimensions.fs12, color: Colors.blue, decoration: TextDecoration.underline),
+                    style: textRegular().copyWith(fontSize: Dimensions.fs12, color: cs.tertiary, decoration: TextDecoration.underline),
                   ),
                 ],
               ),
-            ) : Text('over_flow_warning_message'.tr, style: textRegular().copyWith(fontSize: Dimensions.fs12, color: Colors.black)),
+            ) : Text('over_flow_warning_message'.tr, style: textRegular().copyWith(fontSize: Dimensions.fs12, color: cs.onSurface)),
           ]),
         );
       }

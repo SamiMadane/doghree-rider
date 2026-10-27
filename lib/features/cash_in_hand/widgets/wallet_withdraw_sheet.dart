@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:doghree_rider/common/widgets/custom_button_widget.dart';
 import 'package:doghree_rider/common/widgets/custom_card.dart';
-import 'package:doghree_rider/common/widgets/custom_snackbar_widget.dart';
 import 'package:doghree_rider/common/widgets/custom_text_field_widget.dart';
 import 'package:doghree_rider/common/widgets/widget_with_label.dart';
 import 'package:doghree_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
@@ -38,8 +37,8 @@ class _WalletWithdrawSheetState extends State<WalletWithdrawSheet> {
         Get.find<CashInHandController>().wallet?.availableBalance ?? 0;
     _amount = TextEditingController(text: available.toStringAsFixed(2));
     WidgetsBinding.instance.addPostFrameCallback((_) {
-  Get.find<CashInHandController>().clearWithdrawError();
-});
+      Get.find<CashInHandController>().clearWithdrawError();
+    });
   }
 
   @override
@@ -89,33 +88,39 @@ class _WalletWithdrawSheetState extends State<WalletWithdrawSheet> {
         .firstWhere((a) => a.isDefault, orElse: () => w.accounts.first);
 
     final bool? confirmed = await Get.dialog<bool>(AlertDialog(
+      // هوامش أقل = ديالوج أعرض (الافتراضي 40)
+      insetPadding: EdgeInsets.symmetric(horizontal: Dimensions.w16),
       title: Text('wallet_withdraw_confirm_title'.tr),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(PriceConverterHelper.convertPrice(amount),
-              style: textBold().copyWith(fontSize: Dimensions.fs18),
-              textDirection: TextDirection.ltr),
-          SizedBox(height: Dimensions.h10),
-          Text('${'wallet_withdraw_to'.tr}: ${account.methodName}',
-              style: textMedium()),
-          if (account.summary.isNotEmpty)
-            Text(account.summary, style: textRegular()),
-          SizedBox(height: Dimensions.h10),
-          Text('wallet_withdraw_confirm_note'.tr,
-              style: textRegular().copyWith(
-                  color: Theme.of(context).hintColor,
-                  fontSize: Dimensions.fs12)),
-        ],
+      content: SizedBox(
+        width: double.maxFinite,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(PriceConverterHelper.convertPrice(amount),
+                style: textBold().copyWith(fontSize: Dimensions.fs18),
+                textDirection: TextDirection.ltr),
+            SizedBox(height: Dimensions.h10),
+            Text('${'wallet_withdraw_to'.tr}: ${account.methodName}',
+                style: textMedium()),
+            if (account.summary.isNotEmpty)
+              Text(account.summary, style: textRegular()),
+            SizedBox(height: Dimensions.h16),
+            _WeeklyLimitNote(text: 'wallet_withdraw_confirm_note'.tr),
+          ],
+        ),
       ),
       actions: [
+        // إلغاء: TextButton عادي
         TextButton(
             onPressed: () => Get.back(result: false),
             child: Text('wallet_cancel'.tr)),
-        TextButton(
-            onPressed: () => Get.back(result: true),
-            child: Text('wallet_withdraw_submit'.tr)),
+        // إرسال طلب السحب: CustomButtonWidget
+        CustomButtonWidget(
+          buttonText: 'wallet_withdraw_submit'.tr,
+          autoWidth: true,
+          onPressed: () => Get.back(result: true),
+        ),
       ],
     ));
     if (confirmed != true || !mounted) return;
@@ -125,12 +130,14 @@ class _WalletWithdrawSheetState extends State<WalletWithdrawSheet> {
       accountId: account.id,
       note: _note.text,
     );
-      if (ok && mounted) Get.back();
-
+    if (ok && mounted) Get.back();
   }
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final ColorScheme scheme = theme.colorScheme;
+
     return GetBuilder<CashInHandController>(builder: (c) {
       final WalletModel? w = c.wallet;
       final WalletAccount? account = (w == null || w.accounts.isEmpty)
@@ -148,7 +155,7 @@ class _WalletWithdrawSheetState extends State<WalletWithdrawSheet> {
           padding: EdgeInsets.symmetric(
               horizontal: Dimensions.w20, vertical: Dimensions.h20),
           decoration: BoxDecoration(
-            color: Theme.of(context).cardColor,
+            color: theme.cardColor,
             borderRadius:
                 BorderRadius.vertical(top: Radius.circular(Dimensions.r20)),
           ),
@@ -163,24 +170,28 @@ class _WalletWithdrawSheetState extends State<WalletWithdrawSheet> {
                 ),
                 SizedBox(height: Dimensions.h20),
                 if (account != null) ...[
+                  // نفس ستايل عناوين وكروت صفحة الرصيد
                   Text('wallet_withdraw_to'.tr,
-                      style: textRegular().copyWith(
-                          color: Theme.of(context).hintColor,
-                          fontSize: Dimensions.fs12)),
+                      style: textMedium().copyWith(
+                          color: scheme.onSurfaceVariant,
+                          fontSize: Dimensions.fs14)),
                   SizedBox(height: Dimensions.h8),
                   CustomCard(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: Dimensions.w16, vertical: Dimensions.h16),
-                    fillColor: Theme.of(context).scaffoldBackgroundColor,
+                    padding: EdgeInsets.all(Dimensions.w16),
+                    fillColor: theme.scaffoldBackgroundColor,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(account.methodName, style: textBold()),
+                        Text(account.methodName,
+                            style: textBold().copyWith(
+                                fontSize: Dimensions.fs16,
+                                color: scheme.onSurface)),
                         if (account.summary.isNotEmpty) ...[
-                          SizedBox(height: Dimensions.h4),
+                          SizedBox(height: Dimensions.h8),
                           Text(account.summary,
-                              style: textRegular().copyWith(
-                                  color: Theme.of(context).hintColor)),
+                              style: textMedium().copyWith(
+                                  fontSize: Dimensions.fs13,
+                                  color: scheme.onSurfaceVariant)),
                         ],
                       ],
                     ),
@@ -192,16 +203,12 @@ class _WalletWithdrawSheetState extends State<WalletWithdrawSheet> {
                     width: double.infinity,
                     padding: EdgeInsets.all(Dimensions.w12),
                     decoration: BoxDecoration(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .error
-                          .withValues(alpha: 0.08),
+                      color: scheme.error.withValues(alpha: 0.08),
                       borderRadius: BorderRadius.circular(Dimensions.r10),
                     ),
                     child: Text(blockMsg,
                         style: textRegular().copyWith(
-                            color: Theme.of(context).colorScheme.error,
-                            fontSize: Dimensions.fs12)),
+                            color: scheme.error, fontSize: Dimensions.fs12)),
                   ),
                   SizedBox(height: Dimensions.h16),
                 ],
@@ -215,9 +222,12 @@ class _WalletWithdrawSheetState extends State<WalletWithdrawSheet> {
                         const TextInputType.numberWithOptions(decimal: true),
                     errorText: _amountError,
                     onChanged: (_) {
-                      if (_amountError != null)
+                      if (_amountError != null) {
                         setState(() => _amountError = null);
-                      if (_formError != null) setState(() => _formError = null);
+                      }
+                      if (_formError != null) {
+                        setState(() => _formError = null);
+                      }
                       c.clearWithdrawError();
                     },
                     isRequired: true,
@@ -229,8 +239,7 @@ class _WalletWithdrawSheetState extends State<WalletWithdrawSheet> {
                 SizedBox(height: Dimensions.h8),
                 Text('wallet_withdraw_one_per_week'.tr,
                     style: textRegular().copyWith(
-                        color: Theme.of(context).hintColor,
-                        fontSize: Dimensions.fs12)),
+                        color: theme.hintColor, fontSize: Dimensions.fs12)),
                 SizedBox(height: Dimensions.h16),
                 WidgetWithLabel(
                   label: 'wallet_withdraw_note'.tr,
@@ -247,8 +256,7 @@ class _WalletWithdrawSheetState extends State<WalletWithdrawSheet> {
                 if ((_formError ?? serverError) != null) ...[
                   Text((_formError ?? serverError)!,
                       style: textRegular().copyWith(
-                          color: Theme.of(context).colorScheme.error,
-                          fontSize: Dimensions.fs12)),
+                          color: scheme.error, fontSize: Dimensions.fs12)),
                   SizedBox(height: Dimensions.h8),
                 ],
                 CustomButtonWidget(
@@ -262,5 +270,24 @@ class _WalletWithdrawSheetState extends State<WalletWithdrawSheet> {
         ),
       );
     });
+  }
+}
+
+class _WeeklyLimitNote extends StatelessWidget {
+  final String text;
+
+  const _WeeklyLimitNote({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+
+    return Text(
+      text,
+      style: textMedium().copyWith(
+        fontSize: Dimensions.fs13,
+        height: 1.5,
+        color: Theme.of(context).hintColor,
+      ),
+    );
   }
 }

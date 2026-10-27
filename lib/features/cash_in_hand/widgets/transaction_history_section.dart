@@ -118,17 +118,18 @@ class _TransactionToggleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;     
     return CustomButtonWidget(
       buttonText: text,
       fontSize: Dimensions.fs13,
       height: Dimensions.h40,
       autoWidth: true,
-      backgroundColor: isSelected
-          ? Theme.of(context).textTheme.bodyMedium!.color
-          : Theme.of(context).cardColor,
+      backgroundColor:
+          isSelected ? (isDark ? cs.primary : cs.onSurface) : cs.surface,
       fontColor: isSelected
-          ? Theme.of(context).cardColor
-          : Theme.of(context).disabledColor,
+          ? (isDark ? cs.onPrimary : cs.surface)
+          : cs.onSurfaceVariant,
       isBold: isSelected,
       isBorder: !isSelected,
       onPressed: onTap,
