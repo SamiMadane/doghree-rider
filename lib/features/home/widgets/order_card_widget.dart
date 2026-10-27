@@ -53,16 +53,20 @@ class OrderCardWidget extends StatelessWidget {
                     children: [
                       TextSpan(
                         text: '${'id_label'.tr}: ',
-                        style: textSemiBold().copyWith(
+                        style: textRegular().copyWith(
+                          // was textSemiBold
                           fontSize: Dimensions.fs14,
                           color: Theme.of(context).hintColor,
                         ),
                       ),
                       TextSpan(
                         text: '#${order.id}',
-                        style: textSemiBold().copyWith(
+                        style: textBold().copyWith(
+                          // was textSemiBold
                           fontSize: Dimensions.fs14,
-                          color: Theme.of(context).colorScheme.tertiary,
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface, 
                         ),
                       ),
                     ],

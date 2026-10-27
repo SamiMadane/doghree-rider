@@ -26,8 +26,6 @@ class EarningsSection extends StatefulWidget {
 }
 
 class _EarningsSectionState extends State<EarningsSection> {
-  /// أيقونة المحفظة (صف «المتاح للسحب»). غيّرها من هون.
-  static const IconData _withdrawIcon = Icons.account_balance_wallet_outlined;
 
   int _period = 0; // 0 اليوم، 1 الأسبوع، 2 الشهر
 

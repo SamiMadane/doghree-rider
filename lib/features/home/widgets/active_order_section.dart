@@ -80,7 +80,6 @@ class _ActiveOrderSectionState extends State<ActiveOrderSection> {
                               );
                             },
                           )
-                        // طلب واحد: عرض كامل بنفس padding الصفحة (16)
                         : OrderCardWidget(
                             order: orders.first,
                             index: 0,
