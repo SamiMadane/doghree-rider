@@ -3,4 +3,6 @@
 <resources>
     <color name="background_color">#FFFFFF</color>
 	<color name="ic_launcher_background">#FFC233</color>
+    <color name="notification_color">#FFC233</color>
+
 </resources>

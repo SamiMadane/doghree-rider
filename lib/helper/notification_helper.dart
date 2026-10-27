@@ -18,6 +18,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:doghree_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:doghree_rider/firebase_options.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class NotificationHelper {
@@ -238,6 +239,7 @@ class NotificationHelper {
         AndroidNotificationDetails(
       'doghree_rider',
       AppConstants.appName,
+      color:  Color(0xFFFFC233),
       playSound: true,
       importance: Importance.max,
       priority: Priority.max,
@@ -264,6 +266,7 @@ class NotificationHelper {
         AndroidNotificationDetails(
       'doghree_rider',
       AppConstants.appName,
+      color: const Color(0xFFFFC233),
       importance: Importance.max,
       styleInformation: bigTextStyleInformation,
       priority: Priority.max,
@@ -301,6 +304,7 @@ class NotificationHelper {
         AndroidNotificationDetails(
       'doghree_rider',
       AppConstants.appName,
+      color: const Color(0xFFFFC233),
       largeIcon: FilePathAndroidBitmap(largeIconPath),
       priority: Priority.max,
       playSound: true,

@@ -223,7 +223,6 @@ class AuthRepository implements AuthRepositoryInterface {
     throw UnimplementedError();
   }
 
-  /// الاشتراك فقط بـ topics فعلية (السيرفر يرجّع '' أو 'No_topic_found' أحياناً)
   List<String> _topics() {
     return [
       AppConstants.topic,
