@@ -41,7 +41,7 @@ class SplashScreenState extends State<SplashScreen> {
   Future<void> _initializeApp() async {
     await Get.find<SplashController>().initSharedData();
 
-    final localizationController = Get.find<LocalizationController>();
+    Get.find<LocalizationController>();
 
     // لا نجلب البروفايل هنا - سنفعل ذلك في _validateSession
     // if (Get.find<AuthController>().isLoggedIn()) {

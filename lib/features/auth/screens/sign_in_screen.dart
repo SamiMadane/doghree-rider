@@ -10,7 +10,6 @@ import 'package:doghree_rider/helper/custom_validator_helper.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
 import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/util/manager_assets.dart';
-import 'package:doghree_rider/util/manager_colors.dart';
 import 'package:doghree_rider/util/styles.dart';
 import 'package:doghree_rider/common/widgets/custom_button_widget.dart';
 import 'package:doghree_rider/common/widgets/custom_text_field_widget.dart';

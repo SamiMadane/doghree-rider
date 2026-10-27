@@ -101,36 +101,134 @@ class AuthController extends GetxController implements GetxService {
     _fieldErrors = errors;
     update();
   }
-Future<ResponseModel> login(String phone, String password) async {
-  _isLoading = true;
-  update();
-  Response response = await authServiceInterface.login(phone, password);
-  ResponseModel responseModel;
-  if (response.statusCode == 200) {
-    authServiceInterface.saveUserToken(response.body['token'],
-        response.body['zone_topic'], response.body['topic']);
-    await authServiceInterface.updateToken();
-    responseModel = ResponseModel(true, 'successful');
-  } else {
-    final String message = (response.statusText != null &&
-            response.statusText!.isNotEmpty)
-        ? response.statusText!
-        : 'error_occurred'.tr;
 
-    // فقط أخطاء بيانات الدخول بتنزل تحت الحقل، أي شي ثاني (إنترنت/سيرفر) snackbar
-    if (_isCredentialsError(response.statusCode)) {
-      _fieldErrors = {'login_password': message};
-    } else {
-      ApiChecker.checkApi(response, sessionAware: false);
-    }
-    responseModel = ResponseModel(false, message);
+  // ───────── Profile form validation ─────────
+  static const String profileNameKey = 'profile_full_name';
+  static const String profileEmailKey = 'profile_email';
+  static const String profilePhoneKey = 'profile_phone';
+
+  /// Returns [firstName, lastName]; lastName may be empty.
+  static List<String> splitFullName(String fullName) {
+    final List<String> parts = fullName
+        .trim()
+        .split(RegExp(r'\s+'))
+        .where((p) => p.isNotEmpty)
+        .toList();
+    final String first = parts.isNotEmpty ? parts.first : '';
+    final String last = parts.length > 1 ? parts.sublist(1).join(' ') : '';
+    return [first, last];
   }
-  _isLoading = false;
-  update();
-  return responseModel;
-}
 
-bool _isCredentialsError(int? code) => code == 401 || code == 422;
+  /// Validates the edit-profile form and stores errors per field.
+  /// Returns true when the form is valid.
+  bool validateProfileForm({
+    required String fullName,
+    required String email,
+    required String phone,
+  }) {
+    final List<String> names = splitFullName(fullName);
+    final String mail = email.trim();
+    final String number = phone.trim();
+    final Map<String, String> errors = {};
+
+    if (names[0].isEmpty) {
+      errors[profileNameKey] = 'enter_your_first_name'.tr;
+    } else if (names[1].isEmpty) {
+      errors[profileNameKey] = 'enter_your_last_name'.tr;
+    }
+
+    if (mail.isEmpty) {
+      errors[profileEmailKey] = 'enter_email_address'.tr;
+    } else if (!GetUtils.isEmail(mail)) {
+      errors[profileEmailKey] = 'enter_a_valid_email_address'.tr;
+    }
+
+    if (number.isEmpty) {
+      errors[profilePhoneKey] = 'enter_phone_number'.tr;
+    } else if (number.length < 6) {
+      errors[profilePhoneKey] = 'enter_a_valid_phone_number'.tr;
+    }
+
+    _fieldErrors = errors;
+    update();
+    return errors.isEmpty;
+  }
+  
+  static const String currentPasswordKey = 'current_password';
+  static const String newPasswordKey = 'new_password';
+  static const String confirmPasswordKey = 'confirm_password';
+
+  String? get firstFieldErrorKey =>
+      _fieldErrors.isEmpty ? null : _fieldErrors.keys.first;
+
+
+  bool validatePasswordForm({
+    required bool requireCurrent,
+    required String currentPassword,
+    required String newPassword,
+    required String confirmPassword,
+  }) {
+    final String current = currentPassword.trim();
+    final String password = newPassword.trim();
+    final String confirm = confirmPassword.trim();
+    final Map<String, String> errors = {};
+
+    if (requireCurrent && current.isEmpty) {
+      errors[currentPasswordKey] = 'enter_current_password'.tr;
+    }
+
+    // Recompute the rule flags so they never depend on the last onChanged.
+    validPassCheck(password, isUpdate: false);
+
+    if (password.isEmpty) {
+      errors[newPasswordKey] = 'enter_password'.tr;
+    } else if (password.length < 8) {
+      errors[newPasswordKey] = 'password_should_be'.tr;
+    } else if (!_spatialCheck ||
+        !_lowercaseCheck ||
+        !_uppercaseCheck ||
+        !_numberCheck ||
+        !_lengthCheck) {
+      errors[newPasswordKey] = 'provide_valid_password'.tr;
+    }
+
+    if (confirm.isEmpty) {
+      errors[confirmPasswordKey] = 'enter_password'.tr;
+    } else if (password != confirm) {
+      errors[confirmPasswordKey] = 'password_does_not_matched'.tr;
+    }
+
+    _fieldErrors = errors;
+    update();
+    return errors.isEmpty;
+  }
+
+  Future<ResponseModel> login(String phone, String password) async {
+    _isLoading = true;
+    update();
+    Response response = await authServiceInterface.login(phone, password);
+    ResponseModel responseModel;
+    if (response.statusCode == 200) {
+      authServiceInterface.saveUserToken(response.body['token'],
+          response.body['zone_topic'], response.body['topic']);
+      await authServiceInterface.updateToken();
+      responseModel = ResponseModel(true, 'successful');
+    } else {
+      final String message =
+          (response.statusText != null && response.statusText!.isNotEmpty)
+              ? response.statusText!
+              : 'error_occurred'.tr;
+
+      // Every server-side login failure is a general error: snackbar only.
+      // Field errors for login come from the local validation in SignInScreen.
+      ApiChecker.checkApi(response, sessionAware: false);
+      responseModel = ResponseModel(false, message);
+    }
+    _isLoading = false;
+    update();
+    return responseModel;
+  }
+
 
   static const List<String> _step1Fields = [
     'email',
