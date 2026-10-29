@@ -18,41 +18,32 @@ class DateConverterHelper {
   }
 
   /// فرق الوقت بالنسبة للآن بشكل إنساني
-static String timeAgo(String createdAt) {
-  final DateTime createdDate = DateFormat('yyyy-MM-dd HH:mm:ss').parse(createdAt);
-  final DateTime now = DateTime.now();
-  final Duration diff = now.difference(createdDate);
+  static String timeAgo(String createdAt) {
+    final DateTime createdDate =
+        DateFormat('yyyy-MM-dd HH:mm:ss').parse(createdAt);
+    final DateTime now = DateTime.now();
+    final Duration diff = now.difference(createdDate);
 
-  if (diff.inSeconds < 60) {
-    return 'now'.tr; // الآن
-  } else if (diff.inMinutes < 60) {
-    return '${diff.inMinutes} ${'mins_ago'.tr}';
-  } else if (diff.inHours < 24) {
-    return '${diff.inHours} ${'hours_ago'.tr}';
-  } else if (diff.inDays == 1) {
-    return 'yesterday'.tr;
-  } else if (diff.inDays < 7) {
-    return '${diff.inDays} ${'days_ago'.tr}';
-  } else {
-    // أكثر من أسبوع: عرض التاريخ الكامل
-    return dateTimeStringToDateOnly(createdAt);
+    if (diff.inSeconds < 60) {
+      return 'now'.tr; // الآن
+    } else if (diff.inMinutes < 60) {
+      return '${diff.inMinutes} ${'mins_ago'.tr}';
+    } else if (diff.inHours < 24) {
+      return '${diff.inHours} ${'hours_ago'.tr}';
+    } else if (diff.inDays == 1) {
+      return 'yesterday'.tr;
+    } else if (diff.inDays < 7) {
+      return '${diff.inDays} ${'days_ago'.tr}';
+    } else {
+      // أكثر من أسبوع: عرض التاريخ الكامل
+      return dateTimeStringToDateOnly(createdAt);
+    }
   }
-}
-
 
   /// تحويل DateTime إلى نص بصيغة yyyy-MM-dd (مثال: للاستخدام في الكوبونات)
   static String dateTimeForCoupon(DateTime dateTime) {
     // عادة هذه صيغة ثابتة لا تتأثر باللغة
     return DateFormat('yyyy-MM-dd').format(dateTime);
-  }
-
-  /// تحويل نص بصيغة "yyyy-MM-dd HH:mm:ss" إلى نص للتفويض/الصرف
-  static String dateTimeStringForDisbursement(String time) {
-    final locale = Get.locale?.languageCode ?? 'en';
-    // نأخذ التاريخ + الوقت من النص
-    var newTime = '${time.substring(0, 10)} ${time.substring(11, 23)}';
-    return DateFormat('dd MMM, yyyy', locale)
-        .format(DateFormat('yyyy-MM-dd HH:mm:ss').parse(newTime));
   }
 
   /// الوقت المحلي فقط

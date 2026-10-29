@@ -72,25 +72,6 @@ Future<Map<String, Map<String, String>>> init() async {
       appBaseUrl: AppConstants.baseUrl, sharedPreferences: Get.find()));
   Get.lazyPut(() => SessionChecker(apiClient: Get.find()));
 
-  /// Repository
-  //Get.lazyPut(() => SplashRepo(sharedPreferences: Get.find(), apiClient: Get.find()));
-  //Get.lazyPut(() => LanguageRepo());
-  // Get.lazyPut(() => AuthRepo(apiClient: Get.find(), sharedPreferences: Get.find()));
-  //Get.lazyPut(() => OrderRepo(apiClient: Get.find(), sharedPreferences: Get.find()));
-  //Get.lazyPut(() => NotificationRepo(apiClient: Get.find(), sharedPreferences: Get.find()));
-  //Get.lazyPut(() => ChatRepo(apiClient: Get.find(), sharedPreferences: Get.find()));
-  //Get.lazyPut(() => DisbursementRepo(apiClient: Get.find()));
-
-  /// Controller
-  // Get.lazyPut(() => ThemeController(sharedPreferences: Get.find()));
-  //Get.lazyPut(() => SplashController(splashRepo: Get.find()));
-  //Get.lazyPut(() => LocalizationController(sharedPreferences: Get.find(), apiClient: Get.find()));
-  //Get.lazyPut(() => LanguageController(sharedPreferences: Get.find()));
-  //Get.lazyPut(() => AuthController(authRepo: Get.find()));
-  //Get.lazyPut(() => OrderController(orderRepo: Get.find()));
-  //Get.lazyPut(() => NotificationController(notificationRepo: Get.find()));
-  //Get.lazyPut(() => ChatController(chatRepo: Get.find()));
-  //Get.lazyPut(() => DisbursementController(disbursementRepo: Get.find()));
 
   /// Repository Interface
   HtmlRepositoryInterface htmlRepositoryInterface =
