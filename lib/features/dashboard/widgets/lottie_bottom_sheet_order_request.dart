@@ -1,12 +1,11 @@
 import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:shimmer_animation/shimmer_animation.dart';
+import 'package:doghree_rider/common/widgets/app_shimmer.dart';
 import 'package:doghree_rider/common/widgets/custom_button_widget.dart';
 import 'package:doghree_rider/features/order/controllers/order_controller.dart';
 import 'package:doghree_rider/features/order/widgets/order_info_section.dart';
 import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/util/manager_assets.dart';
-import 'package:doghree_rider/util/manager_colors.dart';
 import 'package:doghree_rider/util/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -119,7 +118,8 @@ class _LottieBottomSheetOrderRequestState
           children: [
             Expanded(
               child: SingleChildScrollView(
-                padding: EdgeInsets.symmetric(horizontal: Dimensions.w20, vertical: Dimensions.h20),
+                padding: EdgeInsets.symmetric(
+                    horizontal: Dimensions.w20, vertical: Dimensions.h20),
                 child: Column(
                   children: [
                     // Lottie Animation
@@ -175,18 +175,10 @@ class _LottieBottomSheetOrderRequestState
                             parcel: widget.isParcel,
                             showPaymentType: false,
                           )
-                        : Shimmer(
-                            enabled: true,
-                            color: ManagerColors.shimmer,
-                            child: Container(
-                              width: double.infinity,
-                              height: 120,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius:
-                                    BorderRadius.circular(Dimensions.r16),
-                              ),
-                            ),
+                        : AppShimmerBlock(
+                            width: double.infinity,
+                            height: 120,
+                            radius: Dimensions.r16,
                           ),
 
                     const SizedBox(height: 40),
@@ -206,7 +198,7 @@ class _LottieBottomSheetOrderRequestState
                             Expanded(
                               child: CustomButtonWidget(
                                 onPressed: _closeBottomSheet,
-                                buttonText: 'not_now'.tr, 
+                                buttonText: 'not_now'.tr,
                                 isBorder: true,
                                 transparent: true,
                               ),
@@ -217,16 +209,14 @@ class _LottieBottomSheetOrderRequestState
                               flex: 2,
                               child: CustomButtonWidget(
                                 onPressed: _handleAccept,
-                                buttonText:
-                                    'accept_order'.tr, 
+                                buttonText: 'accept_order'.tr,
                               ),
                             ),
                           ],
                         )
-
                       : CustomButtonWidget(
                           onPressed: _handleAccept,
-                          buttonText: 'view_details'.tr, 
+                          buttonText: 'view_details'.tr,
                         ),
             ),
           ],

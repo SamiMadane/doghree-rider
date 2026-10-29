@@ -1,8 +1,8 @@
+import 'package:doghree_rider/common/widgets/app_shimmer.dart';
 import 'package:doghree_rider/common/widgets/custom_switch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:doghree_rider/common/widgets/custom_bottom_sheet_widget.dart';
 import 'package:doghree_rider/common/widgets/custom_confirmation_bottom_sheet.dart';
 import 'package:doghree_rider/common/widgets/custom_button_widget.dart';
@@ -25,52 +25,27 @@ class StatusSwitchSection extends StatelessWidget {
       border: Border.all(color: theme.colorScheme.outline),
     );
   }
-
-  Widget _buildShimmer(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    final Color block = theme.colorScheme.outline.withValues(alpha: 0.5);
-
-    Widget shimmerBlock({
-      required double width,
-      required double height,
-      required double radius,
-    }) {
-      return Shimmer(
-        duration: const Duration(seconds: 2),
-        color: theme.cardColor,
-        colorOpacity: 0.3,
-        enabled: true,
-        child: Container(
-          width: width,
-          height: height,
-          decoration: BoxDecoration(
-            color: block,
-            borderRadius: BorderRadius.circular(radius),
-          ),
-        ),
-      );
-    }
-
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: Dimensions.w16,
-        vertical: Dimensions.h6,
+Widget _buildShimmer(BuildContext context) {
+  return Container(
+    padding: EdgeInsets.symmetric(
+      horizontal: Dimensions.w16,
+      vertical: Dimensions.h6,
+    ),
+    decoration: _cardDecoration(context),
+    child: SizedBox(
+      height: kMinInteractiveDimension, // نفس ارتفاع الصف الحقيقي
+      child: Row(
+        children: [
+          const AppShimmerBlock(width: 10, height: 10, circle: true), // نقطة الحالة
+          SizedBox(width: Dimensions.w10),
+          AppShimmerBlock(width: 90, height: 18, radius: Dimensions.r8), // النص
+          const Spacer(),
+          AppShimmerBlock(width: 52, height: 32, radius: Dimensions.r16), // السويتش
+        ],
       ),
-      decoration: _cardDecoration(context),
-      child: SizedBox(
-        height: kMinInteractiveDimension, // نفس ارتفاع الصف الحقيقي
-        child: Row(
-          children: [
-            shimmerBlock(width: 10, height: 10, radius: 5), // نقطة الحالة
-            SizedBox(width: Dimensions.w10),
-            shimmerBlock(width: 90, height: 18, radius: 8), // النص
-            const Spacer(),
-            shimmerBlock(width: 52, height: 32, radius: 16), // السويتش
-          ],
-        ),
-      ),
-    );
-  }
+    ),
+  );
+}
 
   /// عرض dialog عندما لا يستطيع السائق الذهاب offline
   void _showCannotGoOfflineDialog() {

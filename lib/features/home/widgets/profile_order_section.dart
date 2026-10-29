@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shimmer_animation/shimmer_animation.dart';
+import 'package:doghree_rider/common/widgets/app_shimmer.dart';
 import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
 import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/util/manager_assets.dart';
@@ -200,18 +200,11 @@ class _CountText extends StatelessWidget {
     );
 
     if (value == null) {
-      return Shimmer(
-        duration: const Duration(seconds: 2),
-        color: Colors.grey[500]!,
-        child: Container(
-          height: fontSize,
-          width: fontSize * 1.2,
-          decoration: BoxDecoration(
-            color: color.withOpacity(0.08),
-            borderRadius: BorderRadius.circular(6),
-          ),
-        ),
-      );
+      return AppShimmerBlock(
+    width: fontSize * 1.2,
+    height: fontSize,
+    radius: Dimensions.r8,
+  );
     }
 
     final target = int.tryParse(value!);

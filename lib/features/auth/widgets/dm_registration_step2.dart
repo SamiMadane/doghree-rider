@@ -1,7 +1,7 @@
+import 'package:doghree_rider/common/widgets/app_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:doghree_rider/common/widgets/custom_drop_down_button.dart';
 import 'package:doghree_rider/common/widgets/custom_snackbar_widget.dart';
 import 'package:doghree_rider/common/widgets/custom_text_field_widget.dart';
@@ -126,11 +126,10 @@ class DmRegistrationStep2 extends StatelessWidget {
                         ],
                       ),
                     )
-                  : Shimmer(
-                      child: Container(
-                        height: 50,
-                        color: Theme.of(context).shadowColor,
-                      ),
+                  : AppShimmerBlock(
+                      width: double.infinity,
+                      height: 50,
+                      radius: Dimensions.r10,
                     ),
               SizedBox(height: Dimensions.h16),
 
@@ -171,11 +170,10 @@ class DmRegistrationStep2 extends StatelessWidget {
                         ],
                       ),
                     )
-                  : Shimmer(
-                      child: Container(
-                        height: 50,
-                        color: Theme.of(context).shadowColor,
-                      ),
+                  : AppShimmerBlock(
+                      width: double.infinity,
+                      height: 50,
+                      radius: Dimensions.r10,
                     ),
             ],
           ),
