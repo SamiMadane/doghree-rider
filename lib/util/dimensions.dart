@@ -1,6 +1,5 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-
 class Dimensions {
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   // 📝 Font Sizes (استخدم .sp للخطوط دائماً)
@@ -22,7 +21,11 @@ class Dimensions {
   static double fs28 = 28.sp;
   static double fs30 = 30.sp;
   static double fs32 = 32.sp;
+  static double fs34 = 34.sp;
+
   static double fs40 = 40.sp;
+  static double fs48 = 48.sp;
+
   static double fs150 = 150.sp;
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -64,8 +67,13 @@ class Dimensions {
   static double h80 = 80.h;
   static double h85 = 85.h;
   static double h90 = 90.h;
+  static double h92 = 92.h;
+  static double h95 = 95.h;
   static double h100 = 100.h;
+  static double h108 = 108.h;
+
   static double h120 = 120.h;
+  static double h128 = 128.h;
   static double h130 = 130.h;
   static double h140 = 140.h;
   static double h150 = 150.h;
@@ -114,8 +122,11 @@ class Dimensions {
   static double w75 = 75.w;
   static double w80 = 80.w;
   static double w90 = 90.w;
+  static double w95 = 95.w;
   static double w100 = 100.w;
+  static double w108 = 108.w;
   static double w120 = 120.w;
+  static double w124 = 124.w;
   static double w130 = 130.w;
   static double w140 = 140.w;
   static double w150 = 150.w;
@@ -133,6 +144,7 @@ class Dimensions {
   static double r6 = 6.r;
   static double r8 = 8.r;
   static double r10 = 10.r;
+  static double r11 = 11.r;
   static double r12 = 12.r;
   static double r14 = 14.r;
   static double r15 = 15.r;

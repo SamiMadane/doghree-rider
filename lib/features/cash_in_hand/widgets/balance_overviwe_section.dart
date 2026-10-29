@@ -48,7 +48,6 @@ class BalanceOverviewSection extends StatelessWidget {
             vertical: Dimensions.h16,
           ),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
@@ -83,9 +82,9 @@ class BalanceOverviewSection extends StatelessWidget {
                   SizedBox(width: Dimensions.w8),
                   SizedBox(
                     width: Dimensions.w120,
-                    height: Dimensions.w120,
+                    height: Dimensions.h120,
                     child: Image.asset(
-                      ManagerAssets.balanceImage,
+                      ManagerAssets.balancedImage,
                       fit: BoxFit.contain,
                       matchTextDirection: true,
                     ),
@@ -95,7 +94,6 @@ class BalanceOverviewSection extends StatelessWidget {
               SizedBox(height: Dimensions.h8),
               CustomButtonWidget(
                 buttonText: 'wallet_request_withdraw'.tr,
-                autoWidth: true,
                 fontSize: Dimensions.fs16,
                 backgroundColor:
                     canWithdraw ? theme.primaryColor : custom.disabledButton,

@@ -66,6 +66,7 @@ class ManagerAssets {
 
   static const String storeImage = '$imagePath/store.png';
   static const String balanceImage = '$imagePath/balance.png';
+  static const String balancedImage = '$imagePath/balanced.png';
   static const String payNowImage = '$imagePath/pay_now.png';
   static const String adjustPaymentImage = '$imagePath/adjust_payment.png';
   static const String mapPlaceholderImage = '$imagePath/map_placeholder.png';

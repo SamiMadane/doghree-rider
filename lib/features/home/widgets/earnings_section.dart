@@ -1,12 +1,11 @@
-import 'package:doghree_rider/util/manager_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:doghree_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
 import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
 import 'package:doghree_rider/helper/price_converter_helper.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
+import 'package:doghree_rider/common/widgets/dashed_line_widget.dart';
 import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/util/manager_assets.dart';
 import 'package:doghree_rider/util/styles.dart';
@@ -66,10 +65,10 @@ class _EarningsSectionState extends State<EarningsSection> {
         child: Stack(
           children: [
             PositionedDirectional(
-              end: 8,
-              top: 8,
-              width: 95,
-              height: 95,
+              end: Dimensions.w8,
+              top: Dimensions.h8,
+              width: Dimensions.w95,
+              height: Dimensions.h95,
               child: IgnorePointer(
                 child: Image.asset(
                   ManagerAssets.doghreeCoins,
@@ -84,13 +83,19 @@ class _EarningsSectionState extends State<EarningsSection> {
               children: [
                 // ===== القسم الأول: الأرباح كلها + الإجمالي =====
                 Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(20, 18, 20, 0),
+                  padding: EdgeInsetsDirectional.fromSTEB(
+                    Dimensions.w20,
+                    Dimensions.h18,
+                    Dimensions.w20,
+                    0,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // العنوان + العين + الرقم (بعيد عن الصورة)
                       Padding(
-                        padding: const EdgeInsetsDirectional.only(end: 108),
+                        padding: EdgeInsetsDirectional.only(
+                            end: Dimensions.w108),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -108,25 +113,25 @@ class _EarningsSectionState extends State<EarningsSection> {
                                     ),
                                   ),
                                 ),
-                                const SizedBox(width: 4),
+                                SizedBox(width: Dimensions.w4),
                                 GestureDetector(
                                   behavior: HitTestBehavior.opaque,
                                   onTap: () =>
                                       widget.showEarnings.value = !show,
                                   child: Padding(
-                                    padding: const EdgeInsets.all(4),
+                                    padding: EdgeInsets.all(Dimensions.r4),
                                     child: Icon(
                                       show
                                           ? Icons.visibility
                                           : Icons.visibility_off,
-                                      size: 18,
+                                      size: Dimensions.r18,
                                       color: cs.onSurfaceVariant,
                                     ),
                                   ),
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 2),
+                            SizedBox(height: Dimensions.h2),
                             FittedBox(
                               fit: BoxFit.scaleDown,
                               alignment: AlignmentDirectional.centerStart,
@@ -135,11 +140,11 @@ class _EarningsSectionState extends State<EarningsSection> {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      SizedBox(height: Dimensions.h20),
                       // أزرار الفترة
                       Wrap(
-                        spacing: 6,
-                        runSpacing: 6,
+                        spacing: Dimensions.w6,
+                        runSpacing: Dimensions.h6,
                         children: List<Widget>.generate(
                           pills.length,
                           (i) => _PeriodPill(
@@ -153,52 +158,59 @@ class _EarningsSectionState extends State<EarningsSection> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      SizedBox(height: Dimensions.h16),
                       // الإجمالي: معلومة ثانوية، فخطه أصغر من «المتاح للسحب»
-                      Row(
-                        children: [
-                          Container(
-                            width: 14,
-                            height: 14,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: theme.primaryColor,
-                              border: Border.all(color: cs.onSurface, width: 1),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              'total_earnings'.tr,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: textMedium().copyWith(
-                                fontSize: Dimensions.fs13,
-                                color: cs.onSurfaceVariant,
+                      GetBuilder<CashInHandController>(builder: (c) {
+                        final wallet = c.wallet;
+
+                        return Row(
+                          children: [
+                            Container(
+                              width: Dimensions.w14,
+                              height: Dimensions.w14,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: theme.primaryColor,
+                                border:
+                                    Border.all(color: cs.onPrimary, width: 1),
                               ),
                             ),
-                          ),
-                          Text(
-                            (show && profile.balance != null)
-                                ? PriceConverterHelper.convertPrice(
-                                    profile.balance)
-                                : '*****',
-                            style: textBold().copyWith(
-                              fontSize: Dimensions.fs14,
-                              color: cs.onSurface,
+                            SizedBox(width: Dimensions.w8),
+                            Expanded(
+                              child: Text(
+                                'total_earnings'.tr,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: textMedium().copyWith(
+                                  fontSize: Dimensions.fs13,
+                                  color: cs.onSurfaceVariant,
+                                ),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
+                            Text(
+                              (show && wallet != null)
+                                  ? PriceConverterHelper.convertPrice(
+                                      wallet.totalEarning)
+                                  : '*****',
+                              style: textBold().copyWith(
+                                fontSize: Dimensions.fs14,
+                                color: cs.onSurface,
+                              ),
+                            ),
+                          ],
+                        );
+                      }),
                     ],
                   ),
                 ),
 
                 // ===== الفاصل: شحطات الطريق =====
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                  child: _DashedLine(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: Dimensions.w20,
+                    vertical: Dimensions.h12,
+                  ),
+                  child: DashedLine(
                     color: cs.onSurfaceVariant.withValues(alpha: 0.35),
                   ),
                 ),
@@ -215,8 +227,12 @@ class _EarningsSectionState extends State<EarningsSection> {
                       onTap: () =>
                           Get.toNamed(RouteHelper.getCashInHandRoute()),
                       child: Padding(
-                        padding:
-                            const EdgeInsetsDirectional.fromSTEB(20, 2, 20, 14),
+                        padding: EdgeInsetsDirectional.fromSTEB(
+                          Dimensions.w20,
+                          Dimensions.h2,
+                          Dimensions.w20,
+                          Dimensions.h14,
+                        ),
                         child: Row(
                           children: [
                             Expanded(
@@ -241,7 +257,7 @@ class _EarningsSectionState extends State<EarningsSection> {
                                                 wallet.availableBalance)
                                             : '*****'),
                                     style: textBold().copyWith(
-                                      fontSize: 20,
+                                      fontSize: Dimensions.fs20,
                                       color: cs.onSurface,
                                     ),
                                   ),
@@ -266,11 +282,11 @@ class _EarningsSectionState extends State<EarningsSection> {
                                     color: cs.tertiary,
                                   ),
                                 ),
-                                const SizedBox(width: 2),
+                                SizedBox(width: Dimensions.w2),
                                 // chevron_right ينعكس تلقائياً بالعربي
                                 Icon(
                                   Icons.chevron_right_rounded,
-                                  size: 18,
+                                  size: Dimensions.r18,
                                   color: cs.tertiary,
                                 ),
                               ],
@@ -292,7 +308,7 @@ class _EarningsSectionState extends State<EarningsSection> {
   /// الرقم الكبير: يعدّ بحركة عند تغيير الفترة أو إظهاره
   Widget _amount(double? v, bool show, ColorScheme cs) {
     final TextStyle style = textBold().copyWith(
-      fontSize: 34,
+      fontSize: Dimensions.fs34,
       height: 1.2,
       color: cs.onSurface,
     );
@@ -303,40 +319,6 @@ class _EarningsSectionState extends State<EarningsSection> {
       curve: Curves.easeOutCubic,
       builder: (_, value, __) =>
           Text(PriceConverterHelper.convertPrice(value), style: style),
-    );
-  }
-}
-
-/// خط شحطات بسيط من ويدجتس Flutter العادية (Row + مربعات صغيرة).
-/// Flutter ما عندها خط منقط جاهز، وهاي أبسط طريقة.
-class _DashedLine extends StatelessWidget {
-  final Color color;
-  const _DashedLine({required this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) {
-        const double dash = 7;
-        const double gap = 7;
-        final int count = ((constraints.maxWidth + gap) / (dash + gap)).floor();
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: List<Widget>.generate(
-            count,
-            (_) => SizedBox(
-              width: dash,
-              height: 2,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: color,
-                  borderRadius: BorderRadius.circular(1),
-                ),
-              ),
-            ),
-          ),
-        );
-      },
     );
   }
 }
@@ -367,7 +349,10 @@ class _PeriodPill extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         curve: Curves.easeOut,
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+        padding: EdgeInsets.symmetric(
+          horizontal: Dimensions.w14,
+          vertical: Dimensions.h8,
+        ),
         decoration: BoxDecoration(
           color: selected ? selectedBg : Colors.transparent,
           borderRadius: BorderRadius.circular(999),
