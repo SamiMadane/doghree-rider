@@ -10,7 +10,6 @@ import 'package:doghree_rider/features/order/screens/order_details_screen.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
 import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/util/manager_assets.dart';
-import 'package:doghree_rider/util/manager_colors.dart';
 import 'package:doghree_rider/util/styles.dart';
 
 class OrderCardWidget extends StatelessWidget {
@@ -30,7 +29,6 @@ class OrderCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool parcel = order.orderType == 'parcel';
-    final bool paid = order.paymentStatus == 'paid';
 
     return CustomCard(
       width: MediaQuery.of(context).size.width,
@@ -42,71 +40,27 @@ class OrderCardWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ID + حالة الدفع
-// ID + حالة الدفع
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: '${'id_label'.tr}: ',
-                        style: textRegular().copyWith(
-                          // was textSemiBold
-                          fontSize: Dimensions.fs14,
-                          color: Theme.of(context).hintColor,
-                        ),
-                      ),
-                      TextSpan(
-                        text: '#${order.id}',
-                        style: textBold().copyWith(
-                          // was textSemiBold
-                          fontSize: Dimensions.fs14,
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onSurface, 
-                        ),
-                      ),
-                    ],
+          RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: '${'id_label'.tr}: ',
+                  style: textRegular().copyWith(
+                    // was textSemiBold
+                    fontSize: Dimensions.fs14,
+                    color: Theme.of(context).hintColor,
                   ),
                 ),
-              ),
-              CustomCard(
-                isBorder: false,
-                autoWidth: true,
-                padding: EdgeInsets.symmetric(
-                  horizontal: Dimensions.w12,
-                  vertical: Dimensions.h4,
+                TextSpan(
+                  text: '#${order.id}',
+                  style: textBold().copyWith(
+                    // was textSemiBold
+                    fontSize: Dimensions.fs14,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
                 ),
-                fillColor: paid
-                    ? ManagerColors.success
-                    : Theme.of(context).colorScheme.error,
-                borderRadius: Dimensions.r20,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      width: 6,
-                      height: 6,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: ManagerColors.onPrimary,
-                      ),
-                    ),
-                    SizedBox(width: Dimensions.w4),
-                    Text(
-                      paid ? 'paid'.tr : 'unpaid'.tr,
-                      style: textBold().copyWith(
-                        color: ManagerColors.onPrimary,
-                        fontSize: Dimensions.fs12,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
           SizedBox(height: Dimensions.h16),
 

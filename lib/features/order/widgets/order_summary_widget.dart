@@ -9,7 +9,6 @@ import 'package:doghree_rider/features/order/controllers/order_controller.dart';
 import 'package:doghree_rider/features/order/domain/models/order_model.dart';
 import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/util/manager_assets.dart';
-import 'package:doghree_rider/util/manager_colors.dart';
 import 'package:doghree_rider/util/styles.dart';
 
 class OrderSummaryWidget extends StatelessWidget {
@@ -39,51 +38,27 @@ class OrderSummaryWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // ID + حالة الدفع
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: '${'id_label'.tr}: ',
-                          style: textRegular().copyWith(
-                            // was textSemiBold
-                            fontSize: Dimensions.fs14,
-                            color: Theme.of(context).hintColor,
-                          ),
-                        ),
-                        TextSpan(
-                          text: '#${order.id}',
-                          style: textBold().copyWith(
-                            // was textSemiBold
-                            fontSize: Dimensions.fs14,
-                            color: Theme.of(context).colorScheme.onSurface,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                CustomCard(
-                  isBorder: false,
-                  autoWidth: true,
-                  padding: EdgeInsets.symmetric(
-                      horizontal: Dimensions.w12, vertical: Dimensions.h4),
-                  fillColor: order.paymentStatus == 'paid'
-                      ? ManagerColors.greenLightMode
-                      : Theme.of(context).colorScheme.error,
-                  borderRadius: Dimensions.r20,
-                  child: Text(
-                    order.paymentStatus == 'paid' ? 'paid'.tr : 'unpaid'.tr,
-                    style: textMedium().copyWith(
-                      color: ManagerColors.onPrimary,
+            RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: '${'id_label'.tr}: ',
+                    style: textRegular().copyWith(
+                      // was textSemiBold
                       fontSize: Dimensions.fs14,
+                      color: Theme.of(context).hintColor,
                     ),
                   ),
-                ),
-              ],
+                  TextSpan(
+                    text: '#${order.id}',
+                    style: textBold().copyWith(
+                      // was textSemiBold
+                      fontSize: Dimensions.fs14,
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
+                  ),
+                ],
+              ),
             ),
             SizedBox(height: Dimensions.h16),
 

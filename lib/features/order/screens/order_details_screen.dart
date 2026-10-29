@@ -386,8 +386,6 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                           ] else ...[
                             OrderIdSection(
                               orderId: widget.orderId.toString(),
-                              isPaid:
-                                  controllerOrderModel.paymentStatus == 'paid',
                             ),
                             SizedBox(height: Dimensions.h16),
                             OrderInfoSection(
