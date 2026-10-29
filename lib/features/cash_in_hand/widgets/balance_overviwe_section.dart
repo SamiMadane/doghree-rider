@@ -5,8 +5,6 @@ import 'package:doghree_rider/features/cash_in_hand/widgets/wallet_account_secti
 import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
 import 'package:doghree_rider/common/widgets/custom_card.dart';
 import 'package:doghree_rider/common/widgets/custom_button_widget.dart';
-import 'package:doghree_rider/features/cash_in_hand/widgets/transaction_bottom_sheet.dart';
-import 'package:doghree_rider/common/widgets/custom_bottom_sheet_widget.dart';
 import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/util/manager_assets.dart';
 import 'package:doghree_rider/util/styles.dart';
@@ -38,9 +36,6 @@ class BalanceOverviewSection extends StatelessWidget {
     final bool canWithdraw = wallet != null &&
         wallet.canRequestWithdraw &&
         wallet.availableBalance > 0;
-    final double? cashRaw = wallet?.cashInHand ?? profile.cashInHands;
-    final bool hasCash =
-        (cashRaw ?? 0) > 0 || (profile.payableBalance ?? 0) > 0;
 
     return Column(
       children: [
@@ -143,120 +138,19 @@ class BalanceOverviewSection extends StatelessWidget {
         SizedBox(height: Dimensions.h16),
 
         /// Cash (actionable, wider) + Total withdrawn (info only, quieter)
-        IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(
-                flex: 3,
-                child: _CashTile(
-                  title: 'cash_in_hand'.tr,
-                  value: _money(wallet?.cashInHand ?? profile.cashInHands),
-                  showSettle: hasCash,
-                  settleText: 'wallet_settle_cash'.tr,
-                  onSettle: () =>
-                      showCustomBottomSheet(child: TransactionBottomSheet()),
-                ),
+        Row(
+          children: [
+            Expanded(
+              child: _WithdrawnTile(
+                title: 'total_withdrawn'.tr,
+                value: _money(wallet?.totalWithdrawn ?? profile.totalWithdrawn),
               ),
-              SizedBox(width: Dimensions.w12),
-              Expanded(
-                flex: 2,
-                child: _WithdrawnTile(
-                  title: 'total_withdrawn'.tr,
-                  value: _money(
-                      wallet?.totalWithdrawn ?? profile.totalWithdrawn),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
         SizedBox(height: Dimensions.h20),
         const WalletAccountSection(),
       ],
-    );
-  }
-}
-
-class _CashTile extends StatelessWidget {
-  final String title;
-  final String value;
-  final bool showSettle;
-  final String settleText;
-  final VoidCallback onSettle;
-
-  const _CashTile({
-    required this.title,
-    required this.value,
-    required this.showSettle,
-    required this.settleText,
-    required this.onSettle,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    final ColorScheme scheme = theme.colorScheme;
-    final bool isDark = theme.brightness == Brightness.dark;
-
-    // Asphalt + white in light, yellow + asphalt in dark (same as the brand buttons).
-    final Color btnBg = isDark ? scheme.primary : scheme.onSurface;
-    final Color btnFg = isDark ? scheme.onPrimary : scheme.surface;
-
-    return CustomCard(
-      padding: EdgeInsets.all(Dimensions.w16),
-      fillColor: theme.scaffoldBackgroundColor,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: textMedium().copyWith(
-              color: scheme.onSurfaceVariant,
-              fontSize: Dimensions.fs13,
-            ),
-          ),
-          SizedBox(height: Dimensions.h8),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            alignment: AlignmentDirectional.centerStart,
-            child: Text(
-              value,
-              style: textBold().copyWith(
-                fontSize: Dimensions.fs20,
-                color: scheme.onSurface,
-              ),
-            ),
-          ),
-          if (showSettle) ...[
-            const Spacer(),
-            SizedBox(height: Dimensions.h12),
-            Material(
-              color: btnBg,
-              borderRadius: BorderRadius.circular(Dimensions.r20),
-              child: InkWell(
-                borderRadius: BorderRadius.circular(Dimensions.r20),
-                onTap: onSettle,
-                child: Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.symmetric(vertical: Dimensions.h8),
-                  alignment: Alignment.center,
-                  child: Text(
-                    settleText,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: textBold().copyWith(
-                      fontSize: Dimensions.fs13,
-                      color: btnFg,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ],
-      ),
     );
   }
 }

@@ -9,7 +9,6 @@ import 'package:doghree_rider/features/cash_in_hand/domain/models/earning_report
 import 'package:doghree_rider/features/cash_in_hand/domain/models/wallet_payment_model.dart';
 import 'package:doghree_rider/features/cash_in_hand/domain/models/wallet_withdrawal_model.dart';
 import 'package:doghree_rider/features/cash_in_hand/domain/repositories/cash_in_hand_repository_interface.dart';
-import 'package:doghree_rider/helper/route_helper.dart';
 import 'package:doghree_rider/util/app_constants.dart';
 import 'package:doghree_rider/features/cash_in_hand/domain/models/wallet_model.dart';
 
@@ -19,41 +18,11 @@ class CashInHandRepository implements CashInHandRepositoryInterface {
   final SharedPreferences sharedPreferences;
   CashInHandRepository({required this.apiClient, required this.sharedPreferences});
 
-  @override
-  Future<ResponseModel> makeCollectCashPayment(double amount, String paymentGatewayName) async {
-    ResponseModel responseModel;
-    Response response = await apiClient.postData(AppConstants.makeCollectedCashPaymentUri, {
-      "amount": amount,
-      "payment_gateway": paymentGatewayName,
-      "callback": RouteHelper.success,
-      "token": _getUserToken(),
-    }, handleError: false);
+  
 
-    if (response.statusCode == 200) {
-      String redirectUrl = response.body['redirect_link'];
-      Get.back();
-      if(GetPlatform.isWeb) {
-        // html.window.open(redirectUrl,"_self");
-      } else{
-        Get.toNamed(RouteHelper.getPaymentRoute(redirectUrl));
-      }
-      responseModel = ResponseModel(true, response.body.toString());
-    } else {
-      responseModel = ResponseModel(false, response.statusText);
-    }
-    return responseModel;
-  }
-
-  @override
-  Future<List<Transactions>?> getList() async {
-    List<Transactions>? transactions;
-    Response response = await apiClient.getData('${AppConstants.walletPaymentListUri}?token=${_getUserToken()}');
-    if(response.statusCode == 200) {
-      transactions = [];
-      WalletPaymentModel walletPaymentModel = WalletPaymentModel.fromJson(response.body);
-      transactions.addAll(walletPaymentModel.transactions!);
-    }
-    return transactions;
+   @override
+  Future getList() {
+    throw UnimplementedError();
   }
 
   @override
@@ -68,17 +37,7 @@ class CashInHandRepository implements CashInHandRepositoryInterface {
     return walletProvidedTransactions;
   }
 
-  @override
-  Future<ResponseModel> makeWalletAdjustment() async {
-    ResponseModel responseModel;
-    Response response = await apiClient.postData(AppConstants.makeWalletAdjustmentUri, {'token': _getUserToken()}, handleError: false);
-    if(response.statusCode == 200) {
-      responseModel = ResponseModel(true, 'wallet_adjustment_successfully'.tr);
-    }else {
-      responseModel = ResponseModel(false, response.statusText);
-    }
-    return responseModel;
-  }
+
 
   String _getUserToken() {
     return sharedPreferences.getString(AppConstants.token) ?? "";

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:doghree_rider/common/widgets/custom_button_widget.dart';
 import 'package:doghree_rider/common/widgets/empty_state_widget.dart';
 import 'package:doghree_rider/helper/price_converter_helper.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
@@ -19,38 +18,10 @@ class TransactionHistorySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final transactions = cashInHandController.walletProvidedTransactions;
+
     return Column(
       children: [
-        // زرّين التبديل
-        Row(
-          children: [
-            Expanded(
-              child: _TransactionToggleButton(
-                text: 'payment_history'.tr,
-                isSelected: cashInHandController.selectedIndex == 0,
-                onTap: () {
-                  if (cashInHandController.selectedIndex != 0) {
-                    cashInHandController.setIndex(0);
-                  }
-                },
-              ),
-            ),
-            SizedBox(width: Dimensions.w10),
-            Expanded(
-              child: _TransactionToggleButton(
-                text: 'wallet_provided_earning'.tr,
-                isSelected: cashInHandController.selectedIndex == 1,
-                onTap: () {
-                  if (cashInHandController.selectedIndex != 1) {
-                    cashInHandController.setIndex(1);
-                  }
-                },
-              ),
-            ),
-          ],
-        ),
-        SizedBox(height: Dimensions.h25),
-
         // Transaction History + View All
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -59,22 +30,11 @@ class TransactionHistorySection extends StatelessWidget {
               "transaction_history".tr,
               style: textSemiBold().copyWith(fontSize: Dimensions.fs16),
             ),
-            (cashInHandController.selectedIndex == 0 &&
-                        (cashInHandController.transactions?.isEmpty ?? true)) ||
-                    (cashInHandController.selectedIndex == 1 &&
-                        (cashInHandController
-                                .walletProvidedTransactions?.isEmpty ??
-                            true))
+            (transactions?.isEmpty ?? true)
                 ? const SizedBox()
                 : InkWell(
-                    onTap: () {
-                      if (cashInHandController.selectedIndex == 0) {
-                        Get.toNamed(RouteHelper.getTransactionHistoryRoute());
-                      } else {
-                        Get.toNamed(
-                            RouteHelper.getWalletProvidedEarningRoute());
-                      }
-                    },
+                    onTap: () =>
+                        Get.toNamed(RouteHelper.getWalletProvidedEarningRoute()),
                     child: Text(
                       'view_all'.tr,
                       style: textMedium().copyWith(
@@ -87,52 +47,8 @@ class TransactionHistorySection extends StatelessWidget {
         ),
         SizedBox(height: Dimensions.h16),
 
-        // القوائم
-        if (cashInHandController.selectedIndex == 0)
-          _TransactionList(
-            transactions: cashInHandController.transactions,
-            isWallet: false,
-          ),
-        if (cashInHandController.selectedIndex == 1)
-          _TransactionList(
-            transactions: cashInHandController.walletProvidedTransactions,
-            isWallet: true,
-          ),
+        _TransactionList(transactions: transactions),
       ],
-    );
-  }
-}
-
-// ويدجت للزر الواحد
-class _TransactionToggleButton extends StatelessWidget {
-  final String text;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const _TransactionToggleButton({
-    Key? key,
-    required this.text,
-    required this.isSelected,
-    required this.onTap,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;     
-    return CustomButtonWidget(
-      buttonText: text,
-      fontSize: Dimensions.fs13,
-      height: Dimensions.h40,
-      autoWidth: true,
-      backgroundColor:
-          isSelected ? (isDark ? cs.primary : cs.onSurface) : cs.surface,
-      fontColor: isSelected
-          ? (isDark ? cs.onPrimary : cs.surface)
-          : cs.onSurfaceVariant,
-      isBold: isSelected,
-      isBorder: !isSelected,
-      onPressed: onTap,
     );
   }
 }
@@ -140,10 +56,8 @@ class _TransactionToggleButton extends StatelessWidget {
 // ويدجت للقائمة
 class _TransactionList extends StatelessWidget {
   final List? transactions;
-  final bool isWallet;
 
-  const _TransactionList(
-      {Key? key, required this.transactions, required this.isWallet})
+  const _TransactionList({Key? key, required this.transactions})
       : super(key: key);
 
   @override
@@ -202,9 +116,7 @@ class _TransactionList extends StatelessWidget {
                       ),
                       SizedBox(height: Dimensions.h8),
                       Text(
-                        isWallet
-                            ? '${'wallet'.tr} ${_capitalize(item.method?.replaceAll('_', ' '))}'
-                            : '${'paid_via'.tr} ${_capitalize(item.method?.replaceAll('_', ' '))}',
+                        '${'wallet'.tr} ${_capitalize(item.method?.replaceAll('_', ' '))}',
                         style: textRegular().copyWith(
                           fontSize: Dimensions.fs12,
                           color: Theme.of(context).disabledColor,

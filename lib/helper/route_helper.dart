@@ -9,16 +9,11 @@ import 'package:doghree_rider/features/chat/domain/models/conversation_model.dar
 import 'package:doghree_rider/features/auth/screens/sign_in_screen.dart';
 import 'package:doghree_rider/features/auth/screens/dm_registration_screen.dart';
 import 'package:doghree_rider/features/cash_in_hand/screens/cash_in_hand_screen.dart';
-import 'package:doghree_rider/features/cash_in_hand/screens/transaction_history_screen.dart';
 import 'package:doghree_rider/features/cash_in_hand/screens/wallet_provided_earning_history_screen.dart';
-import 'package:doghree_rider/features/cash_in_hand/screens/payment_screen.dart';
-import 'package:doghree_rider/features/cash_in_hand/widgets/payment_successful_widget.dart';
 import 'package:doghree_rider/features/chat/screens/chat_screen.dart';
 import 'package:doghree_rider/features/chat/screens/conversation_screen.dart';
 import 'package:doghree_rider/features/dashboard/screens/dashboard_screen.dart';
-import 'package:doghree_rider/features/disbursement/screens/add_withdraw_method_screen.dart';
-import 'package:doghree_rider/features/disbursement/screens/disbursement_screen.dart';
-import 'package:doghree_rider/features/disbursement/screens/withdraw_method_screen.dart';
+
 import 'package:doghree_rider/features/forgot_password/screens/forget_pass_screen.dart';
 import 'package:doghree_rider/features/forgot_password/screens/new_pass_screen.dart';
 import 'package:doghree_rider/features/forgot_password/screens/verification_screen.dart';
@@ -53,12 +48,7 @@ class RouteHelper {
   static const String chatScreen = '/chat-screen';
   static const String conversationListScreen = '/conversation-list-screen';
   static const String deliveryManRegistration = '/delivery-man-registration';
-  static const String disbursement = '/disbursement';
-  static const String withdrawMethod = '/withdraw-method';
-  static const String addWithdrawMethod = '/add-withdraw-method';
-  static const String success = '/success';
-  static const String payment = '/payment';
-  static const String transactionHistory = '/transaction-history';
+
   static const String cashInHand = '/cash-in-hand';
   static const String walletProvidedEarning = '/wallet-provided-earning';
   static const String myEarning = '/my-earning';
@@ -127,16 +117,7 @@ class RouteHelper {
 
   static String getConversationListRoute() => conversationListScreen;
   static String getDeliverymanRegistrationRoute() => deliveryManRegistration;
-  static String getDisbursementRoute() => disbursement;
-  static String getWithdrawMethodRoute({bool isFromDashBoard = false}) =>
-      '$withdrawMethod?is_from_dashboard=${isFromDashBoard.toString()}';
-  static String getAddWithdrawMethodRoute() => addWithdrawMethod;
-  static String getSuccessRoute(String status) => '$success?status=$status';
-  static String getPaymentRoute(String? redirectUrl) {
-    return '$payment?redirect-url=$redirectUrl';
-  }
 
-  static String getTransactionHistoryRoute() => transactionHistory;
   static String getCashInHandRoute() => cashInHand;
   static String getWalletProvidedEarningRoute() => walletProvidedEarning;
   static String getMyEarningRoute() => myEarning;
@@ -153,8 +134,8 @@ class RouteHelper {
     GetPage(
         name: initial,
         page: () => DashboardScreen(
-            pageIndex: 0,
-            fromOrderDetails: Get.parameters['from_order_details'] == 'true')),
+              pageIndex: 0,
+            )),
     GetPage(
         name: navigationHandler,
         page: () {
@@ -260,25 +241,6 @@ class RouteHelper {
     GetPage(
         name: deliveryManRegistration,
         page: () => const DmRegistrationScreen()),
-    GetPage(name: disbursement, page: () => const DisbursementScreen()),
-    GetPage(
-        name: withdrawMethod,
-        page: () => WithdrawMethodScreen(
-            isFromDashboard: Get.parameters['is_from_dashboard'] == 'true')),
-    GetPage(
-        name: addWithdrawMethod, page: () => const AddWithDrawMethodScreen()),
-    GetPage(
-        name: success,
-        page: () => PaymentSuccessfulWidget(
-            success: Get.parameters['status'] == 'success')),
-    GetPage(
-        name: payment,
-        page: () {
-          String walletPayment = Get.parameters['redirect-url']!;
-          return PaymentScreen(redirectUrl: walletPayment);
-        }),
-    GetPage(
-        name: transactionHistory, page: () => const TransactionHistoryScreen()),
     GetPage(name: cashInHand, page: () => const CashInHandScreen()),
     GetPage(
         name: walletProvidedEarning,

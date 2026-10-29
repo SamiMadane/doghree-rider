@@ -12,7 +12,6 @@ import 'package:doghree_rider/features/cash_in_hand/domain/models/wallet_payment
 import 'package:doghree_rider/common/widgets/custom_snackbar_widget.dart';
 import 'package:doghree_rider/features/cash_in_hand/domain/models/wallet_withdrawal_model.dart';
 import 'package:doghree_rider/features/cash_in_hand/domain/services/cash_in_hand_service_interface.dart';
-import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
 
 class CashInHandController extends GetxController implements GetxService {
   final CashInHandServiceInterface cashInHandServiceInterface;
@@ -20,18 +19,6 @@ class CashInHandController extends GetxController implements GetxService {
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
-
-  List<Transactions>? _transactions;
-  List<Transactions>? get transactions => _transactions;
-
-  String? _digitalPaymentName;
-  String? get digitalPaymentName => _digitalPaymentName;
-
-  int _paymentIndex = 0;
-  int get paymentIndex => _paymentIndex;
-
-  int _selectedIndex = 0;
-  int get selectedIndex => _selectedIndex;
 
   List<Transactions>? _walletProvidedTransactions;
   List<Transactions>? get walletProvidedTransactions =>
@@ -162,17 +149,6 @@ class CashInHandController extends GetxController implements GetxService {
     return ok;
   }
 
-  Future<ResponseModel> makeCollectCashPayment(
-      double amount, String paymentGatewayName) async {
-    _isLoading = true;
-    update();
-    ResponseModel responseModel = await cashInHandServiceInterface
-        .makeCollectCashPayment(amount, paymentGatewayName);
-    _isLoading = false;
-    update();
-    return responseModel;
-  }
-
   Future<void> getWallet() async {
     _walletLoading = true;
     update();
@@ -181,35 +157,37 @@ class CashInHandController extends GetxController implements GetxService {
     _walletLoading = false;
     update();
   }
-Future<bool> saveWalletAccount(
-    {required int methodId,
-    required Map<String, String> fields,
-    bool isDefault = false}) async {
-  if (_accountBusy) return false; // يمنع الضغط المزدوج
-  _accountBusy = true;
-  _accountError = null;
-  update();
-  bool ok = false;
-  try {
-    final ResponseModel r = await cashInHandServiceInterface.saveWalletAccount(
-        methodId: methodId, fields: fields, isDefault: isDefault);
-    ok = r.isSuccess;
-    if (ok) {
-      await getWallet();
-      showCustomSnackBar('wallet_account_saved'.tr, isError: false);
-    } else {
-      final String? m = r.message;
-      _accountError =
-          (m != null && m.trim().isNotEmpty) ? m : 'error_occurred'.tr;
+
+  Future<bool> saveWalletAccount(
+      {required int methodId,
+      required Map<String, String> fields,
+      bool isDefault = false}) async {
+    if (_accountBusy) return false; // يمنع الضغط المزدوج
+    _accountBusy = true;
+    _accountError = null;
+    update();
+    bool ok = false;
+    try {
+      final ResponseModel r =
+          await cashInHandServiceInterface.saveWalletAccount(
+              methodId: methodId, fields: fields, isDefault: isDefault);
+      ok = r.isSuccess;
+      if (ok) {
+        await getWallet();
+        showCustomSnackBar('wallet_account_saved'.tr, isError: false);
+      } else {
+        final String? m = r.message;
+        _accountError =
+            (m != null && m.trim().isNotEmpty) ? m : 'error_occurred'.tr;
+      }
+    } catch (e) {
+      debugPrint('SAVE ACCOUNT error: $e');
+      _accountError = 'error_occurred'.tr;
     }
-  } catch (e) {
-    debugPrint('SAVE ACCOUNT error: $e');
-    _accountError = 'error_occurred'.tr;
+    _accountBusy = false;
+    update();
+    return ok;
   }
-  _accountBusy = false;
-  update();
-  return ok;
-}
 
   Future<bool> deleteWalletAccount(int id) async {
     _accountBusy = true;
@@ -224,17 +202,6 @@ Future<bool> saveWalletAccount(
     return r.isSuccess;
   }
 
-  Future<void> getWalletPaymentList() async {
-    _transactions = null;
-    List<Transactions>? transactions =
-        await cashInHandServiceInterface.getWalletPaymentList();
-    if (transactions != null) {
-      _transactions = [];
-      _transactions!.addAll(transactions);
-    }
-    update();
-  }
-
   Future<void> getWalletProvidedEarningList() async {
     _walletProvidedTransactions = null;
     List<Transactions>? walletProvidedTransactions =
@@ -245,46 +212,6 @@ Future<bool> saveWalletAccount(
     }
     update();
   }
-
-  Future<void> makeWalletAdjustment() async {
-    _isLoading = true;
-    update();
-    ResponseModel responseModel =
-        await cashInHandServiceInterface.makeWalletAdjustment();
-    if (responseModel.isSuccess) {
-      Get.find<ProfileController>().getProfile();
-      Get.back();
-      showCustomSnackBar(responseModel.message, isError: false);
-    } else {
-      Get.back();
-      showCustomSnackBar(responseModel.message, isError: true);
-    }
-    _isLoading = false;
-    update();
-  }
-
-  void setPaymentIndex(int index) {
-    _paymentIndex = index;
-    update();
-  }
-
-  void changeDigitalPaymentName(String? name, {bool canUpdate = true}) {
-    _digitalPaymentName = name;
-    if (canUpdate) {
-      update();
-    }
-  }
-
-  void setIndex(int index) {
-    _selectedIndex = index;
-    update();
-  }
-
-  /*void initSetDate(){
-    _from = DateConverterHelper.dateTimeForCoupon(DateTime.now().subtract(const Duration(days: 365)));
-    _to = DateConverterHelper.dateTimeForCoupon(DateTime.now());
-    _searchText = '';
-  }*/
 
   void showDatePicker(BuildContext context) async {
     final DateTimeRange? result = await showDateRangePicker(

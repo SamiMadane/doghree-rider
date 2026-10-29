@@ -5,11 +5,8 @@ import 'package:doghree_rider/features/auth/controllers/auth_controller.dart';
 import 'package:doghree_rider/features/dashboard/widgets/bottom_nav_road_indicator.dart';
 import 'package:doghree_rider/features/dashboard/widgets/lottie_bottom_sheet_order_request.dart';
 import 'package:doghree_rider/features/order/controllers/order_controller.dart';
-import 'package:doghree_rider/features/disbursement/helper/disbursement_helper.dart';
 import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
-import 'package:doghree_rider/helper/notification_helper.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
-import 'package:doghree_rider/main.dart';
 import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/common/widgets/custom_alert_dialog_widget.dart';
 import 'package:doghree_rider/features/dashboard/widgets/bottom_nav_item_widget.dart';
@@ -26,9 +23,8 @@ import 'package:doghree_rider/util/session_checker.dart';
 
 class DashboardScreen extends StatefulWidget {
   final int pageIndex;
-  final bool fromOrderDetails;
   const DashboardScreen(
-      {super.key, required this.pageIndex, this.fromOrderDetails = false});
+      {super.key, required this.pageIndex});
 
   @override
   DashboardScreenState createState() => DashboardScreenState();
@@ -40,7 +36,6 @@ class DashboardScreenState extends State<DashboardScreen> {
   late List<Widget> _screens;
   final _channel = const MethodChannel('com.sixamtech/app_retain');
   late StreamSubscription _stream;
-  DisbursementHelper disbursementHelper = DisbursementHelper();
   bool _canExit = false;
 
   @override
@@ -57,7 +52,6 @@ class DashboardScreenState extends State<DashboardScreen> {
       const ProfileScreen(),
     ];
 
-    showDisbursementWarningMessage();
     Get.find<OrderController>().getLatestOrders();
     // ✅ إضافة: بدء فحص الجلسة
     if (Get.find<AuthController>().isLoggedIn()) {
@@ -107,11 +101,7 @@ class DashboardScreenState extends State<DashboardScreen> {
     });
   }
 
-  showDisbursementWarningMessage() async {
-    if (!widget.fromOrderDetails) {
-      disbursementHelper.enableDisbursementWarningMessage(true);
-    }
-  }
+
 
   void _navigateRequestPage() {
     if (Get.find<ProfileController>().profileModel != null &&

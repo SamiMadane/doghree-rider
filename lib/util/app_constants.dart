@@ -71,24 +71,7 @@ class AppConstants {
       '/api/v1/customer/order/cancellation-reasons';
   static const String deliveredOrderNotificationUri =
       '/api/v1/delivery-man/send-order-otp';
-  static const String addWithdrawMethodUri =
-      '/api/v1/delivery-man/withdraw-method/store';
-  static const String disbursementMethodListUri =
-      '/api/v1/delivery-man/withdraw-method/list';
-  static const String makeDefaultDisbursementMethodUri =
-      '/api/v1/delivery-man/withdraw-method/make-default';
-  static const String deleteDisbursementMethodUri =
-      '/api/v1/delivery-man/withdraw-method/delete';
-  static const String getDisbursementReportUri =
-      '/api/v1/delivery-man/get-disbursement-report';
-  static const String withdrawRequestMethodUri =
-      '/api/v1/delivery-man/get-withdraw-method-list';
-  static const String makeCollectedCashPaymentUri =
-      '/api/v1/delivery-man/make-collected-cash-payment';
-  static const String walletPaymentListUri =
-      '/api/v1/delivery-man/wallet-payment-list';
-  static const String makeWalletAdjustmentUri =
-      '/api/v1/delivery-man/make-wallet-adjustment';
+
   static const String walletProvidedEarningListUri =
       '/api/v1/delivery-man/wallet-provided-earning-list';
   static const String firebaseAuthVerify =

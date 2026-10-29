@@ -7,9 +7,7 @@ import 'package:doghree_rider/features/cash_in_hand/domain/models/wallet_withdra
 
 
 abstract class CashInHandRepositoryInterface implements RepositoryInterface {
-  Future<dynamic> makeCollectCashPayment(double amount, String paymentGatewayName);
   Future<dynamic> getWalletProvidedEarningList();
-  Future<dynamic> makeWalletAdjustment();
   Future<EarningReportModel?> getEarningReport({String? offset, String? type, String? startDate, String? endDate});
   Future<Response> downloadEarningInvoice({required int dmId});
   Future<WalletModel?> getWallet();

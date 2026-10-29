@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:doghree_rider/common/widgets/custom_card.dart';
 import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
 import 'package:doghree_rider/features/profile/widgets/profile_button_widget.dart';
-import 'package:doghree_rider/features/splash/controllers/splash_controller.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
 import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/util/styles.dart';
@@ -16,7 +15,6 @@ class EarningsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = profileController.profileModel;
-    final navController = Get.find<SplashController>();
 
     // نتأكد أن المستخدم لديه أرباح
     if (profile == null || profile.earnings == 0) return const SizedBox();
@@ -45,32 +43,6 @@ class EarningsSection extends StatelessWidget {
                       Get.toNamed(RouteHelper.getMyEarningRoute());
                     },
                   ),
-                ),
-
-              // أزرار المدفوعات وطرق السحب
-              if (navController.configModel?.disbursementType == 'automated' &&
-                  profile.type != 'store_wise' &&
-                  profile.earnings != 0)
-                Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(bottom: Dimensions.h10),
-                      child: ProfileButtonWidget(
-                        iconData: Icons.payments,
-                        title: 'disbursement'.tr,
-                        onTap: () {
-                          Get.toNamed(RouteHelper.getDisbursementRoute());
-                        },
-                      ),
-                    ),
-                    ProfileButtonWidget(
-                      iconData: Icons.money,
-                      title: 'disbursement_methods'.tr,
-                      onTap: () {
-                        Get.toNamed(RouteHelper.getWithdrawMethodRoute());
-                      },
-                    ),
-                  ],
                 ),
             ],
           ),

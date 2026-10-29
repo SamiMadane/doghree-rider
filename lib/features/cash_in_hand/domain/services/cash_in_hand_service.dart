@@ -13,25 +13,14 @@ class CashInHandService implements CashInHandServiceInterface {
   final CashInHandRepositoryInterface cashInHandRepositoryInterface;
   CashInHandService({required this.cashInHandRepositoryInterface});
 
-  @override
-  Future<ResponseModel> makeCollectCashPayment(double amount, String paymentGatewayName) async {
-    return await cashInHandRepositoryInterface.makeCollectCashPayment(amount, paymentGatewayName);
-  }
 
-  @override
-  Future<List<Transactions>?> getWalletPaymentList() async {
-    return await cashInHandRepositoryInterface.getList();
-  }
 
   @override
   Future<List<Transactions>?> getWalletProvidedEarningList() async {
     return await cashInHandRepositoryInterface.getWalletProvidedEarningList();
   }
 
-  @override
-  Future<ResponseModel> makeWalletAdjustment() async {
-    return await cashInHandRepositoryInterface.makeWalletAdjustment();
-  }
+
 
   @override
   Future<EarningReportModel?> getEarningReport({String? offset, String? type, String? startDate, String? endDate}) async {

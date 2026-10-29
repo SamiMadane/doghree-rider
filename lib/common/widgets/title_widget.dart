@@ -26,7 +26,9 @@ class TitleWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final customColor = Theme.of(context).extension<CustomColorsExtension>()!;
+    final ThemeData theme = Theme.of(context);
+
+    final ColorScheme cs = theme.colorScheme;
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: Dimensions.w4),
@@ -42,8 +44,8 @@ class TitleWidget extends StatelessWidget {
                     SizedBox(width: Dimensions.w8),
                     CircleAvatar(
                       radius: Dimensions.r8,
-                      backgroundColor:
-                          backGroundColorOfCount ?? Theme.of(context).colorScheme.primary,
+                      backgroundColor: backGroundColorOfCount ??
+                          Theme.of(context).colorScheme.primary,
                       child: Text(
                         '$orderCount',
                         style: countStyle ??
@@ -62,9 +64,7 @@ class TitleWidget extends StatelessWidget {
                   child: Text(
                     'view_all'.tr,
                     style: textRegular().copyWith(
-                      color: customColor.naturalBlue,
-                      decoration: TextDecoration.underline,
-                      decorationColor: customColor.naturalBlue,
+                      color: cs.tertiary,
                     ),
                   ),
                 )

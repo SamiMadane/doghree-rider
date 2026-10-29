@@ -26,7 +26,6 @@ class EarningsSection extends StatefulWidget {
 }
 
 class _EarningsSectionState extends State<EarningsSection> {
-
   int _period = 0; // 0 اليوم، 1 الأسبوع، 2 الشهر
 
   @override
@@ -66,22 +65,9 @@ class _EarningsSectionState extends State<EarningsSection> {
         ),
         child: Stack(
           children: [
-            // هالة العملات (بتنقصّ من زاوية الكرت)
             PositionedDirectional(
-              end: -45,
-              top: -26,
-              width: 150,
-              height: 150,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: cs.primaryContainer,
-                ),
-              ),
-            ),
-            PositionedDirectional(
-              end: 6,
-              top: 2,
+              end: 8,
+              top: 8,
               width: 95,
               height: 95,
               child: IgnorePointer(
@@ -177,7 +163,7 @@ class _EarningsSectionState extends State<EarningsSection> {
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: theme.primaryColor,
-                              border: Border.all(color: cs.onSurface, width: 2),
+                              border: Border.all(color: cs.onSurface, width: 1),
                             ),
                           ),
                           const SizedBox(width: 8),
@@ -233,29 +219,6 @@ class _EarningsSectionState extends State<EarningsSection> {
                             const EdgeInsetsDirectional.fromSTEB(20, 2, 20, 14),
                         child: Row(
                           children: [
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: Dimensions.w6,
-                                vertical: Dimensions.h6,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Color.lerp(
-                                  cs.primaryContainer,
-                                  cs.primary,
-                                  0.7,
-                                ),
-                                shape: BoxShape.circle,
-                              ),
-                              child: SvgPicture.asset(
-                                ManagerAssets.walletWithdrawIcon,
-                                width: Dimensions.w20,
-                                height:Dimensions.h20,
-                                colorFilter: ColorFilter.mode(
-                                    ManagerColors.black,
-                                    BlendMode.srcIn),
-                              ),
-                            ),
-                            const SizedBox(width: 10),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,

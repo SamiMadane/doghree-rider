@@ -7,10 +7,7 @@ import 'package:doghree_rider/features/cash_in_hand/domain/models/wallet_withdra
 
 
 abstract class CashInHandServiceInterface {
-  Future<ResponseModel> makeCollectCashPayment(double amount, String paymentGatewayName);
-  Future<List<Transactions>?> getWalletPaymentList();
   Future<List<Transactions>?> getWalletProvidedEarningList();
-  Future<ResponseModel> makeWalletAdjustment();
   Future<EarningReportModel?> getEarningReport({String? offset, String? type, String? startDate, String? endDate});
   Future<Response> downloadEarningInvoice({required int dmId});
   Future<WalletModel?> getWallet();
