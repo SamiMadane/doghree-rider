@@ -8,7 +8,7 @@ import 'package:doghree_rider/features/auth/controllers/auth_controller.dart';
 import 'package:doghree_rider/features/address/controllers/address_controller.dart';
 import 'package:doghree_rider/features/auth/widgets/dm_registration_step1.dart';
 import 'package:doghree_rider/features/auth/widgets/dm_registration_step2.dart';
-import 'package:doghree_rider/common/widgets/step_progress_bar%20.dart';
+import 'package:doghree_rider/common/widgets/step_progress_bar.dart';
 import 'package:doghree_rider/features/splash/controllers/splash_controller.dart';
 import 'package:doghree_rider/features/auth/domain/models/delivery_man_body_model.dart';
 import 'package:doghree_rider/helper/custom_validator_helper.dart';
