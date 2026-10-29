@@ -1,41 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
-import 'package:doghree_rider/util/manager_colors.dart';
 import 'package:vibration/vibration.dart';
+import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/util/styles.dart';
 
 class SliderButton extends StatefulWidget {
   final Widget? child;
 
   final double radius;
-
   final double height;
   final double width;
   final double buttonSize;
 
-  final Color backgroundColor;
-  final Color baseColor;
-  final Color highlightedColor;
-  final Color buttonColor;
-  final Object? label;
+  /// null = من الثيم
+  final Color? backgroundColor;
+  final Color? buttonColor;
+  final BoxShadow? boxShadow;
+  final Widget? icon;
 
+  final Object? label;
   final Alignment alignLabel;
-  final BoxShadow boxShadow;
-  final Widget icon;
   final Function action;
 
   final bool shimmer;
-  final bool dismissible;
   final bool vibrationFlag;
-  final double dismissThresholds;
   final bool disable;
   final bool isLtr;
+
+  /// غير مستخدمين حالياً (محفوظين عشان ما ينكسر أي استدعاء قديم)
+  final bool dismissible;
+  final double dismissThresholds;
 
   const SliderButton({
     super.key,
     required this.action,
     this.radius = 100,
-    this.boxShadow = const BoxShadow(color: Colors.black, blurRadius: 4),
+    this.boxShadow,
     this.child,
     this.isLtr = true,
     this.vibrationFlag = true,
@@ -44,16 +44,10 @@ class SliderButton extends StatefulWidget {
     this.buttonSize = 60,
     this.width = 250,
     this.alignLabel = const Alignment(0.0, 0),
-    this.backgroundColor = const Color(0xffe0e0e0),
-    this.baseColor = Colors.black87,
-    this.buttonColor = Colors.white,
-    this.highlightedColor = Colors.white,
+    this.backgroundColor,
+    this.buttonColor,
     this.label,
-    this.icon = const Icon(
-      Icons.power_settings_new,
-      color: Colors.red,
-      size: 30.0,
-    ),
+    this.icon,
     this.dismissible = true,
     this.dismissThresholds = 1.0,
     this.disable = false,
@@ -63,142 +57,127 @@ class SliderButton extends StatefulWidget {
   SliderButtonState createState() => SliderButtonState();
 }
 
-class SliderButtonState extends State<SliderButton>
-    with SingleTickerProviderStateMixin {
-  bool? flag;
-  Widget? _child;
-  late AnimationController _controller;
-  // ignore: unused_field
-  late Animation<Offset> _offsetAnimation;
+class SliderButtonState extends State<SliderButton> {
   Key _dismissibleKey = UniqueKey();
 
-  @override
-  void initState() {
-    super.initState();
-    flag = true;
-    _child = widget.child;
-    
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 300),
-      vsync: this,
-    );
-    
-    _offsetAnimation = Tween<Offset>(
-      begin: Offset.zero,
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOut,
-    ));
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  Widget _buildLabel() {
-    if (widget.label == null) return const SizedBox();
-    if (widget.label is String) {
+  Widget _buildLabel(BuildContext context) {
+    final Object? label = widget.label;
+    if (label is Widget) return label;
+    if (label is String) {
       return Text(
-        widget.label as String,
-        style: const TextStyle(fontSize: 16, color: Colors.black),
+        label,
+        style: textMedium().copyWith(
+          fontSize: Dimensions.fs16,
+          color: Theme.of(context).colorScheme.onSurface,
+        ),
       );
-    }
-    if (widget.label is Widget) {
-      return widget.label as Widget;
     }
     return const SizedBox();
   }
 
   void _resetButton() {
-    setState(() {
-      _dismissibleKey = UniqueKey();
-    });
-    _controller.reset();
+    if (!mounted) return;
+    setState(() => _dismissibleKey = UniqueKey());
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return flag == true
-        ? _control()
-        : widget.dismissible == true
-            ? Container()
-            : Container(child: _control());
-  }
-
-  Widget _control() => Container(
-        height: widget.height,
-        width: widget.width,
-        decoration: BoxDecoration(
-          color: widget.disable
-              ? Colors.grey.shade700
-              : Get.isDarkMode
-                  ? Colors.white12
-                  : widget.backgroundColor,
-          borderRadius: BorderRadius.circular(widget.radius),
-        ),
-        alignment: Alignment.centerLeft,
-        child: Stack(alignment: Alignment.centerLeft, children: <Widget>[
-          Container(
-            alignment: widget.alignLabel,
-            child: widget.shimmer && !widget.disable
-                ? Shimmer(
-                    color: ManagerColors.shimmer,
-                    child: _buildLabel(),
-                  )
-                : _buildLabel(),
-          ),
-          widget.disable
-              ? Tooltip(
-                  verticalOffset: 50,
-                  message: 'Button is disabled',
-                  child: _buildButtonContainer(),
-                )
-              : Directionality(
-                  textDirection: TextDirection.ltr, // فرض LTR دائماً
-                  child: Dismissible(
-                    key: _dismissibleKey,
-                    direction: DismissDirection.startToEnd, // الآن سيعمل من اليسار لليمين دائماً
-                    movementDuration: const Duration(milliseconds: 300),
-                    confirmDismiss: (direction) async {
-                      widget.action();
-                      
-                      if (widget.vibrationFlag && await Vibration.hasVibrator() == true) {
-                        Vibration.vibrate(duration: 200);
-                      }
-                      
-                      Future.delayed(const Duration(milliseconds: 100), () {
-                        _resetButton();
-                      });
-                      
-                      return false;
-                    },
-                    child: _buildButtonContainer(),
-                  ),
-                ),
-          const SizedBox.expand(),
-        ]),
-      );
-
-  Widget _buildButtonContainer() {
+  Widget _buildKnob(ThemeData theme, Color knobColor, Widget icon) {
+    final ColorScheme cs = theme.colorScheme;
     return Container(
-      width: widget.width - (widget.height),
+      width: widget.width - widget.height,
       height: widget.height,
       alignment: widget.isLtr ? Alignment.centerLeft : Alignment.centerRight,
       padding: EdgeInsets.only(left: (widget.height - widget.buttonSize) / 2),
-      child: _child ??
+      child: widget.child ??
           Container(
             height: widget.buttonSize,
             width: widget.buttonSize,
             decoration: BoxDecoration(
-              boxShadow: [widget.boxShadow],
-              color: widget.disable ? Colors.grey : widget.buttonColor,
+              boxShadow: [
+                widget.boxShadow ??
+                    BoxShadow(
+                      color: cs.shadow.withValues(alpha: 0.2),
+                      blurRadius: Dimensions.r4,
+                    ),
+              ],
+              color: knobColor,
               borderRadius: BorderRadius.circular(widget.radius),
             ),
-            child: Center(child: widget.icon),
+            child: Center(child: icon),
           ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final ColorScheme cs = theme.colorScheme;
+
+    // المسار والزر: من الثيم (معتم، عشان لمعة النص تذوب فيه)
+    final Color trackColor = widget.disable
+        ? Color.alphaBlend(cs.onSurface.withValues(alpha: 0.18), theme.cardColor)
+        : widget.backgroundColor ??
+            Color.alphaBlend(
+                cs.onSurface.withValues(alpha: 0.08), theme.cardColor);
+    final Color knobColor = widget.disable
+        ? Color.alphaBlend(cs.onSurface.withValues(alpha: 0.30), theme.cardColor)
+        : widget.buttonColor ?? cs.primary;
+    final Widget icon = widget.icon ??
+        Icon(
+          Icons.double_arrow_rounded,
+          color: cs.onPrimary,
+          size: Dimensions.w20,
+        );
+
+    return Container(
+      height: widget.height,
+      width: widget.width,
+      decoration: BoxDecoration(
+        color: trackColor,
+        borderRadius: BorderRadius.circular(widget.radius),
+      ),
+      alignment: Alignment.centerLeft,
+      child: Stack(alignment: Alignment.centerLeft, children: <Widget>[
+        Container(
+          alignment: widget.alignLabel,
+          child: widget.shimmer && !widget.disable
+              // اللمعة بلون المسار: النص بيخفت وهو بيعبر الضوء، فاتح وداكن
+              ? Shimmer(
+                  color: trackColor,
+                  colorOpacity: 0.75,
+                  child: _buildLabel(context),
+                )
+              : _buildLabel(context),
+        ),
+        widget.disable
+            ? Tooltip(
+                verticalOffset: 50,
+                message: 'Button is disabled',
+                child: _buildKnob(theme, knobColor, icon),
+              )
+            : Directionality(
+                textDirection: TextDirection.ltr, // فرض LTR دائماً
+                child: Dismissible(
+                  key: _dismissibleKey,
+                  direction: DismissDirection.startToEnd,
+                  movementDuration: const Duration(milliseconds: 300),
+                  confirmDismiss: (direction) async {
+                    widget.action();
+
+                    if (widget.vibrationFlag &&
+                        await Vibration.hasVibrator() == true) {
+                      Vibration.vibrate(duration: 200);
+                    }
+
+                    Future.delayed(
+                        const Duration(milliseconds: 100), _resetButton);
+
+                    return false;
+                  },
+                  child: _buildKnob(theme, knobColor, icon),
+                ),
+              ),
+        const SizedBox.expand(),
+      ]),
     );
   }
 }

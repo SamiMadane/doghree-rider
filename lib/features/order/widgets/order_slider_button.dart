@@ -231,14 +231,12 @@ class OrderSliderButton extends StatelessWidget {
       icon: Center(
         child: Icon(
           Icons.double_arrow_sharp, // سهم لليمين دائماً
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.onPrimary,
           size: 20.0,
         ),
       ),
       isLtr: true, // دائماً LTR: المربع على اليسار والسحب لليمين
       boxShadow: const BoxShadow(blurRadius: 0),
-      buttonColor: Theme.of(context).primaryColor,
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     );
   }
 }
