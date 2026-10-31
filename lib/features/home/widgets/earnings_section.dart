@@ -94,8 +94,8 @@ class _EarningsSectionState extends State<EarningsSection> {
                     children: [
                       // العنوان + العين + الرقم (بعيد عن الصورة)
                       Padding(
-                        padding: EdgeInsetsDirectional.only(
-                            end: Dimensions.w108),
+                        padding:
+                            EdgeInsetsDirectional.only(end: Dimensions.w108),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -219,9 +219,6 @@ class _EarningsSectionState extends State<EarningsSection> {
                 GetBuilder<CashInHandController>(
                   builder: (c) {
                     final wallet = c.wallet;
-                    // احتياط: يظهر فقط إذا رجع الدفع النقدي
-                    final double cash =
-                        wallet?.cashInHand ?? profile.cashInHands ?? 0;
 
                     return InkWell(
                       onTap: () =>
@@ -261,14 +258,6 @@ class _EarningsSectionState extends State<EarningsSection> {
                                       color: cs.onSurface,
                                     ),
                                   ),
-                                  if (cash > 0)
-                                    Text(
-                                      '${'cash_in_your_hand'.tr}: ${show ? PriceConverterHelper.convertPrice(cash) : '*****'}',
-                                      style: textRegular().copyWith(
-                                        fontSize: Dimensions.fs12,
-                                        color: cs.onSurfaceVariant,
-                                      ),
-                                    ),
                                 ],
                               ),
                             ),

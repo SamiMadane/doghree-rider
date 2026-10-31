@@ -15,8 +15,6 @@ class ConfigModel {
   bool? customerVerification;
   bool? scheduleOrder;
   bool? orderDeliveryVerification;
-  bool? cashOnDelivery;
-  bool? digitalPayment;
   double? perKmShippingCharge;
   double? minimumShippingCharge;
   double? freeDeliveryOver;
@@ -41,9 +39,7 @@ class ConfigModel {
   String? webSocketUri;
   int? webSocketPort;
   String? webSocketKey;
-  String? disbursementType;
-  List<PaymentBody>? activePaymentMethodList;
-  double? minAmountToPayDm;
+
   bool? firebaseOtpVerification;
 
   ConfigModel({
@@ -63,8 +59,6 @@ class ConfigModel {
     this.customerVerification,
     this.scheduleOrder,
     this.orderDeliveryVerification,
-    this.cashOnDelivery,
-    this.digitalPayment,
     this.perKmShippingCharge,
     this.minimumShippingCharge,
     this.freeDeliveryOver,
@@ -89,9 +83,6 @@ class ConfigModel {
     this.webSocketPort,
     this.webSocketKey,
     this.webSocketStatus,
-    this.disbursementType,
-    this.activePaymentMethodList,
-    this.minAmountToPayDm,
     this.firebaseOtpVerification,
   });
 
@@ -102,22 +93,29 @@ class ConfigModel {
     phone = json['phone'];
     email = json['email'];
     country = json['country'];
-    defaultLocation = json['default_location'] != null ? DefaultLocation.fromJson(json['default_location']) : null;
+    defaultLocation = json['default_location'] != null
+        ? DefaultLocation.fromJson(json['default_location'])
+        : null;
     currencySymbol = json['currency_symbol'];
     currencySymbolDirection = json['currency_symbol_direction'];
     appMinimumVersionAndroid =
-        json['app_minimum_version_android_deliveryman'] != null ? json['app_minimum_version_android_deliveryman']?.toDouble() : 0.0;
+        json['app_minimum_version_android_deliveryman'] != null
+            ? json['app_minimum_version_android_deliveryman']?.toDouble()
+            : 0.0;
     appUrlAndroid = json['app_url_android_deliveryman'];
-    appMinimumVersionIos = json['app_minimum_version_ios_deliveryman'] != null ? json['app_minimum_version_ios_deliveryman']?.toDouble() : 0.0;
+    appMinimumVersionIos = json['app_minimum_version_ios_deliveryman'] != null
+        ? json['app_minimum_version_ios_deliveryman']?.toDouble()
+        : 0.0;
     appUrlIos = json['app_url_ios_deliveryman'];
     customerVerification = json['customer_verification'];
     scheduleOrder = json['schedule_order'];
     orderDeliveryVerification = json['order_delivery_verification'];
-    cashOnDelivery = json['cash_on_delivery'];
-    digitalPayment = json['digital_payment'];
+
     perKmShippingCharge = json['per_km_shipping_charge']?.toDouble();
     minimumShippingCharge = json['minimum_shipping_charge']?.toDouble();
-    freeDeliveryOver = json['free_delivery_over'] != null ? json['free_delivery_over']?.toDouble() : 0.0;
+    freeDeliveryOver = json['free_delivery_over'] != null
+        ? json['free_delivery_over']?.toDouble()
+        : 0.0;
     demo = json['demo'];
     maintenanceMode = json['maintenance_mode'];
     orderConfirmationModel = json['order_confirmation_model'];
@@ -133,25 +131,25 @@ class ConfigModel {
     toggleVegNonVeg = json['toggle_veg_non_veg'];
     toggleDmRegistration = json['toggle_dm_registration'];
     toggleStoreRegistration = json['toggle_store_registration'];
-    scheduleOrderSlotDuration = json['schedule_order_slot_duration'] == 0 ? 30 : json['schedule_order_slot_duration'];
+    scheduleOrderSlotDuration = json['schedule_order_slot_duration'] == 0
+        ? 30
+        : json['schedule_order_slot_duration'];
     digitAfterDecimalPoint = json['digit_after_decimal_point'];
-    moduleConfig = json['module_config'] != null ? ModuleConfig.fromJson(json['module_config']) : null;
-    parcelPerKmShippingCharge = json['parcel_per_km_shipping_charge']?.toDouble();
-    parcelMinimumShippingCharge = json['parcel_minimum_shipping_charge']?.toDouble();
-    dmPictureUploadStatus = json['dm_picture_upload_status'] == 1 ? true : false;
+    moduleConfig = json['module_config'] != null
+        ? ModuleConfig.fromJson(json['module_config'])
+        : null;
+    parcelPerKmShippingCharge =
+        json['parcel_per_km_shipping_charge']?.toDouble();
+    parcelMinimumShippingCharge =
+        json['parcel_minimum_shipping_charge']?.toDouble();
+    dmPictureUploadStatus =
+        json['dm_picture_upload_status'] == 1 ? true : false;
     additionalChargeName = json['additional_charge_name'];
     webSocketUri = json['websocket_url'];
     webSocketPort = json['websocket_port'];
     webSocketKey = json['websocket_key'];
     webSocketStatus = json['websocket_status'] == 1;
-    disbursementType = json['disbursement_type'];
-    if (json['active_payment_method_list'] != null) {
-      activePaymentMethodList = <PaymentBody>[];
-      json['active_payment_method_list'].forEach((v) {
-        activePaymentMethodList!.add(PaymentBody.fromJson(v));
-      });
-    }
-    minAmountToPayDm = json['min_amount_to_pay_dm']?.toDouble();
+
     firebaseOtpVerification = json['firebase_otp_verification'] == 1;
   }
 
@@ -175,8 +173,7 @@ class ConfigModel {
     data['customer_verification'] = customerVerification;
     data['schedule_order'] = scheduleOrder;
     data['order_delivery_verification'] = orderDeliveryVerification;
-    data['cash_on_delivery'] = cashOnDelivery;
-    data['digital_payment'] = digitalPayment;
+
     data['per_km_shipping_charge'] = perKmShippingCharge;
     data['minimum_shipping_charge'] = minimumShippingCharge;
     data['free_delivery_over'] = freeDeliveryOver;
@@ -205,11 +202,7 @@ class ConfigModel {
     data['websocket_port'] = webSocketPort;
     data['websocket_key'] = webSocketKey;
     data['websocket_status'] = webSocketStatus;
-    data['disbursement_type'] = disbursementType;
-    if (activePaymentMethodList != null) {
-      data['active_payment_method_list'] = activePaymentMethodList!.map((v) => v.toJson()).toList();
-    }
-    data['min_amount_to_pay_dm'] = minAmountToPayDm;
+
     data['firebase_otp_verification'] = firebaseOtpVerification;
     return data;
   }
@@ -261,7 +254,9 @@ class ModuleConfig {
 
   ModuleConfig.fromJson(Map<String, dynamic> json) {
     moduleType = json['module_type'].cast<String>();
-    module = json[moduleType![0]] != null ? Module.fromJson(json[moduleType![0]]) : null;
+    module = json[moduleType![0]] != null
+        ? Module.fromJson(json[moduleType![0]])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -300,7 +295,9 @@ class Module {
   });
 
   Module.fromJson(Map<String, dynamic> json) {
-    orderStatus = json['order_status'] != null ? OrderStatus.fromJson(json['order_status']) : null;
+    orderStatus = json['order_status'] != null
+        ? OrderStatus.fromJson(json['order_status'])
+        : null;
     orderPlaceToScheduleInterval = json['order_place_to_schedule_interval'];
     addOn = json['add_on'];
     stock = json['stock'];
@@ -342,36 +339,6 @@ class OrderStatus {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['accepted'] = accepted;
-    return data;
-  }
-}
-
-class PaymentBody {
-  String? getWay;
-  String? getWayTitle;
-  String? getWayImageFullUrl;
-  String? storageType;
-
-  PaymentBody({
-    this.getWay,
-    this.getWayTitle,
-    this.getWayImageFullUrl,
-    this.storageType,
-  });
-
-  PaymentBody.fromJson(Map<String, dynamic> json) {
-    getWay = json['gateway'];
-    getWayTitle = json['gateway_title'];
-    getWayImageFullUrl = json['gateway_image_full_url'];
-    storageType = json['storage'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['gateway'] = getWay;
-    data['gateway_title'] = getWayTitle;
-    data['gateway_image_full_url'] = getWayImageFullUrl;
-    data['storage'] = storageType;
     return data;
   }
 }

@@ -17,7 +17,6 @@ class ProfileModel {
   int? orderCount;
   int? todaysOrderCount;
   int? thisWeekOrderCount;
-  double? cashInHands;
   int? earnings;
   String? type;
   double? balance;
@@ -26,13 +25,8 @@ class ProfileModel {
   double? thisMonthEarning;
   String? createdAt;
   String? updatedAt;
-  double? payableBalance;
-  bool? adjustable;
-  bool? overFlowWarning;
-  bool? overFlowBlockWarning;
   double? withDrawableBalance;
   double? totalWithdrawn;
-  bool? showPayNowButton;
 
   ProfileModel({
     this.id,
@@ -52,7 +46,6 @@ class ProfileModel {
     this.orderCount,
     this.todaysOrderCount,
     this.thisWeekOrderCount,
-    this.cashInHands,
     this.ratingCount,
     this.createdAt,
     this.updatedAt,
@@ -62,13 +55,8 @@ class ProfileModel {
     this.todaysEarning,
     this.thisWeekEarning,
     this.thisMonthEarning,
-    this.payableBalance,
-    this.adjustable,
-    this.overFlowWarning,
-    this.overFlowBlockWarning,
     this.withDrawableBalance,
     this.totalWithdrawn,
-    this.showPayNowButton,
   });
 
   ProfileModel.fromJson(Map<String, dynamic> json) {
@@ -90,7 +78,6 @@ class ProfileModel {
     orderCount = json['order_count'];
     todaysOrderCount = json['todays_order_count'];
     thisWeekOrderCount = json['this_week_order_count'];
-    cashInHands = json['cash_in_hands']?.toDouble();
     earnings = json['earning'];
     type = json['type'];
     balance = json['balance']?.toDouble();
@@ -99,13 +86,8 @@ class ProfileModel {
     thisMonthEarning = json['this_month_earning']?.toDouble();
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    payableBalance = json['Payable_Balance']?.toDouble();
-    adjustable = json['adjust_able'];
-    overFlowWarning = json['over_flow_warning'];
-    overFlowBlockWarning = json['over_flow_block_warning'];
     withDrawableBalance = json['withdraw_able_balance']?.toDouble();
     totalWithdrawn = json['total_withdrawn']?.toDouble();
-    showPayNowButton = json['show_pay_now_button'];
   }
 
   Map<String, dynamic> toJson() {
@@ -128,7 +110,6 @@ class ProfileModel {
     data['order_count'] = orderCount;
     data['todays_order_count'] = todaysOrderCount;
     data['this_week_order_count'] = thisWeekOrderCount;
-    data['cash_in_hands'] = cashInHands;
     data['earning'] = earnings;
     data['balance'] = balance;
     data['type'] = type;
@@ -137,13 +118,8 @@ class ProfileModel {
     data['this_month_earning'] = thisMonthEarning;
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
-    data['Payable_Balance'] = payableBalance;
-    data['adjust_able'] = adjustable;
-    data['over_flow_warning'] = overFlowWarning;
-    data['over_flow_block_warning'] = overFlowBlockWarning;
     data['withdraw_able_balance'] = withDrawableBalance;
     data['total_withdrawn'] = totalWithdrawn;
-    data['show_pay_now_button'] = showPayNowButton;
     return data;
   }
 }
