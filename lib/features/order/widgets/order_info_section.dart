@@ -13,8 +13,6 @@ class OrderInfoSection extends StatelessWidget {
   final OrderController orderController;
   final dynamic controllerOrderModel;
   final bool parcel;
-  final bool? cod, wallet, partialPay, offlinePay;
-  final bool showPaymentType;
   final bool showOrderCount;
 
   const OrderInfoSection({
@@ -22,27 +20,12 @@ class OrderInfoSection extends StatelessWidget {
     required this.orderController,
     required this.controllerOrderModel,
     required this.parcel,
-    this.cod,
-    this.wallet,
-    this.partialPay,
-    this.offlinePay,
-    this.showPaymentType = true,
     this.showOrderCount = true,
   });
 
-  String get _paymentLabel {
-    if (cod == true) return 'cod'.tr;
-    if (wallet == true) return 'wallet'.tr;
-    if (partialPay == true) return 'partially_pay'.tr;
-    if (offlinePay == true) return 'offline_payment'.tr;
-    return 'digitally_paid'.tr;
-  }
-
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
-    final customColor = theme.extension<CustomColorsExtension>()!;
+    final customColor = Theme.of(context).extension<CustomColorsExtension>()!;
 
     return Column(
       children: [
@@ -67,26 +50,6 @@ class OrderInfoSection extends StatelessWidget {
                       fontSize: Dimensions.fs16,
                     ),
                   ),
-                  if (showPaymentType)
-                    CustomCard(
-                      isBorder: false,
-                      autoWidth: true,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: Dimensions.w10,
-                        vertical: Dimensions.h4,
-                      ),
-                      fillColor: scheme.primaryContainer,
-                      borderRadius: Dimensions.r8,
-                      child: Center(
-                        child: Text(
-                          _paymentLabel,
-                          style: textBold().copyWith(
-                            fontSize: Dimensions.fs12, 
-                            color: scheme.onPrimaryContainer, 
-                          ),
-                        ),
-                      ),
-                    ),
                 ],
               ),
               SizedBox(height: Dimensions.h20),

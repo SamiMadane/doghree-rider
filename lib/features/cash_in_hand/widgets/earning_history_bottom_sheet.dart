@@ -55,7 +55,6 @@ class EarningHistoryBottomSheet extends StatelessWidget {
 
         Text(DateConverterHelper.utcToDateTime(data!.createAt!), style: textRegular().copyWith(color: Theme.of(context).hintColor)),
 
-        Text('${'pay_by'.tr}: ${data?.order?.paymentMethod?.tr}'.replaceAll('_', ' '), style: textRegular().copyWith(color: Theme.of(context).hintColor)),
 
         Padding(
           padding: EdgeInsets.symmetric(horizontal: Dimensions.w20, vertical: Dimensions.h20),

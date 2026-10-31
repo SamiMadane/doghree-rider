@@ -173,7 +173,6 @@ class _LottieBottomSheetOrderRequestState
                             orderController: orderController,
                             controllerOrderModel: orderController.orderModel,
                             parcel: widget.isParcel,
-                            showPaymentType: false,
                           )
                         : AppShimmerBlock(
                             width: double.infinity,

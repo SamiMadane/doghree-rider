@@ -2,26 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:doghree_rider/common/widgets/custom_button_widget.dart';
 import 'package:doghree_rider/features/notification/controllers/notification_controller.dart';
-import 'package:doghree_rider/features/order/widgets/collect_money_delivery_sheet_widget.dart';
+import 'package:doghree_rider/features/order/widgets/confirm_delivery_sheet_widget.dart';
 import 'package:doghree_rider/features/order/widgets/verify_delivery_sheet_widget.dart';
 
 class CompleteDeliveryButton extends StatelessWidget {
   final dynamic order;
   final bool orderVerificationActive;
-  final bool cod;
-  final bool partialPay;
 
   const CompleteDeliveryButton({
     super.key,
     required this.order,
     required this.orderVerificationActive,
-    required this.cod,
-    required this.partialPay,
   });
 
   @override
   Widget build(BuildContext context) {
-
     return CustomButtonWidget(
       buttonText: 'complete_delivery'.tr,
       onPressed: () {
@@ -30,42 +25,12 @@ class CompleteDeliveryButton extends StatelessWidget {
               .sendDeliveredNotification(order.id);
 
           Get.bottomSheet(
-            VerifyDeliverySheetWidget(
-              currentOrderModel: order,
-              verify: orderVerificationActive,
-              orderAmount: partialPay
-                  ? order.payments![1].amount!.toDouble()
-                  : order.orderAmount,
-              cod: cod || (partialPay && order.payments![1].paymentMethod == 'cash_on_delivery'),
-            ),
+            VerifyDeliverySheetWidget(currentOrderModel: order),
             isScrollControlled: true,
-          ).then((isSuccess) {
-            if (isSuccess &&
-                (cod || (partialPay && order.payments![1].paymentMethod == 'cash_on_delivery'))) {
-              Get.bottomSheet(
-                CollectMoneyDeliverySheetWidget(
-                  currentOrderModel: order,
-                  verify: orderVerificationActive,
-                  orderAmount: partialPay
-                      ? order.payments![1].amount!.toDouble()
-                      : order.orderAmount,
-                  cod: cod || (partialPay && order.payments![1].paymentMethod == 'cash_on_delivery'),
-                ),
-                isScrollControlled: true,
-                isDismissible: false,
-              );
-            }
-          });
+          );
         } else {
           Get.bottomSheet(
-            CollectMoneyDeliverySheetWidget(
-              currentOrderModel: order,
-              verify: orderVerificationActive,
-              orderAmount: partialPay
-                  ? order.payments![1].amount!.toDouble()
-                  : order.orderAmount,
-              cod: cod || (partialPay && order.payments![1].paymentMethod == 'cash_on_delivery'),
-            ),
+            ConfirmDeliverySheetWidget(currentOrderModel: order),
             isScrollControlled: true,
           );
         }

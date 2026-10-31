@@ -98,39 +98,18 @@ class OrderRequestWidget extends StatelessWidget {
                       fontSize: Dimensions.fs10),
                 ),
                 Spacer(),
-                Row(
-                  children: [
-                    (Get.find<SplashController>().configModel!.showDmEarning! &&
-                            Get.find<ProfileController>().profileModel !=
-                                null &&
-                            Get.find<ProfileController>()
-                                    .profileModel!
-                                    .earnings ==
-                                1)
-                        ? Text(
-                            PriceConverterHelper.convertPrice(
-                                orderModel.originalDeliveryCharge! +
-                                    orderModel.dmTips!),
-                            style: textSemiBold()
-                                .copyWith(fontSize: Dimensions.fs14),
-                          )
-                        : const SizedBox(),
-                    SizedBox(
-                      width: Dimensions.w8,
-                    ),
-                    Text(
-                      '${orderModel.paymentMethod == 'cash_on_delivery' ? 'cod'.tr : orderModel.paymentMethod == 'wallet' ? 'wallet'.tr : 'paid'.tr}',
-                      style: textSemiBold().copyWith(
-                        fontSize: Dimensions.fs14,
-                        color: orderModel.paymentMethod == 'cash_on_delivery'
-                            ? ManagerColors.orangeLightMode
-                            : orderModel.paymentMethod == 'wallet'
-                                ? ManagerColors.darkGreen
-                                : ManagerColors.darkGreen,
-                      ),
-                    ),
-                  ],
-                )
+                (Get.find<SplashController>().configModel!.showDmEarning! &&
+                        Get.find<ProfileController>().profileModel != null &&
+                        Get.find<ProfileController>().profileModel!.earnings ==
+                            1)
+                    ? Text(
+                        PriceConverterHelper.convertPrice(
+                            orderModel.originalDeliveryCharge! +
+                                orderModel.dmTips!),
+                        style:
+                            textSemiBold().copyWith(fontSize: Dimensions.fs14),
+                      )
+                    : const SizedBox()
               ],
             ),
             SizedBox(height: Dimensions.h16),

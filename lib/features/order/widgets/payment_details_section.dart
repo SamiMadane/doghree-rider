@@ -19,9 +19,7 @@ class PaymentDetailsSection extends StatelessWidget {
   final double additionalCharge;
   final double tax;
   final bool taxIncluded;
-  final bool partialPay;
   final double total;
-  final bool restConfModel;
 
   const PaymentDetailsSection({
     super.key,
@@ -38,9 +36,7 @@ class PaymentDetailsSection extends StatelessWidget {
     required this.additionalCharge,
     required this.tax,
     required this.taxIncluded,
-    required this.partialPay,
     required this.total,
-    required this.restConfModel,
   });
 
   Widget _buildRow(
@@ -91,7 +87,6 @@ class PaymentDetailsSection extends StatelessWidget {
             style: textSemiBold().copyWith(fontSize: Dimensions.fs16),
           ),
           SizedBox(height: Dimensions.h16),
-
           if (!parcel)
             _buildRow(
               context,
@@ -115,7 +110,6 @@ class PaymentDetailsSection extends StatelessWidget {
             ),
             SizedBox(height: Dimensions.h10),
           ],
-
           if (!parcel && discount > 0) ...[
             _buildRow(
               context,
@@ -124,7 +118,6 @@ class PaymentDetailsSection extends StatelessWidget {
             ),
             SizedBox(height: Dimensions.h10),
           ],
-
           if (couponDiscount > 0) ...[
             _buildRow(
               context,
@@ -133,7 +126,6 @@ class PaymentDetailsSection extends StatelessWidget {
             ),
             SizedBox(height: Dimensions.h10),
           ],
-
           if (referrerBonusAmount > 0) ...[
             _buildRow(
               context,
@@ -142,14 +134,12 @@ class PaymentDetailsSection extends StatelessWidget {
             ),
             SizedBox(height: Dimensions.h10),
           ],
-
           _buildRow(
             context,
             'delivery_fee'.tr,
             PriceConverterHelper.convertPrice(deliveryCharge),
           ),
           SizedBox(height: Dimensions.h10),
-
           if (!parcel && dmTips > 0) ...[
             _buildRow(
               context,
@@ -158,7 +148,6 @@ class PaymentDetailsSection extends StatelessWidget {
             ),
             SizedBox(height: Dimensions.h10),
           ],
-
           if (extraPackagingAmount > 0) ...[
             _buildRow(
               context,
@@ -167,7 +156,6 @@ class PaymentDetailsSection extends StatelessWidget {
             ),
             SizedBox(height: Dimensions.h10),
           ],
-
           if (additionalCharge > 0) ...[
             _buildRow(
               context,
@@ -176,7 +164,6 @@ class PaymentDetailsSection extends StatelessWidget {
             ),
             SizedBox(height: Dimensions.h10),
           ],
-
           if (!taxIncluded && tax > 0) ...[
             _buildRow(
               context,
@@ -185,13 +172,11 @@ class PaymentDetailsSection extends StatelessWidget {
             ),
             SizedBox(height: Dimensions.h10),
           ],
-
           Divider(color: scheme.outline, thickness: 1),
           SizedBox(height: Dimensions.h10),
-
           _buildRow(
             context,
-            partialPay ? 'due_payment'.tr : 'total'.tr,
+            'total'.tr,
             PriceConverterHelper.convertPrice(total),
             style: textSemiBold().copyWith(fontSize: Dimensions.fs16),
           ),

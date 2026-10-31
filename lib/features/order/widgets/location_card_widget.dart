@@ -206,38 +206,16 @@ class LocationCardWidget extends StatelessWidget {
           SizedBox(height: Dimensions.h20),
 
           // -------- PRICE + PAYMENT --------
-          Row(
-            children: [
-              (Get.find<SplashController>()
-                          .configModel!
-                          .showDmEarning! &&
-                      Get.find<ProfileController>().profileModel!.earnings == 1)
-                  ? Text(
-                      PriceConverterHelper.convertPrice(
-                          orderModel.originalDeliveryCharge! +
-                              orderModel.dmTips!),
-                      style: textMedium().copyWith(
-                          fontSize: Dimensions.fs16),
-                    )
-                  : const SizedBox(),
-              SizedBox(
-                width: Dimensions.w10,
-              ),
-              Text(
-                '${orderModel.paymentMethod == 'cash_on_delivery' ? 'cod'.tr : orderModel.paymentMethod == 'wallet' ? 'wallet'.tr : 'paid'.tr}',
-                style: textSemiBold().copyWith(
-                  fontSize: Dimensions.fs14,
-                  color: orderModel.paymentMethod == 'cash_on_delivery'
-                      ? ManagerColors.orangeLightMode
-                      : orderModel.paymentMethod == 'wallet'
-                          ? ManagerColors.darkGreen
-                          : ManagerColors.darkGreen,
-                ),
-              ),
-            ],
-          ),
-
-          SizedBox(height: Dimensions.h20),
+          // -------- EARNINGS (يظهر فقط إذا مفعّل) --------
+          if (Get.find<SplashController>().configModel!.showDmEarning! &&
+              Get.find<ProfileController>().profileModel!.earnings == 1) ...[
+            SizedBox(height: Dimensions.h20),
+            Text(
+              PriceConverterHelper.convertPrice(
+                  orderModel.originalDeliveryCharge! + orderModel.dmTips!),
+              style: textMedium().copyWith(fontSize: Dimensions.fs16),
+            ),
+          ],
 
           // -------- ACTION BUTTONS --------
           Row(

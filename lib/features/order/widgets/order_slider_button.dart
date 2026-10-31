@@ -15,10 +15,7 @@ import 'package:doghree_rider/util/app_constants.dart';
 class OrderSliderButton extends StatelessWidget {
   final dynamic order;
   final bool parcel;
-  final bool cod;
   final bool accepted;
-  final bool restConfModel;
-  final bool selfDelivery;
   final bool pickedUp;
   final bool handover;
   final bool orderVerificationActive;
@@ -29,10 +26,7 @@ class OrderSliderButton extends StatelessWidget {
     super.key,
     required this.order,
     required this.parcel,
-    required this.cod,
     required this.accepted,
-    required this.restConfModel,
-    required this.selfDelivery,
     required this.pickedUp,
     required this.handover,
     required this.orderVerificationActive,
@@ -46,9 +40,8 @@ class OrderSliderButton extends StatelessWidget {
 
     return SliderButton(
       action: () async {
-        // Case 1: COD & Accepted, not restConfModel, not selfDelivery OR Parcel & Accepted
-        if ((cod && accepted && !restConfModel && !selfDelivery) ||
-            (parcel && accepted)) {
+        // Case 1: Parcel accepted -> confirm delivery
+        if (parcel && accepted) {
           if (orderController.isLoading) {
             orderController.initLoading();
           }
@@ -58,13 +51,11 @@ class OrderSliderButton extends StatelessWidget {
               icon: ManagerAssets.confirmationOrderImage,
               iconSize: Dimensions.fs150,
               title: 'are_you_sure_to_confirm'.tr,
-              description: parcel
-                  ? 'you_want_to_confirm_this_delivery'.tr
-                  : 'you_want_to_confirm_this_order'.tr,
+              description: 'you_want_to_confirm_this_delivery'.tr,
               onAccept: () {
                 orderController.updateOrderStatus(
                   order,
-                  parcel ? AppConstants.handover : AppConstants.confirmed,
+                  AppConstants.handover,
                   back: fromLocationScreen ? false : true,
                   gotoDashboard: fromLocationScreen ? true : false,
                 );
@@ -75,121 +66,24 @@ class OrderSliderButton extends StatelessWidget {
             ),
           );
         }
-        // Case 2: Handover
+        // Case 2: Handover -> picked up
         else if (handover) {
-          if (parcel && order.chargePayer == 'sender' && cod) {
-            Get.bottomSheet(
-              VerifyDeliverySheetWidget(
-                currentOrderModel: order,
-                verify: false,
-                isSetOtp: false,
-                orderAmount: order.orderAmount,
-                cod: cod,
-                isSenderPay: true,
-                isParcel: parcel,
-              ),
-              isScrollControlled: true,
-            );
-          } else {
-            if (Get.find<ProfileController>().profileModel!.active == 1) {
-              orderController.updateOrderStatus(
-                order,
-                AppConstants.pickedUp,
-                back: false,
-                gotoDashboard: false,
-              );
-            } else {
-              showCustomSnackBar('make_yourself_online_first'.tr);
-            }
-          }
-        }
-        // Case 3: Parcel picked up
-        else if (parcel && pickedUp) {
-          if (orderVerificationActive && order.chargePayer != 'sender' && cod) {
-            await Get.bottomSheet(
-              VerifyDeliverySheetWidget(
-                currentOrderModel: order,
-                verify: orderVerificationActive,
-                orderAmount: order.orderAmount,
-                cod: cod,
-                isParcel: parcel,
-                isSenderPay: false,
-              ),
-              isScrollControlled: true,
-            ).then((value) {
-              if (value == 'show_price_view') {
-                Get.bottomSheet(
-                  VerifyDeliverySheetWidget(
-                    currentOrderModel: order,
-                    verify: false,
-                    isSetOtp: false,
-                    orderAmount: order.orderAmount,
-                    cod: cod,
-                    isSenderPay: false,
-                    isParcel: parcel,
-                  ),
-                  isScrollControlled: true,
-                );
-              }
-            });
-          } else if (orderVerificationActive &&
-              order.chargePayer == 'sender' &&
-              cod) {
-            await Get.bottomSheet(
-              VerifyDeliverySheetWidget(
-                currentOrderModel: order,
-                verify: orderVerificationActive,
-                orderAmount: order.orderAmount,
-                cod: cod,
-                isSenderPay: true,
-                isParcel: parcel,
-              ),
-              isScrollControlled: true,
-            ).then((value) {
-              if (value == 'show_price_view') {
-                Get.bottomSheet(
-                  VerifyDeliverySheetWidget(
-                    currentOrderModel: order,
-                    verify: false,
-                    isSetOtp: false,
-                    orderAmount: order.orderAmount,
-                    cod: cod,
-                    isSenderPay: true,
-                    isParcel: parcel,
-                  ),
-                  isScrollControlled: true,
-                );
-              }
-            });
-          } else if (orderVerificationActive) {
-            Get.bottomSheet(
-              VerifyDeliverySheetWidget(
-                currentOrderModel: order,
-                verify: orderVerificationActive,
-                orderAmount: order.orderAmount,
-                cod: cod,
-              ),
-              isScrollControlled: true,
-            );
-          } else {
+          if (Get.find<ProfileController>().profileModel!.active == 1) {
             orderController.updateOrderStatus(
               order,
-              AppConstants.delivered,
-              back: fromLocationScreen ? false : true,
-              gotoDashboard: fromLocationScreen ? true : false,
+              AppConstants.pickedUp,
+              back: false,
+              gotoDashboard: false,
             );
+          } else {
+            showCustomSnackBar('make_yourself_online_first'.tr);
           }
         }
-        // Case 4: Non-parcel picked up
-        else if (!parcel && pickedUp) {
-          if (orderVerificationActive || cod) {
+        // Case 3: Picked up -> deliver (parcel and non-parcel)
+        else if (pickedUp) {
+          if (orderVerificationActive) {
             Get.bottomSheet(
-              VerifyDeliverySheetWidget(
-                currentOrderModel: order,
-                verify: orderVerificationActive,
-                orderAmount: order.orderAmount,
-                cod: cod,
-              ),
+              VerifyDeliverySheetWidget(currentOrderModel: order),
               isScrollControlled: true,
             );
           } else {
@@ -205,17 +99,15 @@ class OrderSliderButton extends StatelessWidget {
       label: Text(
         (parcel && accepted)
             ? 'swipe_to_confirm_delivery'.tr
-            : (cod && accepted && !restConfModel && !selfDelivery)
-                ? 'swipe_to_confirm_order'.tr
-                : pickedUp
+            : pickedUp
+                ? parcel
+                    ? 'swipe_to_deliver_parcel'.tr
+                    : 'swipe_to_deliver_order'.tr
+                : handover
                     ? parcel
-                        ? 'swipe_to_deliver_parcel'.tr
-                        : 'swipe_to_deliver_order'.tr
-                    : handover
-                        ? parcel
-                            ? 'swipe_to_pick_up_parcel'.tr
-                            : 'swipe_to_pick_up_order'.tr
-                        : '',
+                        ? 'swipe_to_pick_up_parcel'.tr
+                        : 'swipe_to_pick_up_order'.tr
+                    : '',
         style: textMedium().copyWith(
           fontSize: Dimensions.fs16,
           color: Theme.of(context).textTheme.bodyMedium?.color,

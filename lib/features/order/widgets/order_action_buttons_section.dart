@@ -14,12 +14,8 @@ class OrderActionButtonsSection extends StatelessWidget {
   final bool parcel;
   final bool processing;
   final bool confirmed;
-  final bool cod;
-  final bool partialPay;
-  final bool selfDelivery;
   final bool pickedUp;
   final bool handover;
-  final bool restConfModel;
   final bool orderVerificationActive;
   final bool cancelPermission;
   final bool fromLocationScreen;
@@ -34,12 +30,8 @@ class OrderActionButtonsSection extends StatelessWidget {
     required this.parcel,
     required this.processing,
     required this.confirmed,
-    required this.cod,
-    required this.partialPay,
-    required this.selfDelivery,
     required this.pickedUp,
     required this.handover,
-    required this.restConfModel,
     required this.orderVerificationActive,
     required this.cancelPermission,
     required this.fromLocationScreen,
@@ -55,16 +47,12 @@ class OrderActionButtonsSection extends StatelessWidget {
         child: CompleteDeliveryButton(
           order: order,
           orderVerificationActive: orderVerificationActive,
-          cod: cod,
-          partialPay: partialPay,
         ),
       );
     }
 
     if (showBottomView) {
-      if ((accepted && !parcel && (!cod || restConfModel || selfDelivery)) ||
-          processing ||
-          confirmed) {
+      if ((accepted && !parcel) || processing || confirmed) {
         return Padding(
           padding: EdgeInsets.only(top: Dimensions.h20),
           child: OrderStatusInfoContainer(processing: processing),
@@ -72,12 +60,7 @@ class OrderActionButtonsSection extends StatelessWidget {
       }
 
       if (showSlider) {
-        if ((cod &&
-                accepted &&
-                !restConfModel &&
-                cancelPermission &&
-                !selfDelivery) ||
-            (parcel && accepted && cancelPermission)) {
+        if (parcel && accepted && cancelPermission) {
           return Padding(
             padding: EdgeInsets.only(top: Dimensions.h20),
             child: CancelConfirmRow(
@@ -92,10 +75,7 @@ class OrderActionButtonsSection extends StatelessWidget {
             child: OrderSliderButton(
               order: order,
               parcel: parcel,
-              cod: cod,
               accepted: accepted,
-              restConfModel: restConfModel,
-              selfDelivery: selfDelivery,
               pickedUp: pickedUp,
               handover: handover,
               orderVerificationActive: orderVerificationActive,

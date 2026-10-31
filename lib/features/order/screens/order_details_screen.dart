@@ -14,7 +14,6 @@ import 'package:doghree_rider/features/order/widgets/order_proof_section.dart';
 import 'package:doghree_rider/features/order/widgets/order_summary_widget.dart';
 import 'package:doghree_rider/features/order/widgets/payment_details_section.dart';
 import 'package:doghree_rider/features/order/widgets/prescription_section.dart';
-import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
 import 'package:doghree_rider/features/splash/controllers/splash_controller.dart';
 import 'package:doghree_rider/features/notification/domain/models/notification_body_model.dart';
 import 'package:doghree_rider/features/chat/domain/models/conversation_model.dart';
@@ -103,8 +102,6 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
   Widget build(BuildContext context) {
     bool? cancelPermission =
         Get.find<SplashController>().configModel!.canceledByDeliveryman;
-    bool selfDelivery =
-        Get.find<ProfileController>().profileModel!.type != 'zone_wise';
 
     return PopScope(
       canPop: true,
@@ -140,21 +137,12 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
               child: GetBuilder<OrderController>(builder: (orderController) {
                 OrderModel? controllerOrderModel = orderController.orderModel;
 
-                bool restConfModel = Get.find<SplashController>()
-                        .configModel!
-                        .orderConfirmationModel !=
-                    'deliveryman';
-
                 bool? parcel,
                     processing,
                     accepted,
                     confirmed,
                     handover,
-                    pickedUp,
-                    cod,
-                    wallet,
-                    partialPay,
-                    offlinePay;
+                    pickedUp;
 
                 bool orderVerificationActive = Get.find<SplashController>()
                         .configModel
@@ -243,22 +231,12 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                       controllerOrderModel.orderStatus == AppConstants.handover;
                   pickedUp =
                       controllerOrderModel.orderStatus == AppConstants.pickedUp;
-                  cod =
-                      controllerOrderModel.paymentMethod == 'cash_on_delivery';
-                  wallet = controllerOrderModel.paymentMethod == 'wallet';
-                  partialPay =
-                      controllerOrderModel.paymentMethod == 'partial_payment';
-                  offlinePay =
-                      controllerOrderModel.paymentMethod == 'offline_payment';
 
                   showDeliveryConfirmImage = pickedUp &&
                       Get.find<SplashController>()
                           .configModel!
                           .dmPictureUploadStatus!;
-                  bool restConfModel = Get.find<SplashController>()
-                          .configModel!
-                          .orderConfirmationModel !=
-                      'deliveryman';
+
                   showBottomView = (parcel && accepted) ||
                       accepted ||
                       confirmed ||
@@ -266,11 +244,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                       handover ||
                       pickedUp ||
                       (widget.isRunningOrder ?? true);
-                  showSlider =
-                      (cod && accepted && !restConfModel && !selfDelivery) ||
-                          handover ||
-                          pickedUp ||
-                          (parcel && accepted);
+                  showSlider = handover || pickedUp || (parcel && accepted);
                 }
 
                 bool showSummarySection = controllerOrderModel != null &&
@@ -392,12 +366,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                               orderController: orderController,
                               controllerOrderModel: controllerOrderModel,
                               parcel: parcel,
-                              cod: cod,
-                              wallet: wallet,
-                              partialPay: partialPay,
-                              offlinePay: offlinePay,
                               showOrderCount: true,
-                              showPaymentType: false,
                             ),
                           ],
                           SizedBox(
@@ -566,9 +535,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                             additionalCharge: additionalCharge,
                             tax: tax!,
                             taxIncluded: taxIncluded,
-                            partialPay: partialPay!,
                             total: total,
-                            restConfModel: restConfModel,
                           ),
                           DeliveryImagesSection(
                             order: controllerOrderModel,
@@ -583,12 +550,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                             parcel: parcel,
                             processing: processing!,
                             confirmed: confirmed!,
-                            cod: cod!,
-                            partialPay: partialPay,
-                            selfDelivery: selfDelivery,
                             pickedUp: pickedUp!,
                             handover: handover!,
-                            restConfModel: restConfModel,
                             orderVerificationActive: orderVerificationActive,
                             cancelPermission: cancelPermission!,
                             fromLocationScreen: widget.fromLocationScreen,
