@@ -4,7 +4,6 @@ import 'package:doghree_rider/common/widgets/custom_app_bar_widget.dart';
 import 'package:doghree_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
 import 'package:doghree_rider/features/cash_in_hand/widgets/withdrawal_history_section.dart';
 import 'package:doghree_rider/util/dimensions.dart';
-import 'package:doghree_rider/util/styles.dart';
 
 class WithdrawalsScreen extends StatefulWidget {
   const WithdrawalsScreen({super.key});
@@ -29,48 +28,21 @@ class _WithdrawalsScreenState extends State<WithdrawalsScreen> {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: CustomAppBarWidget(
           title: 'wallet_withdraw_requests'.tr, isBackButtonExist: true),
-      body: Padding(
-        padding: EdgeInsets.only(top: Dimensions.h16),
-        child: Container(
-          color: Theme.of(context).cardColor,
-          child: GetBuilder<CashInHandController>(builder: (c) {
-            final list = c.withdrawals;
-            return RefreshIndicator(
-              onRefresh: () => c.getWithdrawals(),
-              child: list == null
-                  ? ListView(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      children: [
-                        const SizedBox(height: 60),
-                        Center(
-                          child: c.withdrawalsFailed
-                              ? IconButton(
-                                  icon: const Icon(Icons.refresh),
-                                  onPressed: () => c.getWithdrawals())
-                              : const CircularProgressIndicator(),
-                        ),
-                      ],
-                    )
-                  : list.isEmpty
-                      ? ListView(
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          children: [
-                            const SizedBox(height: 60),
-                            Center(
-                              child: Text('wallet_no_withdrawals'.tr,
-                                  style: textRegular().copyWith(
-                                      color: Theme.of(context).hintColor)),
-                            ),
-                          ],
-                        )
-                      : ListView.builder(
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          padding: EdgeInsets.all(Dimensions.w16),
-                          itemCount: list.length,
-                          itemBuilder: (_, i) => WithdrawalTile(item: list[i]),
-                        ),
-            );
-          }),
+      body: Container(
+        color: Theme.of(context).cardColor,
+        margin: EdgeInsets.only(top: Dimensions.h16),
+        child: RefreshIndicator(
+        onRefresh: () => Get.find<CashInHandController>().getWithdrawals(),
+        child: ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: EdgeInsets.fromLTRB(
+            Dimensions.w16,
+            Dimensions.h20,
+            Dimensions.w16,
+            Dimensions.h25,
+          ),
+          children: const [WithdrawalsBody()],
+        ),
         ),
       ),
     );

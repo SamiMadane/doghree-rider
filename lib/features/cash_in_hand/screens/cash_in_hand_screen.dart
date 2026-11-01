@@ -1,11 +1,12 @@
-import 'package:doghree_rider/features/cash_in_hand/widgets/transaction_history_section.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:doghree_rider/common/widgets/custom_app_bar_widget.dart';
+import 'package:doghree_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
 import 'package:doghree_rider/features/cash_in_hand/widgets/balance_overviwe_section.dart';
+import 'package:doghree_rider/features/cash_in_hand/widgets/transaction_history_section.dart';
+import 'package:doghree_rider/features/cash_in_hand/widgets/wallet_account_section.dart';
 import 'package:doghree_rider/features/cash_in_hand/widgets/withdrawal_history_section.dart';
 import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
-import 'package:doghree_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
-import 'package:doghree_rider/common/widgets/custom_app_bar_widget.dart';
 import 'package:doghree_rider/util/dimensions.dart';
 
 class CashInHandScreen extends StatefulWidget {
@@ -16,8 +17,6 @@ class CashInHandScreen extends StatefulWidget {
 }
 
 class _CashInHandScreenState extends State<CashInHandScreen> {
-  final ScrollController scrollController = ScrollController();
-
   @override
   void initState() {
     super.initState();
@@ -47,57 +46,43 @@ class _CashInHandScreenState extends State<CashInHandScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (Get.find<ProfileController>().profileModel == null) {
-      Get.find<ProfileController>().getProfile();
-    }
-
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: CustomAppBarWidget(
-        title: 'balance'.tr,
-        isBackButtonExist: true,
+      appBar: CustomAppBarWidget(title: 'balance'.tr, isBackButtonExist: true),
+      body: Container(
+        color: Theme.of(context).cardColor,
+        margin: EdgeInsets.only(top: Dimensions.h16),
+        child: GetBuilder<ProfileController>(builder: (profileController) {
+          if (profileController.profileModel == null) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          return RefreshIndicator(
+          onRefresh: _onRefresh,
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(
+                parent: BouncingScrollPhysics()),
+            padding: EdgeInsets.fromLTRB(
+              Dimensions.w16,
+              Dimensions.h20,
+              Dimensions.w16,
+              Dimensions.h25,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                BalanceOverviewSection(profileController: profileController),
+                SizedBox(height: Dimensions.h20),
+                const WalletAccountSection(),
+                SizedBox(height: Dimensions.h25),
+                const WithdrawalHistorySection(),
+                const TransactionHistorySection(),
+              ],
+            ),
+          ),
+          );
+        }),
       ),
-      body: GetBuilder<CashInHandController>(builder: (cashInHandController) {
-        return GetBuilder<ProfileController>(builder: (profileController) {
-          return profileController.profileModel != null
-              ? RefreshIndicator(
-                  onRefresh: _onRefresh,
-                  child: Container(
-                    color: Theme.of(context).cardColor,
-                    margin: EdgeInsets.only(top: Dimensions.h16),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: Dimensions.w16,
-                      vertical: Dimensions.h16,
-                    ),
-                    child: Column(children: [
-                      Expanded(
-                        child: SingleChildScrollView(
-                          physics: const AlwaysScrollableScrollPhysics(
-                              parent: BouncingScrollPhysics()),
-                          child: Column(children: [
-                            BalanceOverviewSection(
-                                profileController: profileController),
-                            SizedBox(height: Dimensions.h25),
-                            const WithdrawalHistorySection(),
-                            if (cashInHandController
-                                    .walletProvidedTransactions?.isNotEmpty ??
-                                false) ...[
-                              SizedBox(height: Dimensions.h25),
-                              TransactionHistorySection(
-                                  cashInHandController: cashInHandController),
-                            ],
-                          ]),
-                        ),
-                      ),
-                    ]),
-                  ),
-                )
-              : Container(
-                  margin: EdgeInsets.only(top: Dimensions.h16),
-                  color: Theme.of(context).cardColor,
-                  child: const Center(child: CircularProgressIndicator()));
-        });
-      }),
     );
   }
 }

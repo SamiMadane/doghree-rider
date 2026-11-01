@@ -269,6 +269,7 @@ class OrderController extends GetxController implements GetxService {
     List<OrderModel>? latestOrderList =
         await orderServiceInterface.getLatestOrders();
     if (latestOrderList != null) {
+      
       _latestOrderList = [];
       List<int?> ignoredIdList =
           orderServiceInterface.prepareIgnoreIdList(_ignoredRequests);
@@ -281,8 +282,12 @@ class OrderController extends GetxController implements GetxService {
       List<OrderModel> validOrders =
           processedOrders.where(_isValidOrder).toList();
 
+
       _latestOrderList!.addAll(validOrders);
+      debugPrint('latest raw=${latestOrderList.length} '
+    'processed=${processedOrders.length} valid=${validOrders.length}');
     }
+    
     update();
   }
 

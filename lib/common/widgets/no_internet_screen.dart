@@ -27,7 +27,7 @@ class NoInternetScreen extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      "opps".tr,
+                      "oops".tr,
                       style: textBold().copyWith(
                         fontSize: Dimensions.fs28,
                         color: Theme.of(context).textTheme.bodyLarge!.color,
@@ -53,7 +53,7 @@ class NoInternetScreen extends StatelessWidget {
                       "please_check_your_internet_and_try_again".tr,
                       style: textRegular().copyWith(
                         fontSize: Dimensions.fs18,
-                        color: Theme.of(context).disabledColor,
+                        color: Theme.of(context).hintColor,
                       ),
                       textAlign: TextAlign.center,
                     ),

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,15 +11,13 @@ import 'package:doghree_rider/features/cash_in_hand/domain/repositories/cash_in_
 import 'package:doghree_rider/util/app_constants.dart';
 import 'package:doghree_rider/features/cash_in_hand/domain/models/wallet_model.dart';
 
-
 class CashInHandRepository implements CashInHandRepositoryInterface {
   final ApiClient apiClient;
   final SharedPreferences sharedPreferences;
-  CashInHandRepository({required this.apiClient, required this.sharedPreferences});
+  CashInHandRepository(
+      {required this.apiClient, required this.sharedPreferences});
 
-  
-
-   @override
+  @override
   Future getList() {
     throw UnimplementedError();
   }
@@ -28,33 +25,39 @@ class CashInHandRepository implements CashInHandRepositoryInterface {
   @override
   Future<List<Transactions>?> getWalletProvidedEarningList() async {
     List<Transactions>? walletProvidedTransactions;
-    Response response = await apiClient.getData('${AppConstants.walletProvidedEarningListUri}?token=${_getUserToken()}');
-    if(response.statusCode == 200) {
+    Response response = await apiClient.getData(
+        '${AppConstants.walletProvidedEarningListUri}?token=${_getUserToken()}');
+    if (response.statusCode == 200) {
       walletProvidedTransactions = [];
-      WalletPaymentModel walletPaymentModel = WalletPaymentModel.fromJson(response.body);
+      WalletPaymentModel walletPaymentModel =
+          WalletPaymentModel.fromJson(response.body);
       walletProvidedTransactions.addAll(walletPaymentModel.transactions!);
     }
     return walletProvidedTransactions;
   }
-
-
 
   String _getUserToken() {
     return sharedPreferences.getString(AppConstants.token) ?? "";
   }
 
   @override
-  Future<EarningReportModel?> getEarningReport({String? offset, String? type, String? startDate, String? endDate}) async {
+  Future<EarningReportModel?> getEarningReport(
+      {String? offset,
+      String? type,
+      String? startDate,
+      String? endDate}) async {
     EarningReportModel? earningReportModel;
     Response response;
 
-    if(startDate != null && endDate != null) {
-      response = await apiClient.getData('${AppConstants.earningReportUri}?limit=10&offset=$offset&type=$type&start_date=$startDate&end_date=$endDate&token=${_getUserToken()}');
+    if (startDate != null && endDate != null) {
+      response = await apiClient.getData(
+          '${AppConstants.earningReportUri}?limit=10&offset=$offset&type=$type&start_date=$startDate&end_date=$endDate&token=${_getUserToken()}');
     } else {
-      response = await apiClient.getData('${AppConstants.earningReportUri}?limit=10&offset=$offset&type=$type&start_date=&end_date=&token=${_getUserToken()}');
+      response = await apiClient.getData(
+          '${AppConstants.earningReportUri}?limit=10&offset=$offset&type=$type&start_date=&end_date=&token=${_getUserToken()}');
     }
 
-    if(response.statusCode == 200) {
+    if (response.statusCode == 200) {
       earningReportModel = EarningReportModel.fromJson(response.body);
     }
     return earningReportModel;
@@ -62,7 +65,9 @@ class CashInHandRepository implements CashInHandRepositoryInterface {
 
   @override
   Future<Response> downloadEarningInvoice({required int dmId}) async {
-    Response response = await apiClient.getData('${AppConstants.earningReportInvoiceUri}/$dmId', handleError: false);
+    Response response = await apiClient.getData(
+        '${AppConstants.earningReportInvoiceUri}/$dmId',
+        handleError: false);
     return response;
   }
 
@@ -85,15 +90,18 @@ class CashInHandRepository implements CashInHandRepositoryInterface {
   Future update(Map<String, dynamic> body) {
     throw UnimplementedError();
   }
-    @override
+
+  @override
   Future<WalletModel?> getWallet() async {
     final Response response = await apiClient.getData(AppConstants.walletUri);
+    debugPrint('WALLET ◀ ${response.statusCode} ${response.bodyString}');
     if (response.statusCode == 200 && response.body is Map) {
       return WalletModel.fromJson(Map<String, dynamic>.from(response.body));
     }
     return null;
   }
-    @override
+
+  @override
   Future<ResponseModel> saveWalletAccount(
       {required int methodId,
       required Map<String, String> fields,
@@ -112,8 +120,9 @@ class CashInHandRepository implements CashInHandRepositoryInterface {
 
   @override
   Future<ResponseModel> deleteWalletAccount(int id) async {
-    final Response response = await apiClient
-        .deleteData('${AppConstants.walletAccountsUri}/$id', handleError: false);
+    final Response response = await apiClient.deleteData(
+        '${AppConstants.walletAccountsUri}/$id',
+        handleError: false);
     return _walletResult(response);
   }
 
@@ -123,7 +132,8 @@ class CashInHandRepository implements CashInHandRepositoryInterface {
     }
     if (response.statusCode == 200) {
       final body = response.body;
-      return ResponseModel(true, body is Map ? body['message']?.toString() : null);
+      return ResponseModel(
+          true, body is Map ? body['message']?.toString() : null);
     }
     return ResponseModel(false, response.statusText,
         statusCode: response.statusCode);
@@ -142,8 +152,8 @@ class CashInHandRepository implements CashInHandRepositoryInterface {
 
   @override
   Future<List<WalletWithdrawal>?> getWithdrawals({int offset = 1}) async {
-    final Response response = await apiClient
-        .getData('${AppConstants.walletWithdrawalsUri}?limit=20&offset=$offset');
+    final Response response = await apiClient.getData(
+        '${AppConstants.walletWithdrawalsUri}?limit=20&offset=$offset');
     debugPrint('WITHDRAWALS ◀ ${response.statusCode} ${response.bodyString}');
     if (response.statusCode == 200 && response.body is Map) {
       final raw = (response.body as Map)['withdrawals'];

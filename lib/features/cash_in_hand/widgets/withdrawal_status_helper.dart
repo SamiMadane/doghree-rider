@@ -22,14 +22,11 @@ extension WalletWithdrawalX on WalletWithdrawal {
       case 'paid':
         return ManagerColors.success;
       case 'rejected':
-        return Color.lerp(ManagerColors.error, Colors.white, 0.3)!;
+        return ManagerColors.error;
       default:
         return ManagerColors.warning;
     }
   }
-
-  /// Asphalt text on top of the status colour (brand rule).
-  Color get onStatusColor => ManagerColors.onPrimary;
 
   String get accountText =>
       [methodName, accountSummary].where((e) => e.isNotEmpty).join(' · ');

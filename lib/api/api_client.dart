@@ -49,7 +49,7 @@ class ApiClient extends GetxService {
   Future<Response> _send(String uri, Future<http.Response> Function() call,
       bool handleError) async {
     try {
-      _log('API ▶ $uri');
+      _log('API ▶ $uri [${_mainHeaders[AppConstants.localizationKey]}]');
       final res = await call().timeout(Duration(seconds: timeoutInSeconds));
       return handleResponse(res, uri, handleError);
     } catch (e) {

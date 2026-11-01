@@ -71,6 +71,7 @@ class OrderRepository implements OrderRepositoryInterface {
     List<OrderModel>? latestOrderList;
     Response response =
         await apiClient.getData(AppConstants.latestOrdersUri + _getUserToken());
+        debugPrint('LATEST ◀ ${response.statusCode} ${response.body}');
     if (response.statusCode == 200) {
       latestOrderList = [];
       response.body
