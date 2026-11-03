@@ -1,3 +1,6 @@
+import 'package:doghree_rider/common/widgets/circle_icon_button.dart';
+import 'package:doghree_rider/helper/route_helper.dart';
+import 'package:doghree_rider/util/manager_assets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:doghree_rider/common/widgets/custom_app_bar_widget.dart';
@@ -48,7 +51,15 @@ class _CashInHandScreenState extends State<CashInHandScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: CustomAppBarWidget(title: 'balance'.tr, isBackButtonExist: true),
+      appBar: CustomAppBarWidget(
+        title: 'balance'.tr,
+        isBackButtonExist: true,
+        actionWidget: CircleIconButton(
+          iconAsset: ManagerAssets.earningsIcon,
+          tooltip: 'wallet_earnings_details'.tr,
+          onTap: () => Get.toNamed(RouteHelper.getMyEarningRoute()),
+        ),
+      ),
       body: Container(
         color: Theme.of(context).cardColor,
         margin: EdgeInsets.only(top: Dimensions.h16),
@@ -58,28 +69,28 @@ class _CashInHandScreenState extends State<CashInHandScreen> {
           }
 
           return RefreshIndicator(
-          onRefresh: _onRefresh,
-          child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(
-                parent: BouncingScrollPhysics()),
-            padding: EdgeInsets.fromLTRB(
-              Dimensions.w16,
-              Dimensions.h20,
-              Dimensions.w16,
-              Dimensions.h25,
+            onRefresh: _onRefresh,
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(
+                  parent: BouncingScrollPhysics()),
+              padding: EdgeInsets.fromLTRB(
+                Dimensions.w16,
+                Dimensions.h20,
+                Dimensions.w16,
+                Dimensions.h25,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  BalanceOverviewSection(profileController: profileController),
+                  SizedBox(height: Dimensions.h20),
+                  const WalletAccountSection(),
+                  SizedBox(height: Dimensions.h25),
+                  const WithdrawalHistorySection(),
+                  const TransactionHistorySection(),
+                ],
+              ),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                BalanceOverviewSection(profileController: profileController),
-                SizedBox(height: Dimensions.h20),
-                const WalletAccountSection(),
-                SizedBox(height: Dimensions.h25),
-                const WithdrawalHistorySection(),
-                const TransactionHistorySection(),
-              ],
-            ),
-          ),
           );
         }),
       ),

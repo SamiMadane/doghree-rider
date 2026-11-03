@@ -76,6 +76,7 @@ class BalanceOverviewSection extends StatelessWidget {
                 Dimensions.h18,
               ),
               child: _TotalWithdrawnRow(value: withdrawn),
+              
             ),
           ],
         ),
@@ -168,6 +169,7 @@ class _WithdrawButton extends StatelessWidget {
     final ColorScheme cs = theme.colorScheme;
     final CustomColorsExtension custom =
         theme.extension<CustomColorsExtension>()!;
+        
 
     final WalletModel? w = wallet;
     final bool canWithdraw =

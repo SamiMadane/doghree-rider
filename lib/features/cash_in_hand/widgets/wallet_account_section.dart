@@ -1,3 +1,5 @@
+import 'package:doghree_rider/common/widgets/custom_image_widget.dart';
+import 'package:doghree_rider/util/manager_assets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:doghree_rider/common/widgets/confirmation_bottom_sheet.dart';
@@ -46,8 +48,7 @@ class WalletAccountSection extends StatelessWidget {
 
       if (wallet.accounts.isEmpty) return const _EmptyAccountCard();
 
-      final WalletAccount account = wallet.accounts
-          .firstWhere((a) => a.isDefault, orElse: () => wallet.accounts.first);
+      final WalletAccount account = wallet.defaultAccount!;
 
       return _AccountCard(
         account: account,
@@ -115,7 +116,12 @@ class _EmptyAccountCard extends StatelessWidget {
       child: Column(
         children: [
           _AccountHeading(
-            leading: const _AddAccountBadge(),
+            leading: CustomImageWidget(
+              image: ManagerAssets.emptyAccountImage,
+              width: _avatarSize * 1.15,
+              height: _avatarSize * 1.15,
+              fit: BoxFit.contain,
+            ),
             headline: 'wallet_no_account'.tr,
           ),
           SizedBox(height: Dimensions.h16),
@@ -156,6 +162,7 @@ class _AccountCard extends StatelessWidget {
               leading: WalletMethodAvatar(
                 name: account.methodName,
                 size: _avatarSize,
+                logoUrl: account.logoUrl,
               ),
               headline: account.methodName,
               trailing: _DeleteButton(onTap: onDelete),
@@ -172,6 +179,7 @@ class _AccountCard extends StatelessWidget {
               ),
               child: WalletAccountDetails(
                 methodName: account.methodName,
+                methodKey: account.methodKey,
                 fields: account.fields,
               ),
             ),
@@ -182,7 +190,7 @@ class _AccountCard extends StatelessWidget {
   }
 }
 
-double get _avatarSize => Dimensions.w24 + Dimensions.w20;
+double get _avatarSize => Dimensions.w20 * 2.8;
 
 /// Avatar slot + small caption + headline.
 class _AccountHeading extends StatelessWidget {
@@ -232,30 +240,6 @@ class _AccountHeading extends StatelessWidget {
         ),
         if (trailing != null) trailing!,
       ],
-    );
-  }
-}
-
-/// "+" badge for the no-account state.
-class _AddAccountBadge extends StatelessWidget {
-  const _AddAccountBadge();
-
-  @override
-  Widget build(BuildContext context) {
-    final ColorScheme cs = Theme.of(context).colorScheme;
-
-    return Container(
-      width: _avatarSize,
-      height: _avatarSize,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: cs.primaryContainer,
-      ),
-      child: Icon(
-        Icons.add_rounded,
-        size: Dimensions.w24,
-        color: cs.onPrimaryContainer,
-      ),
     );
   }
 }

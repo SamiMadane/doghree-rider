@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:doghree_rider/common/widgets/custom_app_bar_widget.dart';
 import 'package:doghree_rider/common/widgets/empty_state_widget.dart';
 import 'package:doghree_rider/features/order/controllers/order_controller.dart';
+import 'package:doghree_rider/features/order/widgets/history_order_widget.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
 import 'package:doghree_rider/util/dimensions.dart';
-import 'package:doghree_rider/common/widgets/custom_app_bar_widget.dart';
-import 'package:doghree_rider/features/order/widgets/history_order_widget.dart';
-import 'package:get/get.dart';
 import 'package:doghree_rider/util/manager_assets.dart';
 
 class OrderScreen extends StatefulWidget {
@@ -16,106 +16,105 @@ class OrderScreen extends StatefulWidget {
 }
 
 class _OrderScreenState extends State<OrderScreen> {
-  final ScrollController scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-
     Get.find<OrderController>().getCompletedOrders(1, willUpdate: false);
-    scrollController.addListener(() {
-      if (scrollController.position.pixels ==
-              scrollController.position.maxScrollExtent &&
-          Get.find<OrderController>().completedOrderList != null &&
-          !Get.find<OrderController>().paginate) {
-        int pageSize = (Get.find<OrderController>().pageSize! / 10).ceil();
-        if (Get.find<OrderController>().offset < pageSize) {
-          Get.find<OrderController>()
-              .setOffset(Get.find<OrderController>().offset + 1);
-          debugPrint('end of the page');
-          Get.find<OrderController>().showBottomLoader();
-          Get.find<OrderController>()
-              .getCompletedOrders(Get.find<OrderController>().offset);
-        }
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    final OrderController c = Get.find<OrderController>();
+    if (!_scrollController.hasClients) return;
+    final ScrollPosition pos = _scrollController.position;
+
+    // نبدأ التحميل قبل نهاية القائمة بقليل بدل انتظار الوصول للنهاية بالضبط
+    final bool nearEnd = pos.pixels >= pos.maxScrollExtent - 200;
+    if (nearEnd && c.completedOrderList != null && !c.paginate) {
+      final int totalPages = ((c.pageSize ?? 0) / 10).ceil();
+      if (c.offset < totalPages) {
+        c.setOffset(c.offset + 1);
+        c.showBottomLoader();
+        c.getCompletedOrders(c.offset);
       }
-    });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final ColorScheme scheme = Theme.of(context).colorScheme;
+
     return Scaffold(
       appBar:
           CustomAppBarWidget(title: 'my_orders'.tr, isBackButtonExist: false),
-      body: GetBuilder<OrderController>(builder: (orderController) {
-        return orderController.completedOrderList != null
-            ? orderController.completedOrderList!.isNotEmpty
-                ? RefreshIndicator(
-                    onRefresh: () async {
-                      await orderController.getCompletedOrders(1);
-                    },
-                    child: Container(
-                      color: Theme.of(context).cardColor,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: Dimensions.w16,
-                        vertical: Dimensions.h16,
-                      ),
-                      margin: EdgeInsets.only(top: Dimensions.h16),
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          minHeight: MediaQuery.of(context).size.height -
-                              kToolbarHeight, // يأخذ ارتفاع الشاشة كامل بدون AppBar
-                        ),
-                        child: Column(
-                          children: [
-                            Expanded(
-                              child: ListView.builder(
-                                controller: scrollController,
-                                physics: const AlwaysScrollableScrollPhysics(),
-                                itemCount:
-                                    orderController.completedOrderList!.length,
-                                itemBuilder: (context, index) {
-                                  return HistoryOrderWidget(
-                                    orderModel: orderController
-                                        .completedOrderList![index],
-                                    isRunning: false,
-                                    index: index,
-                                  );
-                                },
-                              ),
-                            ),
-                            orderController.paginate
-                                ? Center(
-                                    child: Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: Dimensions.w10,
-                                      vertical: Dimensions.h10,
-                                    ),
-                                    child: CircularProgressIndicator(),
-                                  ))
-                                : const SizedBox(),
-                          ],
-                        ),
-                      ),
+      body: Container(
+        color: Theme.of(context).cardColor,
+        margin: EdgeInsets.only(top: Dimensions.h16),
+        child: GetBuilder<OrderController>(builder: (orderController) {
+          final List? orders = orderController.completedOrderList;
+        
+          if (orders == null) {
+            return Center(
+              child: CircularProgressIndicator(color: scheme.onSurface),
+            );
+          }
+        
+          if (orders.isEmpty) {
+            return EmptyStateWidget(
+              image: ManagerAssets.noOrderImage,
+              imageScale: 1.1,
+              title: 'no_order_found'.tr,
+              buttonText: 'back_to_home_screen'.tr,
+              onButtonPressed: () {
+                Get.offAllNamed(RouteHelper.getInitialRoute());
+              },
+            );
+          }
+        
+          return RefreshIndicator(
+            color: scheme.onPrimary,
+            backgroundColor: scheme.primary,
+            onRefresh: () async {
+              await orderController.getCompletedOrders(1);
+            },
+            child: ListView.builder(
+              controller: _scrollController,
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: EdgeInsets.fromLTRB(
+                Dimensions.w16,
+                Dimensions.h16,
+                Dimensions.w16,
+                Dimensions.h16,
+              ),
+              itemCount: orders.length + (orderController.paginate ? 1 : 0),
+              itemBuilder: (context, index) {
+                if (index >= orders.length) {
+                  return Padding(
+                    padding: EdgeInsets.symmetric(vertical: Dimensions.h16),
+                    child: Center(
+                      child: CircularProgressIndicator(color: scheme.onSurface),
                     ),
-                  )
-                : Container(
-                    margin: EdgeInsets.only(top: Dimensions.h16),
-                    color: Theme.of(context).cardColor,
-                    child: EmptyStateWidget(
-                      image: ManagerAssets.noOrderImage,
-                      imageScale: 1.1,
-                      title: 'no_order_found'.tr,
-                      buttonText: 'back_to_home_screen'.tr,
-                      onButtonPressed: () {
-                        Get.offAllNamed(RouteHelper.getInitialRoute());
-                      },
-                    ),
-                  )
-            : Container(
-                margin: EdgeInsets.only(top: Dimensions.h16),
-                color: Theme.of(context).cardColor,
-                child: const Center(child: CircularProgressIndicator()));
-      }),
+                  );
+                }
+                return HistoryOrderWidget(
+                  orderModel: orders[index],
+                  isRunning: false,
+                  index: index,
+                );
+              },
+            ),
+          );
+        }),
+      ),
     );
   }
 }

@@ -94,7 +94,8 @@ class CashInHandRepository implements CashInHandRepositoryInterface {
   @override
   Future<WalletModel?> getWallet() async {
     final Response response = await apiClient.getData(AppConstants.walletUri);
-    debugPrint('WALLET ◀ ${response.statusCode} ${response.bodyString}');
+    debugPrint('WALLET ◀ ${response.statusCode} ${response.body}',
+        wrapWidth: 800);
     if (response.statusCode == 200 && response.body is Map) {
       return WalletModel.fromJson(Map<String, dynamic>.from(response.body));
     }

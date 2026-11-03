@@ -117,6 +117,7 @@ class WithdrawalTile extends StatelessWidget {
       color: item.statusColor,
       title: item.methodName,
       subtitle: item.requestedAtText,
+      logoUrl: item.logoUrl,
       amount: PriceConverterHelper.convertPrice(item.amount),
       statusLabel: item.statusText,
       onTap: () => showWithdrawalDetails(item),

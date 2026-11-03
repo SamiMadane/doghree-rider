@@ -37,7 +37,7 @@ class ManagerColors {
   static const Color darkGray = Color(0xFF3A3A3A); // was 0xFF68707D (roadGrey)
   static const Color grayCiruleSelected = Color(0xFFCECECE);
   static const Color disabledButtonLightMode = Color(0x331B1B1B); // was 0xFFDEDFE3
-  static const Color disabledButtonDarkMode = Color(0x4DFFC233); // was 0xFF374151
+  static const Color disabledButtonDarkMode = Color(0x29FFFFFF); // was 0xFF374151
 
 // Blue Family
   static const Color blueBgLightMode = Color(0xFFFFF1CC); // was 0x3306238D

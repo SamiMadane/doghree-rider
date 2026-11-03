@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:doghree_rider/features/auth/screens/dm_registration_success_screen.dart';
-import 'package:doghree_rider/features/cash_in_hand/screens/my_earning_filter_screen.dart';
 import 'package:doghree_rider/features/cash_in_hand/screens/my_earning_screen.dart';
 import 'package:doghree_rider/features/cash_in_hand/screens/withdrawals_screen.dart';
 import 'package:doghree_rider/features/splash/screens/language_init_screen.dart';
@@ -52,7 +51,6 @@ class RouteHelper {
   static const String cashInHand = '/cash-in-hand';
   static const String walletProvidedEarning = '/wallet-provided-earning';
   static const String myEarning = '/my-earning';
-  static const String myEarningFilter = '/my-earning-filter';
   static const String dmRegistrationSuccess = '/dm-registration-success';
   static const String taskScreen = '/task';
   static const String settingScreen = '/setting';
@@ -121,7 +119,6 @@ class RouteHelper {
   static String getCashInHandRoute() => cashInHand;
   static String getWalletProvidedEarningRoute() => walletProvidedEarning;
   static String getMyEarningRoute() => myEarning;
-  static String getMyEarningFilterRoute() => myEarningFilter;
   static String getDmRegistrationSuccessRoute() => dmRegistrationSuccess;
 
   static String getTaskRoute() => taskScreen;
@@ -246,7 +243,6 @@ class RouteHelper {
         name: walletProvidedEarning,
         page: () => const WalletProvidedHistoryScreen()),
     GetPage(name: myEarning, page: () => const MyEarningScreen()),
-    GetPage(name: myEarningFilter, page: () => const MyEarningFilterScreen()),
     GetPage(
         name: dmRegistrationSuccess,
         page: () => const DmRegistrationSuccessScreen()),

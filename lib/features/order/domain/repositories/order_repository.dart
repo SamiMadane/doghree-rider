@@ -71,7 +71,13 @@ class OrderRepository implements OrderRepositoryInterface {
     List<OrderModel>? latestOrderList;
     Response response =
         await apiClient.getData(AppConstants.latestOrdersUri + _getUserToken());
-        debugPrint('LATEST ◀ ${response.statusCode} ${response.body}');
+    final h = response.headers;
+    debugPrint('LATEST ◀ ${response.statusCode} '
+        'canAccept=${h?['x-can-accept']} '
+        'activeOrder=${h?['x-active-order-id']} '
+        'code=${h?['x-can-accept-code']} '
+        'body=${response.body}');
+
     if (response.statusCode == 200) {
       latestOrderList = [];
       response.body

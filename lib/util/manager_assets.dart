@@ -5,7 +5,8 @@ const String lottiePath = 'assets/lottie';
 const String mapPath = 'assets/map';
 
 class ManagerAssets {
-  static const String deliveredSuccessAnim = '$animationPath/delivered_success.gif';
+  static const String deliveredSuccessAnim =
+      '$animationPath/delivered_success.gif';
 
   static const String logo = '$imagePath/logo.png';
   static const String logoDark = '$imagePath/logo_dark.png';
@@ -18,6 +19,7 @@ class ManagerAssets {
   static const String arabic = '$imagePath/arabic.png';
 
   static const String psFlag = '$imagePath/ps_flag.png';
+  static const String earningErrorImage = '$imagePath/earning_error.png';
 
   static const String changePasswordImage = '$imagePath/change_password.png';
   static const String confirmationOrderImage =
@@ -29,7 +31,6 @@ class ManagerAssets {
   static const String noNotificationImage = '$imagePath/no_notification.png';
   static const String noOrderImage = '$imagePath/no_order.png';
   static const String privacyTermsImage = '$imagePath/privacy_terms.png';
-  static const String checked = '$imagePath/checked.png';
 
   static const String restaurantMarker = '$imagePath/restaurant_marker.png';
   static const String location = '$imagePath/location.png';
@@ -42,12 +43,6 @@ class ManagerAssets {
   static const String maintenance = '$imagePath/maintenance.png';
   static const String notificationPlaceholder =
       '$imagePath/notification_placeholder.jpg';
-  static const String transactionReportIcon =
-      '$imagePath/transaction_report_icon.png';
-  static const String onHoldTransactionIcon =
-      '$imagePath/on_hold_transaction_icon.png';
-  static const String attentionWarningIcon =
-      '$imagePath/attention_warning_icon.png';
 
   static const String customerMarker = '$imagePath/customer_marker.png';
   static const String yourMarker = '$imagePath/your_marker.png';
@@ -60,21 +55,20 @@ class ManagerAssets {
   static const String locationAccessIcon =
       '$imagePath/location_access_icon.png';
 
-  static const String emptyPaymentIcon = '$imagePath/empty_payment_icon.png';
   static const String applicationSubmittedImage =
       '$imagePath/application_submitted.png';
 
   static const String storeImage = '$imagePath/store.png';
   static const String balanceImage = '$imagePath/balance.png';
-  static const String payNowImage = '$imagePath/pay_now.png';
-  static const String adjustPaymentImage = '$imagePath/adjust_payment.png';
   static const String mapPlaceholderImage = '$imagePath/map_placeholder.png';
+  static const String orderPendingImage = '$imagePath/order_pending.png';
+  static const String orderPreparingImage = '$imagePath/order_preparing.png';
+  static const String earningOrderImage = '$imagePath/earning_order.png';
 
+  static const String emptyAccountImage = '$imagePath/empty_account.png';
   static const String sessionExpiredImage = '$imagePath/session_expired.png';
+  static const String earningImage = '$imagePath/earning.png';
   static const String noInternetImage = '$imagePath/no_internet.png';
-
-
-
 
   // icons
   static const String arrowBackIcon = '$iconPath/arrow_left.svg';
@@ -85,6 +79,7 @@ class ManagerAssets {
   static const String orderIcon = '$iconPath/order.svg';
   static const String notificationIcon = '$iconPath/notification.svg';
   static const String myOrderIcon = '$iconPath/my_order.svg';
+  static const String earningsIcon = '$iconPath/earnings.svg';
 
   static const String locationIcon = '$iconPath/location.svg';
   static const String arrowRightIcon = '$iconPath/arrow_right.svg';
@@ -120,6 +115,9 @@ class ManagerAssets {
   static const String orderSelectedIcon = '$iconPath/order_selected.svg';
   static const String myOrderSelectedIcon = '$iconPath/my_order_selected.svg';
   static const String profileSelectedIcon = '$iconPath/profile_selected.svg';
+  static const String calendarIcon = '$iconPath/calendar.svg';
+  static const String filterIcon = '$iconPath/filter.svg';
+  static const String downloadIcon = '$iconPath/download.svg';
 
   static const String walletWithdrawIcon = '$iconPath/wallet_withdraw.svg';
 

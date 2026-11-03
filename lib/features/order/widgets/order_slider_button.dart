@@ -108,7 +108,7 @@ class OrderSliderButton extends StatelessWidget {
                         ? 'swipe_to_pick_up_parcel'.tr
                         : 'swipe_to_pick_up_order'.tr
                     : '',
-        style: textMedium().copyWith(
+        style: textBold().copyWith(
           fontSize: Dimensions.fs16,
           color: Theme.of(context).textTheme.bodyMedium?.color,
         ),
@@ -119,12 +119,12 @@ class OrderSliderButton extends StatelessWidget {
       width: 1170,
       height: 60,
       buttonSize: 50,
-      radius: 10,
+      radius: 14,
       icon: Center(
         child: Icon(
-          Icons.double_arrow_sharp, // سهم لليمين دائماً
+          Icons.double_arrow_rounded, 
           color: Theme.of(context).colorScheme.onPrimary,
-          size: 20.0,
+          size: Dimensions.w20,
         ),
       ),
       isLtr: true, // دائماً LTR: المربع على اليسار والسحب لليمين

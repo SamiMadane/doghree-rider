@@ -1,7 +1,7 @@
+import 'package:doghree_rider/common/widgets/custom_image_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:doghree_rider/common/widgets/dashed_line_widget.dart';
-import 'package:doghree_rider/features/cash_in_hand/widgets/wallet_method_logos.dart';
 import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/util/styles.dart';
 
@@ -27,7 +27,8 @@ class WalletCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(Dimensions.r20),
           side: BorderSide(color: theme.colorScheme.outline),
         ),
-        child: padding == null ? child : Padding(padding: padding!, child: child),
+        child:
+            padding == null ? child : Padding(padding: padding!, child: child),
       ),
     );
   }
@@ -101,40 +102,126 @@ class WalletSectionHeader extends StatelessWidget {
     );
   }
 }
-
-/// Payout method avatar: the method logo when one is registered in
-/// wallet_method_logos.dart, otherwise a monogram (same as the details sheet).
+/// Payout method avatar: the method logo from the server (logo_url) clipped
+/// to a circle, or a monogram when there is no logo.
 class WalletMethodAvatar extends StatelessWidget {
   final String name;
+  final String? logoUrl;
   final double size;
 
-  const WalletMethodAvatar({super.key, required this.name, required this.size});
+  const WalletMethodAvatar({
+    super.key,
+    required this.name,
+    required this.size,
+    this.logoUrl,
+  });
+
+  static const double _inset = 0.04;
 
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final ColorScheme cs = theme.colorScheme;
-    final String? logo = walletMethodLogo(name);
+    final bool hasLogo = logoUrl != null && logoUrl!.trim().isNotEmpty;
+
+    if (!hasLogo) {
+      return Container(
+        width: size,
+        height: size,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: cs.primaryContainer,
+        ),
+        child: Text(
+          name.isEmpty ? '•' : String.fromCharCode(name.runes.first),
+          style: textBold().copyWith(
+            fontSize: Dimensions.fs18,
+            color: cs.onPrimaryContainer,
+          ),
+        ),
+      );
+    }
+
+    final double pad = size * _inset;
+    final double inner = size - pad * 2;
 
     return Container(
       width: size,
       height: size,
-      alignment: Alignment.center,
-      padding: EdgeInsets.all(logo == null ? 0 : Dimensions.w8),
+      padding: EdgeInsets.all(pad),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: logo == null ? cs.primaryContainer : theme.cardColor,
-        border: logo == null ? null : Border.all(color: cs.outline),
+        color: theme.cardColor,
+        border: Border.all(color: cs.outline),
       ),
-      child: logo != null
-          ? Image.asset(logo, fit: BoxFit.contain)
-          : Text(
-              name.isEmpty ? '•' : String.fromCharCode(name.runes.first),
-              style: textBold().copyWith(
-                fontSize: Dimensions.fs16,
-                color: cs.onPrimaryContainer,
+      child: ClipOval(
+        child: CustomImageWidget(
+          image: logoUrl,
+          width: inner,
+          height: inner,
+          fit: BoxFit.contain,
+        ),
+      ),
+    );
+  }
+}
+
+/// Method avatar + name, with an optional small line under it.
+class WalletMethodHeader extends StatelessWidget {
+  final String name;
+  final String? logoUrl;
+  final String? subtitle;
+  final double? size;
+
+  const WalletMethodHeader({
+    super.key,
+    required this.name,
+    this.logoUrl,
+    this.subtitle,
+    this.size,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final ColorScheme cs = Theme.of(context).colorScheme;
+    final String? sub = subtitle?.trim();
+
+    return Row(
+      children: [
+        WalletMethodAvatar(
+          name: name,
+          logoUrl: logoUrl,
+          size: size ?? Dimensions.w20 * 2.8,
+        ),
+        SizedBox(width: Dimensions.w12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                name,
+                style: textBold().copyWith(
+                  fontSize: Dimensions.fs16,
+                  color: cs.onSurface,
+                ),
               ),
-            ),
+              if (sub != null && sub.isNotEmpty) ...[
+                SizedBox(height: Dimensions.h2),
+                Text(
+                  sub,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: textMedium().copyWith(
+                    fontSize: Dimensions.fs13,
+                    color: cs.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
@@ -179,6 +266,7 @@ class WalletActivityRow extends StatelessWidget {
   final String amount;
   final String statusLabel;
   final VoidCallback? onTap;
+  final String? logoUrl;
 
   const WalletActivityRow({
     super.key,
@@ -189,9 +277,10 @@ class WalletActivityRow extends StatelessWidget {
     required this.amount,
     required this.statusLabel,
     this.onTap,
+    this.logoUrl,
   });
 
-  static double get avatarSize => Dimensions.w20 * 2;
+  static double get avatarSize => Dimensions.w20 * 2.6;
 
   /// Where the text starts, so dividers can align with it.
   static double get contentIndent => avatarSize + Dimensions.w12;
@@ -206,7 +295,8 @@ class WalletActivityRow extends StatelessWidget {
         padding: EdgeInsets.symmetric(vertical: Dimensions.h14),
         child: Row(
           children: [
-            WalletMethodAvatar(name: avatarName, size: avatarSize),
+            WalletMethodAvatar(
+                name: avatarName, size: avatarSize, logoUrl: logoUrl),
             SizedBox(width: Dimensions.w12),
             Expanded(
               child: Column(

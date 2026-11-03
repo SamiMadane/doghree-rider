@@ -14,6 +14,8 @@ class WalletWithdrawal {
   final DateTime? requestedAt;
   final DateTime? paidAt;
   final String methodName;
+  final String methodKey;
+  final String? logoUrl;
 
   /// Account the rider asked to be paid on, as sent by the server:
   /// field key -> value (e.g. account_name, bank_name, account_number).
@@ -40,6 +42,8 @@ class WalletWithdrawal {
     this.payoutProofUrl,
     this.adminNote,
     this.rejectionReason,
+    this.methodKey = '',
+    this.logoUrl,
   });
 
   /// Account values on one line, e.g. `sami madane · palestine · 41179854`.
@@ -68,6 +72,8 @@ class WalletWithdrawal {
       payoutProofUrl: _s(j['payout_proof_url']),
       adminNote: _s(j['admin_note']),
       rejectionReason: _s(j['rejection_reason']),
+      methodKey: _s(j['method_key']) ?? '',
+      logoUrl: _s(j['logo_url']),
     );
   }
 }

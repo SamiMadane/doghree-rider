@@ -1,17 +1,15 @@
-import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:doghree_rider/common/widgets/custom_app_bar_widget.dart';
-import 'package:doghree_rider/common/widgets/custom_bottom_sheet_widget.dart';
-import 'package:doghree_rider/common/widgets/custom_card.dart';
+import 'package:doghree_rider/common/widgets/empty_state_widget.dart';
 import 'package:doghree_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
-import 'package:doghree_rider/features/cash_in_hand/widgets/earning_history_bottom_sheet.dart';
-import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
-import 'package:doghree_rider/helper/date_converter_helper.dart';
-import 'package:doghree_rider/helper/price_converter_helper.dart';
-import 'package:doghree_rider/helper/route_helper.dart';
+import 'package:doghree_rider/features/cash_in_hand/widgets/earning_app_bar_actions.dart';
+import 'package:doghree_rider/features/cash_in_hand/widgets/earning_error_state.dart';
+import 'package:doghree_rider/features/cash_in_hand/widgets/earning_filter_chips_widget.dart';
+import 'package:doghree_rider/features/cash_in_hand/widgets/earning_statement_section.dart';
+import 'package:doghree_rider/features/cash_in_hand/widgets/earning_summary_card.dart';
 import 'package:doghree_rider/util/dimensions.dart';
-import 'package:doghree_rider/util/styles.dart';
+import 'package:doghree_rider/util/manager_assets.dart';
 
 class MyEarningScreen extends StatefulWidget {
   const MyEarningScreen({super.key});
@@ -21,485 +19,151 @@ class MyEarningScreen extends StatefulWidget {
 }
 
 class _MyEarningScreenState extends State<MyEarningScreen> {
-  final ScrollController scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
 
-    Get.find<CashInHandController>().resetEarningFilter(isUpdate: false);
-    Get.find<CashInHandController>().setOffset(1);
-
-    Get.find<CashInHandController>().getEarningReport(
-      offset: Get.find<CashInHandController>().offset.toString(),
-      startDate: Get.find<CashInHandController>().from,
-      endDate: Get.find<CashInHandController>().to,
-      type: 'all_types_earning',
-    );
-
-    scrollController.addListener(() {
-      if (scrollController.position.pixels ==
-              scrollController.position.maxScrollExtent &&
-          Get.find<CashInHandController>().earningList != null &&
-          !Get.find<CashInHandController>().isLoading) {
-        int pageSize = (Get.find<CashInHandController>().pageSize! / 10).ceil();
-        if (Get.find<CashInHandController>().offset < pageSize) {
-          Get.find<CashInHandController>()
-              .setOffset(Get.find<CashInHandController>().offset + 1);
-          debugPrint('end of the page');
-          Get.find<CashInHandController>().showBottomLoader();
-          Get.find<CashInHandController>().getEarningReport(
-            offset: Get.find<CashInHandController>().offset.toString(),
-            startDate: Get.find<CashInHandController>().from,
-            endDate: Get.find<CashInHandController>().to,
-            type: Get.find<CashInHandController>().selectedEarningType,
-            fromFilter: Get.find<CashInHandController>().isFiltered,
-          );
-        }
-      }
+    // Must run after the first frame: getEarningReport calls update(), which
+    // throws if it happens while another screen listening to the controller
+    // (the wallet screen) is still building.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final CashInHandController c = Get.find<CashInHandController>();
+      c.resetEarningFilter(isUpdate: false);
+      c.setOffset(1);
+      c.getEarningReport(
+        offset: '1',
+        startDate: null,
+        endDate: null,
+        type: 'all_types_earning',
+      );
     });
+
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    final CashInHandController c = Get.find<CashInHandController>();
+    final ScrollPosition position = _scrollController.position;
+    final bool nearEnd =
+        position.pixels >= position.maxScrollExtent - Dimensions.h40;
+    if (!nearEnd || c.earningList == null || c.isLoading) return;
+
+    final int pages = ((c.pageSize ?? 0) / 10).ceil();
+    if (c.offset >= pages) return;
+
+    c.setOffset(c.offset + 1);
+    c.showBottomLoader();
+    c.getEarningReport(
+      offset: c.offset.toString(),
+      startDate: c.from,
+      endDate: c.to,
+      type: c.selectedEarningType,
+      fromFilter: c.isFiltered,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<CashInHandController>(builder: (cashInHandController) {
-      return Scaffold(
-        appBar: CustomAppBarWidget(
-          title: 'my_earning'.tr,
-          actionWidget: Row(children: [
-            InkWell(
-              onTap: () {
-                cashInHandController.downloadEarningInvoice(
-                    dmId: Get.find<ProfileController>().profileModel!.id!);
-              },
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: Dimensions.w4,
-                  vertical: Dimensions.h4,
-                ),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor,
-                  borderRadius: BorderRadius.circular(Dimensions.r4),
-                ),
-                child: !cashInHandController.downloadLoading!
-                    ? Icon(
-                        Icons.download,
-                        size: 20,
-                        color: Theme.of(context).cardColor,
-                      )
-                    : const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: Padding(
-                          padding: EdgeInsets.all(3),
-                          child: Center(
-                              child: CircularProgressIndicator(
-                                  color: Colors.white, strokeWidth: 2)),
-                        ),
-                      ),
-              ),
+    return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      appBar: CustomAppBarWidget(
+        title: 'my_earning'.tr,
+        actionWidget: const EarningAppBarActions(),
+      ),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        color: Theme.of(context).cardColor,
+        margin: EdgeInsets.only(top: Dimensions.h16),
+        child: Column(
+          children: [
+            // Applied-filter chips: hidden when no filter is active.
+            SizedBox(
+              width: double.infinity,
+              child: Wrap(children: [
+                EarningFilterChipsWidget(),
+              ]),
             ),
-            SizedBox(width: Dimensions.w10 + 2),
-            InkWell(
-              onTap: () {
-                Get.toNamed(RouteHelper.getMyEarningFilterRoute());
-              },
-              child: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: Dimensions.w4,
-                      vertical: Dimensions.h4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor,
-                      borderRadius: BorderRadius.circular(Dimensions.r4),
-                    ),
-                    child: Icon(
-                      Icons.filter_list_sharp,
-                      size: 20,
-                      color: Theme.of(context).cardColor,
-                    ),
-                  ),
-                  if (cashInHandController.isFiltered)
-                    Positioned(
-                      top: -4,
-                      right: -4,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).cardColor,
-                          shape: BoxShape.circle,
-                        ),
-                        padding: EdgeInsets.all(2),
-                        child: Container(
-                          height: 10,
-                          width: 10,
-                          decoration: const BoxDecoration(
-                            color: Colors.redAccent,
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-          ]),
-        ),
-        body: GetBuilder<CashInHandController>(builder: (cashInHandController) {
-          return cashInHandController.earningList != null
-              ? cashInHandController.earningList!.isNotEmpty
-                  ? SingleChildScrollView(
-                      controller: scrollController,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: Dimensions.w16,
-                        vertical: Dimensions.h16,
-                      ),
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              height: 90,
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: Row(children: [
-                                  Container(
-                                    width: 170,
-                                    margin:
-                                        EdgeInsets.only(right: Dimensions.w10),
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: Dimensions.w16,
-                                        vertical: Dimensions.h16),
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xff313F38)
-                                          .withValues(alpha: 0.05),
-                                      borderRadius:
-                                          BorderRadius.circular(Dimensions.r10),
-                                    ),
-                                    child: Column(children: [
-                                      Text(
-                                          PriceConverterHelper.convertPrice(
-                                              (cashInHandController
-                                                          .earningReportModel
-                                                          ?.totalDeliveryCharge ??
-                                                      0) +
-                                                  (cashInHandController
-                                                          .earningReportModel
-                                                          ?.totalDmTips ??
-                                                      0)),
-                                          style: textBold().copyWith(
-                                              color: Get.isDarkMode
-                                                  ? Theme.of(context)
-                                                      .primaryColor
-                                                  : const Color(0xff313F38),
-                                              fontSize: Dimensions.fs18)),
-                                       SizedBox(height: Dimensions.h4 - 2),
-                                      Text('total_earning'.tr,
-                                          style: textMedium().copyWith(
-                                              color:
-                                                  Theme.of(context).hintColor)),
-                                    ]),
-                                  ),
-                                  Container(
-                                    width: 170,
-                                    margin:
-                                        EdgeInsets.only(right: Dimensions.w10),
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: Dimensions.w16,
-                                        vertical: Dimensions.h16),
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xffFF7E0D)
-                                          .withValues(alpha: 0.05),
-                                      borderRadius:
-                                          BorderRadius.circular(Dimensions.r10),
-                                    ),
-                                    child: Column(children: [
-                                      Text(
-                                          PriceConverterHelper.convertPrice(
-                                              cashInHandController
-                                                  .earningReportModel
-                                                  ?.totalDeliveryCharge),
-                                          style: textBold().copyWith(
-                                              color: const Color(0xffFF7E0D),
-                                              fontSize: Dimensions.fs18)),
-                                       SizedBox(height: Dimensions.h4 - 2),
-                                      Text('delivery_fee_earned'.tr,
-                                          style: textMedium().copyWith(
-                                              color:
-                                                  Theme.of(context).hintColor)),
-                                    ]),
-                                  ),
-                                  Container(
-                                    width: 170,
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: Dimensions.w16,
-                                        vertical: Dimensions.h16),
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xff006FBD)
-                                          .withValues(alpha: 0.05),
-                                      borderRadius:
-                                          BorderRadius.circular(Dimensions.r10),
-                                    ),
-                                    child: Column(children: [
-                                      Text(
-                                          PriceConverterHelper.convertPrice(
-                                              cashInHandController
-                                                  .earningReportModel
-                                                  ?.totalDmTips),
-                                          style: textBold().copyWith(
-                                              color: const Color(0xff006FBD),
-                                              fontSize: Dimensions.fs18)),
-                                       SizedBox(height: Dimensions.h4 - 2),
-                                      Text('delivery_tips_earned'.tr,
-                                          style: textMedium().copyWith(
-                                              color:
-                                                  Theme.of(context).hintColor)),
-                                    ]),
-                                  )
-                                ]),
-                              ),
-                            ),
-                             SizedBox(height: Dimensions.h25),
-                            Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text('earning_statement'.tr,
-                                      style: textRegular().copyWith(
-                                          fontSize: Dimensions.fs16,
-                                          color: Theme.of(context).hintColor)),
-                                  Text(
-                                      '${cashInHandController.pageSize ?? 0} ${'result_found'.tr}',
-                                      style: textRegular().copyWith(
-                                          fontSize: Dimensions.fs16,
-                                          color: Theme.of(context).hintColor)),
-                                ]),
-                            SizedBox(height: Dimensions.h10),
-                            CustomCard(
-                              padding: EdgeInsets.symmetric(
-                                        horizontal: Dimensions.w16,
-                                        vertical: Dimensions.h16),
-                              child: Column(children: [
-                                ListView.builder(
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  shrinkWrap: true,
-                                  itemCount:
-                                      cashInHandController.earningList!.length,
-                                  itemBuilder: (context, index) {
-                                    final earning = cashInHandController
-                                        .earningList![index];
-                                    double orderWiseTotalEarning =
-                                        (earning.dmTips ?? 0) +
-                                            (earning.originalDeliveryCharge ??
-                                                0);
-                                    double deliveryFee =
-                                        earning.originalDeliveryCharge ?? 0;
-                                    double deliveryTip = earning.dmTips ?? 0;
 
-                                    return InkWell(
-                                      onTap: () {
-                                        showCustomBottomSheet(
-                                            child: EarningHistoryBottomSheet(
-                                                data: earning));
-                                      },
-                                      child: Column(children: [
-                                        Container(
-                                          margin: EdgeInsets.only(
-                                              bottom: index ==
-                                                      cashInHandController
-                                                              .earningList!
-                                                              .length -
-                                                          1
-                                                  ? 0
-                                                  : Dimensions.h10),
-                                          child: Row(children: [
-                                            Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    PriceConverterHelper
-                                                        .convertPrice(
-                                                      cashInHandController
-                                                                  .selectedEarningType ==
-                                                              'all_types_earning'
-                                                          ? orderWiseTotalEarning
-                                                          : cashInHandController
-                                                                      .selectedEarningType ==
-                                                                  'delivery_fee'
-                                                              ? deliveryFee
-                                                              : deliveryTip,
-                                                    ),
-                                                    style: textBold().copyWith(
-                                                        fontSize:
-                                                            Dimensions.fs16),
-                                                  ),
-                                                  Text(
-                                                      '${'order'.tr} #${earning.order?.id}',
-                                                      style:
-                                                          textRegular().copyWith(
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .textTheme
-                                                                  .bodyLarge!
-                                                                  .color!
-                                                                  .withValues(
-                                                                      alpha:
-                                                                          0.6),
-                                                              fontSize:
-                                                                  Dimensions
-                                                                      .fs12)),
-                                                  (cashInHandController
-                                                                  .selectedEarningType ==
-                                                              'delivery_fee' &&
-                                                          cashInHandController
-                                                                  .selectedEarningType !=
-                                                              'all_types_earning')
-                                                      ? Text(
-                                                          'delivery_fee'.tr,
-                                                          style: textRegular().copyWith(
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .disabledColor),
-                                                        )
-                                                      : (cashInHandController
-                                                                      .selectedEarningType ==
-                                                                  'delivery_tips' &&
-                                                              cashInHandController
-                                                                      .selectedEarningType !=
-                                                                  'all_types_earning')
-                                                          ? Text(
-                                                              'delivery_tips'
-                                                                  .tr,
-                                                              style: textRegular().copyWith(
-                                                                  color: Theme.of(
-                                                                          context)
-                                                                      .disabledColor),
-                                                            )
-                                                          : Row(
-                                                              children: [
-                                                                earning.originalDeliveryCharge !=
-                                                                        0
-                                                                    ? Text(
-                                                                        'delivery_fee'
-                                                                            .tr,
-                                                                        style: textRegular().copyWith(
-                                                                            color:
-                                                                                Theme.of(context).disabledColor),
-                                                                      )
-                                                                    : const SizedBox(),
-                                                                earning.originalDeliveryCharge !=
-                                                                            0 &&
-                                                                        earning.dmTips !=
-                                                                            0
-                                                                    ? Text(', ',
-                                                                        style: textRegular().copyWith(
-                                                                            color:
-                                                                                Theme.of(context).hintColor))
-                                                                    : const SizedBox(),
-                                                                earning.dmTips !=
-                                                                        0
-                                                                    ? Text(
-                                                                        'delivery_tips'
-                                                                            .tr,
-                                                                        style: textRegular().copyWith(
-                                                                            color:
-                                                                                Theme.of(context).disabledColor),
-                                                                      )
-                                                                    : const SizedBox(),
-                                                              ],
-                                                            ),
-                                                ]),
-                                            const Spacer(),
-                                            Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.end,
-                                                children: [
-                                                  Text(
-                                                      DateConverterHelper
-                                                          .utcToDateTime(earning
-                                                              .createAt!),
-                                                      style: textRegular()
-                                                          .copyWith(
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .disabledColor)),
-                                                   SizedBox(
-                                                      height: Dimensions.h16),
-                                                  Container(
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                        horizontal: Dimensions.w4,
-                                        vertical: Dimensions.h4),
-                                                    decoration: BoxDecoration(
-                                                      color: Theme.of(context)
-                                                          .hintColor
-                                                          .withValues(
-                                                              alpha: 0.1),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              Dimensions.r10),
-                                                    ),
-                                                    child: Icon(
-                                                      Icons.arrow_forward_ios,
-                                                      size: 12,
-                                                      color: Theme.of(context)
-                                                          .hintColor,
-                                                    ),
-                                                  ),
-                                                ]),
-                                          ]),
-                                        ),
-                                        index !=
-                                                cashInHandController
-                                                        .earningList!.length -
-                                                    1
-                                            ? Padding(
-                                                padding: EdgeInsets.only(
-                                                    top: Dimensions.h10,
-                                                    bottom: Dimensions.h16),
-                                                child: DottedBorder(
-                                                  options:
-                                                      RoundedRectDottedBorderOptions(
-                                                    color: Theme.of(context)
-                                                        .hintColor
-                                                        .withValues(alpha: 0.2),
-                                                    strokeWidth: 1,
-                                                    strokeCap: StrokeCap.butt,
-                                                    dashPattern: const [4, 8],
-                                                    padding:
-                                                         EdgeInsets.only(
-                                                            left:
-                                                                Dimensions.w16,
-                                                            right:
-                                                                Dimensions.w16),
-                                                    radius: Radius.circular(
-                                                        Dimensions.r10),
-                                                  ),
-                                                  child: Container(),
-                                                ),
-                                              )
-                                            : const SizedBox(),
-                                      ]),
-                                    );
-                                  },
-                                ),
-                              ]),
-                            ),
-                          ]),
-                    )
-                  : Center(
-                      child: Text('no_earning_found'.tr,
-                          style:
-                              textMedium().copyWith(fontSize: Dimensions.fs16)),
-                    )
-              : const Center(child: CircularProgressIndicator());
-        }),
-      );
-    });
+            Expanded(
+              child: GetBuilder<CashInHandController>(builder: (c) {
+                // Must come before the null check: a failed first page leaves
+                // the list null, which would otherwise look like "loading".
+                if (c.earningFailed) {
+                  return EarningErrorState(onRetry: c.retryEarningReport);
+                }
+
+                final list = c.earningList;
+
+                if (list == null) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (list.isEmpty) {
+                  // Filter returned nothing: say so and offer a way out,
+                  // instead of the generic "no earnings yet" state.
+                  if (c.isFiltered) {
+                    return EmptyStateWidget(
+                      image: ManagerAssets.noTransactionImage,
+                      title: 'no_earning_found'.tr,
+                      description: 'no_earning_for_this_filter'.tr,
+                      spacing: Dimensions.h4,
+                      buttonText: 'reset'.tr,
+                      onButtonPressed: c.clearEarningFilter,
+                    );
+                  }
+                  return EmptyStateWidget(
+                    image: ManagerAssets.noTransactionImage,
+                    title: 'no_earning_found'.tr,
+                    description:
+                        'get_ready_receive_first_order_track_earnings'.tr,
+                    spacing: Dimensions.h10,
+                  );
+                }
+
+                return SingleChildScrollView(
+                  controller: _scrollController,
+                  physics: const AlwaysScrollableScrollPhysics(
+                      parent: BouncingScrollPhysics()),
+                  padding: EdgeInsets.fromLTRB(
+                    Dimensions.w16,
+                    Dimensions.h20,
+                    Dimensions.w16,
+                    Dimensions.h25,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      EarningSummaryCard(report: c.earningReportModel),
+                      SizedBox(height: Dimensions.h25),
+                      EarningStatementSection(
+                        earnings: list,
+                        total: c.pageSize ?? list.length,
+                        type: c.selectedEarningType,
+                      ),
+                      if (c.isLoading)
+                        Padding(
+                          padding: EdgeInsets.only(top: Dimensions.h16),
+                          child:
+                              const Center(child: CircularProgressIndicator()),
+                        ),
+                    ],
+                  ),
+                );
+              }),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

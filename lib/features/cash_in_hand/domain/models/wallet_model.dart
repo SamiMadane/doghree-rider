@@ -1,6 +1,10 @@
 double _num(dynamic v) =>
     v is num ? v.toDouble() : double.tryParse('${v ?? ''}') ?? 0;
 bool _bool(dynamic v) => v == true || v == 1 || v == '1';
+String? _url(dynamic v) {
+  final t = v?.toString().trim();
+  return (t == null || t.isEmpty) ? null : t;
+}
 
 class WalletModel {
   final double availableBalance;
@@ -64,6 +68,9 @@ class WalletModel {
           : <WalletMethod>[],
     );
   }
+    WalletAccount? get defaultAccount => accounts.isEmpty
+      ? null
+      : accounts.firstWhere((a) => a.isDefault, orElse: () => accounts.first);
 }
 
 class WithdrawBlock {
@@ -78,6 +85,8 @@ class WalletAccount {
   final String methodName;
   final Map<String, String> fields;
   final bool isDefault;
+  final String methodKey;
+  final String? logoUrl;
 
   WalletAccount({
     required this.id,
@@ -85,6 +94,8 @@ class WalletAccount {
     required this.methodName,
     required this.fields,
     required this.isDefault,
+    this.methodKey = '',
+    this.logoUrl,
   });
 
   factory WalletAccount.fromJson(Map<String, dynamic> json) {
@@ -97,6 +108,8 @@ class WalletAccount {
           ? raw.map((k, v) => MapEntry('$k', '${v ?? ''}'))
           : <String, String>{},
       isDefault: _bool(json['is_default']),
+      methodKey: json['method_key']?.toString() ?? '',
+      logoUrl: _url(json['logo_url']),
     );
   }
 
@@ -107,8 +120,14 @@ class WalletMethod {
   final int id;
   final String methodName;
   final List<WalletMethodField> fields;
-
-  WalletMethod({required this.id, required this.methodName, required this.fields});
+  final String methodKey;
+  final String? logoUrl;
+  WalletMethod(
+      {required this.id,
+      required this.methodName,
+      required this.fields,
+      this.methodKey = '',
+      this.logoUrl});
 
   factory WalletMethod.fromJson(Map<String, dynamic> json) {
     final raw = json['fields'];
@@ -118,9 +137,12 @@ class WalletMethod {
       fields: raw is List
           ? raw
               .whereType<Map>()
-              .map((e) => WalletMethodField.fromJson(Map<String, dynamic>.from(e)))
+              .map((e) =>
+                  WalletMethodField.fromJson(Map<String, dynamic>.from(e)))
               .toList()
           : <WalletMethodField>[],
+      methodKey: json['method_key']?.toString() ?? '',
+      logoUrl: _url(json['logo_url']),
     );
   }
 }

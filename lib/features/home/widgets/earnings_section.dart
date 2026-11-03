@@ -77,216 +77,238 @@ class _EarningsSectionState extends State<EarningsSection> {
                 ),
               ),
             ),
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // ===== القسم الأول: الأرباح كلها + الإجمالي =====
-                Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(
-                    Dimensions.w20,
-                    Dimensions.h18,
-                    Dimensions.w20,
-                    0,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // العنوان + العين + الرقم (بعيد عن الصورة)
-                      Padding(
-                        padding:
-                            EdgeInsetsDirectional.only(end: Dimensions.w108),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Flexible(
-                                  child: Text(
-                                    titles[_period],
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: textMedium().copyWith(
-                                      fontSize: Dimensions.fs13,
-                                      color: cs.onSurfaceVariant,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: Dimensions.w4),
-                                GestureDetector(
-                                  behavior: HitTestBehavior.opaque,
-                                  onTap: () =>
-                                      widget.showEarnings.value = !show,
-                                  child: Padding(
-                                    padding: EdgeInsets.all(Dimensions.r4),
-                                    child: Icon(
-                                      show
-                                          ? Icons.visibility
-                                          : Icons.visibility_off,
-                                      size: Dimensions.r18,
-                                      color: cs.onSurfaceVariant,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: Dimensions.h2),
-                            FittedBox(
-                              fit: BoxFit.scaleDown,
-                              alignment: AlignmentDirectional.centerStart,
-                              child: _amount(values[_period], show, cs),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: Dimensions.h20),
-                      // أزرار الفترة
-                      Wrap(
-                        spacing: Dimensions.w6,
-                        runSpacing: Dimensions.h6,
-                        children: List<Widget>.generate(
-                          pills.length,
-                          (i) => _PeriodPill(
-                            label: pills[i],
-                            selected: _period == i,
-                            onTap: () {
-                              if (_period == i) return;
-                              HapticFeedback.selectionClick();
-                              setState(() => _period = i);
-                            },
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: Dimensions.h16),
-                      // الإجمالي: معلومة ثانوية، فخطه أصغر من «المتاح للسحب»
-                      GetBuilder<CashInHandController>(builder: (c) {
-                        final wallet = c.wallet;
-
-                        return Row(
-                          children: [
-                            Container(
-                              width: Dimensions.w14,
-                              height: Dimensions.w14,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: theme.primaryColor,
-                                border:
-                                    Border.all(color: cs.onPrimary, width: 1),
-                              ),
-                            ),
-                            SizedBox(width: Dimensions.w8),
-                            Expanded(
-                              child: Text(
-                                'total_earnings'.tr,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: textMedium().copyWith(
-                                  fontSize: Dimensions.fs13,
-                                  color: cs.onSurfaceVariant,
-                                ),
-                              ),
-                            ),
-                            Text(
-                              (show && wallet != null)
-                                  ? PriceConverterHelper.convertPrice(
-                                      wallet.totalEarning)
-                                  : '*****',
-                              style: textBold().copyWith(
-                                fontSize: Dimensions.fs14,
-                                color: cs.onSurface,
-                              ),
-                            ),
-                          ],
-                        );
-                      }),
-                    ],
-                  ),
-                ),
-
-                // ===== الفاصل: شحطات الطريق =====
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: Dimensions.w20,
-                    vertical: Dimensions.h12,
-                  ),
-                  child: DashedLine(
-                    color: cs.onSurfaceVariant.withValues(alpha: 0.35),
-                  ),
-                ),
-
-                // ===== القسم الثاني: المتاح للسحب + عرض التفاصيل =====
-                GetBuilder<CashInHandController>(
-                  builder: (c) {
-                    final wallet = c.wallet;
-
-                    return InkWell(
-                      onTap: () =>
-                          Get.toNamed(RouteHelper.getCashInHandRoute()),
-                      child: Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(
-                          Dimensions.w20,
-                          Dimensions.h2,
-                          Dimensions.w20,
-                          Dimensions.h14,
-                        ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+            // Material شفاف: يخلي تأثير الضغط يظهر فوق خلفية الكرت
+            Material(
+              type: MaterialType.transparency,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // ===== القسم الأول: الأرباح كلها + الإجمالي =====
+                  Padding(
+                    padding: EdgeInsetsDirectional.fromSTEB(
+                      Dimensions.w20,
+                      Dimensions.h18,
+                      Dimensions.w20,
+                      0,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // العنوان + العين + الرقم (بعيد عن الصورة)
+                        Padding(
+                          padding:
+                              EdgeInsetsDirectional.only(end: Dimensions.w108),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Text(
-                                    'available_to_withdraw'.tr,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: textMedium().copyWith(
-                                      fontSize: Dimensions.fs13,
-                                      color: cs.onSurfaceVariant,
+                                  Flexible(
+                                    child: Text(
+                                      titles[_period],
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: textMedium().copyWith(
+                                        fontSize: Dimensions.fs13,
+                                        color: cs.onSurfaceVariant,
+                                      ),
                                     ),
                                   ),
-                                  // المبلغ القابل للسحب: ثاني أهم رقم بالكرت
-                                  Text(
-                                    wallet == null
-                                        ? '—'
-                                        : (show
-                                            ? PriceConverterHelper.convertPrice(
-                                                wallet.availableBalance)
-                                            : '*****'),
-                                    style: textBold().copyWith(
-                                      fontSize: Dimensions.fs20,
-                                      color: cs.onSurface,
+                                  SizedBox(width: Dimensions.w4),
+                                  GestureDetector(
+                                    behavior: HitTestBehavior.opaque,
+                                    onTap: () =>
+                                        widget.showEarnings.value = !show,
+                                    child: Padding(
+                                      padding: EdgeInsets.all(Dimensions.r4),
+                                      child: Icon(
+                                        show
+                                            ? Icons.visibility
+                                            : Icons.visibility_off,
+                                        size: Dimensions.r18,
+                                        color: cs.onSurfaceVariant,
+                                      ),
                                     ),
                                   ),
                                 ],
                               ),
+                              SizedBox(height: Dimensions.h2),
+                              FittedBox(
+                                fit: BoxFit.scaleDown,
+                                alignment: AlignmentDirectional.centerStart,
+                                child: _amount(values[_period], show, cs),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: Dimensions.h20),
+                        // أزرار الفترة
+                        Wrap(
+                          spacing: Dimensions.w6,
+                          runSpacing: Dimensions.h6,
+                          children: List<Widget>.generate(
+                            pills.length,
+                            (i) => _PeriodPill(
+                              label: pills[i],
+                              selected: _period == i,
+                              onTap: () {
+                                if (_period == i) return;
+                                HapticFeedback.selectionClick();
+                                setState(() => _period = i);
+                              },
                             ),
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  'view_details'.tr,
-                                  style: textBold().copyWith(
-                                    fontSize: Dimensions.fs12,
+                          ),
+                        ),
+                        // أقل من قبل: صف الإجمالي صار له padding عمودي خاص به
+                        SizedBox(height: Dimensions.h12),
+                        // الإجمالي: قابل للضغط، يفتح تفاصيل الأرباح لكل طلب
+                        GetBuilder<CashInHandController>(builder: (c) {
+                          final wallet = c.wallet;
+
+                          return InkWell(
+                            onTap: () =>
+                                Get.toNamed(RouteHelper.getMyEarningRoute()),
+                            borderRadius: BorderRadius.circular(Dimensions.r8),
+                            child: Padding(
+                              padding:
+                                  EdgeInsets.symmetric(vertical: Dimensions.h4),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: Dimensions.w14,
+                                    height: Dimensions.w14,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: theme.primaryColor,
+                                      border: Border.all(
+                                          color: cs.onPrimary, width: 1),
+                                    ),
+                                  ),
+                                  SizedBox(width: Dimensions.w8),
+                                  Expanded(
+                                    child: Text(
+                                      'total_earnings'.tr,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: textMedium().copyWith(
+                                        fontSize: Dimensions.fs13,
+                                        color: cs.onSurfaceVariant,
+                                      ),
+                                    ),
+                                  ),
+                                  Text(
+                                    (show && wallet != null)
+                                        ? PriceConverterHelper.convertPrice(
+                                            wallet.totalEarning)
+                                        : '*****',
+                                    style: textBold().copyWith(
+                                      fontSize: Dimensions.fs14,
+                                      color: cs.onSurface,
+                                    ),
+                                  ),
+                                  SizedBox(width: Dimensions.w4),
+                                  // chevron_right ينعكس تلقائياً بالعربي
+                                  Icon(
+                                    Icons.chevron_right_rounded,
+                                    size: Dimensions.r18,
+                                    color: cs.onSurfaceVariant,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }),
+                      ],
+                    ),
+                  ),
+
+                  // ===== الفاصل: شحطات الطريق =====
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: Dimensions.w20,
+                      vertical: Dimensions.h12,
+                    ),
+                    child: DashedLine(
+                      color: cs.onSurfaceVariant.withValues(alpha: 0.35),
+                    ),
+                  ),
+
+                  // ===== القسم الثاني: المتاح للسحب + الرصيد والسحب =====
+                  GetBuilder<CashInHandController>(
+                    builder: (c) {
+                      final wallet = c.wallet;
+
+                      return InkWell(
+                        onTap: () =>
+                            Get.toNamed(RouteHelper.getCashInHandRoute()),
+                        child: Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(
+                            Dimensions.w20,
+                            Dimensions.h2,
+                            Dimensions.w20,
+                            Dimensions.h14,
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'available_to_withdraw'.tr,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: textMedium().copyWith(
+                                        fontSize: Dimensions.fs13,
+                                        color: cs.onSurfaceVariant,
+                                      ),
+                                    ),
+                                    // المبلغ القابل للسحب: ثاني أهم رقم بالكرت
+                                    Text(
+                                      wallet == null
+                                          ? '—'
+                                          : (show
+                                              ? PriceConverterHelper
+                                                  .convertPrice(
+                                                      wallet.availableBalance)
+                                              : '*****'),
+                                      style: textBold().copyWith(
+                                        fontSize: Dimensions.fs20,
+                                        color: cs.onSurface,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    'view_details'.tr,
+                                    style: textBold().copyWith(
+                                      fontSize: Dimensions.fs12,
+                                      color: cs.tertiary,
+                                    ),
+                                  ),
+                                  SizedBox(width: Dimensions.w2),
+                                  // chevron_right ينعكس تلقائياً بالعربي
+                                  Icon(
+                                    Icons.chevron_right_rounded,
+                                    size: Dimensions.r18,
                                     color: cs.tertiary,
                                   ),
-                                ),
-                                SizedBox(width: Dimensions.w2),
-                                // chevron_right ينعكس تلقائياً بالعربي
-                                Icon(
-                                  Icons.chevron_right_rounded,
-                                  size: Dimensions.r18,
-                                  color: cs.tertiary,
-                                ),
-                              ],
-                            ),
-                          ],
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                ),
-              ],
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
           ],
         ),

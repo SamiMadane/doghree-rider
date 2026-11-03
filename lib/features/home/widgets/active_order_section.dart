@@ -28,83 +28,82 @@ class _ActiveOrderSectionState extends State<ActiveOrderSection> {
 
   @override
   Widget build(BuildContext context) {
-    final orderController = Get.find<OrderController>();
-
-    return GetBuilder<OrderController>(builder: (_) {
+    return GetBuilder<OrderController>(builder: (orderController) {
       final orders = orderController.currentOrderList;
-      final bool hasActiveOrder = orders != null && orders.isNotEmpty;
-      final bool hasMoreOrder = orders != null && orders.length > 1;
+
+      // تحميل: الشيمر يظهر بنفس مسافة الكرت الحقيقي
+      if (orders == null) {
+        return Container(
+          margin: EdgeInsets.only(top: Dimensions.h20),
+          height: Dimensions.h260,
+          child: OrderShimmerWidget(isEnabled: true, margin: EdgeInsets.zero),
+        );
+      }
+
+      // لا طلبات: لا مسافة ولا ارتفاع
+      if (orders.isEmpty) return const SizedBox.shrink();
+
+      final bool hasMoreOrder = orders.length > 1;
 
       return Container(
         margin: EdgeInsets.only(top: Dimensions.h20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (hasActiveOrder)
-              TitleWidget(
-                title: 'active_orders'.tr,
-                showOrderCount: true,
-                orderCount: orders.length,
-                onTap: hasMoreOrder
-                    ? () {
-                        Get.toNamed(
-                          RouteHelper.getRunningOrderRoute(),
-                          arguments: const RunningOrderScreen(),
-                        );
-                      }
-                    : null,
-              ),
-            SizedBox(height: hasActiveOrder ? Dimensions.h10 : 0),
-            if (orders == null)
-              SizedBox(
-                height: Dimensions.h260,
-                  child: OrderShimmerWidget(
-                      isEnabled: true, margin: EdgeInsets.zero))
-            else if (orders.isNotEmpty)
-              Column(
-                children: [
-                  SizedBox(
-                    height: Dimensions.h260,
-                    child: hasMoreOrder
-                        ? PageView.builder(
-                            controller: _pageController,
-                            padEnds: false,
-                            itemCount: orders.length,
-                            itemBuilder: (context, index) {
-                              return OrderCardWidget(
-                                order: orders[index],
-                                index: index,
-                                isRunningOrder: true,
-                                margin: EdgeInsetsDirectional.only(
-                                    end: Dimensions.w10),
-                              );
-                            },
-                          )
-                        : OrderCardWidget(
-                            order: orders.first,
-                            index: 0,
-                            isRunningOrder: true,
-                            margin: EdgeInsets.zero,
-                          ),
-                  ),
-                  if (hasMoreOrder) ...[
-                    SizedBox(height: Dimensions.h16),
-                    SmoothPageIndicator(
+            TitleWidget(
+              title: 'active_orders'.tr,
+              showOrderCount: true,
+              orderCount: orders.length,
+              onTap: hasMoreOrder
+                  ? () {
+                      Get.toNamed(
+                        RouteHelper.getRunningOrderRoute(),
+                        arguments: const RunningOrderScreen(),
+                      );
+                    }
+                  : null,
+            ),
+            SizedBox(height: Dimensions.h10),
+            SizedBox(
+              height: Dimensions.h260,
+              child: hasMoreOrder
+                  ? PageView.builder(
                       controller: _pageController,
-                      count: orders.length,
-                      effect: ExpandingDotsEffect(
-                        activeDotColor: Theme.of(context).primaryColor,
-                        dotColor: Theme.of(context).disabledColor,
-                        dotHeight: 8,
-                        dotWidth: 8,
-                        spacing: 6,
-                      ),
+                      padEnds: false,
+                      itemCount: orders.length,
+                      itemBuilder: (context, index) {
+                        return OrderCardWidget(
+                          order: orders[index],
+                          index: index,
+                          isRunningOrder: true,
+                          margin:
+                              EdgeInsetsDirectional.only(end: Dimensions.w10),
+                        );
+                      },
+                    )
+                  : OrderCardWidget(
+                      order: orders.first,
+                      index: 0,
+                      isRunningOrder: true,
+                      margin: EdgeInsets.zero,
                     ),
-                  ],
-                ],
-              )
-            else
-              const SizedBox(),
+            ),
+            if (hasMoreOrder) ...[
+              SizedBox(height: Dimensions.h16),
+              Center(
+                child: SmoothPageIndicator(
+                  controller: _pageController,
+                  count: orders.length,
+                  effect: ExpandingDotsEffect(
+                    activeDotColor: Theme.of(context).primaryColor,
+                    dotColor: Theme.of(context).disabledColor,
+                    dotHeight: 8,
+                    dotWidth: 8,
+                    spacing: 6,
+                  ),
+                ),
+              ),
+            ],
           ],
         ),
       );

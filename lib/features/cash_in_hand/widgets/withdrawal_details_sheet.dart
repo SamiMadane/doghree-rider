@@ -41,8 +41,9 @@ class WithdrawalDetailsSheet extends StatelessWidget {
 
     // Account fields first, then the request facts. Two cells per row.
     final List<Widget> accountCells = <Widget>[
-      for (final WalletAccountField f
-          in walletAccountFields(item.methodName, item.accountFields))
+      for (final WalletAccountField f in walletAccountFields(
+          item.methodName, item.accountFields,
+          methodKey: item.methodKey))
         _Fact(label: f.label, value: f.value, ltr: false),
     ];
 
@@ -103,7 +104,7 @@ class WithdrawalDetailsSheet extends StatelessWidget {
             ],
 
             if (item.methodName.isNotEmpty) ...[
-              _MethodHeader(name: item.methodName),
+              WalletMethodHeader(name: item.methodName, logoUrl: item.logoUrl),
               SizedBox(height: Dimensions.h16),
             ],
             if (accountCells.isNotEmpty) ...[
@@ -315,32 +316,6 @@ class _ReferenceFactState extends State<_ReferenceFact> {
 // ═══════════════════════════════════════════════════════════════
 // Rows
 // ═══════════════════════════════════════════════════════════════
-
-/// Start of the request section: method logo/monogram + method name.
-class _MethodHeader extends StatelessWidget {
-  final String name;
-
-  const _MethodHeader({required this.name});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        WalletMethodAvatar(name: name, size: Dimensions.w24 + Dimensions.w20),
-        SizedBox(width: Dimensions.w12),
-        Expanded(
-          child: Text(
-            name,
-            style: textBold().copyWith(
-              fontSize: Dimensions.fs16,
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
 
 /// Payout proof: small thumbnail, tap to open it full screen.
 class _ProofRow extends StatelessWidget {
