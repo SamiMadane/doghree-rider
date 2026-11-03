@@ -37,7 +37,7 @@ class _OrderScreenState extends State<OrderScreen> {
     if (!_scrollController.hasClients) return;
     final ScrollPosition pos = _scrollController.position;
 
-    // نبدأ التحميل قبل نهاية القائمة بقليل بدل انتظار الوصول للنهاية بالضبط
+    // Start loading slightly before the end of the list.
     final bool nearEnd = pos.pixels >= pos.maxScrollExtent - 200;
     if (nearEnd && c.completedOrderList != null && !c.paginate) {
       final int totalPages = ((c.pageSize ?? 0) / 10).ceil();
@@ -51,70 +51,63 @@ class _OrderScreenState extends State<OrderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme scheme = Theme.of(context).colorScheme;
+    final ThemeData theme = Theme.of(context);
+    final ColorScheme cs = theme.colorScheme;
 
     return Scaffold(
+      backgroundColor: theme.cardColor,
       appBar:
           CustomAppBarWidget(title: 'my_orders'.tr, isBackButtonExist: false),
-      body: Container(
-        color: Theme.of(context).cardColor,
-        margin: EdgeInsets.only(top: Dimensions.h16),
-        child: GetBuilder<OrderController>(builder: (orderController) {
-          final List? orders = orderController.completedOrderList;
-        
-          if (orders == null) {
-            return Center(
-              child: CircularProgressIndicator(color: scheme.onSurface),
-            );
-          }
-        
-          if (orders.isEmpty) {
-            return EmptyStateWidget(
-              image: ManagerAssets.noOrderImage,
-              imageScale: 1.1,
-              title: 'no_order_found'.tr,
-              buttonText: 'back_to_home_screen'.tr,
-              onButtonPressed: () {
-                Get.offAllNamed(RouteHelper.getInitialRoute());
-              },
-            );
-          }
-        
-          return RefreshIndicator(
-            color: scheme.onPrimary,
-            backgroundColor: scheme.primary,
-            onRefresh: () async {
-              await orderController.getCompletedOrders(1);
-            },
-            child: ListView.builder(
-              controller: _scrollController,
-              physics: const AlwaysScrollableScrollPhysics(),
-              padding: EdgeInsets.fromLTRB(
-                Dimensions.w16,
-                Dimensions.h16,
-                Dimensions.w16,
-                Dimensions.h16,
-              ),
-              itemCount: orders.length + (orderController.paginate ? 1 : 0),
-              itemBuilder: (context, index) {
-                if (index >= orders.length) {
-                  return Padding(
-                    padding: EdgeInsets.symmetric(vertical: Dimensions.h16),
-                    child: Center(
-                      child: CircularProgressIndicator(color: scheme.onSurface),
-                    ),
-                  );
-                }
-                return HistoryOrderWidget(
-                  orderModel: orders[index],
-                  isRunning: false,
-                  index: index,
-                );
-              },
-            ),
+      body: GetBuilder<OrderController>(builder: (orderController) {
+        final List<dynamic>? orders = orderController.completedOrderList;
+
+        if (orders == null) {
+          return Center(child: CircularProgressIndicator(color: cs.onSurface));
+        }
+
+        if (orders.isEmpty) {
+          return EmptyStateWidget(
+            image: ManagerAssets.noOrderImage,
+            imageScale: 1.1,
+            title: 'no_order_found'.tr,
+            buttonText: 'back_to_home_screen'.tr,
+            onButtonPressed: () =>
+                Get.offAllNamed(RouteHelper.getInitialRoute()),
           );
-        }),
-      ),
+        }
+
+        return RefreshIndicator(
+          color: cs.onPrimary,
+          backgroundColor: cs.primary,
+          onRefresh: () => orderController.getCompletedOrders(1),
+          child: ListView.builder(
+            controller: _scrollController,
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: EdgeInsets.fromLTRB(
+              Dimensions.w16,
+              Dimensions.h16 + Dimensions.h16,
+              Dimensions.w16,
+              Dimensions.h24,
+            ),
+            itemCount: orders.length + (orderController.paginate ? 1 : 0),
+            itemBuilder: (context, index) {
+              if (index >= orders.length) {
+                return Padding(
+                  padding: EdgeInsets.symmetric(vertical: Dimensions.h16),
+                  child: Center(
+                    child: CircularProgressIndicator(color: cs.onSurface),
+                  ),
+                );
+              }
+              return HistoryOrderWidget(
+                orderModel: orders[index],
+                isRunning: false,
+                index: index,
+              );
+            },
+          ),
+        );
+      }),
     );
   }
 }
