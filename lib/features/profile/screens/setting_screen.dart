@@ -62,7 +62,6 @@ class SettingScreen extends StatelessWidget {
                       acceptText: !authController.notification
                           ? 'yes_enable'.tr
                           : 'yes_disable'.tr,
-                      acceptColor: Theme.of(context).primaryColor,
                       cancelText: 'no'.tr,
                       onAccept: () async {
                         if (await Permission.notification.status.isDenied ||
@@ -108,7 +107,8 @@ class SettingScreen extends StatelessWidget {
                   onPressed: () {
                     showCustomBottomSheet(
                       child: ConfirmationBottomSheet(
-                        icon: ManagerAssets.warning,
+                        icon: ManagerAssets.warningDeleteAccount,
+                        iconSize: Dimensions.w140,
                         title: 'are_you_sure_to_delete_account'.tr,
                         description: 'it_will_remove_your_all_information'.tr,
                         acceptText: 'yes_delete_it'.tr,
@@ -116,7 +116,7 @@ class SettingScreen extends StatelessWidget {
                         hasCancel: true,
                         onAccept: () => profileController.deleteDriver(),
                         onCancel: () => Get.back(),
-                        acceptColor: scheme.error,
+                        acceptColor: scheme.onSurface,
                       ),
                     );
                   },
@@ -151,7 +151,6 @@ void showBgNotificationBottomSheet(bool allow) {
   final ThemeData theme = Theme.of(Get.context!);
 
   showCustomBottomSheet(
-    showCloseButton: false,
     child: SafeArea(
       child: Padding(
         padding: EdgeInsets.symmetric(

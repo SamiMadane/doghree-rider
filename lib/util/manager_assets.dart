@@ -36,6 +36,7 @@ class ManagerAssets {
   static const String location = '$imagePath/location.png';
 
   static const String warning = '$imagePath/warning.png';
+  static const String warningDeleteAccount = '$imagePath/warning_delete_account.png';
   static const String list = '$imagePath/list.png';
   static const String placeholder = '$imagePath/placeholder.jpg';
 

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:doghree_rider/common/widgets/custom_button_widget.dart';
-
 import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/util/styles.dart';
 
@@ -11,11 +10,11 @@ class ConfirmationBottomSheet extends StatelessWidget {
   final String? icon;
   final double? iconSize;
   final String acceptText;
-  final Color? acceptColor; 
+  final Color? acceptColor;
   final String cancelText;
   final VoidCallback onAccept;
   final VoidCallback? onCancel;
-  final bool hasCancel; 
+  final bool hasCancel;
   final TextStyle? titleStyle;
   final TextStyle? descriptionStyle;
   final double? topPaddingIfNoIcon;
@@ -23,13 +22,13 @@ class ConfirmationBottomSheet extends StatelessWidget {
   const ConfirmationBottomSheet({
     super.key,
     required this.title,
+    required this.acceptText,
+    required this.onAccept,
     this.description,
     this.icon,
     this.iconSize,
-    required this.acceptText,
     this.acceptColor,
-    this.cancelText = 'no', // يمكن تعيين قيمة افتراضية
-    required this.onAccept,
+    this.cancelText = 'no',
     this.onCancel,
     this.hasCancel = true,
     this.titleStyle,
@@ -39,85 +38,73 @@ class ConfirmationBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    final ColorScheme cs = Theme.of(context).colorScheme;
+
+    return Padding(
       padding: EdgeInsets.fromLTRB(
-        Dimensions.w16,
-        icon != null ? Dimensions.h10 : topPaddingIfNoIcon ?? Dimensions.h30,
-        Dimensions.w16,
-        Dimensions.h20,
-      ),
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(Dimensions.r20),
-          topRight: Radius.circular(Dimensions.r20),
-        ),
+        Dimensions.w20,
+        icon != null ? Dimensions.h10 : topPaddingIfNoIcon ?? Dimensions.h20,
+        Dimensions.w20,
+        Dimensions.h24,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           if (icon != null)
             Padding(
-              padding: EdgeInsets.symmetric(
-                  vertical: Dimensions.h20, horizontal: Dimensions.w20),
-              child: Image.asset(icon!, width: iconSize, height: iconSize ?? Dimensions.r70),
+              padding: EdgeInsets.symmetric(vertical: Dimensions.h20),
+              child: Image.asset(
+                icon!,
+                width: iconSize,
+                height: iconSize ?? Dimensions.r70,
+              ),
             ),
-
-          // العنوان
-          ConstrainedBox(
-            constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width * 0.66,
-            ),
-            child: Text(
-              title,
-              textAlign: TextAlign.center,
-              style: titleStyle ??
-                  textSemiBold().copyWith(
-                    fontSize: Dimensions.fs17,
-                  ),
-            ),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: titleStyle ??
+                textBold().copyWith(
+                  fontSize: Dimensions.fs18,
+                  color: cs.onSurface,
+                ),
           ),
-          SizedBox(height: Dimensions.h10),
-
-          // الوصف
-          if (description != null)
+          if (description != null) ...[
+            SizedBox(height: Dimensions.h8),
             Text(
               description!,
               textAlign: TextAlign.center,
               style: descriptionStyle ??
                   textRegular().copyWith(
-                      fontSize: Dimensions.fs15,
-                      color: Theme.of(context).disabledColor),
+                    fontSize: Dimensions.fs14,
+                    color: cs.onSurfaceVariant,
+                  ),
             ),
-          SizedBox(height: Dimensions.h25),
-
-          // الأزرار
+          ],
+          SizedBox(height: Dimensions.h24),
           Row(
             children: [
-              if (hasCancel)
+              if (hasCancel) ...[
                 Expanded(
                   child: CustomButtonWidget(
-                    onPressed: onCancel ?? () => Get.back(),
                     buttonText: cancelText,
-                    isBorder: true,
-                    autoWidth: true,
                     transparent: true,
-                    fontColor: Theme.of(context).textTheme.bodyMedium?.color,
+                    isBorder: true,
+                    borderColor: cs.onSurface,
+                    textColor: cs.onSurface,
+                    onPressed: onCancel ?? Get.back,
                   ),
                 ),
-              if (hasCancel) SizedBox(width: Dimensions.w10),
+                SizedBox(width: Dimensions.w10),
+              ],
               Expanded(
                 child: CustomButtonWidget(
-                  onPressed: onAccept,
-                  autoWidth: true,
-                  backgroundColor:
-                      acceptColor ?? Theme.of(context).primaryColor,
                   buttonText: acceptText,
+                  backgroundColor: acceptColor,
+                  onPressed: onAccept,
                 ),
               ),
             ],
           ),
-          SizedBox(height: Dimensions.h20),
         ],
       ),
     );

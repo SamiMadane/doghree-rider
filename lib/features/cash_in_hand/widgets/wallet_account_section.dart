@@ -19,7 +19,6 @@ void _confirmDeleteAccount(BuildContext context, int id) {
       title: 'wallet_delete_account'.tr,
       description: 'wallet_delete_account_confirm'.tr,
       acceptText: 'wallet_delete'.tr,
-      acceptColor: Theme.of(context).colorScheme.error,
       cancelText: 'wallet_cancel'.tr,
       onCancel: () => Navigator.of(context).pop(),
       onAccept: () {
