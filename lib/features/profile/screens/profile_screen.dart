@@ -59,32 +59,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _listener.dispose();
     super.dispose();
   }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: CustomAppBarWidget(
-        title: 'profile'.tr,
-        isBackButtonExist: false,
-      ),
-      body: GetBuilder<ProfileController>(builder: (profileController) {
-        return profileController.profileModel == null
-            ? const Center(child: CircularProgressIndicator())
-            : SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                child: Container(
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                  padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
-                  child: Column(children: [
-                    UserProfileInfoCard(profileController: profileController),
-                    SizedBox(height: Dimensions.h16),
-                    AccountSection(profileController: profileController),
-                    SizedBox(height: Dimensions.h16),
-                    LegalSection(profileController: profileController),
-                  ]),
-                ));
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: CustomAppBarWidget(
+      title: 'profile'.tr,
+      isBackButtonExist: false,
+    ),
+    body: Container(
+      color: Theme.of(context).cardColor,
+      margin: EdgeInsets.only(top: Dimensions.h16),
+      child: GetBuilder<ProfileController>(builder: (profileController) {
+        if (profileController.profileModel == null) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        return SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          padding: EdgeInsets.all(Dimensions.w16),
+          child: Column(
+            children: [
+              UserProfileInfoCard(profileController: profileController),
+              SizedBox(height: Dimensions.h16),
+              AccountSection(profileController: profileController),
+              SizedBox(height: Dimensions.h16),
+              LegalSection(profileController: profileController),
+            ],
+          ),
+        );
       }),
-    );
-  }
+    ),
+  );
+}
 }

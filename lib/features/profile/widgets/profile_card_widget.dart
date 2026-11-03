@@ -1,31 +1,30 @@
-import 'package:doghree_rider/common/widgets/custom_card.dart';
-import 'package:doghree_rider/util/dimensions.dart';
-import 'package:doghree_rider/util/styles.dart';
 import 'package:flutter/material.dart';
+import 'package:doghree_rider/util/dimensions.dart';
 
-class ProfileCardWidget extends StatelessWidget {
-  final String title;
-  final String data;
-  const ProfileCardWidget({super.key, required this.data, required this.title});
+class ProfileCard extends StatelessWidget {
+  final Widget child;
+  final double? radius;
+  final EdgeInsetsGeometry? padding;
+
+  const ProfileCard({
+    super.key,
+    required this.child,
+    this.radius,
+    this.padding,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-        child: CustomCard(
-      height: 100,
-     isBorder: false,
-      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-        Text(data,
-            style: textSemiBold().copyWith(
-              fontSize: Dimensions.fs18,
-            )),
-        SizedBox(height: Dimensions.h10),
-        Text(title,
-            style: textRegular().copyWith(
-              fontSize: Dimensions.fs14,
-              color: Theme.of(context).hintColor,
-            )),
-      ]),
-    ));
+    final ColorScheme cs = Theme.of(context).colorScheme;
+
+    return Container(
+      width: double.infinity,
+      padding: padding ?? EdgeInsets.all(Dimensions.w16),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(radius ?? Dimensions.r24),
+        border: Border.all(color: cs.outline),
+      ),
+      child: child,
+    );
   }
 }

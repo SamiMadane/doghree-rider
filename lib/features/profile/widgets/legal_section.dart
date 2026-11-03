@@ -1,16 +1,16 @@
+import 'package:doghree_rider/features/profile/widgets/profile_card_widget.dart';
+import 'package:doghree_rider/features/profile/widgets/section_title.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:doghree_rider/api/api_checker.dart';
 import 'package:doghree_rider/common/widgets/confirmation_bottom_sheet.dart';
 import 'package:doghree_rider/common/widgets/custom_bottom_sheet_widget.dart';
-import 'package:doghree_rider/common/widgets/custom_card.dart';
 import 'package:doghree_rider/features/auth/controllers/auth_controller.dart';
 import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
 import 'package:doghree_rider/features/profile/widgets/profile_button_widget.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
 import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/util/manager_assets.dart';
-import 'package:doghree_rider/util/styles.dart';
 
 class LegalSection extends StatelessWidget {
   final ProfileController profileController;
@@ -18,73 +18,56 @@ class LegalSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Color error = Theme.of(context).colorScheme.error;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'legal'.tr,
-          style: textMedium().copyWith(fontSize: Dimensions.fs16),
-        ),
-        SizedBox(height: Dimensions.h16),
-        CustomCard(
-          padding: EdgeInsets.symmetric(
-            horizontal: Dimensions.w16,
-            vertical: Dimensions.h16,
-          ),
-          isBorder: false,
+        SectionTitle('legal'.tr),
+        ProfileCard(
           child: Column(
             children: [
               ProfileButtonWidget(
-                  svgPath: ManagerAssets.termsConditionsIcon,
-                  title: 'terms_condition'.tr,
-                  onTap: () {
-                    Get.toNamed(RouteHelper.getTermsRoute());
-                  }),
+                svgPath: ManagerAssets.termsConditionsIcon,
+                title: 'terms_condition'.tr,
+                onTap: () => Get.toNamed(RouteHelper.getTermsRoute()),
+              ),
               SizedBox(height: Dimensions.h16),
               ProfileButtonWidget(
-                  svgPath: ManagerAssets.privacyPolicyIcon,
-                  title: 'privacy_policy'.tr,
-                  onTap: () {
-                    Get.toNamed(RouteHelper.getPrivacyRoute());
-                  }),
+                svgPath: ManagerAssets.privacyPolicyIcon,
+                title: 'privacy_policy'.tr,
+                onTap: () => Get.toNamed(RouteHelper.getPrivacyRoute()),
+              ),
             ],
           ),
         ),
         SizedBox(height: Dimensions.h16),
-        CustomCard(
-          padding: EdgeInsets.symmetric(
-            horizontal: Dimensions.w16,
-            vertical: Dimensions.h16,
-          ),
-          isBorder: false,
-          child: Column(
-            children: [
-              ProfileButtonWidget(
-                svgPath: ManagerAssets.logoutIcon,
-                title: 'logout'.tr,
-                titleColor: Theme.of(context).colorScheme.error,
-                iconColor: Theme.of(context).colorScheme.error,
-                onTap: () {
-                  Get.back();
-                  showCustomBottomSheet(
-                    child: ConfirmationBottomSheet(
-                      title: 'logout_confirmation'.tr,
-                      acceptText: 'yes_logout'.tr,
-                      acceptColor: Theme.of(context).colorScheme.error,
-                      cancelText: 'no_stay'.tr,
-                      onAccept: () {
-                        ApiChecker.isLoggingOut = true;
-                        Get.find<ProfileController>().stopLocationRecord();
-                        Get.find<AuthController>().clearSharedData();
-                        Get.offAllNamed(RouteHelper.getSignInRoute());
-                      },
-                      onCancel: () =>
-                          Get.back(), // اختياري، لأنه افتراضي بيرجع للخلف
-                    ),
-                  );
-                },
-              ),
-            ],
+        ProfileCard(
+          child: ProfileButtonWidget(
+            svgPath: ManagerAssets.logoutIcon,
+            title: 'logout'.tr,
+            titleColor: error,
+            iconColor: error,
+            showTrailing: false,
+            onTap: () {
+              Get.back();
+              showCustomBottomSheet(
+                child: ConfirmationBottomSheet(
+                  title: 'logout_confirmation'.tr,
+                  icon: ManagerAssets.warningDeleteAccount,
+                  iconSize: Dimensions.w140,
+                  acceptText: 'yes_logout'.tr,
+                  cancelText: 'no_stay'.tr,
+                  onAccept: () {
+                    ApiChecker.isLoggingOut = true;
+                    Get.find<ProfileController>().stopLocationRecord();
+                    Get.find<AuthController>().clearSharedData();
+                    Get.offAllNamed(RouteHelper.getSignInRoute());
+                  },
+                  onCancel: Get.back,
+                ),
+              );
+            },
           ),
         ),
       ],
