@@ -71,8 +71,7 @@ class AppConstants {
   static const String deliveredOrderNotificationUri =
       '/api/v1/delivery-man/send-order-otp';
 
-  static const String walletProvidedEarningListUri =
-      '/api/v1/delivery-man/wallet-provided-earning-list';
+
   static const String firebaseAuthVerify =
       '/api/v1/auth/delivery-man/firebase-verify-token';
   static const String earningReportUri = '/api/v1/delivery-man/earning-report';

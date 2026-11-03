@@ -1,15 +1,16 @@
 import 'package:doghree_rider/common/widgets/custom_image_widget.dart';
+import 'package:doghree_rider/features/wallet/controllers/wallet_controller.dart';
+import 'package:doghree_rider/features/wallet/domain/models/wallet_model.dart';
+import 'package:doghree_rider/features/wallet/widgets/wallet_account_details.dart';
+import 'package:doghree_rider/features/wallet/widgets/wallet_account_sheet.dart';
+import 'package:doghree_rider/features/wallet/widgets/wallet_common_widgets.dart';
 import 'package:doghree_rider/util/manager_assets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:doghree_rider/common/widgets/confirmation_bottom_sheet.dart';
 import 'package:doghree_rider/common/widgets/custom_bottom_sheet_widget.dart';
 import 'package:doghree_rider/common/widgets/custom_button_widget.dart';
-import 'package:doghree_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
-import 'package:doghree_rider/features/cash_in_hand/domain/models/wallet_model.dart';
-import 'package:doghree_rider/features/cash_in_hand/widgets/wallet_account_details.dart';
-import 'package:doghree_rider/features/cash_in_hand/widgets/wallet_account_sheet.dart';
-import 'package:doghree_rider/features/cash_in_hand/widgets/wallet_common_widgets.dart';
+
 import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/util/styles.dart';
 
@@ -23,7 +24,7 @@ void _confirmDeleteAccount(BuildContext context, int id) {
       onCancel: () => Navigator.of(context).pop(),
       onAccept: () {
         Navigator.of(context).pop();
-        Get.find<CashInHandController>().deleteWalletAccount(id);
+        Get.find<WalletController>().deleteWalletAccount(id);
       },
     ),
   );
@@ -34,7 +35,7 @@ class WalletAccountSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<CashInHandController>(builder: (c) {
+    return GetBuilder<WalletController>(builder: (c) {
       final WalletModel? wallet = c.wallet;
 
       // Wallet not loaded yet (or failed to load)

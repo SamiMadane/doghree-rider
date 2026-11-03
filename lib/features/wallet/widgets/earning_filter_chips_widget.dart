@@ -1,7 +1,7 @@
+import 'package:doghree_rider/features/wallet/controllers/wallet_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:doghree_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
-import 'package:doghree_rider/features/cash_in_hand/widgets/earning_filter_sheet.dart';
+import 'package:doghree_rider/features/wallet/widgets/earning_filter_sheet.dart';
 import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/util/styles.dart';
 
@@ -14,7 +14,7 @@ class EarningFilterChipsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final ColorScheme cs = Theme.of(context).colorScheme;
 
-    return GetBuilder<CashInHandController>(builder: (c) {
+    return GetBuilder<WalletController>(builder: (c) {
       if (!c.isFiltered) return const SizedBox.shrink();
 
       final bool both = c.hasTypeFilter && c.hasDateFilter;

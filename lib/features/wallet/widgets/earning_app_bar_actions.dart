@@ -1,8 +1,9 @@
+import 'package:doghree_rider/features/wallet/controllers/wallet_controller.dart';
+import 'package:doghree_rider/features/wallet/widgets/earning_filter_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:doghree_rider/common/widgets/circle_icon_button.dart';
-import 'package:doghree_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
-import 'package:doghree_rider/features/cash_in_hand/widgets/earning_filter_sheet.dart';
+
 import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
 import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/util/manager_assets.dart';
@@ -11,7 +12,7 @@ import 'package:doghree_rider/util/manager_assets.dart';
 class EarningAppBarActions extends StatelessWidget {
   const EarningAppBarActions({super.key});
 
-  void _download(CashInHandController c) {
+  void _download(WalletController c) {
     final int? id = Get.find<ProfileController>().profileModel?.id;
     if (id == null || c.downloadLoading == true) return;
     c.downloadEarningInvoice(dmId: id);
@@ -19,7 +20,7 @@ class EarningAppBarActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<CashInHandController>(builder: (c) {
+    return GetBuilder<WalletController>(builder: (c) {
       return Row(
         mainAxisSize: MainAxisSize.min,
         children: [

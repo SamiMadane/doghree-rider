@@ -83,7 +83,7 @@ class NotificationController extends GetxController implements GetxService {
         showCustomSnackBar(notification.description ?? '', isError: false);
         break;
       case NotificationType.withdraw:
-        Get.toNamed(RouteHelper.getCashInHandRoute());
+        Get.toNamed(RouteHelper.getWalletRoute());
         break;
 
       case NotificationType.general:

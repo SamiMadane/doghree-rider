@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:doghree_rider/common/widgets/custom_app_bar_widget.dart';
 import 'package:doghree_rider/common/widgets/empty_state_widget.dart';
-import 'package:doghree_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
-import 'package:doghree_rider/features/cash_in_hand/widgets/earning_app_bar_actions.dart';
-import 'package:doghree_rider/features/cash_in_hand/widgets/earning_error_state.dart';
-import 'package:doghree_rider/features/cash_in_hand/widgets/earning_filter_chips_widget.dart';
-import 'package:doghree_rider/features/cash_in_hand/widgets/earning_statement_section.dart';
-import 'package:doghree_rider/features/cash_in_hand/widgets/earning_summary_card.dart';
+import 'package:doghree_rider/features/wallet/controllers/wallet_controller.dart';
+import 'package:doghree_rider/features/wallet/widgets/earning_app_bar_actions.dart';
+import 'package:doghree_rider/features/wallet/widgets/earning_error_state.dart';
+import 'package:doghree_rider/features/wallet/widgets/earning_filter_chips_widget.dart';
+import 'package:doghree_rider/features/wallet/widgets/earning_statement_section.dart';
+import 'package:doghree_rider/features/wallet/widgets/earning_summary_card.dart';
 import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/util/manager_assets.dart';
 
@@ -30,7 +30,7 @@ class _MyEarningScreenState extends State<MyEarningScreen> {
     // (the wallet screen) is still building.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      final CashInHandController c = Get.find<CashInHandController>();
+      final WalletController c = Get.find<WalletController>();
       c.resetEarningFilter(isUpdate: false);
       c.setOffset(1);
       c.getEarningReport(
@@ -51,7 +51,7 @@ class _MyEarningScreenState extends State<MyEarningScreen> {
   }
 
   void _onScroll() {
-    final CashInHandController c = Get.find<CashInHandController>();
+    final WalletController c = Get.find<WalletController>();
     final ScrollPosition position = _scrollController.position;
     final bool nearEnd =
         position.pixels >= position.maxScrollExtent - Dimensions.h40;
@@ -95,7 +95,7 @@ class _MyEarningScreenState extends State<MyEarningScreen> {
             ),
 
             Expanded(
-              child: GetBuilder<CashInHandController>(builder: (c) {
+              child: GetBuilder<WalletController>(builder: (c) {
                 // Must come before the null check: a failed first page leaves
                 // the list null, which would otherwise look like "loading".
                 if (c.earningFailed) {

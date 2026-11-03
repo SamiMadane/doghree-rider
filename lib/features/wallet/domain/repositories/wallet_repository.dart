@@ -4,17 +4,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:doghree_rider/api/api_checker.dart';
 import 'package:doghree_rider/api/api_client.dart';
 import 'package:doghree_rider/common/models/response_model.dart';
-import 'package:doghree_rider/features/cash_in_hand/domain/models/earning_report_model.dart';
-import 'package:doghree_rider/features/cash_in_hand/domain/models/wallet_payment_model.dart';
-import 'package:doghree_rider/features/cash_in_hand/domain/models/wallet_withdrawal_model.dart';
-import 'package:doghree_rider/features/cash_in_hand/domain/repositories/cash_in_hand_repository_interface.dart';
+import 'package:doghree_rider/features/wallet/domain/models/earning_report_model.dart';
+import 'package:doghree_rider/features/wallet/domain/models/wallet_withdrawal_model.dart';
+import 'package:doghree_rider/features/wallet/domain/repositories/wallet_repository_interface.dart';
 import 'package:doghree_rider/util/app_constants.dart';
-import 'package:doghree_rider/features/cash_in_hand/domain/models/wallet_model.dart';
+import 'package:doghree_rider/features/wallet/domain/models/wallet_model.dart';
 
-class CashInHandRepository implements CashInHandRepositoryInterface {
+class WalletRepository implements WalletRepositoryInterface {
   final ApiClient apiClient;
   final SharedPreferences sharedPreferences;
-  CashInHandRepository(
+  WalletRepository(
       {required this.apiClient, required this.sharedPreferences});
 
   @override
@@ -22,19 +21,7 @@ class CashInHandRepository implements CashInHandRepositoryInterface {
     throw UnimplementedError();
   }
 
-  @override
-  Future<List<Transactions>?> getWalletProvidedEarningList() async {
-    List<Transactions>? walletProvidedTransactions;
-    Response response = await apiClient.getData(
-        '${AppConstants.walletProvidedEarningListUri}?token=${_getUserToken()}');
-    if (response.statusCode == 200) {
-      walletProvidedTransactions = [];
-      WalletPaymentModel walletPaymentModel =
-          WalletPaymentModel.fromJson(response.body);
-      walletProvidedTransactions.addAll(walletPaymentModel.transactions!);
-    }
-    return walletProvidedTransactions;
-  }
+
 
   String _getUserToken() {
     return sharedPreferences.getString(AppConstants.token) ?? "";

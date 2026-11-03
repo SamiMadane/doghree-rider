@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:doghree_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
-import 'package:doghree_rider/features/cash_in_hand/domain/models/wallet_withdrawal_model.dart';
-import 'package:doghree_rider/features/cash_in_hand/widgets/wallet_common_widgets.dart';
-import 'package:doghree_rider/features/cash_in_hand/widgets/withdrawal_details_sheet.dart';
-import 'package:doghree_rider/features/cash_in_hand/widgets/withdrawal_status_helper.dart';
+import 'package:doghree_rider/features/wallet/controllers/wallet_controller.dart';
+import 'package:doghree_rider/features/wallet/domain/models/wallet_withdrawal_model.dart';
+import 'package:doghree_rider/features/wallet/widgets/wallet_common_widgets.dart';
+import 'package:doghree_rider/features/wallet/widgets/withdrawal_details_sheet.dart';
+import 'package:doghree_rider/features/wallet/widgets/withdrawal_status_helper.dart';
 import 'package:doghree_rider/helper/price_converter_helper.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
 import 'package:doghree_rider/util/dimensions.dart';
@@ -21,7 +21,7 @@ class WithdrawalHistorySection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        GetBuilder<CashInHandController>(builder: (c) {
+        GetBuilder<WalletController>(builder: (c) {
           final bool hasMore = (c.withdrawals?.length ?? 0) > _previewCount;
           return WalletSectionHeader(
             title: 'wallet_withdraw_requests'.tr,
@@ -47,7 +47,7 @@ class WithdrawalsBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final ColorScheme cs = Theme.of(context).colorScheme;
 
-    return GetBuilder<CashInHandController>(builder: (c) {
+    return GetBuilder<WalletController>(builder: (c) {
       final List<WalletWithdrawal>? list = c.withdrawals;
 
       if (list == null) {

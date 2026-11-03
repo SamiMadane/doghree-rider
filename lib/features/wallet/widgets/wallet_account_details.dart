@@ -1,7 +1,8 @@
+import 'package:doghree_rider/features/wallet/controllers/wallet_controller.dart';
+import 'package:doghree_rider/features/wallet/domain/models/wallet_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:doghree_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
-import 'package:doghree_rider/features/cash_in_hand/domain/models/wallet_model.dart';
+
 import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/util/styles.dart';
 
@@ -17,7 +18,7 @@ List<WalletAccountField> walletAccountFields(
   Map<String, String> fields, {
   String? methodKey,
 }) {
-  final WalletModel? wallet = Get.find<CashInHandController>().wallet;
+  final WalletModel? wallet = Get.find<WalletController>().wallet;
 
   WalletMethod? method;
   if (methodKey != null && methodKey.isNotEmpty) {

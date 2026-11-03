@@ -236,7 +236,6 @@ class LocationCardWidget extends StatelessWidget {
                                 'are_you_sure_you_want_to_ignor_this_order'.tr,
                             acceptText: 'yes_ignore'.tr,
                             cancelText: 'no_cancel'.tr,
-                            acceptColor: ManagerColors.error,
                             onAccept: () {
                               if (Get.isSnackbarOpen) {
                                 Get.back();
@@ -262,7 +261,6 @@ class LocationCardWidget extends StatelessWidget {
                                 'are_you_sure_you_want_to_accept_this_order'.tr,
                             acceptText: 'yes_accept'.tr,
                             cancelText: 'no_cancel'.tr,
-                            acceptColor: Theme.of(Get.context!).primaryColor,
                             onAccept: () {
                               orderController
                                   .acceptOrder(orderModel.id, index, orderModel)

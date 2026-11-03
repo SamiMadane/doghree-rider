@@ -70,7 +70,6 @@ class _SignInScreenState extends State<SignInScreen> {
             },
           ),
           isDismissible: false,
-          showCloseButton: false,
         );
       });
 

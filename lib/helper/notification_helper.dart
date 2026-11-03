@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:doghree_rider/features/wallet/controllers/wallet_controller.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
@@ -15,7 +16,6 @@ import 'package:doghree_rider/helper/route_helper.dart';
 import 'package:doghree_rider/util/app_constants.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:doghree_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:doghree_rider/firebase_options.dart';
 import 'package:flutter/material.dart';
@@ -79,7 +79,7 @@ class NotificationHelper {
             NotificationType.general: () => Get.toNamed(
                 RouteHelper.getNotificationRoute(fromNotification: true)),
             NotificationType.withdraw: () =>
-                Get.toNamed(RouteHelper.getCashInHandRoute()),
+                Get.toNamed(RouteHelper.getWalletRoute()),
           };
 
           notificationActions[payload.notificationType]?.call();
@@ -138,9 +138,9 @@ class NotificationHelper {
       } else if (message.data['type'] == 'withdraw') {
         NotificationHelper.showNotification(
             message, flutterLocalNotificationsPlugin);
-        if (Get.isRegistered<CashInHandController>()) {
-          Get.find<CashInHandController>().getWallet();
-          Get.find<CashInHandController>().getWithdrawals();
+        if (Get.isRegistered<WalletController>()) {
+          Get.find<WalletController>().getWallet();
+          Get.find<WalletController>().getWithdrawals();
         }
         if (Get.isRegistered<NotificationController>()) {
           Get.find<NotificationController>().getNotificationList();
@@ -190,7 +190,7 @@ class NotificationHelper {
             NotificationType.general: () => Get.toNamed(
                 RouteHelper.getNotificationRoute(fromNotification: true)),
             NotificationType.withdraw: () =>
-                Get.toNamed(RouteHelper.getCashInHandRoute()),
+                Get.toNamed(RouteHelper.getWalletRoute()),
           };
 
           notificationActions[notificationBody.notificationType]?.call();

@@ -1,4 +1,4 @@
-import 'package:doghree_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
+import 'package:doghree_rider/features/wallet/controllers/wallet_controller.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:doghree_rider/common/widgets/custom_app_bar_widget.dart';
@@ -53,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _loadData() async {
     Get.find<OrderController>().getIgnoreList();
     Get.find<OrderController>().removeFromIgnoreList();
-    Get.find<CashInHandController>().getWallet();
+    Get.find<WalletController>().getWallet();
     await Get.find<ProfileController>().getProfile();
     await Get.find<OrderController>().getCurrentOrders();
     await Get.find<NotificationController>().getNotificationList();

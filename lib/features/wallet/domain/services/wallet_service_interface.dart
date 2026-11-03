@@ -1,13 +1,11 @@
 import 'package:get/get.dart';
-import 'package:doghree_rider/features/cash_in_hand/domain/models/earning_report_model.dart';
-import 'package:doghree_rider/interface/repository_interface.dart';
-import 'package:doghree_rider/features/cash_in_hand/domain/models/wallet_model.dart';
 import 'package:doghree_rider/common/models/response_model.dart';
-import 'package:doghree_rider/features/cash_in_hand/domain/models/wallet_withdrawal_model.dart';
+import 'package:doghree_rider/features/wallet/domain/models/earning_report_model.dart';
+import 'package:doghree_rider/features/wallet/domain/models/wallet_model.dart';
+import 'package:doghree_rider/features/wallet/domain/models/wallet_withdrawal_model.dart';
 
 
-abstract class CashInHandRepositoryInterface implements RepositoryInterface {
-  Future<dynamic> getWalletProvidedEarningList();
+abstract class WalletServiceInterface {
   Future<EarningReportModel?> getEarningReport({String? offset, String? type, String? startDate, String? endDate});
   Future<Response> downloadEarningInvoice({required int dmId});
   Future<WalletModel?> getWallet();

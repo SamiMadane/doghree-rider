@@ -1,14 +1,13 @@
 import 'dart:convert';
 import 'package:doghree_rider/features/auth/screens/dm_registration_success_screen.dart';
-import 'package:doghree_rider/features/cash_in_hand/screens/my_earning_screen.dart';
-import 'package:doghree_rider/features/cash_in_hand/screens/withdrawals_screen.dart';
+import 'package:doghree_rider/features/wallet/screens/my_earning_screen.dart';
+import 'package:doghree_rider/features/wallet/screens/wallet_screen.dart';
+import 'package:doghree_rider/features/wallet/screens/withdrawals_screen.dart';
 import 'package:doghree_rider/features/splash/screens/language_init_screen.dart';
 import 'package:doghree_rider/features/notification/domain/models/notification_body_model.dart';
 import 'package:doghree_rider/features/chat/domain/models/conversation_model.dart';
 import 'package:doghree_rider/features/auth/screens/sign_in_screen.dart';
 import 'package:doghree_rider/features/auth/screens/dm_registration_screen.dart';
-import 'package:doghree_rider/features/cash_in_hand/screens/cash_in_hand_screen.dart';
-import 'package:doghree_rider/features/cash_in_hand/screens/wallet_provided_earning_history_screen.dart';
 import 'package:doghree_rider/features/chat/screens/chat_screen.dart';
 import 'package:doghree_rider/features/chat/screens/conversation_screen.dart';
 import 'package:doghree_rider/features/dashboard/screens/dashboard_screen.dart';
@@ -48,8 +47,7 @@ class RouteHelper {
   static const String conversationListScreen = '/conversation-list-screen';
   static const String deliveryManRegistration = '/delivery-man-registration';
 
-  static const String cashInHand = '/cash-in-hand';
-  static const String walletProvidedEarning = '/wallet-provided-earning';
+  static const String wallet = '/wallet';
   static const String myEarning = '/my-earning';
   static const String dmRegistrationSuccess = '/dm-registration-success';
   static const String taskScreen = '/task';
@@ -116,8 +114,7 @@ class RouteHelper {
   static String getConversationListRoute() => conversationListScreen;
   static String getDeliverymanRegistrationRoute() => deliveryManRegistration;
 
-  static String getCashInHandRoute() => cashInHand;
-  static String getWalletProvidedEarningRoute() => walletProvidedEarning;
+  static String getWalletRoute() => wallet;
   static String getMyEarningRoute() => myEarning;
   static String getDmRegistrationSuccessRoute() => dmRegistrationSuccess;
 
@@ -238,10 +235,7 @@ class RouteHelper {
     GetPage(
         name: deliveryManRegistration,
         page: () => const DmRegistrationScreen()),
-    GetPage(name: cashInHand, page: () => const CashInHandScreen()),
-    GetPage(
-        name: walletProvidedEarning,
-        page: () => const WalletProvidedHistoryScreen()),
+    GetPage(name: wallet, page: () => const WalletScreen()),
     GetPage(name: myEarning, page: () => const MyEarningScreen()),
     GetPage(
         name: dmRegistrationSuccess,

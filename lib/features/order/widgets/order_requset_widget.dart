@@ -306,7 +306,6 @@ class OrderRequestWidget extends StatelessWidget {
                                   .tr,
                               acceptText: 'yes_ignore'.tr,
                               cancelText: 'no_cancel'.tr,
-                              acceptColor: ManagerColors.error,
                               onAccept: () {
                                 if (Get.isSnackbarOpen) {
                                   Get.back();
@@ -333,7 +332,6 @@ class OrderRequestWidget extends StatelessWidget {
                                       .tr,
                               acceptText: 'yes_accept'.tr,
                               cancelText: 'no_cancel'.tr,
-                              acceptColor: Theme.of(Get.context!).primaryColor,
                               onAccept: () {
                                 orderController
                                     .acceptOrder(

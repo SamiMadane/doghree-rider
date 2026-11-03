@@ -11,11 +11,11 @@ import 'package:doghree_rider/features/auth/domain/repositories/auth_repository.
 import 'package:doghree_rider/features/auth/domain/repositories/auth_repository_interface.dart';
 import 'package:doghree_rider/features/auth/domain/services/auth_service.dart';
 import 'package:doghree_rider/features/auth/domain/services/auth_service_interface.dart';
-import 'package:doghree_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
-import 'package:doghree_rider/features/cash_in_hand/domain/repositories/cash_in_hand_repository.dart';
-import 'package:doghree_rider/features/cash_in_hand/domain/repositories/cash_in_hand_repository_interface.dart';
-import 'package:doghree_rider/features/cash_in_hand/domain/services/cash_in_hand_service.dart';
-import 'package:doghree_rider/features/cash_in_hand/domain/services/cash_in_hand_service_interface.dart';
+import 'package:doghree_rider/features/wallet/controllers/wallet_controller.dart';
+import 'package:doghree_rider/features/wallet/domain/repositories/wallet_repository.dart';
+import 'package:doghree_rider/features/wallet/domain/repositories/wallet_repository_interface.dart';
+import 'package:doghree_rider/features/wallet/domain/services/wallet_service.dart';
+import 'package:doghree_rider/features/wallet/domain/services/wallet_service_interface.dart';
 import 'package:doghree_rider/features/chat/controllers/chat_controller.dart';
 import 'package:doghree_rider/features/chat/domain/repositories/chat_repository.dart';
 import 'package:doghree_rider/features/chat/domain/repositories/chat_repository_interface.dart';
@@ -78,10 +78,10 @@ Future<Map<String, Map<String, String>>> init() async {
       HtmlRepository(apiClient: Get.find());
   Get.lazyPut(() => htmlRepositoryInterface);
 
-  CashInHandRepositoryInterface cashInHandRepositoryInterface =
-      CashInHandRepository(
+  WalletRepositoryInterface walletRepositoryInterface =
+      WalletRepository(
           apiClient: Get.find(), sharedPreferences: Get.find());
-  Get.lazyPut(() => cashInHandRepositoryInterface);
+  Get.lazyPut(() => WalletRepositoryInterface);
 
   ForgotPasswordRepositoryInterface forgotPasswordRepositoryInterface =
       ForgotPasswordRepository(
@@ -127,9 +127,9 @@ Future<Map<String, Map<String, String>>> init() async {
   Get.lazyPut(() => htmlServiceInterface);
 
 
-  CashInHandServiceInterface cashInHandServiceInterface =
-      CashInHandService(cashInHandRepositoryInterface: Get.find());
-  Get.lazyPut(() => cashInHandServiceInterface);
+  WalletServiceInterface walletServiceInterface =
+      WalletService(walletRepositoryInterface: Get.find());
+  Get.lazyPut(() => walletServiceInterface);
 
   ForgotPasswordServiceInterface forgotPasswordServiceInterface =
       ForgotPasswordService(forgotPasswordRepositoryInterface: Get.find());
@@ -171,7 +171,7 @@ Future<Map<String, Map<String, String>>> init() async {
   Get.lazyPut(() => HtmlService(htmlRepositoryInterface: Get.find()));
 
   Get.lazyPut(
-      () => CashInHandService(cashInHandRepositoryInterface: Get.find()));
+      () => WalletService(walletRepositoryInterface: Get.find()));
   Get.lazyPut(() =>
       ForgotPasswordService(forgotPasswordRepositoryInterface: Get.find()));
   Get.lazyPut(() => ChatService(chatRepositoryInterface: Get.find()));
@@ -189,7 +189,7 @@ Future<Map<String, Map<String, String>>> init() async {
   Get.lazyPut(() => HtmlController(htmlServiceInterface: Get.find()));
 
   Get.lazyPut(
-      () => CashInHandController(cashInHandServiceInterface: Get.find()));
+      () => WalletController(walletServiceInterface: Get.find()));
   Get.lazyPut(() => ThemeController(sharedPreferences: Get.find()));
   Get.lazyPut(() =>
       ForgotPasswordController(forgotPasswordServiceInterface: Get.find()));

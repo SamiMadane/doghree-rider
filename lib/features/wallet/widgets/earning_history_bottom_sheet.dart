@@ -1,7 +1,7 @@
+import 'package:doghree_rider/features/wallet/domain/models/earning_report_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:doghree_rider/common/widgets/dashed_line_widget.dart';
-import 'package:doghree_rider/features/cash_in_hand/domain/models/earning_report_model.dart';
 import 'package:doghree_rider/helper/date_converter_helper.dart';
 import 'package:doghree_rider/helper/price_converter_helper.dart';
 import 'package:doghree_rider/util/dimensions.dart';

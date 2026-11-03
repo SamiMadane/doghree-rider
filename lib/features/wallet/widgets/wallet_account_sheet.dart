@@ -5,8 +5,8 @@ import 'package:doghree_rider/common/widgets/custom_button_widget.dart';
 import 'package:doghree_rider/common/widgets/custom_drop_down_button.dart';
 import 'package:doghree_rider/common/widgets/custom_text_field_widget.dart';
 import 'package:doghree_rider/common/widgets/widget_with_label.dart';
-import 'package:doghree_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
-import 'package:doghree_rider/features/cash_in_hand/domain/models/wallet_model.dart';
+import 'package:doghree_rider/features/wallet/controllers/wallet_controller.dart';
+import 'package:doghree_rider/features/wallet/domain/models/wallet_model.dart';
 import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/util/styles.dart';
 
@@ -29,7 +29,7 @@ class _WalletAccountSheetState extends State<WalletAccountSheet> {
   static final RegExp _nameRegex =
       RegExp(r"^[\p{L}\p{M}\s.'’\-]+$", unicode: true);
 
-  final CashInHandController _controller = Get.find<CashInHandController>();
+  final WalletController _controller = Get.find<WalletController>();
 
   WalletMethod? _method;
   final Map<String, TextEditingController> _controllers = {};
@@ -169,7 +169,7 @@ class _WalletAccountSheetState extends State<WalletAccountSheet> {
   }
 
   List<Widget> _buildForm(
-    CashInHandController c,
+    WalletController c,
     List<WalletMethod> methods,
   ) {
     final fields = _method?.fields ?? <WalletMethodField>[];
@@ -206,7 +206,7 @@ class _WalletAccountSheetState extends State<WalletAccountSheet> {
   Widget build(BuildContext context) {
     final ColorScheme scheme = Theme.of(context).colorScheme;
 
-    return GetBuilder<CashInHandController>(builder: (c) {
+    return GetBuilder<WalletController>(builder: (c) {
       final methods = c.wallet?.methods ?? <WalletMethod>[];
       if (_method == null && methods.isNotEmpty) _setMethod(methods.first);
 

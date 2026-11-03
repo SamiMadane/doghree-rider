@@ -4,9 +4,9 @@ import 'package:doghree_rider/common/widgets/custom_button_widget.dart';
 import 'package:doghree_rider/common/widgets/custom_card.dart';
 import 'package:doghree_rider/common/widgets/custom_text_field_widget.dart';
 import 'package:doghree_rider/common/widgets/widget_with_label.dart';
-import 'package:doghree_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
-import 'package:doghree_rider/features/cash_in_hand/domain/models/wallet_model.dart';
-import 'package:doghree_rider/features/cash_in_hand/widgets/wallet_common_widgets.dart';
+import 'package:doghree_rider/features/wallet/controllers/wallet_controller.dart';
+import 'package:doghree_rider/features/wallet/domain/models/wallet_model.dart';
+import 'package:doghree_rider/features/wallet/widgets/wallet_common_widgets.dart';
 import 'package:doghree_rider/helper/price_converter_helper.dart';
 import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/util/styles.dart';
@@ -36,10 +36,10 @@ class _WalletWithdrawSheetState extends State<WalletWithdrawSheet> {
   void initState() {
     super.initState();
     final available =
-        Get.find<CashInHandController>().wallet?.availableBalance ?? 0;
+        Get.find<WalletController>().wallet?.availableBalance ?? 0;
     _amount = TextEditingController(text: available.toStringAsFixed(2));
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Get.find<CashInHandController>().clearWithdrawError();
+      Get.find<WalletController>().clearWithdrawError();
     });
   }
 
@@ -64,7 +64,7 @@ class _WalletWithdrawSheetState extends State<WalletWithdrawSheet> {
   }
 
   Future<void> _submit() async {
-    final c = Get.find<CashInHandController>();
+    final c = Get.find<WalletController>();
     final WalletModel? w = c.wallet;
     if (w == null) return;
     final WalletAccount? account = w.defaultAccount;
@@ -148,7 +148,7 @@ class _WalletWithdrawSheetState extends State<WalletWithdrawSheet> {
     final ThemeData theme = Theme.of(context);
     final ColorScheme scheme = theme.colorScheme;
 
-    return GetBuilder<CashInHandController>(builder: (c) {
+    return GetBuilder<WalletController>(builder: (c) {
       final WalletAccount? account = c.wallet?.defaultAccount;
       final String? serverError = c.withdrawError;
 

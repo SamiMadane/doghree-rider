@@ -1,10 +1,11 @@
+import 'package:doghree_rider/features/wallet/domain/models/earning_report_model.dart';
+import 'package:doghree_rider/features/wallet/widgets/earning_history_bottom_sheet.dart';
+import 'package:doghree_rider/features/wallet/widgets/wallet_common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:doghree_rider/common/widgets/custom_bottom_sheet_widget.dart';
 import 'package:doghree_rider/common/widgets/title_widget.dart';
-import 'package:doghree_rider/features/cash_in_hand/domain/models/earning_report_model.dart';
-import 'package:doghree_rider/features/cash_in_hand/widgets/earning_history_bottom_sheet.dart';
-import 'package:doghree_rider/features/cash_in_hand/widgets/wallet_common_widgets.dart';
+
 import 'package:doghree_rider/helper/date_converter_helper.dart';
 import 'package:doghree_rider/helper/price_converter_helper.dart';
 import 'package:doghree_rider/util/dimensions.dart';

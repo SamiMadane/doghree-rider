@@ -3,12 +3,12 @@ import 'package:get/get.dart';
 import 'package:doghree_rider/common/widgets/app_shimmer.dart';
 import 'package:doghree_rider/common/widgets/custom_button_widget.dart';
 import 'package:doghree_rider/common/widgets/custom_snackbar_widget.dart';
-import 'package:doghree_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
-import 'package:doghree_rider/features/cash_in_hand/domain/models/wallet_model.dart';
-import 'package:doghree_rider/features/cash_in_hand/widgets/animated_amount_text.dart';
-import 'package:doghree_rider/features/cash_in_hand/widgets/wallet_account_sheet.dart';
-import 'package:doghree_rider/features/cash_in_hand/widgets/wallet_common_widgets.dart';
-import 'package:doghree_rider/features/cash_in_hand/widgets/wallet_withdraw_sheet.dart';
+import 'package:doghree_rider/features/wallet/controllers/wallet_controller.dart';
+import 'package:doghree_rider/features/wallet/domain/models/wallet_model.dart';
+import 'package:doghree_rider/features/wallet/widgets/animated_amount_text.dart';
+import 'package:doghree_rider/features/wallet/widgets/wallet_account_sheet.dart';
+import 'package:doghree_rider/features/wallet/widgets/wallet_common_widgets.dart';
+import 'package:doghree_rider/features/wallet/widgets/wallet_withdraw_sheet.dart';
 import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
 import 'package:doghree_rider/helper/price_converter_helper.dart';
 import 'package:doghree_rider/util/dimensions.dart';
@@ -24,7 +24,7 @@ class BalanceOverviewSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<CashInHandController>(builder: (c) {
+    return GetBuilder<WalletController>(builder: (c) {
       final WalletModel? wallet = c.wallet;
       final double? withdrawn = wallet?.totalWithdrawn ??
           profileController.profileModel?.totalWithdrawn;

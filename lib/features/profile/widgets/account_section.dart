@@ -30,7 +30,7 @@ class AccountSection extends StatelessWidget {
                 ProfileButtonWidget(
                   svgPath: ManagerAssets.walletIcon,
                   title: 'balance'.tr,
-                  onTap: () => Get.toNamed(RouteHelper.getCashInHandRoute()),
+                  onTap: () => Get.toNamed(RouteHelper.getWalletRoute()),
                 ),
                 SizedBox(height: Dimensions.h16),
               ],

@@ -102,7 +102,6 @@ class LocationPermissionManager extends GetxController {
   void _showPermissionDeniedDialog(Function onGranted) {
     showCustomBottomSheet(
       isDismissible: true,
-      showCloseButton: false,
       child: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(
@@ -181,7 +180,6 @@ class LocationPermissionManager extends GetxController {
   void _showPermissionDeniedForeverDialog(Function onGranted) {
     showCustomBottomSheet(
       isDismissible: true,
-      showCloseButton: false,
       child: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(
@@ -290,7 +288,6 @@ class LocationPermissionManager extends GetxController {
   void _showUpgradeToAlwaysDialog(Function onGranted) {
     showCustomBottomSheet(
       isDismissible: true,
-      showCloseButton: false,
       child: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(

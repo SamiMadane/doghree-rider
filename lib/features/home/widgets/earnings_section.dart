@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:doghree_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
+import 'package:doghree_rider/features/wallet/controllers/wallet_controller.dart';
 import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
 import 'package:doghree_rider/helper/price_converter_helper.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
@@ -164,7 +164,7 @@ class _EarningsSectionState extends State<EarningsSection> {
                         // أقل من قبل: صف الإجمالي صار له padding عمودي خاص به
                         SizedBox(height: Dimensions.h12),
                         // الإجمالي: قابل للضغط، يفتح تفاصيل الأرباح لكل طلب
-                        GetBuilder<CashInHandController>(builder: (c) {
+                        GetBuilder<WalletController>(builder: (c) {
                           final wallet = c.wallet;
 
                           return InkWell(
@@ -236,13 +236,13 @@ class _EarningsSectionState extends State<EarningsSection> {
                   ),
 
                   // ===== القسم الثاني: المتاح للسحب + الرصيد والسحب =====
-                  GetBuilder<CashInHandController>(
+                  GetBuilder<WalletController>(
                     builder: (c) {
                       final wallet = c.wallet;
 
                       return InkWell(
                         onTap: () =>
-                            Get.toNamed(RouteHelper.getCashInHandRoute()),
+                            Get.toNamed(RouteHelper.getWalletRoute()),
                         child: Padding(
                           padding: EdgeInsetsDirectional.fromSTEB(
                             Dimensions.w20,

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:doghree_rider/features/cash_in_hand/domain/models/wallet_withdrawal_model.dart';
+import 'package:doghree_rider/features/wallet/domain/models/wallet_withdrawal_model.dart';
 import 'package:doghree_rider/util/manager_colors.dart';
 
-extension WalletWithdrawalX on WalletWithdrawal {
+extension alletWithdrawalX on WalletWithdrawal {
   String get statusText {
     switch (status) {
       case 'pending':

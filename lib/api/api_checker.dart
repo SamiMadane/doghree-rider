@@ -53,7 +53,6 @@ class ApiChecker {
           },
         ),
         isDismissible: false,
-        showCloseButton: false,
       );
     } else {
       _isSessionExpiredBottomSheetShown = false;

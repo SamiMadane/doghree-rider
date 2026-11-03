@@ -61,7 +61,6 @@ class OrderSliderButton extends StatelessWidget {
                 );
               },
               acceptText: 'yes'.tr,
-              acceptColor: Theme.of(context).primaryColor,
               cancelText: 'no'.tr,
             ),
           );

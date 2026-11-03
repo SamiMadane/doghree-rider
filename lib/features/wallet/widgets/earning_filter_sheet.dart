@@ -1,10 +1,10 @@
+import 'package:doghree_rider/features/wallet/controllers/wallet_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:doghree_rider/common/widgets/custom_bottom_sheet_widget.dart';
 import 'package:doghree_rider/common/widgets/custom_button_widget.dart';
 import 'package:doghree_rider/common/widgets/custom_date_range_picker_dialog.dart';
-import 'package:doghree_rider/features/cash_in_hand/controllers/cash_in_hand_controller.dart';
 import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/util/manager_assets.dart';
 import 'package:doghree_rider/util/styles.dart';
@@ -26,7 +26,7 @@ class EarningFilterSheet extends StatefulWidget {
 }
 
 class _EarningFilterSheetState extends State<EarningFilterSheet> {
-  final CashInHandController _c = Get.find<CashInHandController>();
+  final WalletController _c = Get.find<WalletController>();
 
   late String _type;
   late String _dateType;

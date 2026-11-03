@@ -8,15 +8,14 @@ import 'package:path_provider/path_provider.dart';
 import 'package:doghree_rider/api/api_checker.dart';
 import 'package:doghree_rider/common/models/response_model.dart';
 import 'package:doghree_rider/common/widgets/custom_snackbar_widget.dart';
-import 'package:doghree_rider/features/cash_in_hand/domain/models/earning_report_model.dart';
-import 'package:doghree_rider/features/cash_in_hand/domain/models/wallet_model.dart';
-import 'package:doghree_rider/features/cash_in_hand/domain/models/wallet_payment_model.dart';
-import 'package:doghree_rider/features/cash_in_hand/domain/models/wallet_withdrawal_model.dart';
-import 'package:doghree_rider/features/cash_in_hand/domain/services/cash_in_hand_service_interface.dart';
+import 'package:doghree_rider/features/wallet/domain/models/earning_report_model.dart';
+import 'package:doghree_rider/features/wallet/domain/models/wallet_model.dart';
+import 'package:doghree_rider/features/wallet/domain/models/wallet_withdrawal_model.dart';
+import 'package:doghree_rider/features/wallet/domain/services/wallet_service_interface.dart';
 
-class CashInHandController extends GetxController implements GetxService {
-  final CashInHandServiceInterface cashInHandServiceInterface;
-  CashInHandController({required this.cashInHandServiceInterface});
+class WalletController extends GetxController implements GetxService {
+  final WalletServiceInterface walletServiceInterface;
+  WalletController({required this.walletServiceInterface});
 
   static const String _allTypes = 'all_types_earning';
   static const String _allTime = 'all_time';
@@ -61,7 +60,11 @@ class CashInHandController extends GetxController implements GetxService {
   String? _to;
   String? get to => _to;
 
-  final List<String> _earningTypes = [_allTypes, 'delivery_fee', 'delivery_tips'];
+  final List<String> _earningTypes = [
+    _allTypes,
+    'delivery_fee',
+    'delivery_tips'
+  ];
   List<String> get earningTypes => _earningTypes;
 
   String? _selectedEarningType = _allTypes;
@@ -146,7 +149,7 @@ class CashInHandController extends GetxController implements GetxService {
     required String? endDate,
   }) async {
     try {
-      return await cashInHandServiceInterface.getEarningReport(
+      return await walletServiceInterface.getEarningReport(
         offset: offset,
         type: type == _allTypes ? 'all' : type,
         startDate: startDate,
@@ -245,7 +248,7 @@ class CashInHandController extends GetxController implements GetxService {
     update();
 
     final response =
-        await cashInHandServiceInterface.downloadEarningInvoice(dmId: dmId);
+        await walletServiceInterface.downloadEarningInvoice(dmId: dmId);
 
     if (response.statusCode == 200) {
       try {
@@ -268,24 +271,6 @@ class CashInHandController extends GetxController implements GetxService {
   }
 
   // ---------------------------------------------------------------------------
-  // Wallet provided earnings
-  // ---------------------------------------------------------------------------
-
-  List<Transactions>? _walletProvidedTransactions;
-  List<Transactions>? get walletProvidedTransactions =>
-      _walletProvidedTransactions;
-
-  Future<void> getWalletProvidedEarningList() async {
-    _walletProvidedTransactions = null;
-    final List<Transactions>? transactions =
-        await cashInHandServiceInterface.getWalletProvidedEarningList();
-    if (transactions != null) {
-      _walletProvidedTransactions = [...transactions];
-    }
-    update();
-  }
-
-  // ---------------------------------------------------------------------------
   // Wallet
   // ---------------------------------------------------------------------------
 
@@ -298,7 +283,7 @@ class CashInHandController extends GetxController implements GetxService {
   Future<void> getWallet() async {
     _walletLoading = true;
     update();
-    final WalletModel? wallet = await cashInHandServiceInterface.getWallet();
+    final WalletModel? wallet = await walletServiceInterface.getWallet();
     if (wallet != null) _wallet = wallet;
     _walletLoading = false;
     update();
@@ -333,7 +318,7 @@ class CashInHandController extends GetxController implements GetxService {
     bool ok = false;
     try {
       final ResponseModel r =
-          await cashInHandServiceInterface.saveWalletAccount(
+          await walletServiceInterface.saveWalletAccount(
         methodId: methodId,
         fields: fields,
         isDefault: isDefault,
@@ -360,7 +345,7 @@ class CashInHandController extends GetxController implements GetxService {
     update();
 
     final ResponseModel r =
-        await cashInHandServiceInterface.deleteWalletAccount(id);
+        await walletServiceInterface.deleteWalletAccount(id);
     if (r.isSuccess) await getWallet();
 
     _accountBusy = false;
@@ -397,7 +382,7 @@ class CashInHandController extends GetxController implements GetxService {
   Future<void> getWithdrawals() async {
     try {
       final List<WalletWithdrawal>? list =
-          await cashInHandServiceInterface.getWithdrawals();
+          await walletServiceInterface.getWithdrawals();
       if (list != null) {
         _withdrawals = list;
         _withdrawalsFailed = false;
@@ -423,7 +408,7 @@ class CashInHandController extends GetxController implements GetxService {
 
     bool ok = false;
     try {
-      final ResponseModel r = await cashInHandServiceInterface.requestWithdraw(
+      final ResponseModel r = await walletServiceInterface.requestWithdraw(
         amount: amount,
         accountId: accountId,
         note: note,
