@@ -23,8 +23,7 @@ import 'package:doghree_rider/util/session_checker.dart';
 
 class DashboardScreen extends StatefulWidget {
   final int pageIndex;
-  const DashboardScreen(
-      {super.key, required this.pageIndex});
+  const DashboardScreen({super.key, required this.pageIndex});
 
   @override
   DashboardScreenState createState() => DashboardScreenState();
@@ -53,7 +52,6 @@ class DashboardScreenState extends State<DashboardScreen> {
     ];
 
     Get.find<OrderController>().getLatestOrders();
-    // ✅ إضافة: بدء فحص الجلسة
     if (Get.find<AuthController>().isLoggedIn()) {
       Get.find<SessionChecker>().startSessionCheck();
     }
@@ -63,7 +61,7 @@ class DashboardScreenState extends State<DashboardScreen> {
       String? orderID =
           message.data['title_loc_key'] ?? message.data['order_id'];
       bool isParcel = (message.data['order_type'] == 'parcel_order');
-  
+
       if (type == 'new_order' || type == 'order_request') {
         Get.find<OrderController>().getCurrentOrders();
         Get.find<OrderController>().getLatestOrders();
@@ -101,8 +99,6 @@ class DashboardScreenState extends State<DashboardScreen> {
     });
   }
 
-
-
   void _navigateRequestPage() {
     if (Get.find<ProfileController>().profileModel != null &&
         Get.find<ProfileController>().profileModel!.active == 1 &&
@@ -130,7 +126,8 @@ class DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme cs = Theme.of(context).colorScheme;
+    final ThemeData theme = Theme.of(context);
+    final ColorScheme cs = theme.colorScheme;
 
     return PopScope(
       canPop: false,
@@ -165,7 +162,8 @@ class DashboardScreenState extends State<DashboardScreen> {
         }
       },
       child: Scaffold(
-        // إضافة resizeToAvoidBottomInset لمنع دفع Bottom Nav عند ظهور الكيبورد
+        // ← التعديل الوحيد: نفس لون الصفحات، فيختفي الشريط البيج حول الـ nav
+        backgroundColor: theme.cardColor,
         resizeToAvoidBottomInset: false,
         bottomNavigationBar: GetPlatform.isDesktop
             ? const SizedBox()
@@ -179,10 +177,9 @@ class DashboardScreenState extends State<DashboardScreen> {
                       boxShadow: [
                         BoxShadow(
                           color: cs.shadow.withValues(
-                            alpha:
-                                Theme.of(context).brightness == Brightness.dark
-                                    ? 0.0
-                                    : 0.12,
+                            alpha: theme.brightness == Brightness.dark
+                                ? 0.0
+                                : 0.12,
                           ),
                           blurRadius: 18,
                           offset: const Offset(0, 6),
@@ -190,7 +187,7 @@ class DashboardScreenState extends State<DashboardScreen> {
                       ],
                     ),
                     child: Material(
-                      color: Theme.of(context).cardColor,
+                      color: theme.cardColor,
                       clipBehavior: Clip.antiAlias,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(24),
@@ -251,9 +248,7 @@ class DashboardScreenState extends State<DashboardScreen> {
           controller: _pageController,
           itemCount: _screens.length,
           physics: const NeverScrollableScrollPhysics(),
-          itemBuilder: (context, index) {
-            return _screens[index];
-          },
+          itemBuilder: (context, index) => _screens[index],
         ),
       ),
     );
