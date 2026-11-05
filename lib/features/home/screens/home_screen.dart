@@ -389,9 +389,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               showEarnings: showTotalEarnings,
                             ),
                             ActiveOrderSection(),
-                            CustomButtonWidget(
-                              buttonText: 'buttonText',
-                            ),
+                            
                             ProfileOrdersSection(
                               profileController: profileController,
                             ),
