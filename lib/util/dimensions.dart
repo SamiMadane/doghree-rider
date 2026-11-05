@@ -130,6 +130,7 @@ class Dimensions {
   static double w130 = 130.w;
   static double w140 = 140.w;
   static double w150 = 150.w;
+  static double w170 = 170.w;
   static double w200 = 200.w;
   static double w220 = 220.w;
   static double w300 = 300.w;

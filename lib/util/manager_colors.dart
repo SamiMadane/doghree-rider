@@ -65,7 +65,7 @@ class ManagerColors {
   static const Color primaryBgLight = Color(0xFFFFF1CC); // was 0x330146C7
 
   static const Color primaryDark = Color(0xFFFFC233); // was 0xFF4A90E2
-  static const Color primaryBgDark = Color(0xFF3D341F); // was 0x334A90E2
+  static const Color primaryBgDark = Color(0xFF2A2A2A); // was 0x334A90E2
 
   static const Color scaffoldBgLight = Color(0xFFF9F7F3);
   static const Color cardLight = Color(0xFFFFFFFF);
