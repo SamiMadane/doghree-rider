@@ -1,3 +1,4 @@
+import 'package:doghree_rider/common/widgets/dashed_line_widget.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -52,6 +53,10 @@ class OrderRequestWidget extends StatelessWidget {
     double distance =
         p == null ? 0 : Get.find<AddressController>().getRestaurantDistance(p);
 
+    int count = orderModel.detailsCount ?? 0;
+
+    ColorScheme scheme = Theme.of(context).colorScheme;
+
     return CustomCard(
       padding: EdgeInsets.symmetric(
         horizontal: Dimensions.w16,
@@ -72,17 +77,14 @@ class OrderRequestWidget extends StatelessWidget {
                         text: '${'order_id'.tr}: ', // هذا نص الـ Label للترجمة
                         style: textRegular().copyWith(
                           fontSize: Dimensions.fs14,
-                          color: Theme.of(context).hintColor, // لون رمادي
+                          color: scheme.onSurfaceVariant, // لون رمادي
                         ),
                       ),
                       TextSpan(
                         text: '#${orderModel.id}', // القيمة نفسها
-                        style: textRegular().copyWith(
+                        style: textBold().copyWith(
                           fontSize: Dimensions.fs14,
-                          color: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.color, // برايمري كولور
+                          color: scheme.onSurface, // برايمري كولور
                         ),
                       ),
                     ],
@@ -92,20 +94,22 @@ class OrderRequestWidget extends StatelessWidget {
                   width: Dimensions.w8,
                 ),
                 Text(
-                  DateConverterHelper.timeAgo(orderModel.createdAt!),
+                  orderModel.createdAt == null
+                      ? ''
+                      : DateConverterHelper.timeAgo(orderModel.createdAt!),
                   style: textRegular().copyWith(
-                      color: ManagerColors.darkGreen,
-                      fontSize: Dimensions.fs10),
+                      color: scheme.onSurfaceVariant,
+                      fontSize: Dimensions.fs12),
                 ),
                 Spacer(),
-                (Get.find<SplashController>().configModel!.showDmEarning! &&
-                        Get.find<ProfileController>().profileModel != null &&
-                        Get.find<ProfileController>().profileModel!.earnings ==
+                ((Get.find<SplashController>().configModel?.showDmEarning ??
+                            false) &&
+                        Get.find<ProfileController>().profileModel?.earnings ==
                             1)
                     ? Text(
                         PriceConverterHelper.convertPrice(
-                            orderModel.originalDeliveryCharge! +
-                                orderModel.dmTips!),
+                            (orderModel.originalDeliveryCharge ?? 0.0) +
+                                (orderModel.dmTips ?? 0.0)),
                         style:
                             textSemiBold().copyWith(fontSize: Dimensions.fs14),
                       )
@@ -134,14 +138,10 @@ class OrderRequestWidget extends StatelessWidget {
                                 fit: BoxFit.cover),
                           ),
                     SizedBox(
-                      height: 60,
-                      child: DottedLine(
-                        direction: Axis.vertical,
-                        lineLength: double.infinity,
-                        dashLength: 6,
-                        dashColor: Theme.of(context).disabledColor,
-                      ),
-                    ),
+                        height: 60,
+                        child: DashedLine(
+                            axis: Axis.vertical,
+                            color: Theme.of(context).colorScheme.outline)),
                     SvgPicture.asset(
                       ManagerAssets.locationIcon,
                       width: 25,
@@ -181,8 +181,8 @@ class OrderRequestWidget extends StatelessWidget {
                                     Text(
                                       '${distance > 1000 ? '1000+' : distance.toStringAsFixed(2)} ${'km_away'.tr}',
                                       style: textRegular().copyWith(
-                                          fontSize: Dimensions.fs10,
-                                          color: ManagerColors.darkGreen),
+                                          fontSize: Dimensions.fs12,
+                                          color: scheme.onSurfaceVariant),
                                       textAlign: TextAlign.center,
                                     ),
                                   ],
@@ -191,10 +191,10 @@ class OrderRequestWidget extends StatelessWidget {
                                 Text(
                                   parcel
                                       ? 'parcel'.tr
-                                      : '${orderModel.detailsCount} ${orderModel.detailsCount! > 1 ? 'items'.tr : 'item'.tr}',
-                                  style: textMedium().copyWith(
+                                      : '$count ${count > 1 ? 'items'.tr : 'item'.tr}',
+                                  style: textBold().copyWith(
                                     fontSize: Dimensions.fs12,
-                                    color: ManagerColors.darkGreen,
+                                    color: scheme.onSurface,
                                   ),
                                 ),
                                 const SizedBox(height: 4),
@@ -208,7 +208,7 @@ class OrderRequestWidget extends StatelessWidget {
                                   overflow: TextOverflow.ellipsis,
                                   style: textRegular().copyWith(
                                     fontSize: Dimensions.fs12,
-                                    color: Theme.of(context).disabledColor,
+                                    color: scheme.onSurfaceVariant,
                                   ),
                                 ),
                               ],
@@ -240,7 +240,7 @@ class OrderRequestWidget extends StatelessWidget {
                                     overflow: TextOverflow.ellipsis,
                                     style: textRegular().copyWith(
                                       fontSize: Dimensions.fs12,
-                                      color: Theme.of(context).disabledColor,
+                                      color: scheme.onSurfaceVariant,
                                     ),
                                   ),
                                 ] else
@@ -250,7 +250,7 @@ class OrderRequestWidget extends StatelessWidget {
                                     overflow: TextOverflow.ellipsis,
                                     style: textRegular().copyWith(
                                       fontSize: Dimensions.fs12,
-                                      color: Theme.of(context).disabledColor,
+                                      color: scheme.onSurfaceVariant,
                                     ),
                                   ),
                               ],
