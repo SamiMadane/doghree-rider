@@ -18,25 +18,17 @@ Future<List<NotificationModel>?> getList({int? offset}) async {
   List<NotificationModel>? notificationList;
   Response response = await apiClient.getData(AppConstants.notificationUri);
 
-  print('🔍 API Response Length: ${response.body.length}');
-  print('🔍 Raw API Response: ${response.body}');
 
   if (response.statusCode == 200) {
     notificationList = [];
 
     response.body.forEach((notification) {
       // طباعة القيم الخام من API
-      print('------------------------------');
-      print('🔔 Notification ID (raw): ${notification['id']}');
-      print('📥 is_read from API (raw): ${notification['is_read']}');
 
       // التحويل إلى Model
       NotificationModel notify = NotificationModel.fromJson(notification);
 
       // طباعة بعد التحويل
-      print('✅ Notification ID: ${notify.id}');
-      print('✅ isRead (parsed): ${notify.isRead}');
-      print('------------------------------');
 
       notificationList!.add(notify);
     });
@@ -57,7 +49,6 @@ Future<List<NotificationModel>?> getList({int? offset}) async {
       );
       return response.statusCode == 200;
     } catch (e) {
-      print('❌ Error marking notifications as read: $e');
       return false;
     }
   }

@@ -41,7 +41,6 @@ class _WalletScreenState extends State<WalletScreen> {
         cash.getWithdrawals(),
       ]);
     } catch (e) {
-      debugPrint('REFRESH error: $e');
     }
   }
 

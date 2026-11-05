@@ -1,5 +1,4 @@
 import 'package:doghree_rider/common/widgets/dashed_line_widget.dart';
-import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -22,7 +21,6 @@ import 'package:doghree_rider/helper/price_converter_helper.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
 import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/util/manager_assets.dart';
-import 'package:doghree_rider/util/manager_colors.dart';
 import 'package:doghree_rider/util/styles.dart';
 
 class OrderRequestWidget extends StatelessWidget {

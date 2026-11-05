@@ -53,8 +53,7 @@ Future<void> main() async {
       await NotificationHelper.initialize(flutterLocalNotificationsPlugin);
       FirebaseMessaging.onBackgroundMessage(myBackgroundMessageHandler);
     }
-  } catch (e, s) {
-    debugPrint('❌ Notification init failed: $e\n$s');
+  } catch (e) {
   }
 
   await DateConverterHelper.initLocaleDateFormatting();

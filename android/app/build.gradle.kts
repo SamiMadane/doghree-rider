@@ -33,6 +33,7 @@ android {
             storePassword = keystoreProperties["storePassword"] as String?
         }
     }
+   
     defaultConfig {
         applicationId = "com.doghree.rider"
         minSdk = flutter.minSdkVersion

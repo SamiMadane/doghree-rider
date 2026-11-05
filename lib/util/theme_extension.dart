@@ -67,8 +67,8 @@ class CustomColorsExtension extends ThemeExtension<CustomColorsExtension> {
     Color? redBg,
   }) {
     return CustomColorsExtension(
-      strock1: stroke1 ?? this.strock1,
-      strock2: stroke2 ?? this.strock2,
+      strock1: stroke1 ?? strock1,
+      strock2: stroke2 ?? strock2,
       senderMessageBg: senderMessageBg ?? this.senderMessageBg,
       receiverMessageBg: receiverMessageBg ?? this.receiverMessageBg,
       grayBg: grayBg ?? this.grayBg,

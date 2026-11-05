@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:phone_numbers_parser/phone_numbers_parser.dart';
 
 class CustomValidator {
@@ -15,7 +14,6 @@ class CustomValidator {
         phone = '+${phoneNumber.countryCode}${phoneNumber.nsn}';
       }
     } catch (e) {
-      debugPrint('Phone Number is not parsing: $e');
     }
     return PhoneValid(isValid: isValid, countryCode: countryCode,  phone: phone);
   }

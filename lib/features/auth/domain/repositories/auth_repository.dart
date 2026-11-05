@@ -1,5 +1,4 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:doghree_rider/api/api_client.dart';
@@ -77,7 +76,6 @@ class AuthRepository implements AuthRepositoryInterface {
     if (!GetPlatform.isWeb) {
       deviceToken = await FirebaseMessaging.instance.getToken() ?? '';
     }
-    debugPrint('----Device Token----- $deviceToken');
     return deviceToken;
   }
 

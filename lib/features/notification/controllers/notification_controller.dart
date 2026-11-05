@@ -25,8 +25,6 @@ class NotificationController extends GetxController implements GetxService {
 
   /// ✅ معالجة النقر على الإشعار - Server-side
   Future<void> handleNotificationTap(NotificationModel notification) async {
-    print('🔔 Notification ID: ${notification.id}');
-    print('🔔 Is Read Before: ${notification.isRead}');
     // تحديد الإشعار كمقروء في الـ Backend
     if (!notification.isRead) {
       await markNotificationAsRead(notification.id!);
@@ -37,12 +35,9 @@ class NotificationController extends GetxController implements GetxService {
       return;
     }
 
-    print('🔔 Raw type from API: "${notification.data!.type}"');
-    print('🔔 Order ID: ${notification.data!.orderId}');
 
     NotificationType notificationType =
         _convertStringToNotificationType(notification.data!.type!);
-    print('🔔 Converted Notification Type: $notificationType');
 
     // التنقل بناءً على نوع الإشعار
     switch (notificationType) {
@@ -107,11 +102,9 @@ class NotificationController extends GetxController implements GetxService {
           _notificationList![index].isRead = true;
           _updateHasNotification();
           update();
-          print('✅ Notification $notificationId marked locally');
         }
       }
     } else {
-      print('❌ Failed to mark notification $notificationId as read');
     }
   }
 
@@ -131,7 +124,6 @@ class NotificationController extends GetxController implements GetxService {
         }
         _hasNotification = false;
       }
-      print('✅ All notifications marked as read');
     }
 
     _isLoading = false;
@@ -142,7 +134,6 @@ class NotificationController extends GetxController implements GetxService {
     String cleanType =
         type.replaceAll('NotificationType.', '').toLowerCase().trim();
 
-    print('🔄 Clean type: "$cleanType"');
 
     switch (cleanType) {
       case 'message':
@@ -182,7 +173,6 @@ class NotificationController extends GetxController implements GetxService {
         return NotificationType.withdraw;
 
       default:
-        print('⚠️ Unknown type: "$cleanType"');
         return NotificationType.general;
     }
   }

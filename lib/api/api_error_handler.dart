@@ -10,7 +10,6 @@ class ApiErrorHandler {
   /// معالجة الأخطاء وإرجاع نموذج خطأ واضح
   static ApiErrorModel handleError(dynamic error) {
     if (kDebugMode) {
-      debugPrint('🔴 API Error: $error');
     }
 
     // معالجة أخطاء Response
@@ -40,9 +39,6 @@ class ApiErrorHandler {
     final statusCode = response.statusCode ?? HttpStatusCode.unknown;
 
     if (kDebugMode) {
-      debugPrint('🔴 Response Error - Code: $statusCode');
-      debugPrint('🔴 Response Body: ${response.body}');
-      debugPrint('🔴 Status Text: ${response.statusText}');
     }
 
     // محاولة استخراج رسالة من الـ body
@@ -147,7 +143,6 @@ class ApiErrorHandler {
   /// معالجة أخطاء Exception
   static ApiErrorModel _handleException(Exception exception) {
     if (kDebugMode) {
-      debugPrint('🔴 Exception: $exception');
     }
 
     // أخطاء الاتصال
@@ -177,7 +172,6 @@ class ApiErrorHandler {
   /// معالجة أخطاء String
   static ApiErrorModel _handleStringError(String error) {
     if (kDebugMode) {
-      debugPrint('🔴 String Error: $error');
     }
 
     // التحقق من نوع الخطأ من النص
@@ -252,7 +246,6 @@ class ApiErrorHandler {
       }
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('🔴 Error extracting message: $e');
       }
     }
 
@@ -369,8 +362,9 @@ class ApiErrorHandler {
       if (errors is List && errors.isNotEmpty && errors.first is Map) {
         return (errors.first as Map)['code']?.toString();
       }
-      if (errors is Map && errors.isNotEmpty)
+      if (errors is Map && errors.isNotEmpty) {
         return errors.keys.first.toString();
+      }
     }
     return null;
   }

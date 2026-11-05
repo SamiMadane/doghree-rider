@@ -14,7 +14,6 @@ import 'package:doghree_rider/helper/price_converter_helper.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
 import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/util/manager_assets.dart';
-import 'package:doghree_rider/util/manager_colors.dart';
 import 'package:doghree_rider/util/styles.dart';
 import 'package:doghree_rider/common/widgets/custom_button_widget.dart';
 import 'package:doghree_rider/common/widgets/custom_snackbar_widget.dart';

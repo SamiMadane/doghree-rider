@@ -41,12 +41,8 @@ class SplashController extends GetxController implements GetxService {
               Map<String, dynamic>.from(response.body));
         } catch (e) {
           // فشل قراءة إعدادات الخريطة ما لازم يفشّل تحميل الـ config كله
-          print('Doghree map config parse failed: $e');
         }
         // طباعة البيانات بالكامل
-        print("=== Config Data Loaded ===");
-        print(_data);
-        print("==========================");
 
         update();
         return true;
@@ -54,10 +50,8 @@ class SplashController extends GetxController implements GetxService {
         return false;
       }
     } on TimeoutException catch (_) {
-      print("getConfigData: Timeout Exception");
       return false;
     } catch (e) {
-      print("getConfigData: Exception caught: $e");
       return false;
     }
   }

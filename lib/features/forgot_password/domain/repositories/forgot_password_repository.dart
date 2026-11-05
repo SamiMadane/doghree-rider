@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
 import 'package:doghree_rider/api/api_client.dart';
 import 'package:doghree_rider/common/models/response_model.dart';
 import 'package:doghree_rider/features/profile/domain/models/profile_model.dart';
@@ -131,7 +130,6 @@ class ForgotPasswordRepository implements ForgotPasswordRepositoryInterface {
     if (!GetPlatform.isWeb) {
       deviceToken = (await FirebaseMessaging.instance.getToken())!;
     }
-    debugPrint('----Device Token----- $deviceToken');
     return deviceToken;
   }
 

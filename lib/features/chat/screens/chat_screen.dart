@@ -18,7 +18,6 @@ import 'package:doghree_rider/common/widgets/custom_image_widget.dart';
 import 'package:doghree_rider/common/widgets/custom_snackbar_widget.dart';
 import 'package:doghree_rider/common/widgets/paginated_list_view_widget.dart';
 import 'package:doghree_rider/features/chat/widgets/message_bubble_widget.dart';
-import 'package:doghree_rider/util/theme_extension.dart';
 
 class ChatScreen extends StatefulWidget {
   final NotificationBodyModel? notificationBody;
@@ -53,7 +52,6 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final customColor = Theme.of(context).extension<CustomColorsExtension>()!;
     final ColorScheme cs = Theme.of(context).colorScheme;
 
     return GetBuilder<ChatController>(builder: (chatController) {
@@ -331,7 +329,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                                 ManagerAssets.attachedIcon,
                                                 width: Dimensions.w20,
                                                 height: Dimensions.h20,
-                                               colorFilter: ColorFilter.mode(Theme.of(context).hintColor, BlendMode.srcIn),
+                                                colorFilter: ColorFilter.mode(
+                                                    Theme.of(context).hintColor,
+                                                    BlendMode.srcIn),
                                               ),
                                             ),
                                           ),

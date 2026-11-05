@@ -45,7 +45,6 @@ class SessionChecker extends GetxService {
         stopSessionCheck();
       }
     } catch (e) {
-      print('Session check failed: $e');
     }
   }
 

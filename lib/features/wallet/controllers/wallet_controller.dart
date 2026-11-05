@@ -156,7 +156,6 @@ class WalletController extends GetxController implements GetxService {
         endDate: endDate,
       );
     } catch (e) {
-      debugPrint('EARNING REPORT error: $e');
       return null;
     }
   }
@@ -352,7 +351,6 @@ class WalletController extends GetxController implements GetxService {
         _accountError = _messageOrDefault(r.message);
       }
     } catch (e) {
-      debugPrint('SAVE ACCOUNT error: $e');
       _accountError = 'error_occurred'.tr;
     }
 
@@ -412,7 +410,6 @@ class WalletController extends GetxController implements GetxService {
       }
     } catch (e) {
       _withdrawalsFailed = true;
-      debugPrint('WITHDRAWALS parse error: $e');
     }
     update();
   }
@@ -441,7 +438,6 @@ class WalletController extends GetxController implements GetxService {
         _withdrawError = _messageOrDefault(r.message);
       }
     } catch (e) {
-      debugPrint('WITHDRAW error: $e');
       _withdrawError = 'error_occurred'.tr;
     }
     _withdrawBusy = false;

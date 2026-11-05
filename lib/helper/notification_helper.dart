@@ -90,8 +90,6 @@ class NotificationHelper {
     await createChannel(flutterLocalNotificationsPlugin);
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (kDebugMode) {
-        print("onMessage message type:${message.data['type']}");
-        print("onMessage message:${message.data}");
       }
       if (Get.isRegistered<NotificationController>()) {
         Get.find<NotificationController>().getNotificationList(true);
@@ -162,7 +160,6 @@ class NotificationHelper {
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       if (kDebugMode) {
-        print("onOpenApp message type:${message.data['type']}");
       }
       try {
         if (message.data.isNotEmpty) {
@@ -391,7 +388,6 @@ class NotificationHelper {
 
 @pragma('vm:entry-point')
 Future<dynamic> myBackgroundMessageHandler(RemoteMessage message) async {
-  debugPrint("onBackground: ${message.data}");
   await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform);
 
@@ -469,7 +465,6 @@ Future<ServiceRequestResult> stopService() async {
   try {
     _audioPlayer.dispose();
   } catch (e) {
-    debugPrint('error-----$e');
   }
   return FlutterForegroundTask.stopService();
 }
@@ -516,7 +511,6 @@ class MyTaskHandler extends TaskHandler {
   // Called when the notification button is pressed.
   @override
   void onNotificationButtonPressed(String id) {
-    debugPrint('onNotificationButtonPressed: $id');
     if (id == '1') {
       FlutterForegroundTask.launchApp('/');
     }
@@ -529,7 +523,6 @@ class MyTaskHandler extends TaskHandler {
   // for this function to be called.
   @override
   void onNotificationPressed() {
-    debugPrint('onNotificationPressed');
 
     FlutterForegroundTask.launchApp('/');
     stopService();

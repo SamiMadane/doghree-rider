@@ -371,7 +371,6 @@ class _ProofRow extends StatelessWidget {
                     );
                   },
                   errorBuilder: (_, error, __) {
-                    debugPrint('PROOF image failed: $error | $url');
                     return ColoredBox(
                       color: theme.scaffoldBackgroundColor,
                       child: Icon(

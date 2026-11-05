@@ -267,7 +267,6 @@ class AuthController extends GetxController implements GetxService {
         }
       }
     } catch (e) {
-      debugPrint('REGISTER error: $e');
       showCustomSnackBar('error_occurred'.tr);
     }
     _isLoading = false;

@@ -1,5 +1,4 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:doghree_rider/common/widgets/custom_button_widget.dart';
 import 'package:doghree_rider/common/widgets/custom_snackbar_widget.dart';
 import 'package:doghree_rider/features/splash/screens/splash_screen.dart';
@@ -92,7 +91,6 @@ class NoInternetScreen extends StatelessWidget {
                       Get.offAll(() => const SplashScreen(body: null));
                     }
                   } catch (e) {
-                    print('❌ Error navigating: $e');
                     showCustomSnackBar('error_occurred'.tr);
                   }
                 } else {

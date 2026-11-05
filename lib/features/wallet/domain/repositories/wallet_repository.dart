@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:doghree_rider/api/api_checker.dart';
@@ -95,8 +94,6 @@ class WalletRepository implements WalletRepositoryInterface {
   @override
   Future<WalletModel?> getWallet() async {
     final Response response = await apiClient.getData(AppConstants.walletUri);
-    debugPrint('WALLET ◀ ${response.statusCode} ${response.body}',
-        wrapWidth: 800);
     if (response.statusCode == 200 && response.body is Map) {
       return WalletModel.fromJson(Map<String, dynamic>.from(response.body));
     }
@@ -156,7 +153,6 @@ class WalletRepository implements WalletRepositoryInterface {
   Future<List<WalletWithdrawal>?> getWithdrawals({int offset = 1}) async {
     final Response response = await apiClient.getData(
         '${AppConstants.walletWithdrawalsUri}?limit=20&offset=$offset');
-    debugPrint('WITHDRAWALS ◀ ${response.statusCode} ${response.bodyString}');
     if (response.statusCode == 200 && response.body is Map) {
       final raw = (response.body as Map)['withdrawals'];
       if (raw is List) {

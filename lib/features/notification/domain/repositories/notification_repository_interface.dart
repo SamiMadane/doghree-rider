@@ -3,6 +3,7 @@ import 'package:doghree_rider/features/notification/domain/models/notification_m
 
 abstract class NotificationRepositoryInterface extends RepositoryInterface {
   // ✅ الجديد - Server-side read status
+  @override
   Future<List<NotificationModel>?> getList({int? offset});
   Future<bool> markNotificationAsRead(int notificationId);
   Future<bool> markNotificationsAsRead(List<int> notificationIds);

@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 
 class LanguageBottomSheetWidget extends StatefulWidget {
   final bool isFromInitScreen;
-  LanguageBottomSheetWidget({
+  const LanguageBottomSheetWidget({
     super.key,
     this.isFromInitScreen = false,
   });

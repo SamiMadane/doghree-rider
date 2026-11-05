@@ -130,10 +130,10 @@ class _LottieBottomSheetOrderRequestState
         // orderModel is shared between screens: only trust it if it is THIS order.
         final bool loaded =
             order != null && (order.id == null || order.id == widget.orderId);
-        final double? fee = (loaded && order != null)
+        final double? fee = (loaded)
             ? (order.originalDeliveryCharge ?? order.deliveryCharge)
             : null;
-        final double tips = (loaded && order != null) ? (order.dmTips ?? 0) : 0;
+        final double tips = (loaded) ? (order.dmTips ?? 0) : 0;
 
         return Column(
           mainAxisSize: MainAxisSize.min,

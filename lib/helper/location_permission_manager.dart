@@ -31,7 +31,6 @@ class LocationPermissionManager extends GetxController {
     try {
       _permissionStatus.value = await Geolocator.checkPermission();
     } catch (e) {
-      debugPrint('Error checking initial permission: $e');
     }
   }
 
@@ -46,7 +45,6 @@ class LocationPermissionManager extends GetxController {
     final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     if (_isCheckingPermission.value ||
         (now - _lastCheckTime.value) < _checkCooldownSeconds) {
-      debugPrint('Permission check blocked - cooldown active');
       return false;
     }
 
@@ -91,7 +89,6 @@ class LocationPermissionManager extends GetxController {
 
       return false;
     } catch (e) {
-      debugPrint('Error requesting location permission: $e');
       return false;
     } finally {
       _isCheckingPermission.value = false;
@@ -202,9 +199,7 @@ class LocationPermissionManager extends GetxController {
                   SizedBox(width: Dimensions.w16),
                   Expanded(
                     child: Text(
-                      'allow_to'.tr +
-                          ' ${AppConstants.appName} ' +
-                          'to_access_location'.tr,
+                      '${'allow_to'.tr} ${AppConstants.appName} ${'to_access_location'.tr}',
                       textAlign: TextAlign.start,
                       style: textBold().copyWith(fontSize: Dimensions.fs16),
                       maxLines: 3,

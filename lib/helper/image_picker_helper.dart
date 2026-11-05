@@ -45,7 +45,6 @@ class ImagePickerHelper {
       // 3. Return XFile from cropped path
       return XFile(croppedFile.path);
     } catch (e) {
-      debugPrint('Error picking image: $e');
       return null;
     }
   }

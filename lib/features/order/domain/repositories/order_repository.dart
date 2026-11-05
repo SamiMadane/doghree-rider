@@ -10,7 +10,6 @@ import 'package:doghree_rider/features/order/domain/models/order_model.dart';
 import 'package:doghree_rider/features/order/domain/models/update_status_body_model.dart';
 import 'package:doghree_rider/features/order/domain/repositories/order_repository_interface.dart';
 import 'package:doghree_rider/util/app_constants.dart';
-import 'package:flutter/foundation.dart';
 import 'package:latlong2/latlong.dart' show LatLng;
 import 'package:doghree_rider/doghree_map/polyline.dart';
 
@@ -71,12 +70,6 @@ class OrderRepository implements OrderRepositoryInterface {
     List<OrderModel>? latestOrderList;
     Response response =
         await apiClient.getData(AppConstants.latestOrdersUri + _getUserToken());
-    final h = response.headers;
-    debugPrint('LATEST ◀ ${response.statusCode} '
-        'canAccept=${h?['x-can-accept']} '
-        'activeOrder=${h?['x-active-order-id']} '
-        'code=${h?['x-can-accept-code']} '
-        'body=${response.body}');
 
     if (response.statusCode == 200) {
       latestOrderList = [];
@@ -171,15 +164,12 @@ class OrderRepository implements OrderRepositoryInterface {
           if (encoded is String && encoded.isNotEmpty) {
             final pts = decodePolyline(encoded);
             if (pts.isNotEmpty) {
-              debugPrint(
-                  'direction-api: ${pts.length} pts, last=${pts.last}, dest=$destination');
               return pts;
             }
           }
         }
       }
     } catch (e) {
-      debugPrint('Error getting directions: $e');
     }
     return null;
   }

@@ -120,7 +120,6 @@ class _DoghreeMapViewState extends State<DoghreeMapView> {
       // إذا لم يُحمَّل الستايل خلال 15 ثانية ننزل للخريطة الاحتياطية
       _timeout = Timer(const Duration(seconds: 15), () {
         if (mounted && !_styleLoaded) {
-          debugPrint('Doghree map: style timeout, using flutter_map fallback');
           setState(() => _fallback = true);
         }
       });
@@ -246,7 +245,7 @@ class _MapLibreImplState extends State<_MapLibreImpl>
       await _c?.setSymbolIconAllowOverlap(true);
       await _c?.setSymbolIconIgnorePlacement(true);
     } catch (e) {
-      debugPrint('Doghree map: symbol overlap setup failed: $e');
+      debugPrint('MapLibre: setSymbolIconAllowOverlap failed: $e');
     }
     await _sync();
     if (mounted) widget.onReady?.call(this);
@@ -320,8 +319,6 @@ class _MapLibreImplState extends State<_MapLibreImpl>
           ));
         }
       }
-    } catch (e) {
-      debugPrint('Doghree map: annotation sync failed: $e');
     } finally {
       _syncing = false;
       if (_pending) {
@@ -374,7 +371,6 @@ class _MapLibreImplState extends State<_MapLibreImpl>
         await c.animateCamera(ml.CameraUpdate.tiltTo(widget.tilt));
       }
     } catch (e) {
-      debugPrint('Doghree map: fitPoints failed: $e');
     }
   }
 
@@ -383,7 +379,6 @@ class _MapLibreImplState extends State<_MapLibreImpl>
     try {
       await _c?.animateCamera(ml.CameraUpdate.newLatLngZoom(_ml(point), zoom));
     } catch (e) {
-      debugPrint('Doghree map: moveTo failed: $e');
     }
   }
 

@@ -1,5 +1,3 @@
-import 'package:doghree_rider/common/widgets/custom_bottom_sheet_widget.dart';
-import 'package:doghree_rider/features/dashboard/widgets/lottie_bottom_sheet_order_request.dart';
 import 'package:doghree_rider/features/wallet/controllers/wallet_controller.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -61,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
     await Get.find<NotificationController>().getNotificationList();
   }
 
-  _checkSystemNotification() async {
+  Future<void> _checkSystemNotification() async {
     if (await Permission.notification.status.isDenied ||
         await Permission.notification.status.isPermanentlyDenied) {
       await Get.find<AuthController>().setNotificationActive(false);

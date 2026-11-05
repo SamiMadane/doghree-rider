@@ -4,7 +4,6 @@ import 'package:doghree_rider/features/chat/domain/models/conversation_model.dar
 import 'package:doghree_rider/features/chat/domain/models/message_model.dart';
 import 'package:doghree_rider/helper/date_converter_helper.dart';
 import 'package:doghree_rider/util/dimensions.dart';
-import 'package:doghree_rider/util/manager_colors.dart';
 import 'package:doghree_rider/util/styles.dart';
 import 'package:doghree_rider/common/widgets/custom_image_widget.dart';
 import 'package:doghree_rider/common/widgets/image_diaglog_widget.dart';

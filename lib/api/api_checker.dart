@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:doghree_rider/api/api_error_handler.dart';
 import 'package:doghree_rider/api/error_message.dart';
@@ -58,8 +57,6 @@ class ApiChecker {
       _isSessionExpiredBottomSheetShown = false;
       Get.offAllNamed(RouteHelper.getSignInRoute());
     }
-    debugPrint('SESSION EXPIRED triggered. token=${Get.find<AuthController>().getUserToken()}');
-debugPrint(StackTrace.current.toString());
   }
 
   static void resetDialogState() {

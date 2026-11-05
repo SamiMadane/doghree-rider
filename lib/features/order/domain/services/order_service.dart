@@ -9,9 +9,7 @@ import 'package:doghree_rider/features/order/domain/models/order_model.dart';
 import 'package:doghree_rider/features/order/domain/models/update_status_body_model.dart';
 import 'package:doghree_rider/features/order/domain/repositories/order_repository_interface.dart';
 import 'package:doghree_rider/features/order/domain/services/order_service_interface.dart';
-import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:latlong2/latlong.dart' show LatLng;
 import 'package:doghree_rider/doghree_map/map_safety.dart';
 import 'package:latlong2/latlong.dart' show LatLng, Distance;
 
@@ -143,7 +141,6 @@ class OrderService implements OrderServiceInterface {
       }
       return pos == null ? null : parsePoint(pos.latitude, pos.longitude);
     } catch (e) {
-      debugPrint('Error getting location: $e');
       return null;
     }
   }
@@ -174,8 +171,6 @@ class OrderService implements OrderServiceInterface {
       }
       // نقصّ فقط إذا كان أقرب رأس أقرب للوجهة بوضوح من آخر نقطة
       if (bestD < endGap * 0.5) r = route.sublist(0, best + 1);
-      debugPrint(
-          'buildRoute endGap=${endGap.toStringAsFixed(0)}m bestD=${bestD.toStringAsFixed(0)}m best=$best/${route.length}');
     }
     return [origin, ...r, destination];
   }

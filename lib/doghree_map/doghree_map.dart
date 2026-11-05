@@ -58,7 +58,6 @@ class _DoghreeMapState extends State<DoghreeMap> {
           vtr.ThemeReader().read(jsonDecode(styleJson) as Map<String, dynamic>);
       return _Vector(provider, theme);
     } catch (e) {
-      debugPrint('Doghree map: PMTiles failed, using raster fallback: $e');
       return null;
     }
   }

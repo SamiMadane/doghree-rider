@@ -119,7 +119,6 @@ class OrderController extends GetxController implements GetxService {
     try {
       _mapRoute = orderServiceInterface.buildRoute(my, dest, real);
     } catch (e) {
-      debugPrint('buildRoute failed: $e');
       _mapRoute = [my, dest]; // خط مستقيم بدل لا شيء
     }
     update(['order_map']);
@@ -282,8 +281,6 @@ class OrderController extends GetxController implements GetxService {
           processedOrders.where(_isValidOrder).toList();
 
       _latestOrderList!.addAll(validOrders);
-      debugPrint('latest raw=${latestOrderList.length} '
-          'processed=${processedOrders.length} valid=${validOrders.length}');
     }
 
     update();
@@ -355,7 +352,6 @@ class OrderController extends GetxController implements GetxService {
       } catch (e) {
         // ✅ معالجة خطأ 404
         showCustomSnackBar('failed_to_load_order_details'.tr, isError: true);
-        debugPrint('🔴 Error loading order details: $e');
       }
 
       update();

@@ -225,7 +225,7 @@ class OrderSummaryWidget extends StatelessWidget {
               transparent: true,
               textColor: scheme.onSurface,
               borderColor: scheme.onSurface,
-              buttonText: '${'show_items'.tr} (${itemCount})',
+              buttonText: '${'show_items'.tr} ($itemCount)',
             ),
           ],
         ),

@@ -56,7 +56,6 @@ void showCustomSnackBar(
   } catch (e) {
     // Safety fallback
     if (kDebugMode) {
-      print('❌ Failed to show snackbar safely: $e');
     }
   }
 }
