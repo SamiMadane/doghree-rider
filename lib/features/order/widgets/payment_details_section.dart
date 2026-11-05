@@ -1,3 +1,4 @@
+import 'package:doghree_rider/common/widgets/dashed_line_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:doghree_rider/helper/price_converter_helper.dart';
@@ -87,12 +88,11 @@ class PaymentDetailsSection extends StatelessWidget {
             style: textSemiBold().copyWith(fontSize: Dimensions.fs16),
           ),
           SizedBox(height: Dimensions.h16),
-          if (!parcel)
-            _buildRow(
-              context,
-              addOns > 0 ? 'subtotal'.tr : 'product_price'.tr,
-              PriceConverterHelper.convertPrice(itemsPrice),
-            ),
+          if (!parcel) ...[
+            _buildRow(context, addOns > 0 ? 'subtotal'.tr : 'product_price'.tr,
+                PriceConverterHelper.convertPrice(itemsPrice)),
+            if (addOns <= 0) SizedBox(height: Dimensions.h10),
+          ],
           if (addOns > 0) ...[
             SizedBox(height: Dimensions.h10),
             _buildRow(
@@ -100,7 +100,9 @@ class PaymentDetailsSection extends StatelessWidget {
               'addons'.tr,
               PriceConverterHelper.convertPrice(addOns),
             ),
-            Divider(thickness: 1, color: scheme.outline),
+            DashedLine(
+              color: scheme.outline,
+            ),
             SizedBox(height: Dimensions.h10),
             _buildRow(
               context,
@@ -172,14 +174,13 @@ class PaymentDetailsSection extends StatelessWidget {
             ),
             SizedBox(height: Dimensions.h10),
           ],
-          Divider(color: scheme.outline, thickness: 1),
+          DashedLine(
+            color: scheme.outline,
+          ),
           SizedBox(height: Dimensions.h10),
           _buildRow(
-            context,
-            'total'.tr,
-            PriceConverterHelper.convertPrice(total),
-            style: textSemiBold().copyWith(fontSize: Dimensions.fs16),
-          ),
+              context, 'total'.tr, PriceConverterHelper.convertPrice(total),
+              style: textBold().copyWith(fontSize: Dimensions.fs18)),
         ],
       ),
     );

@@ -48,7 +48,8 @@ class _MapPreviewSectionState extends State<MapPreviewSection> {
   }
 
   Future<void> _load() async {
-    await _c.initOrderMap(latitude: widget.latitude, longitude: widget.longitude);
+    await _c.initOrderMap(
+        latitude: widget.latitude, longitude: widget.longitude);
     if (mounted) _fitBounds();
   }
 
@@ -102,7 +103,7 @@ class _MapPreviewSectionState extends State<MapPreviewSection> {
       config: config,
       initialCenter: dest,
       initialZoom: 15,
-        captureGestures: true, 
+      captureGestures: true,
       routePoints: c.mapRoute,
       routeColor: c.mapRouteIsApprox ? Colors.orange : Colors.blue,
       markers: [
@@ -118,10 +119,11 @@ class _MapPreviewSectionState extends State<MapPreviewSection> {
     );
   }
 
-  Widget _roundButton({required String icon, required VoidCallback? onPressed}) {
+  Widget _roundButton(
+      {required String icon, required VoidCallback? onPressed}) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
@@ -132,7 +134,11 @@ class _MapPreviewSectionState extends State<MapPreviewSection> {
         ],
       ),
       child: IconButton(
-        icon: SvgPicture.asset(icon, height: 20, width: 20),
+        icon: SvgPicture.asset(icon,
+            height: Dimensions.w20,
+            width: Dimensions.w20,
+            colorFilter: ColorFilter.mode(
+                Theme.of(context).colorScheme.onSurface, BlendMode.srcIn)),
         onPressed: onPressed,
       ),
     );
@@ -140,6 +146,7 @@ class _MapPreviewSectionState extends State<MapPreviewSection> {
 
   @override
   Widget build(BuildContext context) {
+    ColorScheme scheme = Theme.of(context).colorScheme;
     if (!widget.showMap) return const SizedBox.shrink();
 
     return Container(
@@ -148,7 +155,7 @@ class _MapPreviewSectionState extends State<MapPreviewSection> {
       width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(Dimensions.r16),
-        border: Border.all(color: Colors.grey.shade300),
+        border: Border.all(color: scheme.outline),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(Dimensions.r16),
@@ -162,13 +169,15 @@ class _MapPreviewSectionState extends State<MapPreviewSection> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           CircularProgressIndicator(
-                            color: Theme.of(context).textTheme.bodyMedium?.color,
+                            color:
+                                Theme.of(context).textTheme.bodyMedium?.color,
                           ),
                           SizedBox(height: Dimensions.h16),
                           Text(
                             'locating'.tr,
                             style: TextStyle(
-                              color: Theme.of(context).textTheme.bodyMedium?.color,
+                              color:
+                                  Theme.of(context).textTheme.bodyMedium?.color,
                             ),
                           ),
                         ],
@@ -182,12 +191,15 @@ class _MapPreviewSectionState extends State<MapPreviewSection> {
                   children: [
                     _roundButton(
                       icon: ManagerAssets.myLocationIcon,
-                      onPressed: c.mapMyPoint != null ? _centerOnCurrentLocation : null,
+                      onPressed: c.mapMyPoint != null
+                          ? _centerOnCurrentLocation
+                          : null,
                     ),
                     const SizedBox(width: 8),
                     _roundButton(
                       icon: ManagerAssets.openInFullIcon,
-                      onPressed: c.mapDestPoint != null ? _openGoogleMaps : null,
+                      onPressed:
+                          c.mapDestPoint != null ? _openGoogleMaps : null,
                     ),
                   ],
                 ),
@@ -197,7 +209,8 @@ class _MapPreviewSectionState extends State<MapPreviewSection> {
                   top: 8,
                   left: 8,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
                       color: Colors.orange.withOpacity(0.8),
                       borderRadius: BorderRadius.circular(12),

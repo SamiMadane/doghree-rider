@@ -14,7 +14,6 @@ import 'package:doghree_rider/features/order/widgets/delivery_images_section.dar
 import 'package:doghree_rider/features/order/widgets/info_card_section.dart';
 import 'package:doghree_rider/features/order/widgets/map_preview_section.dart';
 import 'package:doghree_rider/features/order/widgets/order_action_buttons_section.dart';
-import 'package:doghree_rider/features/order/widgets/order_id_section.dart';
 import 'package:doghree_rider/features/order/widgets/order_info_section.dart';
 import 'package:doghree_rider/features/order/widgets/order_item_widget.dart';
 import 'package:doghree_rider/features/order/widgets/order_proof_section.dart';
@@ -164,7 +163,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                 itemBuilder: (context, index) {
                   return Column(
                     children: [
-                      OrderItemWidget(order: order, orderDetails: details[index]),
+                      OrderItemWidget(
+                          order: order, orderDetails: details[index]),
                       if (index != details.length - 1) ...[
                         SizedBox(height: Dimensions.h16),
                         LayoutBuilder(
@@ -243,11 +243,14 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                 final bool parcel = order.orderType == 'parcel';
                 final bool processing =
                     order.orderStatus == AppConstants.processing;
-                final bool accepted = order.orderStatus == AppConstants.accepted;
+                final bool accepted =
+                    order.orderStatus == AppConstants.accepted;
                 final bool confirmed =
                     order.orderStatus == AppConstants.confirmed;
-                final bool handover = order.orderStatus == AppConstants.handover;
-                final bool pickedUp = order.orderStatus == AppConstants.pickedUp;
+                final bool handover =
+                    order.orderStatus == AppConstants.handover;
+                final bool pickedUp =
+                    order.orderStatus == AppConstants.pickedUp;
                 final bool isFinished = _isFinishedStatus(order.orderStatus);
 
                 final bool showDeliveryConfirmImage =
@@ -324,13 +327,12 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                 final bool hasNote =
                     order.orderNote != null && order.orderNote!.isNotEmpty;
 
-                final bool hasAttachments =
-                    (Get.find<SplashController>()
-                                .getModule(order.moduleType)
-                                .orderAttachment ??
-                            false) &&
-                        order.orderAttachmentFullUrl != null &&
-                        order.orderAttachmentFullUrl!.isNotEmpty;
+                final bool hasAttachments = (Get.find<SplashController>()
+                            .getModule(order.moduleType)
+                            .orderAttachment ??
+                        false) &&
+                    order.orderAttachmentFullUrl != null &&
+                    order.orderAttachmentFullUrl!.isNotEmpty;
 
                 final bool hasProof = order.orderStatus == 'delivered' &&
                     order.orderProofFullUrl != null &&
@@ -351,8 +353,6 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                         onShowItems: () => _showItems(context, order, details),
                       )
                     else ...[
-                      OrderIdSection(orderId: widget.orderId.toString()),
-                      SizedBox(height: Dimensions.h16),
                       OrderInfoSection(
                         orderController: orderController,
                         controllerOrderModel: order,
@@ -375,8 +375,9 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                       phone: parcel
                           ? order.deliveryAddress?.contactPersonNumber
                           : order.storePhone,
-                      latitude:
-                          parcel ? order.deliveryAddress?.latitude : order.storeLat,
+                      latitude: parcel
+                          ? order.deliveryAddress?.latitude
+                          : order.storeLat,
                       longitude: parcel
                           ? order.deliveryAddress?.longitude
                           : order.storeLng,
@@ -386,8 +387,9 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                       messageOnTap: () => Get.toNamed(RouteHelper.getChatRoute(
                         notificationBody: NotificationBodyModel(
                           orderId: order.id,
-                          vendorId:
-                              details.isNotEmpty ? details.first.vendorId : null,
+                          vendorId: details.isNotEmpty
+                              ? details.first.vendorId
+                              : null,
                         ),
                         user: User(
                           id: order.storeId,
@@ -402,8 +404,9 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                       title: parcel
                           ? 'receiver_details'.tr
                           : 'customer_details'.tr,
-                      address:
-                          parcel ? order.receiverDetails : order.deliveryAddress,
+                      address: parcel
+                          ? order.receiverDetails
+                          : order.deliveryAddress,
                       image: parcel ? '' : order.customer?.imageFullUrl ?? '',
                       name: parcel
                           ? order.receiverDetails?.contactPersonName

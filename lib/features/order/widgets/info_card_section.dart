@@ -49,7 +49,7 @@ class InfoCardSection extends StatelessWidget {
     final Color? ink = theme.textTheme.bodyMedium?.color;
 
     TextStyle detail() => textMedium().copyWith(
-          fontSize: Dimensions.fs11,
+          fontSize: Dimensions.fs12,
           color: muted,
         );
 
@@ -66,16 +66,22 @@ class InfoCardSection extends StatelessWidget {
             style: textSemiBold().copyWith(fontSize: Dimensions.fs16),
           ),
           SizedBox(height: Dimensions.h16),
-
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ClipOval(
-                child: CustomImageWidget(
-                  width: Dimensions.w50,
-                  height: Dimensions.w50,
-                  fit: BoxFit.cover,
-                  image: image,
+              Container(
+                padding: EdgeInsets.all(Dimensions.w2),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: theme.colorScheme.outline),
+                ),
+                child: ClipOval(
+                  child: CustomImageWidget(
+                    width: Dimensions.w50,
+                    height: Dimensions.w50,
+                    fit: BoxFit.cover,
+                    image: image,
+                  ),
                 ),
               ),
               SizedBox(width: Dimensions.w16),
@@ -86,7 +92,7 @@ class InfoCardSection extends StatelessWidget {
                     if (name != null && name!.isNotEmpty)
                       Text(
                         name!,
-                        style: textSemiBold().copyWith(
+                        style: textBold().copyWith(
                           fontSize: Dimensions.fs14,
                         ),
                       ),
@@ -137,7 +143,6 @@ class InfoCardSection extends StatelessWidget {
             ],
           ),
           SizedBox(height: Dimensions.h16),
-
           if (showButton)
             Row(
               children: [
@@ -170,7 +175,7 @@ class InfoCardSection extends StatelessWidget {
                     ),
                   ),
                 SizedBox(width: Dimensions.w16),
-                if (isStore && isChatAllow && !order.isGuest!)
+                if (isStore && isChatAllow && !(order.isGuest ?? false))
                   Expanded(
                     child: CustomButtonWidget(
                       onPressed: messageOnTap as void Function()?,
@@ -180,16 +185,13 @@ class InfoCardSection extends StatelessWidget {
                         ManagerAssets.messageIcon,
                         height: Dimensions.h22,
                         width: Dimensions.w22,
-                        colorFilter: const ColorFilter.mode(
-                          ManagerColors.onPrimary,
-                          BlendMode.srcIn,
-                        ),
+                        colorFilter: ColorFilter.mode(
+                            theme.colorScheme.onPrimary, BlendMode.srcIn),
                       ),
                     ),
                   ),
               ],
             ),
-
           if ((name == null || name!.isEmpty) && (address == null))
             Center(
               child: Padding(

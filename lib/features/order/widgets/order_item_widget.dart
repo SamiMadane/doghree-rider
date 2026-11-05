@@ -1,3 +1,4 @@
+import 'package:doghree_rider/util/manager_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:doghree_rider/features/splash/controllers/splash_controller.dart';
@@ -61,13 +62,19 @@ class OrderItemWidget extends StatelessWidget {
         Row(
           children: [
             if (orderDetails.itemDetails!.imageFullUrl != null)
-              ClipRRect(
-                borderRadius: BorderRadius.circular(Dimensions.r8),
-                child: CustomImageWidget(
-                  height: Dimensions.w70,
-                  width: Dimensions.w70,
-                  fit: BoxFit.cover,
-                  image: '${orderDetails.itemDetails!.imageFullUrl}',
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(Dimensions.r8),
+                  border: Border.all(color: scheme.outline),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(Dimensions.r8),
+                  child: CustomImageWidget(
+                    height: Dimensions.w70,
+                    width: Dimensions.w70,
+                    fit: BoxFit.cover,
+                    image: '${orderDetails.itemDetails!.imageFullUrl}',
+                  ),
                 ),
               ),
             SizedBox(
@@ -80,9 +87,8 @@ class OrderItemWidget extends StatelessWidget {
                 children: [
                   Text(
                     orderDetails.itemDetails!.name!,
-                    style: textRegular().copyWith(
-                      fontSize: Dimensions.fs14,
-                    ),
+                    style: textSemiBold().copyWith(
+                        fontSize: Dimensions.fs14, color: scheme.onSurface),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -97,18 +103,21 @@ class OrderItemWidget extends StatelessWidget {
                           Get.find<SplashController>()
                               .getModule(order.moduleType)
                               .vegNonVeg!))) ...[
-                    Text(
-                      Get.find<SplashController>()
+                    _MetaTag(
+                      label: Get.find<SplashController>()
                               .getModule(order.moduleType)
                               .unit!
                           ? orderDetails.itemDetails!.unitType ?? ''
                           : orderDetails.itemDetails!.veg == 0
                               ? 'non_veg'.tr
                               : 'veg'.tr,
-                      style: textRegular().copyWith(
-                        fontSize: Dimensions.fs13,
-                        color: scheme.onSurfaceVariant,
-                      ),
+                      dotColor: Get.find<SplashController>()
+                              .getModule(order.moduleType)
+                              .unit!
+                          ? null
+                          : (orderDetails.itemDetails!.veg == 0
+                              ? scheme.error
+                              : ManagerColors.success),
                     ),
                     SizedBox(height: Dimensions.h4),
                   ],
@@ -117,7 +126,7 @@ class OrderItemWidget extends StatelessWidget {
                       Text(
                         PriceConverterHelper.convertPrice(orderDetails.price! -
                             (orderDetails.discountOnItem!)),
-                        style: textMedium().copyWith(
+                        style: textSemiBold().copyWith(
                           fontSize: Dimensions.fs14,
                         ),
                       ),
@@ -133,12 +142,18 @@ class OrderItemWidget extends StatelessWidget {
                         ),
                       ],
                       const Spacer(),
-                      Text(
-                        '${orderDetails.quantity} ${orderDetails.quantity! > 1 ? 'items'.tr : 'item'.tr}',
-                        style: textBold().copyWith(
-                          // was textMedium
-                          fontSize: Dimensions.fs13,
-                          color: scheme.onSurface, 
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: Dimensions.w8, vertical: Dimensions.h2),
+                        decoration: BoxDecoration(
+                          color: scheme.primaryContainer,
+                          borderRadius: BorderRadius.circular(Dimensions.r50),
+                        ),
+                        child: Text(
+                          '${orderDetails.quantity} ${orderDetails.quantity! > 1 ? 'items'.tr : 'item'.tr}',
+                          style: textBold().copyWith(
+                              fontSize: Dimensions.fs12,
+                              color: scheme.onPrimaryContainer),
                         ),
                       ),
                     ],
@@ -171,6 +186,53 @@ class OrderItemWidget extends StatelessWidget {
             ),
           ),
       ],
+    );
+  }
+}
+
+/// وسم صغير للوحدة (لتر، كغم...) أو veg / non-veg مع نقطة لونية.
+class _MetaTag extends StatelessWidget {
+  final String label;
+  final Color? dotColor;
+  const _MetaTag({required this.label, this.dotColor});
+
+  @override
+  Widget build(BuildContext context) {
+    if (label.isEmpty) return const SizedBox.shrink();
+    final ColorScheme scheme = Theme.of(context).colorScheme;
+
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: Dimensions.w8,
+        vertical: Dimensions.h2,
+      ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(Dimensions.r50),
+        border: Border.all(color: scheme.outline),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (dotColor != null) ...[
+            Container(
+              width: Dimensions.w8,
+              height: Dimensions.w8,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: dotColor,
+              ),
+            ),
+            SizedBox(width: Dimensions.w6),
+          ],
+          Text(
+            label,
+            style: textMedium().copyWith(
+              fontSize: Dimensions.fs12,
+              color: scheme.onSurfaceVariant,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

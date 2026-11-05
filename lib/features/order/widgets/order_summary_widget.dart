@@ -26,6 +26,7 @@ class OrderSummaryWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool parcel = order.orderType == 'parcel';
+    final ColorScheme scheme = Theme.of(context).colorScheme;
 
     return GetBuilder<OrderController>(builder: (orderController) {
       return CustomCard(
@@ -46,7 +47,7 @@ class OrderSummaryWidget extends StatelessWidget {
                     style: textRegular().copyWith(
                       // was textSemiBold
                       fontSize: Dimensions.fs14,
-                      color: Theme.of(context).hintColor,
+                      color: scheme.onSurfaceVariant,
                     ),
                   ),
                   TextSpan(
@@ -81,7 +82,7 @@ class OrderSummaryWidget extends StatelessWidget {
                         direction: Axis.vertical,
                         lineLength: double.infinity,
                         dashLength: 6,
-                        dashColor: Theme.of(context).disabledColor,
+                        dashColor: scheme.outline,
                       ),
                     ),
                     SvgPicture.asset(
@@ -97,42 +98,37 @@ class OrderSummaryWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        order.storeName!,
+                        order.storeName ?? '',
                         style:
                             textSemiBold().copyWith(fontSize: Dimensions.fs14),
                       ),
                       Text(
-                        order.storeAddress!,
+                        order.storeAddress ?? '',
                         style: textRegular().copyWith(
                           fontSize: Dimensions.fs14,
-                          color: Theme.of(context).hintColor,
+                          color: scheme.onSurfaceVariant,
                         ),
                       ),
                       SizedBox(height: Dimensions.h4),
                       if (parcel)
                         Container(
                           padding: EdgeInsets.symmetric(
-                            horizontal: Dimensions.w4,
-                            vertical: Dimensions.h4,
-                          ),
+                              horizontal: Dimensions.w8,
+                              vertical: Dimensions.h2),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(Dimensions.r4),
-                            color:
-                                Theme.of(context).primaryColor.withOpacity(0.1),
+                            color: scheme.primaryContainer,
+                            borderRadius: BorderRadius.circular(Dimensions.r50),
                           ),
-                          child: Text(
-                            'parcel'.tr,
-                            style: textMedium().copyWith(
-                              fontSize: Dimensions.fs10,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                          ),
+                          child: Text('parcel'.tr,
+                              style: textBold().copyWith(
+                                  fontSize: Dimensions.fs11,
+                                  color: scheme.onPrimaryContainer)),
                         ),
                       SizedBox(height: Dimensions.h10),
                       Text(
                         parcel
                             ? order.deliveryAddress.toString()
-                            : order.storeAddress!,
+                            : (order.storeAddress ?? ''),
                         style:
                             textSemiBold().copyWith(fontSize: Dimensions.fs14),
                       ),
@@ -140,7 +136,7 @@ class OrderSummaryWidget extends StatelessWidget {
                         parcel ? 'delivery_location'.tr : 'store_location'.tr,
                         style: textRegular().copyWith(
                           fontSize: Dimensions.fs14,
-                          color: Theme.of(context).hintColor,
+                          color: scheme.onSurfaceVariant,
                         ),
                       ),
                     ],
@@ -165,7 +161,7 @@ class OrderSummaryWidget extends StatelessWidget {
                     TextSpan(
                       text: order.deliveryInstruction!,
                       style: textMedium().copyWith(
-                        color: Theme.of(context).hintColor,
+                        color: scheme.onSurfaceVariant,
                       ),
                     ),
                   ],
@@ -188,9 +184,9 @@ class OrderSummaryWidget extends StatelessWidget {
                       ),
                     ),
                     TextSpan(
-                      text: order.cutlery! ? 'yes'.tr : 'no'.tr,
+                      text: order.cutlery ?? false ? 'yes'.tr : 'no'.tr,
                       style: textMedium().copyWith(
-                        color: Theme.of(context).hintColor,
+                        color: scheme.onSurfaceVariant,
                       ),
                     ),
                   ],
@@ -212,7 +208,7 @@ class OrderSummaryWidget extends StatelessWidget {
                     TextSpan(
                       text: order.unavailableItemNote!,
                       style: textMedium().copyWith(
-                        color: Theme.of(context).hintColor,
+                        color: scheme.onSurfaceVariant,
                       ),
                     ),
                   ],
@@ -227,8 +223,8 @@ class OrderSummaryWidget extends StatelessWidget {
               onPressed: onShowItems,
               isBorder: true,
               transparent: true,
-              textColor: Theme.of(context).textTheme.bodyMedium?.color,
-              borderColor: Theme.of(context).textTheme.bodyMedium?.color,
+              textColor: scheme.onSurface,
+              borderColor: scheme.onSurface,
               buttonText: '${'show_items'.tr} (${itemCount})',
             ),
           ],

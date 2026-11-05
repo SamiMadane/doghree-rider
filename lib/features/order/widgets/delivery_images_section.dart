@@ -27,6 +27,7 @@ class DeliveryImagesSection extends StatelessWidget {
     final theme = Theme.of(context);
     final customColor = theme.extension<CustomColorsExtension>()!;
     final orderController = Get.find<OrderController>();
+    ColorScheme scheme = Theme.of(context).colorScheme;
 
     if (!showDeliveryConfirmImage || order.orderStatus == 'delivered') {
       return const SizedBox();
@@ -130,13 +131,13 @@ class DeliveryImagesSection extends StatelessWidget {
                               orderController.removePrescriptionImage(file),
                           child: Container(
                             padding: EdgeInsets.all(Dimensions.w4),
-                            decoration: const BoxDecoration(
+                            decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: ManagerColors.onPrimary,
+                              color: scheme.onSurface,
                             ),
                             child: Icon(
                               Icons.close,
-                              color: ManagerColors.white,
+                              color: scheme.surface,
                               size: Dimensions.fs16,
                             ),
                           ),

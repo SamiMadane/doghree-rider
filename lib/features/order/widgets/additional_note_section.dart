@@ -16,6 +16,7 @@ class AdditionalNoteSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (note.isEmpty) return const SizedBox.shrink();
+    final ColorScheme scheme = Theme.of(context).colorScheme;
 
     return CustomCard(
       padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
@@ -36,8 +37,8 @@ class AdditionalNoteSection extends StatelessWidget {
           Text(
             note,
             style: textRegular().copyWith(
-              fontSize: Dimensions.fs13,
-              color: Theme.of(context).hintColor,
+              fontSize: Dimensions.fs14,
+              color: scheme.onSurfaceVariant,
             ),
           ),
         ],

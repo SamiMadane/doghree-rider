@@ -1,3 +1,4 @@
+import 'package:doghree_rider/util/manager_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:doghree_rider/common/widgets/custom_card.dart';
@@ -41,7 +42,7 @@ class OrderProofSection extends StatelessWidget {
               SizedBox(width: Dimensions.w8),
               Icon(
                 Icons.verified,
-                color: Theme.of(context).primaryColor,
+                color: ManagerColors.success,
                 size: 20,
               ),
             ],

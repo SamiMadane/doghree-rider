@@ -41,6 +41,7 @@ class OrderInfoSection extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   TitleWidget(
+                    padding: EdgeInsets.zero,
                     title: parcel ? 'charge_payer'.tr : 'order_items'.tr,
                     showOrderCount: showOrderCount,
                     orderCount: parcel

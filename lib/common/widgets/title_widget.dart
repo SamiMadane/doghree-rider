@@ -2,16 +2,16 @@ import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/util/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:doghree_rider/util/theme_extension.dart';
 
 class TitleWidget extends StatelessWidget {
   final String title;
   final Function? onTap;
   final bool showOrderCount;
-  final int? orderCount;
+  final Object? orderCount;
   final TextStyle? titleStyle;
   final TextStyle? countStyle;
   final Color? backGroundColorOfCount;
+  final EdgeInsetsGeometry? padding;
 
   const TitleWidget({
     super.key,
@@ -22,6 +22,7 @@ class TitleWidget extends StatelessWidget {
     this.titleStyle,
     this.countStyle,
     this.backGroundColorOfCount,
+    this.padding,
   });
 
   @override
@@ -31,7 +32,7 @@ class TitleWidget extends StatelessWidget {
     final ColorScheme cs = theme.colorScheme;
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: Dimensions.w4),
+      padding: padding ?? EdgeInsets.symmetric(horizontal: Dimensions.w4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -42,16 +43,23 @@ class TitleWidget extends StatelessWidget {
                         style: titleStyle ??
                             textSemiBold().copyWith(fontSize: Dimensions.fs16)),
                     SizedBox(width: Dimensions.w8),
-                    CircleAvatar(
-                      radius: Dimensions.r8,
-                      backgroundColor: backGroundColorOfCount ??
-                          Theme.of(context).colorScheme.primary,
+                    Container(
+                      constraints: BoxConstraints(
+                        minWidth: Dimensions.r8 * 2,
+                        minHeight: Dimensions.r8 * 2,
+                      ),
+                      padding: EdgeInsets.symmetric(horizontal: Dimensions.w6),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: backGroundColorOfCount ?? cs.primary,
+                        borderRadius: BorderRadius.circular(Dimensions.r50),
+                      ),
                       child: Text(
                         '$orderCount',
                         style: countStyle ??
-                            textSemiBold().copyWith(
+                            textBold().copyWith(
                               fontSize: Dimensions.fs12,
-                              color: Theme.of(context).colorScheme.onPrimary,
+                              color: cs.onPrimary,
                             ),
                       ),
                     ),
