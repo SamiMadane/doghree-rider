@@ -21,8 +21,6 @@ class WalletRepository implements WalletRepositoryInterface {
     throw UnimplementedError();
   }
 
-
-
   String _getUserToken() {
     return sharedPreferences.getString(AppConstants.token) ?? "";
   }
@@ -50,12 +48,28 @@ class WalletRepository implements WalletRepositoryInterface {
     return earningReportModel;
   }
 
+  /// Invoice PDF. All filters are optional: without them the backend returns
+  /// the full statement. The dates are sent together or not at all.
   @override
-  Future<Response> downloadEarningInvoice({required int dmId}) async {
-    Response response = await apiClient.getData(
-        '${AppConstants.earningReportInvoiceUri}/$dmId',
-        handleError: false);
-    return response;
+  Future<Response> downloadEarningInvoice({
+    required int dmId,
+    String? type,
+    String? startDate,
+    String? endDate,
+  }) async {
+    final Map<String, dynamic> query = {
+      if (startDate != null && endDate != null) ...{
+        'start_date': startDate,
+        'end_date': endDate,
+      },
+      if (type != null && type.isNotEmpty) 'type': type,
+    };
+
+    return apiClient.getData(
+      '${AppConstants.earningReportInvoiceUri}/$dmId',
+      query: query,
+      handleError: false,
+    );
   }
 
   @override

@@ -21,9 +21,14 @@ class WalletService implements WalletServiceInterface {
   }
 
   @override
-  Future<Response> downloadEarningInvoice({required int dmId}) async {
+  Future<Response> downloadEarningInvoice({
+    required int dmId,
+    String? type,
+    String? startDate,
+    String? endDate,
+  }) async {
     return await walletRepositoryInterface.downloadEarningInvoice(
-        dmId: dmId);
+        dmId: dmId, type: type, startDate: startDate, endDate: endDate);
   }
 
   @override

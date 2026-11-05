@@ -243,31 +243,52 @@ class WalletController extends GetxController implements GetxService {
   Future<void> clearEarningFilter() =>
       applyEarningFilter(type: _allTypes, dateType: _allTime);
 
+  /// Downloads the earnings statement PDF. It follows the filter that is
+  /// currently applied on the screen; with no filter the backend returns the
+  /// full statement.
   Future<void> downloadEarningInvoice({required int dmId}) async {
     _downloadLoading = true;
     update();
 
-    final response =
-        await walletServiceInterface.downloadEarningInvoice(dmId: dmId);
+    final response = await walletServiceInterface.downloadEarningInvoice(
+      dmId: dmId,
+      type: _selectedEarningType == _allTypes ? 'all' : _selectedEarningType,
+      startDate: hasDateFilter ? _from : null,
+      endDate: hasDateFilter ? _to : null,
+    );
 
     if (response.statusCode == 200) {
       try {
         final directory = await getApplicationDocumentsDirectory();
-        final filePath = '${directory.path}/earning_invoice_$dmId.pdf';
+        final filePath = '${directory.path}/${_invoiceFileName(dmId)}';
 
         final file = File(filePath);
         await file.writeAsBytes(response.bodyString!.codeUnits);
 
-        OpenFilex.open(filePath);
+        final OpenResult result = await OpenFilex.open(filePath);
+        if (result.type != ResultType.done) {
+          showCustomSnackBar('file_opening_failed'.tr);
+        }
       } catch (e) {
         showCustomSnackBar('file_opening_failed'.tr);
       }
     } else {
+      // 422 (bad filter) / 404 (nothing to export) carry a JSON message.
       ApiChecker.checkApi(response);
     }
 
     _downloadLoading = false;
     update();
+  }
+
+  /// One file per filter combination, so a viewer never shows a stale copy of
+  /// a different filter, and repeated downloads of the same filter overwrite.
+  String _invoiceFileName(int dmId) {
+    final String suffix = [
+      if (hasDateFilter) '${_from}_$_to',
+      if (hasTypeFilter) _selectedEarningType,
+    ].join('_');
+    return 'earning_invoice_$dmId${suffix.isEmpty ? '' : '_$suffix'}.pdf';
   }
 
   // ---------------------------------------------------------------------------

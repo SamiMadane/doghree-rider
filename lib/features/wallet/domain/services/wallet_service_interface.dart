@@ -4,17 +4,22 @@ import 'package:doghree_rider/features/wallet/domain/models/earning_report_model
 import 'package:doghree_rider/features/wallet/domain/models/wallet_model.dart';
 import 'package:doghree_rider/features/wallet/domain/models/wallet_withdrawal_model.dart';
 
-
 abstract class WalletServiceInterface {
-  Future<EarningReportModel?> getEarningReport({String? offset, String? type, String? startDate, String? endDate});
-  Future<Response> downloadEarningInvoice({required int dmId});
+  Future<EarningReportModel?> getEarningReport(
+      {String? offset, String? type, String? startDate, String? endDate});
+  Future<Response> downloadEarningInvoice({
+    required int dmId,
+    String? type,
+    String? startDate,
+    String? endDate,
+  });
   Future<WalletModel?> getWallet();
   Future<ResponseModel> saveWalletAccount(
-    {required int methodId,
-    required Map<String, String> fields,
-    bool isDefault = false});
-Future<ResponseModel> deleteWalletAccount(int id);
-Future<ResponseModel> requestWithdraw(
-    {required double amount, int? accountId, String? note});
-Future<List<WalletWithdrawal>?> getWithdrawals({int offset = 1});
+      {required int methodId,
+      required Map<String, String> fields,
+      bool isDefault = false});
+  Future<ResponseModel> deleteWalletAccount(int id);
+  Future<ResponseModel> requestWithdraw(
+      {required double amount, int? accountId, String? note});
+  Future<List<WalletWithdrawal>?> getWithdrawals({int offset = 1});
 }
