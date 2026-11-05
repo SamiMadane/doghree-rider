@@ -15,9 +15,10 @@ class CancellationDialogueWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ColorScheme scheme = Theme.of(context).colorScheme;
     Get.find<OrderController>().getOrderCancelReasons();
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.r4)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.r20)),
       insetPadding: EdgeInsets.all(30),
       clipBehavior: Clip.antiAliasWithSaveLayer,
       child: GetBuilder<OrderController>(builder: (orderController) {
@@ -33,7 +34,7 @@ class CancellationDialogueWidget extends StatelessWidget {
                 boxShadow: Get.isDarkMode ? null : [BoxShadow(color: Colors.grey[200]!, spreadRadius: 1, blurRadius: 5)],
               ),
               child: Column(children: [
-                Text('select_cancellation_reasons'.tr, style: textMedium().copyWith(color: Theme.of(context).primaryColor, fontSize: Dimensions.fs16)),
+                Text('select_cancellation_reasons'.tr, style: textBold().copyWith(color: scheme.onSurface, fontSize: Dimensions.fs16)),
                 SizedBox(height: Dimensions.h4),
               ]),
             ),
@@ -51,7 +52,7 @@ class CancellationDialogueWidget extends StatelessWidget {
                       },
                       title: Row(children: [
 
-                        Icon(orderController.orderCancelReasons![index].reason == orderController.cancelReason ? Icons.radio_button_checked : Icons.radio_button_off, color: Theme.of(context).primaryColor, size: 18),
+                        Icon(orderController.orderCancelReasons![index].reason == orderController.cancelReason ? Icons.radio_button_checked : Icons.radio_button_off, color: scheme.onSurface, size: 18),
                         SizedBox(width: Dimensions.w4),
 
                         Flexible(child: Text(orderController.orderCancelReasons![index].reason!, style: textRegular(), maxLines: 3, overflow: TextOverflow.ellipsis)),

@@ -69,10 +69,11 @@ class LocationCardWidget extends StatelessWidget {
             : addressController.getRestaurantDistance(pickupPoint,
                 customerLatLng: dropPoint);
 
+    ColorScheme scheme = Theme.of(context).colorScheme;
+
     return Container(
       padding: EdgeInsets.symmetric(
-          horizontal: Dimensions.w16,
-          vertical: Dimensions.h25),
+          horizontal: Dimensions.w16, vertical: Dimensions.h25),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.only(
@@ -93,7 +94,10 @@ class LocationCardWidget extends StatelessWidget {
         children: [
           // -------- STORE / PICKUP --------
           CustomCard(
-            padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
+            padding: EdgeInsets.symmetric(
+              horizontal: Dimensions.w16,
+              vertical: Dimensions.h16,
+            ),
             child: Row(
               children: [
                 parcel
@@ -116,18 +120,19 @@ class LocationCardWidget extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-             // TODO: BACK TO FIX PARCEL , AND SURE FROM INFORMATION DISPLAY IN THIS SCREEN
+                    // TODO: BACK TO FIX PARCEL , AND SURE FROM INFORMATION DISPLAY IN THIS SCREEN
 
                     Text(
                       parcel
-                          ? orderModel.parcelCategory?.name ?? '' // is it true ? add parcel order to check it
+                          ? orderModel.parcelCategory?.name ??
+                              '' // is it true ? add parcel order to check it
                           : orderModel.storeName ?? '', // وفرة مارت
-                      style: textMedium().copyWith(
-                          fontSize: Dimensions.fs16),
+                      style: textMedium().copyWith(fontSize: Dimensions.fs16),
                     ),
                     Text(
                       parcel
-                          ? orderModel.parcelCategory?.description ?? '' // not have type 
+                          ? orderModel.parcelCategory?.description ??
+                              '' // not have type
                           : orderModel.moduleType ?? '', // grocery
                       style: textRegular().copyWith(
                           fontSize: Dimensions.fs14,
@@ -140,7 +145,7 @@ class LocationCardWidget extends StatelessWidget {
                   '${_distanceLabel(restaurantDistance)} ${'km_away'.tr}',
                   style: textMedium().copyWith(
                     fontSize: Dimensions.fs12,
-                    color: ManagerColors.darkGreen,
+                    color: scheme.onSurfaceVariant,
                   ),
                 ),
               ],
@@ -151,7 +156,10 @@ class LocationCardWidget extends StatelessWidget {
 
           // -------- CUSTOMER / DELIVERY --------
           CustomCard(
-            padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
+            padding: EdgeInsets.symmetric(
+              horizontal: Dimensions.w16,
+              vertical: Dimensions.h16,
+            ),
             child: Row(
               children: [
                 parcel
@@ -178,8 +186,7 @@ class LocationCardWidget extends StatelessWidget {
                       parcel
                           ? orderModel.receiverDetails?.contactPersonName ?? ''
                           : orderModel.customer?.fName ?? '',
-                      style: textMedium().copyWith(
-                          fontSize: Dimensions.fs16),
+                      style: textMedium().copyWith(fontSize: Dimensions.fs16),
                     ),
                     Text(
                       parcel
@@ -196,7 +203,7 @@ class LocationCardWidget extends StatelessWidget {
                   '${_distanceLabel(restaurantToCustomerDistance)} ${'km_away'.tr}',
                   style: textMedium().copyWith(
                     fontSize: Dimensions.fs12,
-                    color: ManagerColors.darkGreen,
+                    color: scheme.onSurfaceVariant,
                   ),
                 ),
               ],
@@ -207,12 +214,14 @@ class LocationCardWidget extends StatelessWidget {
 
           // -------- PRICE + PAYMENT --------
           // -------- EARNINGS (يظهر فقط إذا مفعّل) --------
-          if (Get.find<SplashController>().configModel!.showDmEarning! &&
-              Get.find<ProfileController>().profileModel!.earnings == 1) ...[
+          if ((Get.find<SplashController>().configModel?.showDmEarning ??
+                  false) &&
+              Get.find<ProfileController>().profileModel?.earnings == 1) ...[
             SizedBox(height: Dimensions.h20),
             Text(
               PriceConverterHelper.convertPrice(
-                  orderModel.originalDeliveryCharge! + orderModel.dmTips!),
+                  (orderModel.originalDeliveryCharge ?? 0.0) +
+                      (orderModel.dmTips ?? 0.0)),
               style: textMedium().copyWith(fontSize: Dimensions.fs16),
             ),
           ],

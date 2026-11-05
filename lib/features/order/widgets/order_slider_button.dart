@@ -118,7 +118,7 @@ class OrderSliderButton extends StatelessWidget {
       width: 1170,
       height: 60,
       buttonSize: 50,
-      radius: 14,
+      radius: 30,
       icon: Center(
         child: Icon(
           Icons.double_arrow_rounded, 

@@ -81,7 +81,7 @@ Future<Map<String, Map<String, String>>> init() async {
   WalletRepositoryInterface walletRepositoryInterface =
       WalletRepository(
           apiClient: Get.find(), sharedPreferences: Get.find());
-  Get.lazyPut(() => WalletRepositoryInterface);
+  Get.lazyPut(() => walletRepositoryInterface);
 
   ForgotPasswordRepositoryInterface forgotPasswordRepositoryInterface =
       ForgotPasswordRepository(
