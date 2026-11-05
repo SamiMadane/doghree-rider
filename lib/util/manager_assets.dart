@@ -7,6 +7,8 @@ const String mapPath = 'assets/map';
 class ManagerAssets {
   static const String deliveredSuccessAnim =
       '$animationPath/delivered_success.gif';
+        static const String doghreeRiderAnim =
+      '$animationPath/doghree_rider.gif';
 
   static const String logo = '$imagePath/logo.png';
   static const String logoDark = '$imagePath/logo_dark.png';
