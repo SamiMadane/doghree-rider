@@ -134,7 +134,8 @@ class OrderService implements OrderServiceInterface {
       try {
         // مهلة 8 ثوانٍ حتى لا تعلق الشاشة على «جاري تحديد الموقع»
         pos = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high,
+          locationSettings:
+              const LocationSettings(accuracy: LocationAccuracy.high),
         ).timeout(const Duration(seconds: 8));
       } catch (_) {
         pos = await Geolocator.getLastKnownPosition();

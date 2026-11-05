@@ -13,11 +13,10 @@ class CameraButtonSheetWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(
-          vertical: Dimensions.h16,
-          horizontal: Dimensions.w20),
+          vertical: Dimensions.h16, horizontal: Dimensions.w20),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.vertical(
-            top: Radius.circular(Dimensions.r20)),
+        borderRadius:
+            BorderRadius.vertical(top: Radius.circular(Dimensions.r20)),
         color: Theme.of(context).cardColor,
       ),
       child: Column(mainAxisSize: MainAxisSize.min, children: [
@@ -52,19 +51,25 @@ class CameraButtonSheetWidget extends StatelessWidget {
                     .pickPrescriptionImage(isRemove: false, isCamera: false);
               },
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
+                padding: EdgeInsets.symmetric(
+                  horizontal: Dimensions.w16,
+                  vertical: Dimensions.h16,
+                ),
                 child: Row(
                   children: [
                     SvgPicture.asset(
                       ManagerAssets.galleryIcon,
                       height: 35,
                       width: 35,
-                      color: Theme.of(context).textTheme.bodyMedium?.color,
+                      colorFilter: ColorFilter.mode(
+                        Theme.of(context).colorScheme.onSurface,
+                        BlendMode.srcIn,
+                      ),
                     ),
                     SizedBox(width: Dimensions.w16),
                     Text('from_gallery'.tr,
-                        style: textMedium().copyWith(
-                            fontSize: Dimensions.fs14)),
+                        style:
+                            textMedium().copyWith(fontSize: Dimensions.fs14)),
                   ],
                 ),
               ),
@@ -80,19 +85,25 @@ class CameraButtonSheetWidget extends StatelessWidget {
                     .pickPrescriptionImage(isRemove: false, isCamera: true);
               },
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
+                padding: EdgeInsets.symmetric(
+                  horizontal: Dimensions.w16,
+                  vertical: Dimensions.h16,
+                ),
                 child: Row(
                   children: [
-                   SvgPicture.asset(
+                    SvgPicture.asset(
                       ManagerAssets.cameraIcon,
                       height: 35,
                       width: 35,
-                      color: Theme.of(context).textTheme.bodyMedium?.color,
+                      colorFilter: ColorFilter.mode(
+                        Theme.of(context).colorScheme.onSurface,
+                        BlendMode.srcIn,
+                      ),
                     ),
                     SizedBox(width: Dimensions.w16),
                     Text('from_camera'.tr,
-                        style: textMedium().copyWith(
-                            fontSize: Dimensions.fs14)),
+                        style:
+                            textMedium().copyWith(fontSize: Dimensions.fs14)),
                   ],
                 ),
               ),

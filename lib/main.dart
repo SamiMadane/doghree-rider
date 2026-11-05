@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:camera/camera.dart';
 import 'package:doghree_rider/firebase_options.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:doghree_rider/features/auth/controllers/auth_controller.dart';
@@ -53,8 +54,9 @@ Future<void> main() async {
       await NotificationHelper.initialize(flutterLocalNotificationsPlugin);
       FirebaseMessaging.onBackgroundMessage(myBackgroundMessageHandler);
     }
-  } catch (e) {
-  }
+} catch (e) {
+  if (kDebugMode) debugPrint('main failed: $e');
+}
 
   await DateConverterHelper.initLocaleDateFormatting();
   Get.put(LocationPermissionManager(), permanent: true);

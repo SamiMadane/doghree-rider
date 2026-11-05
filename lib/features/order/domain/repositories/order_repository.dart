@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:doghree_rider/api/api_client.dart';
@@ -170,6 +171,8 @@ class OrderRepository implements OrderRepositoryInterface {
         }
       }
     } catch (e) {
+      if (kDebugMode) debugPrint('getRoute failed: $e');
+      return null;
     }
     return null;
   }

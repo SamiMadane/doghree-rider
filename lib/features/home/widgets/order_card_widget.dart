@@ -111,7 +111,7 @@ class OrderCardWidget extends StatelessWidget {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(Dimensions.r4),
                           color:
-                              Theme.of(context).primaryColor.withOpacity(0.1),
+                              Theme.of(context).primaryColor.withValues(alpha: 0.1),
                         ),
                         child: Text('parcel'.tr,
                             style: textMedium().copyWith(

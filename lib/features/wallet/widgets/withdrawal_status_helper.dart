@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:doghree_rider/features/wallet/domain/models/wallet_withdrawal_model.dart';
 import 'package:doghree_rider/util/manager_colors.dart';
 
-extension alletWithdrawalX on WalletWithdrawal {
+extension WalletWithdrawalX on WalletWithdrawal {
   String get statusText {
     switch (status) {
       case 'pending':

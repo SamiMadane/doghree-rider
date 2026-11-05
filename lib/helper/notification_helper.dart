@@ -465,7 +465,8 @@ Future<ServiceRequestResult> stopService() async {
   try {
     _audioPlayer.dispose();
   } catch (e) {
-  }
+  if (kDebugMode) debugPrint('stopService failed: $e');
+}
   return FlutterForegroundTask.stopService();
 }
 

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -75,6 +76,7 @@ class ProfileService implements ProfileServiceInterface {
         }
       }
     } catch (e) {
+      if (kDebugMode) debugPrint('addressPlaceMark failed: $e');
     }
     return '';
   }

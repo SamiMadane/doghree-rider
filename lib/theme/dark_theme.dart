@@ -49,7 +49,7 @@ ThemeData dark = ThemeData(
   cardColor: ManagerColors.cardDark,
   shadowColor: ManagerColors.shadowDark,
   scaffoldBackgroundColor: ManagerColors.scaffoldBgDark,
-  dividerColor: ManagerColors.Strock2Dark, // new
+  dividerColor: ManagerColors.strock2Dark, // new
   colorScheme: const ColorScheme.dark(
     primary: ManagerColors.primaryDark,
     onPrimary: ManagerColors.onPrimary,
@@ -61,9 +61,9 @@ ThemeData dark = ThemeData(
     tertiary: ManagerColors.primaryDark,
     onTertiary: ManagerColors.onPrimary,
     surface: ManagerColors.cardDark,
-    onSurface: ManagerColors.TextColorDark,
+    onSurface: ManagerColors.textColorDark,
     onSurfaceVariant: ManagerColors.hintDark,
-    outline: ManagerColors.Strock2Dark,
+    outline: ManagerColors.strock2Dark,
     error: ManagerColors.error,
     onError: ManagerColors.white,
   ),
@@ -115,15 +115,15 @@ ThemeData dark = ThemeData(
     floatingLabelStyle: const TextStyle(
       fontSize: 14,
       fontWeight: FontWeight.w700,
-      color: ManagerColors.TextColorDark,
+      color: ManagerColors.textColorDark,
     ),
     errorStyle: const TextStyle(
       fontSize: 12,
       fontWeight: FontWeight.w500,
       color: ManagerColors.error,
     ),
-    border: _inputBorder(ManagerColors.Strock2Dark),
-    enabledBorder: _inputBorder(ManagerColors.Strock2Dark),
+    border: _inputBorder(ManagerColors.strock2Dark),
+    enabledBorder: _inputBorder(ManagerColors.strock2Dark),
     focusedBorder: _inputBorder(ManagerColors.primaryDark, 1.6),
     errorBorder: _inputBorder(ManagerColors.error),
     focusedErrorBorder: _inputBorder(ManagerColors.error, 1.6),
@@ -136,9 +136,9 @@ ThemeData dark = ThemeData(
     labelStyle: const TextStyle(
       fontSize: 13,
       fontWeight: FontWeight.w500,
-      color: ManagerColors.TextColorDark,
+      color: ManagerColors.textColorDark,
     ),
-    side: const BorderSide(color: ManagerColors.Strock2Dark),
+    side: const BorderSide(color: ManagerColors.strock2Dark),
     shape: const StadiumBorder(),
     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
   ),
@@ -176,17 +176,17 @@ ThemeData dark = ThemeData(
   // ),
   dividerTheme: const DividerThemeData(
     thickness: 1,
-    color: ManagerColors.Strock2Dark,
+    color: ManagerColors.strock2Dark,
   ),
   iconTheme: const IconThemeData(color: ManagerColors.iconDark),
   primaryIconTheme: const IconThemeData(color: ManagerColors.iconDark),
   textTheme: const TextTheme(
-    bodyMedium: TextStyle(color: ManagerColors.TextColorDark),
+    bodyMedium: TextStyle(color: ManagerColors.textColorDark),
   ),
   extensions: <ThemeExtension<dynamic>>[
     CustomColorsExtension(
-      strock1: ManagerColors.Strock1Dark,
-      strock2: ManagerColors.Strock2Dark,
+      strock1: ManagerColors.strock1Dark,
+      strock2: ManagerColors.strock2Dark,
       senderMessageBg: ManagerColors.senderMessageBgDark,
       receiverMessageBg: ManagerColors.receiverMessageBgDark,
       grayBg: ManagerColors.grayBgDarkMode,

@@ -74,6 +74,8 @@ class SplashScreenState extends State<SplashScreen> {
     _onConnectivityChanged = Connectivity()
         .onConnectivityChanged
         .listen((List<ConnectivityResult> result) {
+      if (!mounted) return;
+
       bool isConnected = result.contains(ConnectivityResult.wifi) ||
           result.contains(ConnectivityResult.mobile);
 
@@ -194,7 +196,7 @@ class SplashScreenState extends State<SplashScreen> {
           Get.offAllNamed(RouteHelper.getSignInRoute()),
       NotificationType.unblock: () =>
           Get.offAllNamed(RouteHelper.getSignInRoute()),
-      NotificationType.otp: () => print("OTP notification - no navigation"),
+      NotificationType.otp: () {},
       NotificationType.unassign: () =>
           Get.to(const DashboardScreen(pageIndex: 1)),
       NotificationType.message: () => Get.toNamed(RouteHelper.getChatRoute(
@@ -217,7 +219,8 @@ class SplashScreenState extends State<SplashScreen> {
       Get.offNamed(RouteHelper.getSignInRoute());
     }
   }
- @override
+
+  @override
   Widget build(BuildContext context) {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -231,7 +234,7 @@ class SplashScreenState extends State<SplashScreen> {
           : DoghreeSplashAnimation(
               isLoading: _isLoading,
               onFinished: _onSplashAnimationFinished,
-              frameSize: 300,        // عدّله بعد المقارنة مع الـ native
+              frameSize: 300, // عدّله بعد المقارنة مع الـ native
               // debugGeometry: true,   // للمعايرة مرة وحدة
             ),
     );

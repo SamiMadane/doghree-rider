@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -31,6 +32,7 @@ class LocationPermissionManager extends GetxController {
     try {
       _permissionStatus.value = await Geolocator.checkPermission();
     } catch (e) {
+      if (kDebugMode) debugPrint('_checkInitialPermission failed: $e');
     }
   }
 

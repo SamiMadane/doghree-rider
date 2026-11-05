@@ -1,5 +1,6 @@
 // ملف جديد: helper/session_checker.dart
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:doghree_rider/api/api_client.dart';
 import 'package:doghree_rider/features/auth/controllers/auth_controller.dart';
@@ -9,13 +10,13 @@ import 'package:doghree_rider/util/app_constants.dart';
 class SessionChecker extends GetxService {
   final ApiClient apiClient;
   Timer? _sessionCheckTimer;
-  
+
   SessionChecker({required this.apiClient});
 
   /// بدء فحص الجلسة كل 30 ثانية
   void startSessionCheck() {
     stopSessionCheck();
-    
+
     _sessionCheckTimer = Timer.periodic(
       const Duration(seconds: 30),
       (timer) => _checkSession(),
@@ -45,6 +46,7 @@ class SessionChecker extends GetxService {
         stopSessionCheck();
       }
     } catch (e) {
+      if (kDebugMode) debugPrint('SessionChecker failed: $e');
     }
   }
 

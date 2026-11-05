@@ -71,7 +71,7 @@ ThemeData light = ThemeData(
   cardColor: ManagerColors.cardLight,
   shadowColor: ManagerColors.shadowLight,
   scaffoldBackgroundColor: ManagerColors.scaffoldBgLight,
-  dividerColor: ManagerColors.Strock2Light, // new
+  dividerColor: ManagerColors.strock2Light, // new
   colorScheme: const ColorScheme.light(
     primary: ManagerColors.primaryLight,
     onPrimary: ManagerColors.onPrimary,
@@ -82,9 +82,9 @@ ThemeData light = ThemeData(
     tertiary: ManagerColors.textButtonLight, // textAccent
     onTertiary: ManagerColors.white,
     surface: ManagerColors.cardLight,
-    onSurface: ManagerColors.TextColorLight,
+    onSurface: ManagerColors.textColorLight,
     onSurfaceVariant: ManagerColors.hintLight,
-    outline: ManagerColors.Strock2Light,
+    outline: ManagerColors.strock2Light,
     error: ManagerColors.error,
     onError: ManagerColors.white,
   ),
@@ -137,15 +137,15 @@ ThemeData light = ThemeData(
     floatingLabelStyle: const TextStyle(
       fontSize: 14,
       fontWeight: FontWeight.w700,
-      color: ManagerColors.TextColorLight,
+      color: ManagerColors.textColorLight,
     ),
     errorStyle: const TextStyle(
       fontSize: 12,
       fontWeight: FontWeight.w500,
       color: ManagerColors.error,
     ),
-    border: _inputBorder(ManagerColors.Strock2Light),
-    enabledBorder: _inputBorder(ManagerColors.Strock2Light),
+    border: _inputBorder(ManagerColors.strock2Light),
+    enabledBorder: _inputBorder(ManagerColors.strock2Light),
     focusedBorder: _inputBorder(ManagerColors.onPrimary, 1.6),
     errorBorder: _inputBorder(ManagerColors.error),
     focusedErrorBorder: _inputBorder(ManagerColors.error, 1.6),
@@ -158,9 +158,9 @@ ThemeData light = ThemeData(
     labelStyle: const TextStyle(
       fontSize: 13,
       fontWeight: FontWeight.w500,
-      color: ManagerColors.TextColorLight,
+      color: ManagerColors.textColorLight,
     ),
-    side: const BorderSide(color: ManagerColors.Strock2Light),
+    side: const BorderSide(color: ManagerColors.strock2Light),
     shape: const StadiumBorder(),
     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
   ),
@@ -198,17 +198,17 @@ ThemeData light = ThemeData(
   // ),
   dividerTheme: const DividerThemeData(
     thickness: 1,
-    color: ManagerColors.Strock2Light,
+    color: ManagerColors.strock2Light,
   ),
   iconTheme: const IconThemeData(color: ManagerColors.iconLight),
   primaryIconTheme: const IconThemeData(color: ManagerColors.iconLight), // new (existed only in dark)
   textTheme: const TextTheme(
-    bodyMedium: TextStyle(color: ManagerColors.TextColorLight),
+    bodyMedium: TextStyle(color: ManagerColors.textColorLight),
   ),
   extensions: <ThemeExtension<dynamic>>[
     CustomColorsExtension(
-      strock1: ManagerColors.Strock1Light,
-      strock2: ManagerColors.Strock2Light,
+      strock1: ManagerColors.strock1Light,
+      strock2: ManagerColors.strock2Light,
       senderMessageBg: ManagerColors.senderMessageBgLight,
       receiverMessageBg: ManagerColors.receiverMessageBgLight,
       grayBg: ManagerColors.grayBgLightMode,

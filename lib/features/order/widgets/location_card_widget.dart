@@ -119,8 +119,6 @@ class LocationCardWidget extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // TODO: BACK TO FIX PARCEL , AND SURE FROM INFORMATION DISPLAY IN THIS SCREEN
-
                     Text(
                       parcel
                           ? orderModel.parcelCategory?.name ??

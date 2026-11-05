@@ -76,7 +76,7 @@ class CustomConfirmationBottomSheet extends StatelessWidget {
                 child: Text(
                   description ?? '',
                   style: textRegular().copyWith(
-                      color: resolvedText.withOpacity(0.7)),
+                      color: resolvedText.withValues(alpha: 0.7)),
                   textAlign: TextAlign.center,
                 ),
               ),

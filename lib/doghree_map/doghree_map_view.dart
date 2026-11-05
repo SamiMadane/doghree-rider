@@ -150,8 +150,8 @@ class _DoghreeMapViewState extends State<DoghreeMapView> {
     }
 
     final dark = Theme.of(context).brightness == Brightness.dark;
-    final style = (dark ? widget.config.styleDark : null) ??
-        widget.config.styleLight!;
+    final style =
+        (dark ? widget.config.styleDark : null) ?? widget.config.styleLight!;
 
     return _MapLibreImpl(
       key: ValueKey(style),
@@ -371,6 +371,7 @@ class _MapLibreImplState extends State<_MapLibreImpl>
         await c.animateCamera(ml.CameraUpdate.tiltTo(widget.tilt));
       }
     } catch (e) {
+      if (kDebugMode) debugPrint('fitPoints failed: $e');
     }
   }
 
@@ -379,6 +380,7 @@ class _MapLibreImplState extends State<_MapLibreImpl>
     try {
       await _c?.animateCamera(ml.CameraUpdate.newLatLngZoom(_ml(point), zoom));
     } catch (e) {
+      if (kDebugMode) debugPrint('moveTo failed: $e');
     }
   }
 
@@ -511,7 +513,8 @@ class _FlutterMapImplState extends State<_FlutterMapImpl>
               point: m.point,
               width: m.size,
               height: m.size,
-              alignment: m.anchorBottom ? Alignment.topCenter : Alignment.center,
+              alignment:
+                  m.anchorBottom ? Alignment.topCenter : Alignment.center,
               child: _markerChild(m),
             ),
         ]),

@@ -5,6 +5,7 @@ import 'package:doghree_rider/features/wallet/widgets/wallet_account_section.dar
 import 'package:doghree_rider/features/wallet/widgets/withdrawal_history_section.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
 import 'package:doghree_rider/util/manager_assets.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:doghree_rider/common/widgets/custom_app_bar_widget.dart';
@@ -41,6 +42,7 @@ class _WalletScreenState extends State<WalletScreen> {
         cash.getWithdrawals(),
       ]);
     } catch (e) {
+      if (kDebugMode) debugPrint('_onRefresh failed: $e');
     }
   }
 

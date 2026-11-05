@@ -20,7 +20,7 @@ class ImageDialogWidget extends StatelessWidget {
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
                 // ignore: deprecated_member_use
-                child: Container(color: Colors.black.withOpacity(0)),
+                child: Container(color: Colors.black.withValues(alpha: 0)),
               ),
             ),
 

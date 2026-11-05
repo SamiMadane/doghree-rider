@@ -91,7 +91,7 @@ Widget _buildShimmer(BuildContext context) {
                   onPressed: () => Get.back(),
                   buttonText: 'cancel'.tr,
                   backgroundColor:
-                      Theme.of(Get.context!).disabledColor.withOpacity(0.1),
+                      Theme.of(Get.context!).disabledColor.withValues(alpha: 0.1),
                   fontColor: Theme.of(Get.context!).disabledColor,
                   isBorder: true,
                 ),

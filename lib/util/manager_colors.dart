@@ -70,12 +70,12 @@ class ManagerColors {
   static const Color scaffoldBgLight = Color(0xFFF9F7F3);
   static const Color cardLight = Color(0xFFFFFFFF);
   static const Color disabledLight = Color(0x613A3A3A); // was 0xFF6C7278
-  static const Color Strock1Light = Color(0xFFA8A8A8);
-  static const Color Strock2Light = Color(0x403A3A3A); // was 0xFFD0D0D0
+  static const Color strock1Light = Color(0xFFA8A8A8);
+  static const Color strock2Light = Color(0x403A3A3A); // was 0xFFD0D0D0
   static const Color hintLight = Color(0xFF3A3A3A); // was 0xFF6C7278 (roadGrey)
   static const Color shadowLight = Color(0x13000000);
   static const Color iconLight = Color(0xFF1B1B1B); // was 0xFF292D32
-  static const Color TextColorLight = Color(0xFF1B1B1B); // was 0xFF2B3141
+  static const Color textColorLight = Color(0xFF1B1B1B); // was 0xFF2B3141
   static const Color senderMessageBgLight = Color(0xFFF8F8F8);
   static const Color receiverMessageBgLight = Color(0xFF1B1B1B); // was 0xFF2B3141
   static const Color bottomAppBarLight = Colors.white;
@@ -84,11 +84,11 @@ class ManagerColors {
   static const Color scaffoldBgDark = Color(0xFF121212);
   static const Color cardDark = Color(0xFF1B1B1B);
   static const Color disabledDark = Color(0x61FFFFFF); // was 0xFFF0F0F0
-  static const Color Strock1Dark = Color(0xFF6B6B6B);
-  static const Color Strock2Dark = Color(0x33FFFFFF); // was 0xFF3A3A3A
+  static const Color strock1Dark = Color(0xFF6B6B6B);
+  static const Color strock2Dark = Color(0x33FFFFFF); // was 0xFF3A3A3A
   static const Color hintDark = Color(0xB3FFFFFF); // was 0xFFBEBEBE
   static const Color shadowDark = Color(0x1FFFFFFF);
-  static const Color TextColorDark = Color(0xFFFFFFFF);
+  static const Color textColorDark = Color(0xFFFFFFFF);
   static const Color senderMessageBgDark = Color(0x33FFFFFF);
   static const Color receiverMessageBgDark = Color(0xFF1E1E1E);
 

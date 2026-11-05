@@ -254,7 +254,8 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         SvgPicture.asset(
           iconPath,
-          color: Theme.of(context).primaryColor,
+          colorFilter:
+              ColorFilter.mode(Theme.of(context).primaryColor, BlendMode.srcIn),
         ),
         SizedBox(width: Dimensions.w8),
         Expanded(
@@ -315,7 +316,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   SvgPicture.asset(
                     ManagerAssets.notificationIcon,
-                    color: Theme.of(context).textTheme.bodyLarge!.color,
+                    colorFilter: ColorFilter.mode(
+                      Theme.of(context).colorScheme.onSurface,
+                      BlendMode.srcIn,
+                    ),
                   ),
                   if (notificationController.hasNotification)
                     Positioned(
@@ -387,7 +391,6 @@ class _HomeScreenState extends State<HomeScreen> {
                               showEarnings: showTotalEarnings,
                             ),
                             ActiveOrderSection(),
-                            
                             ProfileOrdersSection(
                               profileController: profileController,
                             ),
@@ -412,7 +415,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }) {
     final Color textColor = Theme.of(context).textTheme.bodyMedium!.color!;
     final Color bgColor =
-        Theme.of(context).colorScheme.surface.withOpacity(0.6);
+        Theme.of(context).colorScheme.surface.withValues(alpha: 0.6);
     var isArabic =
         Get.locale?.languageCode == AppConstants.languages[1].languageCode;
 
@@ -459,7 +462,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       child: SvgPicture.asset(
                         ManagerAssets.warningIcon,
-                        color: Theme.of(context).colorScheme.onPrimary,
+                        colorFilter: ColorFilter.mode(
+                            Theme.of(context).colorScheme.onPrimary,
+                            BlendMode.srcIn),
                       )),
                   SizedBox(width: 10),
                   // النص + السهم
@@ -505,7 +510,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 borderRadius: BorderRadius.circular(20),
                 child: Icon(
                   Icons.clear,
-                  color: textColor.withOpacity(0.8),
+                  color: textColor.withValues(alpha: 0.8),
                   size: 20,
                 ),
               ),

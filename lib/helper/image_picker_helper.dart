@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
@@ -31,6 +32,8 @@ class ImagePickerHelper {
       if (image == null) return null;
 
       // 2. Crop image with PREMIUM UI
+      if (!context.mounted) return null;
+
       final croppedFile = await _cropImage(
         context: context,
         imagePath: image.path,
@@ -45,6 +48,7 @@ class ImagePickerHelper {
       // 3. Return XFile from cropped path
       return XFile(croppedFile.path);
     } catch (e) {
+      if (kDebugMode) debugPrint('pickAndCropImage failed: $e');
       return null;
     }
   }
@@ -130,7 +134,10 @@ class ImagePickerHelper {
                       ManagerAssets.galleryIcon,
                       height: 35,
                       width: 35,
-                      color: Theme.of(context).textTheme.bodyMedium?.color,
+                      colorFilter: ColorFilter.mode(
+                        Theme.of(context).colorScheme.onSurface,
+                        BlendMode.srcIn,
+                      ),
                     ),
                     SizedBox(width: Dimensions.w16),
                     Text(
@@ -156,7 +163,9 @@ class ImagePickerHelper {
                       ManagerAssets.cameraIcon,
                       height: 35,
                       width: 35,
-                      color: Theme.of(context).textTheme.bodyMedium?.color,
+                      colorFilter: ColorFilter.mode(
+                          Theme.of(context).colorScheme.onSurface,
+                          BlendMode.srcIn),
                     ),
                     SizedBox(width: Dimensions.w16),
                     Text(
@@ -175,6 +184,7 @@ class ImagePickerHelper {
     );
 
     if (source == null) return null;
+    if (!context.mounted) return null;
 
     return await pickAndCropImage(
       context: context,
@@ -228,8 +238,7 @@ class ImagePickerHelper {
           toolbarWidgetColor: isDark ? Colors.white : const Color(0xFF1A1A1A),
 
           // Status bar immersive
-          statusBarColor: isDark ? const Color(0xFF000000) : primaryColor,
-
+          statusBarLight: !isDark,
           // ===== BACKGROUND WITH DEPTH =====
           backgroundColor: backgroundColor,
 
@@ -240,8 +249,8 @@ class ImagePickerHelper {
           // ===== ADVANCED DIMMING =====
           // تعتيم ذكي - يسمح برؤية الصورة كاملة
           dimmedLayerColor: isDark
-              ? Colors.black.withOpacity(0.55) // 55% للـ dark
-              : Colors.black.withOpacity(0.40), // 40% للـ light
+              ? Colors.black.withValues(alpha: 0.55) // 55% للـ dark
+              : Colors.black.withValues(alpha: 0.40), // 40% للـ light
 
           // ===== PREMIUM GRID SYSTEM =====
           // إطار بارز مع shadow effect
@@ -249,7 +258,7 @@ class ImagePickerHelper {
           cropFrameStrokeWidth: 3, // متوسط - مش سميك أوي
 
           // شبكة ملونة ذكية
-          cropGridColor: gridColor.withOpacity(0.30), // 30% للنعومة
+          cropGridColor: gridColor.withValues(alpha: 0.30), // 30% للنعومة
           cropGridStrokeWidth: 1, // نحيفة وأنيقة
 
           // ===== ADAPTIVE GRID =====
