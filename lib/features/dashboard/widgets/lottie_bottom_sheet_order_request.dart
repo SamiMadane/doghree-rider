@@ -442,8 +442,7 @@ class _FeeStrip extends StatelessWidget {
                 Text(
                   PriceConverterHelper.convertPrice(fee),
                   textDirection: TextDirection.ltr,
-                  style: textBold().copyWith(
-                    fontSize: Dimensions.fs24,
+                  style: textDisplay().copyWith(
                     color: scheme.onPrimaryContainer,
                   ),
                 ),

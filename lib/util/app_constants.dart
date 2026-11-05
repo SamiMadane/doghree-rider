@@ -16,6 +16,7 @@ class AppConstants {
         ? 'Tajawal'
         : 'Roboto';
   }
+  static const List<String> fontFallback = ['Tajawal'];
 
   static const String configUri = '/api/v1/config';
   static const String directionUri = '/api/v1/config/direction-api';

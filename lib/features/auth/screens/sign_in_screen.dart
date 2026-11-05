@@ -92,15 +92,14 @@ class _SignInScreenState extends State<SignInScreen> {
           child: GetBuilder<AuthController>(builder: (authController) {
             return Column(children: [
               Image.asset(
-                isDark?ManagerAssets.logoDark:ManagerAssets.logo,
+                isDark ? ManagerAssets.logoDark : ManagerAssets.logo,
                 width: Dimensions.w140,
                 height: Dimensions.h140,
               ),
               SizedBox(
                 height: Dimensions.h10,
               ),
-              Text('sign_in_account'.tr,
-                  style: textBold().copyWith(fontSize: Dimensions.fs22)),
+              Text('sign_in_account'.tr, style: textDisplay()),
               SizedBox(
                 height: Dimensions.h4,
               ),

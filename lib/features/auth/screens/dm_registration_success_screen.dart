@@ -38,10 +38,7 @@ class DmRegistrationSuccessScreen extends StatelessWidget {
               SizedBox(height: Dimensions.h20),
               Text(
                 'application_submitted'.tr,
-                style: textSemiBold().copyWith(
-                  fontSize: Dimensions.fs24,
-                  color: Theme.of(context).textTheme.bodyLarge!.color,
-                ),
+                style: textDisplay(),
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: Dimensions.h10),

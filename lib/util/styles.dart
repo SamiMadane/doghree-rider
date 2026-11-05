@@ -10,24 +10,29 @@ TextStyle textRegular() => TextStyle(
 
 TextStyle textMedium() => TextStyle(
       fontFamily: AppConstants.fontFamily,
+      fontFamilyFallback: AppConstants.fontFallback,
       fontWeight: FontWeight.w500,
       fontSize: Dimensions.fs14,
     );
 
 TextStyle textSemiBold() => TextStyle(
       fontFamily: AppConstants.fontFamily,
+      fontFamilyFallback: AppConstants.fontFallback,
       fontWeight: FontWeight.w600,
       fontSize: Dimensions.fs14,
     );
 
 TextStyle textBold() => TextStyle(
       fontFamily: AppConstants.fontFamily,
+      fontFamilyFallback: AppConstants.fontFallback,
       fontWeight: FontWeight.w700,
       fontSize: Dimensions.fs14,
     );
 
-TextStyle textBlack() => TextStyle(
-      fontFamily: AppConstants.fontFamily,
-      fontWeight: FontWeight.w900,
-      fontSize: Dimensions.fs14,
+TextStyle textDisplay() => TextStyle(
+      fontFamily: 'Lemonada',
+      fontFamilyFallback: AppConstants.fontFallback,
+      fontWeight: FontWeight.w700,
+      fontSize: Dimensions.fs24,
+      height: 1.4,
     );

@@ -55,7 +55,7 @@ class _ForgetPassScreenState extends State<ForgetPassScreen> {
               height: Dimensions.h25,
             ),
             Text('forgot_password'.tr,
-                style: textMedium().copyWith(fontSize: Dimensions.fs22),
+                style: textDisplay(),
                 textAlign: TextAlign.center),
             SizedBox(
               height: Dimensions.h16,
