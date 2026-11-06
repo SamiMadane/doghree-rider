@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:phone_numbers_parser/phone_numbers_parser.dart';
 import 'package:doghree_rider/common/widgets/custom_app_bar_widget.dart';
@@ -12,7 +11,7 @@ import 'package:doghree_rider/features/profile/domain/models/profile_model.dart'
 import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/common/widgets/custom_text_field_widget.dart';
 import 'package:doghree_rider/common/widgets/widget_with_label.dart';
-import 'package:doghree_rider/util/manager_assets.dart';
+import 'package:doghree_rider/common/widgets/avatar_edit_badge.dart';
 
 class UpdateProfileScreen extends StatefulWidget {
   const UpdateProfileScreen({super.key});
@@ -120,10 +119,8 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                             ? (GetPlatform.isWeb
                                                 ? NetworkImage(profileController
                                                     .pickedFile!.path)
-                                                : FileImage(File(
-                                                        profileController
-                                                            .pickedFile!
-                                                            .path))
+                                                : FileImage(
+                                                        File(profileController.pickedFile!.path))
                                                     as ImageProvider)
                                             : (profileController.profileModel!
                                                             .imageFullUrl !=
@@ -138,8 +135,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                                 : null),
                                         child: (profileController.pickedFile ==
                                                     null &&
-                                                (profileController
-                                                            .profileModel
+                                                (profileController.profileModel
                                                             ?.imageFullUrl ==
                                                         null ||
                                                     profileController
@@ -156,32 +152,13 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                       PositionedDirectional(
                                         bottom: 0,
                                         end: 0,
-                                        child: InkWell(
-                                          onTap: () => profileController
-                                              .pickProfileImageWithCrop(
-                                                  context),
-                                          child: Material(
-                                            elevation: 4,
-                                            shape: const CircleBorder(),
-                                            color: Theme.of(context).cardColor,
-                                            child: Padding(
-                                              padding:
-                                                  EdgeInsets.all(Dimensions.w4),
-                                              child: SizedBox(
-                                                height: Dimensions.w32,
-                                                width: Dimensions.w32,
-                                                child: Center(
-                                                  child: SvgPicture.asset(
-                                                    ManagerAssets.editIcon,
-                                                    colorFilter:
-                                                        ColorFilter.mode(
-                                                      scheme.primary,
-                                                      BlendMode.srcIn,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
+                                        child: PositionedDirectional(
+                                          bottom: 0,
+                                          end: 0,
+                                          child: AvatarEditBadge(
+                                            onTap: () => profileController
+                                                .pickProfileImageWithCrop(
+                                                    context),
                                           ),
                                         ),
                                       ),

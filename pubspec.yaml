@@ -113,7 +113,3 @@ flutter:
           weight: 700   
         - asset: assets/font/Tajawal-Black.ttf
           weight: 900    
-    - family: Lemonada
-      fonts:
-        - asset: assets/font/Lemonada-Bold.ttf
-          weight: 700

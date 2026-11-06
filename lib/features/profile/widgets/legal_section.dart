@@ -54,7 +54,6 @@ class LegalSection extends StatelessWidget {
               showCustomBottomSheet(
                 child: ConfirmationBottomSheet(
                   title: 'logout_confirmation'.tr,
-                  icon: ManagerAssets.warningDeleteAccount,
                   iconSize: Dimensions.w140,
                   acceptText: 'yes_logout'.tr,
                   cancelText: 'no_stay'.tr,

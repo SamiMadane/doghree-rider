@@ -69,7 +69,7 @@ class OrderProofSection extends StatelessWidget {
                 ),
                 borderRadius: BorderRadius.circular(Dimensions.r8),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(Dimensions.r8),
+                  borderRadius: BorderRadius.circular(Dimensions.r12),
                   child: CustomImageWidget(
                     image: proofImages[index],
                     fit: BoxFit.cover,

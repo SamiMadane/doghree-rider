@@ -1,14 +1,12 @@
 const String imagePath = 'assets/image';
 const String animationPath = 'assets/animations';
 const String iconPath = 'assets/icon';
-const String lottiePath = 'assets/lottie';
 const String mapPath = 'assets/map';
 
 class ManagerAssets {
   static const String deliveredSuccessAnim =
       '$animationPath/delivered_success.gif';
-        static const String doghreeRiderAnim =
-      '$animationPath/doghree_rider.gif';
+  static const String doghreeRiderAnim = '$animationPath/doghree_rider.gif';
 
   static const String logo = '$imagePath/logo.png';
   static const String logoDark = '$imagePath/logo_dark.png';
@@ -38,7 +36,8 @@ class ManagerAssets {
   static const String location = '$imagePath/location.png';
 
   static const String warning = '$imagePath/warning.png';
-  static const String warningDeleteAccount = '$imagePath/warning_delete_account.png';
+  static const String warningDeleteAccount =
+      '$imagePath/warning_delete_account.png';
   static const String list = '$imagePath/list.png';
   static const String placeholder = '$imagePath/placeholder.jpg';
 
@@ -123,10 +122,6 @@ class ManagerAssets {
   static const String downloadIcon = '$iconPath/download.svg';
 
   static const String walletWithdrawIcon = '$iconPath/wallet_withdraw.svg';
-
-// Lottie
-
-  static const String deliveryBusLottie = '$lottiePath/deliver_bus.json';
 
   static const String doghreeLight = '$mapPath/doghree_light.json';
 }

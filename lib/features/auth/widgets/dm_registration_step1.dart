@@ -1,15 +1,14 @@
 import 'dart:io';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:doghree_rider/common/widgets/custom_text_field_widget.dart';
 import 'package:doghree_rider/common/widgets/widget_with_label.dart';
 import 'package:doghree_rider/features/auth/controllers/auth_controller.dart';
 import 'package:doghree_rider/features/auth/widgets/pass_view_widget.dart';
 import 'package:doghree_rider/util/dimensions.dart';
-import 'package:doghree_rider/util/manager_assets.dart';
 import 'package:doghree_rider/util/styles.dart';
+import 'package:doghree_rider/common/widgets/avatar_edit_badge.dart';
 
 class DmRegistrationStep1 extends StatelessWidget {
   final TextEditingController fNameController;
@@ -79,30 +78,14 @@ class DmRegistrationStep1 extends StatelessWidget {
             Positioned(
               bottom: 0,
               right: 0,
-              child: InkWell(
-                onTap: () {
-                  authController.clearFieldError('image');
-                  authController.pickDmImageWithCrop(context);
-                },
-                child: Material(
-                  elevation: 4,
-                  shape: const CircleBorder(),
-                  color: Theme.of(context).cardColor,
-                  child: Padding(
-                    padding: EdgeInsets.all(4.0),
-                    child: SizedBox(
-                      height: 32,
-                      width: 32,
-                      child: Center(
-                          child: SvgPicture.asset(
-                        ManagerAssets.editIcon,
-                        colorFilter: ColorFilter.mode(
-                          Theme.of(context).colorScheme.primary,
-                          BlendMode.srcIn,
-                        ),
-                      )),
-                    ),
-                  ),
+              child: PositionedDirectional(
+                bottom: 0,
+                end: 0,
+                child: AvatarEditBadge(
+                  onTap: () {
+                    authController.clearFieldError('image');
+                    authController.pickDmImageWithCrop(context);
+                  },
                 ),
               ),
             ),

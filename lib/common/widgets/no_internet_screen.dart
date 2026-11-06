@@ -41,7 +41,8 @@ class NoInternetScreen extends StatelessWidget {
                     SizedBox(height: Dimensions.h25),
                     Text(
                       "no_connection".tr,
-                      style: textDisplay().copyWith(
+                      style: textBold().copyWith(
+                        fontSize: Dimensions.fs24,
                         color: Theme.of(context).textTheme.bodyLarge!.color,
                       ),
                       textAlign: TextAlign.center,

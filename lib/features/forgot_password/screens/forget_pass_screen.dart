@@ -55,7 +55,7 @@ class _ForgetPassScreenState extends State<ForgetPassScreen> {
               height: Dimensions.h25,
             ),
             Text('forgot_password'.tr,
-                style: textDisplay(),
+                style: textBold().copyWith(fontSize: Dimensions.fs20),
                 textAlign: TextAlign.center),
             SizedBox(
               height: Dimensions.h16,
@@ -63,7 +63,7 @@ class _ForgetPassScreenState extends State<ForgetPassScreen> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 30),
               child: Text('please_enter_mobile'.tr,
-                  style: textRegular().copyWith(
+                  style: textMedium().copyWith(
                       color: Theme.of(context).hintColor,
                       fontSize: Dimensions.fs16),
                   textAlign: TextAlign.center),

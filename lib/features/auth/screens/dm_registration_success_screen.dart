@@ -18,27 +18,32 @@ class DmRegistrationSuccessScreen extends StatelessWidget {
       appBar: CustomAppBarWidget(
         title: 'join_as_a_delivery_man'.tr,
         isBackButtonExist: false,
-     
       ),
       body: Padding(
         padding: EdgeInsets.only(top: Dimensions.h16),
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
+          padding: EdgeInsets.symmetric(
+            horizontal: Dimensions.w16,
+            vertical: Dimensions.h16,
+          ),
           color: Theme.of(context).cardColor,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-               CustomAssetImageWidget(
+              CustomAssetImageWidget(
                 image: ManagerAssets.applicationSubmittedImage,
                 fit: BoxFit.contain,
-                height: Dimensions.h300,  
+                height: Dimensions.h300,
                 width: Dimensions.w300,
               ),
               SizedBox(height: Dimensions.h20),
               Text(
                 'application_submitted'.tr,
-                style: textDisplay(),
+                style: textSemiBold().copyWith(
+                  fontSize: Dimensions.fs24,
+                  color: Theme.of(context).textTheme.bodyLarge!.color,
+                ),
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: Dimensions.h10),
