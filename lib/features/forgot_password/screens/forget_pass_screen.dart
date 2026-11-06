@@ -43,7 +43,6 @@ class _ForgetPassScreenState extends State<ForgetPassScreen> {
         child: SingleChildScrollView(
           padding: EdgeInsets.symmetric(
             horizontal: Dimensions.w16,
-            vertical: Dimensions.h16,
           ),
           child: Column(children: [
             Image.asset(
@@ -55,17 +54,17 @@ class _ForgetPassScreenState extends State<ForgetPassScreen> {
               height: Dimensions.h25,
             ),
             Text('forgot_password'.tr,
-                style: textBold().copyWith(fontSize: Dimensions.fs20),
+                style: textBold().copyWith(fontSize: Dimensions.fs22),
                 textAlign: TextAlign.center),
             SizedBox(
               height: Dimensions.h16,
             ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 30),
+              padding: EdgeInsets.symmetric(horizontal: Dimensions.w30),
               child: Text('please_enter_mobile'.tr,
-                  style: textMedium().copyWith(
+                  style: textRegular().copyWith(
                       color: Theme.of(context).hintColor,
-                      fontSize: Dimensions.fs16),
+                      fontSize: Dimensions.fs15),
                   textAlign: TextAlign.center),
             ),
             SizedBox(

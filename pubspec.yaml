@@ -88,7 +88,6 @@ flutter:
     - assets/animations/
     - assets/language/
     - assets/icon/
-    - assets/lottie/
     - assets/map/
     - assets/notification.mp3
 

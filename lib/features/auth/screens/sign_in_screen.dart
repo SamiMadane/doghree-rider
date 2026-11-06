@@ -99,14 +99,14 @@ class _SignInScreenState extends State<SignInScreen> {
               SizedBox(
                 height: Dimensions.h10,
               ),
-              Text('sign_in_account'.tr, style: textBold().copyWith(fontSize: Dimensions.fs20)),
+              Text('sign_in_account'.tr, style: textBold().copyWith(fontSize: Dimensions.fs22)),
               SizedBox(
                 height: Dimensions.h4,
               ),
               Text('enter_details_continue'.tr,
-                  style: textMedium().copyWith(
+                  style: textRegular().copyWith(
                       color: Theme.of(context).hintColor,
-                      fontSize: Dimensions.fs16)),
+                      fontSize: Dimensions.fs15)),
               SizedBox(height: Dimensions.h25),
               WidgetWithLabel(
                 label: 'mobile_number'.tr,
