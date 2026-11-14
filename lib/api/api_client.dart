@@ -14,6 +14,7 @@ import 'package:doghree_rider/api/api_checker.dart';
 import 'package:doghree_rider/api/api_error_handler.dart';
 import 'package:doghree_rider/api/error_message.dart';
 import 'package:doghree_rider/api/error_type.dart';
+import 'package:doghree_rider/api/log_sanitizer.dart';
 import 'package:doghree_rider/util/app_constants.dart';
 
 class ApiClient extends GetxService {
@@ -41,15 +42,19 @@ class ApiClient extends GetxService {
     };
   }
 
+  /// Debug only. Every line goes through [LogSanitizer]; exceptions are logged
+  /// by type only because their text can contain the full request URL.
   void _log(String m) {
-    if (foundation.kDebugMode) debugPrint(m);
+    if (foundation.kDebugMode) debugPrint(LogSanitizer.text(m));
   }
 
   // ---------- نقطة الإرسال الوحيدة ----------
   Future<Response> _send(String uri, Future<http.Response> Function() call,
-      bool handleError) async {
+      bool handleError, {Map<String, dynamic>? query}) async {
     try {
-      _log('API ▶ $uri [${_mainHeaders[AppConstants.localizationKey]}]');
+      final String keys =
+          (query == null || query.isEmpty) ? '' : ' query: ${query.keys.join(',')}';
+      _log('API ▶ $uri$keys [${_mainHeaders[AppConstants.localizationKey]}]');
       final res = await call().timeout(Duration(seconds: timeoutInSeconds));
       return handleResponse(res, uri, handleError);
     } catch (e) {
@@ -58,7 +63,7 @@ class ApiClient extends GetxService {
   }
 
   Response _failure(Object e, String uri) {
-    _log('API ✖ $uri → $e');
+    _log('API ✖ $uri → ${e.runtimeType}');
     if (e is SocketException ||
         e is TimeoutException ||
         e is http.ClientException) {
@@ -82,7 +87,7 @@ class ApiClient extends GetxService {
           });
         }
         return http.get(url, headers: headers ?? _mainHeaders);
-      }, handleError);
+      }, handleError, query: query);
 
   Future<Response> postData(String uri, dynamic body,
           {Map<String, String>? headers, bool handleError = true}) =>

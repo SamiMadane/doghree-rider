@@ -34,19 +34,17 @@ class AppConstants {
       '/api/v1/auth/delivery-man/reset-password';
   static const String loginUri = '/api/v1/auth/delivery-man/login';
   static const String tokenUri = '/api/v1/delivery-man/update-fcm-token';
-  static const String currentOrdersUri =
-      '/api/v1/delivery-man/current-orders?token=';
+  // Rider auth is the Bearer header only (B-01, D-02). No token in URLs.
+  static const String currentOrdersUri = '/api/v1/delivery-man/current-orders';
   static const String allOrdersUri = '/api/v1/delivery-man/all-orders';
-  static const String latestOrdersUri =
-      '/api/v1/delivery-man/latest-orders?token=';
+  static const String latestOrdersUri = '/api/v1/delivery-man/latest-orders';
   static const String recordLocationUri =
       '/api/v1/delivery-man/record-location-data';
-  static const String profileUri = '/api/v1/delivery-man/profile?token=';
+  static const String profileUri = '/api/v1/delivery-man/profile';
   static const String updateOrderStatusUri =
       '/api/v1/delivery-man/update-order-status';
 
-  static const String orderDetailsUri =
-      '/api/v1/delivery-man/order-details?token=';
+  static const String orderDetailsUri = '/api/v1/delivery-man/order-details';
   static const String acceptOrderUri = '/api/v1/delivery-man/accept-order';
   static const String activeStatusUri =
       '/api/v1/delivery-man/update-active-status';
@@ -60,12 +58,11 @@ class AppConstants {
   static const String aboutUsUri = '/api/v1/about-us';
   static const String privacyPolicyUri = '/api/v1/privacy-policy';
   static const String tramsAndConditionUri = '/api/v1/terms-and-conditions';
-  static const String driverRemoveUri =
-      '/api/v1/delivery-man/remove-account?token=';
+  static const String driverRemoveUri = '/api/v1/delivery-man/remove-account';
   static const String dmRegisterUri = '/api/v1/auth/delivery-man/store';
   static const String zoneListUri = '/api/v1/zone/list';
   static const String zoneUri = '/api/v1/config/get-zone-id';
-  static const String currentOrderUri = '/api/v1/delivery-man/order?token=';
+  static const String currentOrderUri = '/api/v1/delivery-man/order';
   static const String vehiclesUri = '/api/v1/get-vehicles';
   static const String orderCancellationUri =
       '/api/v1/customer/order/cancellation-reasons';

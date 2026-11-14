@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:doghree_rider/api/log_sanitizer.dart';
 import 'package:doghree_rider/firebase_options.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -106,6 +107,8 @@ class MyApp extends StatelessWidget {
                   : GetMaterialApp(
                       title: AppConstants.appName,
                       debugShowCheckedModeBanner: false,
+                      // Route logs carry query strings (phone, reset code).
+                      logWriterCallback: LogSanitizer.getxLog,
                       navigatorKey: Get.key,
                       theme: themeController.darkTheme ? dark : light,
                       locale: localizeController.locale,

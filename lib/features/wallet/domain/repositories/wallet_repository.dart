@@ -20,10 +20,6 @@ class WalletRepository implements WalletRepositoryInterface {
     throw UnimplementedError();
   }
 
-  String _getUserToken() {
-    return sharedPreferences.getString(AppConstants.token) ?? "";
-  }
-
   @override
   Future<EarningReportModel?> getEarningReport(
       {String? offset,
@@ -31,15 +27,17 @@ class WalletRepository implements WalletRepositoryInterface {
       String? startDate,
       String? endDate}) async {
     EarningReportModel? earningReportModel;
-    Response response;
-
-    if (startDate != null && endDate != null) {
-      response = await apiClient.getData(
-          '${AppConstants.earningReportUri}?limit=10&offset=$offset&type=$type&start_date=$startDate&end_date=$endDate&token=${_getUserToken()}');
-    } else {
-      response = await apiClient.getData(
-          '${AppConstants.earningReportUri}?limit=10&offset=$offset&type=$type&start_date=&end_date=&token=${_getUserToken()}');
-    }
+    final bool hasRange = startDate != null && endDate != null;
+    final Response response = await apiClient.getData(
+      AppConstants.earningReportUri,
+      query: {
+        'limit': 10,
+        'offset': offset,
+        'type': type,
+        'start_date': hasRange ? startDate : '',
+        'end_date': hasRange ? endDate : '',
+      },
+    );
 
     if (response.statusCode == 200) {
       earningReportModel = EarningReportModel.fromJson(response.body);

@@ -28,7 +28,6 @@ class ForgotPasswordRepository implements ForgotPasswordRepositoryInterface {
       'email': userInfoModel.email,
       'current_password': currentPassword,
       'password': newPassword,
-      'token': _getUserToken(),
     };
 
     Response response = await apiClient.postData(
@@ -119,10 +118,6 @@ class ForgotPasswordRepository implements ForgotPasswordRepositoryInterface {
           statusCode: response.statusCode);
     }
     return responseModel;
-  }
-
-  String _getUserToken() {
-    return sharedPreferences.getString(AppConstants.token) ?? "";
   }
 
   Future<String?> _saveDeviceToken() async {

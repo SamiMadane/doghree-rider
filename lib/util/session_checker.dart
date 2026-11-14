@@ -38,7 +38,7 @@ class SessionChecker extends GetxService {
 
     try {
       Response response = await apiClient.getData(
-        AppConstants.profileUri + _getUserToken(),
+        AppConstants.profileUri,
         handleError: false,
       );
 
@@ -48,10 +48,6 @@ class SessionChecker extends GetxService {
     } catch (e) {
       if (kDebugMode) debugPrint('SessionChecker failed: $e');
     }
-  }
-
-  String _getUserToken() {
-    return Get.find<AuthController>().getUserToken();
   }
 
   @override

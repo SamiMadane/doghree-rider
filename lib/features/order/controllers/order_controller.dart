@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:doghree_rider/common/models/response_model.dart';
@@ -195,14 +196,22 @@ class OrderController extends GetxController implements GetxService {
     update();
   }
 
+  /// True when page 1 of My Orders failed. The screen shows NoInternetScreen
+  /// with Retry instead of an endless spinner (audit row 13).
+  bool _completedOrdersFailed = false;
+  bool get completedOrdersFailed => _completedOrdersFailed;
+
   Future<void> getCompletedOrders(int offset, {bool willUpdate = true}) async {
     if (offset == 1) {
       _offsetList = [];
       _offset = 1;
       _completedOrderList = null;
+      _completedOrdersFailed = false;
       if (willUpdate) {
         update();
       }
+      await _loadFirstCompletedPage();
+      return;
     }
     if (!_offsetList.contains(offset)) {
       _offsetList.add(offset);
@@ -227,6 +236,30 @@ class OrderController extends GetxController implements GetxService {
         _paginate = false;
         update();
       }
+    }
+  }
+
+  /// Page 1 always ends in a list or the failed state, never a stuck spinner.
+  Future<void> _loadFirstCompletedPage() async {
+    _offsetList.add(1);
+    try {
+      final PaginatedOrderModel? paginatedOrderModel =
+          await orderServiceInterface.getCompletedOrderList(1);
+      if (paginatedOrderModel != null) {
+        _completedOrderList = (paginatedOrderModel.orders ?? [])
+            .where(_isValidOrder)
+            .toList();
+        _pageSize = paginatedOrderModel.totalSize;
+        _paginate = false;
+      }
+    } catch (e) {
+      if (kDebugMode) debugPrint('getCompletedOrders failed: ${e.runtimeType}');
+    } finally {
+      if (_completedOrderList == null) {
+        _completedOrdersFailed = true;
+        _offsetList.remove(1);
+      }
+      update();
     }
   }
 

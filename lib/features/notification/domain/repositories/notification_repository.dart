@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:doghree_rider/api/api_checker.dart';
 import 'package:doghree_rider/api/api_client.dart';
 import 'package:doghree_rider/features/notification/domain/models/notification_model.dart';
 import 'package:doghree_rider/features/notification/domain/repositories/notification_repository_interface.dart';
@@ -38,6 +39,9 @@ Future<List<NotificationModel>?> getList({int? offset}) async {
 }
 
   // ✅ الجديد - Server-side marking
+  // Marking one or more as read happens in the background when a
+  // notification is opened, so it is silent (audit row 12). Mark-all is a
+  // user tap and keeps ApiChecker's single error message.
   Future<bool> _patchMarkRead(List<int> notificationIds,
       {bool all = false}) async {
     try {
@@ -46,7 +50,9 @@ Future<List<NotificationModel>?> getList({int? offset}) async {
             ? AppConstants.markAllNotificationsReadUri
             : AppConstants.markNotificationReadUri,
         all ? {} : {'notification_ids': notificationIds},
+        handleError: all,
       );
+      if (!all) ApiChecker.checkSession(response);
       return response.statusCode == 200;
     } catch (e) {
       return false;
@@ -72,12 +78,8 @@ Future<List<NotificationModel>?> getList({int? offset}) async {
   Future<bool> sendDeliveredNotification(int? orderID) async {
     Response response = await apiClient.postData(
         AppConstants.deliveredOrderNotificationUri,
-        {"_method": "put", 'token': _getUserToken(), 'order_id': orderID});
+        {"_method": "put", 'order_id': orderID});
     return (response.statusCode == 200);
-  }
-
-  String _getUserToken() {
-    return sharedPreferences.getString(AppConstants.token) ?? "";
   }
 
   // ═══════════════════════════════════════════════════════

@@ -24,6 +24,12 @@ class ApiChecker {
     showCustomSnackBar(_messageFor(response));
   }
 
+  /// For silent calls (handleError: false): no toast for any failure, but a
+  /// 401 still ends the session the same way as a normal call.
+  static void checkSession(Response response) {
+    if (response.statusCode == 401) checkApi(response);
+  }
+
   static String _messageFor(Response response) {
     if (response.statusCode == 1) {
       return ErrorMessages.getMessage(ErrorType.noInternet);

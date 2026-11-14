@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:doghree_rider/common/widgets/custom_app_bar_widget.dart';
 import 'package:doghree_rider/common/widgets/empty_state_widget.dart';
+import 'package:doghree_rider/common/widgets/no_internet_screen.dart';
 import 'package:doghree_rider/features/order/controllers/order_controller.dart';
 import 'package:doghree_rider/features/order/widgets/history_order_widget.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
@@ -60,6 +61,12 @@ class _OrderScreenState extends State<OrderScreen> {
           CustomAppBarWidget(title: 'my_orders'.tr, isBackButtonExist: false),
       body: GetBuilder<OrderController>(builder: (orderController) {
         final List<dynamic>? orders = orderController.completedOrderList;
+
+        if (orders == null && orderController.completedOrdersFailed) {
+          return NoInternetScreen(
+            onRetry: () => orderController.getCompletedOrders(1),
+          );
+        }
 
         if (orders == null) {
           return Center(child: CircularProgressIndicator(color: cs.onSurface));
