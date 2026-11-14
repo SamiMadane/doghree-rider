@@ -125,6 +125,7 @@ Everything is in `SharedPreferences`. The keys are in `AppConstants` ("Shared Ke
 - Claude Code never changes real admin panel or server settings. When a setting is needed, ask the user to change it.
 - `docs/api-contract.md` records endpoints as they are actually observed (request and response shape).
 - `docs/code-traps.md` records non-obvious pitfalls found while working.
+- Before planning any batch that touches an endpoint, look the endpoint up in `docs/backend/` (rider section R1-R7 of `Doghri-App-Screens.html` first; see `docs/backend/README.md` for the order of authority) and check the plan against it.
 
 ### Device tests
 - Keep device steps short.
