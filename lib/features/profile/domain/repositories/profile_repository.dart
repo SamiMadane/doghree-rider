@@ -8,6 +8,7 @@ import 'package:doghree_rider/common/models/response_model.dart';
 import 'package:doghree_rider/features/address/domain/models/record_location_body_model.dart';
 import 'package:doghree_rider/features/splash/controllers/splash_controller.dart';
 import 'package:doghree_rider/features/profile/domain/models/profile_model.dart';
+import 'package:doghree_rider/features/profile/domain/models/profile_result_model.dart';
 import 'package:doghree_rider/features/profile/domain/repositories/profile_repository_interface.dart';
 import 'package:doghree_rider/util/app_constants.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
@@ -18,22 +19,26 @@ class ProfileRepository implements ProfileRepositoryInterface {
   final SharedPreferences sharedPreferences;
   ProfileRepository({required this.apiClient, required this.sharedPreferences});
 
- @override
-Future<ProfileModel?> getProfileInfo() async {
-  ProfileModel? profileModel;
-  Response response = await apiClient.getData(
-    AppConstants.profileUri + _getUserToken(),
-    handleError: false, 
-  );
-  
-  if (response.statusCode == 200) {
-    profileModel = ProfileModel.fromJson(response.body);
-  } else if (response.statusCode == 401) {
-    return null;
+  @override
+  Future<ProfileResult> getProfileInfo() async {
+    Response response = await apiClient.getData(
+      AppConstants.profileUri + _getUserToken(),
+      handleError: false,
+    );
+
+    final SessionStatus status = sessionStatusFromCode(response.statusCode);
+    if (status != SessionStatus.valid) {
+      return ProfileResult(status: status);
+    }
+    try {
+      return ProfileResult(
+        profile: ProfileModel.fromJson(response.body),
+        status: SessionStatus.valid,
+      );
+    } catch (_) {
+      return const ProfileResult(status: SessionStatus.unverified);
+    }
   }
-  
-  return profileModel;
-}
 
   @override
   Future<ResponseModel> updateProfile(ProfileModel userInfoModel, XFile? data, String token) async {

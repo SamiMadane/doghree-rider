@@ -11,31 +11,34 @@ class SplashRepository implements SplashRepositoryInterface {
 
   @override
   Future<Response> getConfigData() async {
-    Response response = await apiClient.getData(AppConstants.configUri);
+    // handleError: false. The splash shows NoInternetScreen on failure,
+    // so ApiChecker must not add a toast on top of it.
+    Response response = await apiClient.getData(AppConstants.configUri, handleError: false);
     return response;
   }
 
+  /// Fills every missing default in one call (no early return).
   @override
-  Future<bool> initSharedData() {
+  Future<bool> initSharedData() async {
     if(!sharedPreferences.containsKey(AppConstants.theme)) {
-      return sharedPreferences.setBool(AppConstants.theme, false);
+      await sharedPreferences.setBool(AppConstants.theme, false);
     }
     if(!sharedPreferences.containsKey(AppConstants.countryCode)) {
-      return sharedPreferences.setString(AppConstants.countryCode, AppConstants.languages[0].countryCode!);
+      await sharedPreferences.setString(AppConstants.countryCode, AppConstants.languages[0].countryCode!);
     }
     if(!sharedPreferences.containsKey(AppConstants.languageCode)) {
-      return sharedPreferences.setString(AppConstants.languageCode, AppConstants.languages[0].languageCode!);
+      await sharedPreferences.setString(AppConstants.languageCode, AppConstants.languages[0].languageCode!);
     }
     if(!sharedPreferences.containsKey(AppConstants.notification)) {
-      return sharedPreferences.setBool(AppConstants.notification, true);
+      await sharedPreferences.setBool(AppConstants.notification, true);
     }
     if(!sharedPreferences.containsKey(AppConstants.notificationCount)) {
-      sharedPreferences.setInt(AppConstants.notificationCount, 0);
+      await sharedPreferences.setInt(AppConstants.notificationCount, 0);
     }
     if(!sharedPreferences.containsKey(AppConstants.ignoreList)) {
-      sharedPreferences.setStringList(AppConstants.ignoreList, []);
+      await sharedPreferences.setStringList(AppConstants.ignoreList, []);
     }
-    return Future.value(true);
+    return true;
   }
 
   @override
