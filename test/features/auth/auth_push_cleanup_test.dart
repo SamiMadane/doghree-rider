@@ -1,4 +1,6 @@
+import 'package:doghree_rider/features/auth/controllers/auth_controller.dart';
 import 'package:doghree_rider/features/auth/domain/repositories/auth_repository.dart';
+import 'package:doghree_rider/features/auth/domain/services/auth_service.dart';
 import 'package:doghree_rider/util/app_constants.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -145,6 +147,29 @@ void main() {
     expect(push.log.indexOf('deleteToken'),
         lessThan(push.log.indexOf('getToken')));
     expect(prefs.getBool(AppConstants.fcmCleanupPending), isNull);
+  });
+
+  test('T16 notifications off: the splash path registers no token', () async {
+    await prefs.setBool(AppConstants.notification, false);
+    final controller = AuthController(
+        authServiceInterface: AuthService(authRepositoryInterface: repo()));
+
+    // What SplashScreen._handleDefaultRouting runs for a logged-in rider.
+    await controller.updateToken();
+
+    expect(push.log.where((c) => c == 'getToken'), isEmpty);
+    expect(push.log.where((c) => c.startsWith('subscribe:')), isEmpty);
+    expect(api.calls.where((c) => c.uri == AppConstants.tokenUri), isEmpty);
+  });
+
+  test('G4 guard: toggling notifications back on registers a token', () async {
+    await prefs.setBool(AppConstants.notification, false);
+
+    repo().setNotificationActive(true);
+    await Future<void>.delayed(const Duration(milliseconds: 10));
+
+    expect(push.log, contains('getToken'));
+    expect(api.calls.where((c) => c.uri == AppConstants.tokenUri), hasLength(1));
   });
 
   test('T15 notifications off releases the device without the doomed PUT',

@@ -54,6 +54,11 @@ class AuthRepository implements AuthRepositoryInterface {
     // A logout that could not release the old device token finishes first,
     // so getToken below never hands the server a token that is about to die.
     await retryPendingPushCleanup();
+    // Notifications off: no automatic caller (splash, app start, language
+    // change, login) may register a token. Only toggling them on does.
+    if (!isNotificationActive()) {
+      return const Response(statusCode: 0, statusText: 'notifications_off');
+    }
     String? deviceToken;
     if (!GetPlatform.isWeb) {
       try {
@@ -266,7 +271,9 @@ class AuthRepository implements AuthRepositoryInterface {
   }
 
   @override
-  void setNotificationActive(bool isActive) {
+  Future<void> setNotificationActive(bool isActive) async {
+    // Saved first: updateToken reads it and registers only when it is on.
+    await sharedPreferences.setBool(AppConstants.notification, isActive);
     if (isActive) {
       updateToken().then((_) {}, onError: (Object e) {
         if (kDebugMode) debugPrint('FCM updateToken failed: ${e.runtimeType}');
@@ -275,7 +282,6 @@ class AuthRepository implements AuthRepositoryInterface {
       // Same release as logout; update-fcm-token without a token only fails.
       _releasePush(_topics());
     }
-    sharedPreferences.setBool(AppConstants.notification, isActive);
   }
 
   @override
