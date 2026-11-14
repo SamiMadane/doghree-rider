@@ -10,7 +10,11 @@ import 'package:get/get.dart';
 
 class NoInternetScreen extends StatelessWidget {
   final Widget? child;
-  const NoInternetScreen({super.key, this.child});
+
+  /// When set, Retry reruns this load in place instead of navigating
+  /// (used inside a tab, for example My Orders).
+  final VoidCallback? onRetry;
+  const NoInternetScreen({super.key, this.child, this.onRetry});
 
   @override
   Widget build(BuildContext context) {
@@ -71,9 +75,9 @@ class NoInternetScreen extends StatelessWidget {
               boxShadow: [
                 BoxShadow(
                   color: Colors.black12,
-                  blurRadius: 5,
-                  spreadRadius: 1,
-                  offset: const Offset(0, -2),
+                  blurRadius: Dimensions.r5,
+                  spreadRadius: Dimensions.r1,
+                  offset: Offset(0, -Dimensions.h2),
                 ),
               ],
             ),
@@ -85,7 +89,9 @@ class NoInternetScreen extends StatelessWidget {
                 if (!connectivityResult.contains(ConnectivityResult.none)) {
                   try {
                     // ✅ إعادة تحميل Splash
-                    if (child != null) {
+                    if (onRetry != null) {
+                      onRetry!();
+                    } else if (child != null) {
                       Get.off(() => child!);
                     } else {
                       Get.offAll(() => const SplashScreen(body: null));

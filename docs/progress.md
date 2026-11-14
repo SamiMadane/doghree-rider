@@ -5,8 +5,8 @@
 | Batch | Branch | Scope | Status | Merged |
 |---|---|---|---|---|
 | D-00 | docs/d-00-setup | CLAUDE.md, docs skeleton, audit | done | |
-| D-01 | fix/d-01-startup | Audit rows 1, 2, 3, 4, 5, 7, 59 | done | 2026-11-14 |
-| D-02 | fix/d-02-silent-network | Audit rows 8, 9, 10, 11, 12, 13, 50, 51 | planned | |
+| D-01 | fix/d-01-startup | Audit rows 1, 2, 3, 4, 5, 7, 59 | merged, device tests pending (joint pass after D-03) | 2026-11-14 |
+| D-02 | fix/d-02-silent-network | Audit rows 8, 9, 10, 11, 12, 13, 50, 51 | merged, device tests pending (joint pass after D-03) | 2026-11-14 |
 | D-03 | fix/d-03-auth | Audit rows 14, 15, 16, 17, 18 | planned | |
 | D-04 | fix/d-04-order-actions | Audit rows 19, 20, 21, 22, 23, 24, 25, 28, 29 | planned | |
 | D-05 | fix/d-05-order-lists-parsing | Audit rows 26, 27, 30, 52, 53 | planned | |
@@ -15,6 +15,8 @@
 | D-08 | fix/d-08-wallet | Audit rows 41, 42, 43, 44 | planned | |
 | D-09 | fix/d-09-uploads-profile | Audit rows 45, 46, 47, 48, 49 | planned | |
 | D-10 | fix/d-10-cleanup | Audit rows 40, 55, 56, 57, 58, 60 | planned | |
+
+> **Not pushed on purpose.** `development` is not pushed until the joint D-01 + D-02 + D-03 device pass (see `docs/device-test-backlog.md`). D-03 starts from local `development`, which is ahead of `origin/development` by the D-01 and D-02 merges.
 
 ## Batch log
 
@@ -43,7 +45,7 @@
   - Fail on the old code at compile time only: T4–T8 (the old code has no `ProfileResult`/`SessionStatus`).
   - Guards: T2, T9, T10, T11.
 - Analyze: 0 issues.
-- Device: the user reports all D-01 steps passed (start-up with internet, airplane mode then Retry, logged in with bad network, fresh install). The smoke pass also passed: accept, picked up, delivered with photo, delivery shown in earnings.
+- Device: **not run yet.** The steps (start-up with internet, airplane mode then Retry, logged in with bad network, fresh install, plus the smoke pass) are pending in `docs/device-test-backlog.md`. They run in the joint pass after D-03.
 
 ### Notes (found during D-01, not fixed)
 - The `camera` dependency is now unused (pubspec unchanged). Remove it in D-10.
@@ -53,13 +55,47 @@
 - `ProfileModel.fromJson` throws when `identity_image_full_url` is missing (see code-traps.md).
 - Backend docs (session): suspended and not-approved riders get 401 auth-001. A new login on another device invalidates the old token. So only 401 ends the session at splash, and no backend question is needed (no B-05).
 
+### D-02 (2026-11-14)
+- **Row 8:** `LogSanitizer` (lib/api/log_sanitizer.dart) masks the values of sensitive query keys (token, phone, number, password, otp, coordinates and similar).
+  - `ApiClient` logs through it and logs only the keys of `query:`.
+  - Exceptions are logged by type only.
+  - GetX route logs use it through `logWriterCallback` in main.dart.
+- **Row 9:** rider requests use the Bearer header only. The token is removed from every URI, query, body and multipart field: orders, profile, chat, wallet earning report, send-order-otp, change password, update-fcm-token and the session check. The only exception is the WebSocket location body, which cannot carry a header.
+- **Rows 10, 11 and 12:** these calls use `handleError: false`:
+  - latest-orders polling
+  - record-location
+  - geocode
+  - single mark-read
+
+  Mark-all-read is a user tap and keeps ApiChecker's single message.
+- **Row 13:** if the first page of My Orders fails, `completedOrdersFailed` is set and the screen shows `NoInternetScreen(onRetry:)`. The page-1 load runs in try/finally, so the loader always stops. Later pages are unchanged (D-05).
+- **Row 50:** chat search, the other chat GETs and the earning report use the `query:` map, which `Uri.replace` encodes.
+- **Row 51:** the verification and reset-password routes are built with `Uri(queryParameters:)` through `RouteHelper._route`.
+- **Changes beyond the plan:**
+  - `SessionChecker` built `profileUri + token`. It now calls the plain path.
+  - `ApiChecker.checkSession(response)`: a silent call still ends the session on a 401 and shows nothing for any other failure. `SessionChecker` only stops its timer on a 401, so it does not end the session.
+  - `PhoneFormat.withPlus` (lib/helper/phone_format_helper.dart) fixes the `+` handling in verification_screen and new_pass_screen. new_pass_screen used to prepend `+`, which only worked because the route turned `+` into a space.
+- **Tests:** 22 new, 33 total, 33 passed, 0 failed.
+  - Fail on the old code by behaviour: T2, T3a, T3b, T3c, T3d, T4, T5a, T5b, T6, T7, T9, T10a, T10b (T10a and T10b were run through a temporary copy without the new import), and G5 (the old multipart body carried the token).
+  - Fail on the old code at compile time only: T1, G4, T8a, T8b, T10c.
+  - Guards: G1, G2, G3.
+- **Analyze:** 0 issues.
+- **Device:** **not run yet.** The steps are pending in `docs/device-test-backlog.md` (joint pass after D-03).
+
+### Notes (found during D-02, not fixed)
+- `getNavigationHandlerRoute` and `getChatRoute` put standard base64 (`+`, `/`, `=`) into query strings, where `+` decodes to a space (D-07).
+- The `String token` parameter of `updateProfile` (repository, service and controller) is unused (D-09).
+- Pull-to-refresh on the Requests tab is now silent offline. The old list stays.
+- The WebSocket location body still carries the token, because a WebSocket cannot send the header. Revisit this if `websocket_status` is turned on (it is 0 live).
+- **For D-03:** logout (and turning notifications off) sends `update-fcm-token` without `fcm_token`. The backend requires `fcm_token`, so the call fails silently and the server keeps the device token, which means a logged-out device can still get pushes. Consider `FirebaseMessaging.instance.deleteToken()` on logout.
+
 ## Open backend questions
 
 <!-- The only place new backend questions are recorded. Move a row to docs/backend-changes.md once the owner agrees. -->
 
 | ID | Endpoint | Question / needed change | Why | Raised in | Status |
 |---|---|---|---|---|---|
-| B-01 | /api/v1/delivery-man/* (current-orders, latest-orders, all-orders, order, order-details, profile, remove-account, earning-report, message/*) | Can these accept the Bearer header only, so the app stops sending `?token=` in URLs and `token` in bodies? | Tokens in URLs end up in server, proxy and CDN logs (audit row 9) | D-00 | answered (backend docs Doghri-App-Screens, rider R1-R7, 2026-10-14): Bearer is the primary auth; the token query or body field is only a fallback. The app can drop `?token=` in D-02 |
+| B-01 | /api/v1/delivery-man/* (current-orders, latest-orders, all-orders, order, order-details, profile, remove-account, earning-report, message/*) | Can these accept the Bearer header only, so the app stops sending `?token=` in URLs and `token` in bodies? | Tokens in URLs end up in server, proxy and CDN logs (audit row 9) | D-00 | resolved in D-02: Bearer only (backend docs Doghri-App-Screens, rider R1-R7, 2026-10-14: the token query or body field is only a fallback). The only exception is the WebSocket location body, while `websocket_status` is 0 |
 | B-02 | /api/v1/delivery-man/update-order-status | When `dm_picture_upload_status` is on, is a delivery photo mandatory? Does the server reject `delivered` without `order_proof`? | The app shows the photo section but never requires it (audit row 49) | D-00 | answered (same docs): `order_proof` is optional on the server (array, max 5, stored only with `delivered`). Requiring it in the app is an owner decision before D-09 |
 | B-03 | /api/v1/delivery-man/wallet/withdrawals | Does the response include a total count for paging past `limit=20`? | Older withdrawals are never shown (audit row 42) | D-00 | answered (same docs): returns `total_size`; `limit` 1-50; `offset` is a page number starting at 1 |
 | B-04 | /deliveryman-earning-report-invoice/{id} | What Content-Type and charset does the PDF response use? | The app saves decoded text as bytes, so a utf-8 charset would corrupt the file (audit row 41) | D-00 | open |

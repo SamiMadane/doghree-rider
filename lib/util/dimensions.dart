@@ -139,6 +139,7 @@ class Dimensions {
   // 🔵 Border Radius (r) - للدوائر والحواف
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   static double r0 = 0.r;
+  static double r1 = 1.r;
   static double r2 = 2.r;
   static double r4 = 4.r;
   static double r5 = 5.r;

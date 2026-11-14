@@ -67,20 +67,31 @@ class RouteHelper {
     return '$navigationHandler?data=$data';
   }
 
+  /// Builds `path?query` with every value URL-encoded, so `+`, `&` and `=`
+  /// in a phone or code arrive intact (audit row 51). Null values are left out.
+  static String _route(String path, Map<String, String?> params) {
+    final Map<String, String> query = {
+      for (final e in params.entries)
+        if (e.value != null) e.key: e.value!,
+    };
+    return Uri(path: path, queryParameters: query.isEmpty ? null : query)
+        .toString();
+  }
+
   static String getSignInRoute() => signIn;
   static String getVerificationRoute(String number, {String? session}) {
     String? authSession;
     if (session != null) {
       authSession = base64Url.encode(utf8.encode(session));
     }
-    return '$verification?number=$number&session=$authSession';
+    return _route(verification, {'number': number, 'session': authSession});
   }
 
   static String getMainRoute(String page) => '$main?page=$page';
   static String getForgotPassRoute() => forgotPassword;
   static String getResetPasswordRoute(
           String? phone, String token, String page) =>
-      '$resetPassword?phone=$phone&token=$token&page=$page';
+      _route(resetPassword, {'phone': phone, 'token': token, 'page': page});
   static String getOrderDetailsRoute(int? id,
           {bool? fromNotification, bool? fromLocationScreen}) =>
       '$orderDetails?id=$id&from=${fromNotification.toString()}&from_location_screen=${fromLocationScreen.toString()}';

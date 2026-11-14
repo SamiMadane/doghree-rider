@@ -67,7 +67,7 @@ class AuthRepository implements AuthRepositoryInterface {
       }
     }
     return await apiClient.postData(AppConstants.tokenUri,
-        {"_method": "put", "token": getUserToken(), "fcm_token": deviceToken},
+        {"_method": "put", "fcm_token": deviceToken},
         handleError: false);
   }
 
@@ -110,8 +110,9 @@ class AuthRepository implements AuthRepositoryInterface {
           await FirebaseMessaging.instance.unsubscribeFromTopic(t);
         }
       } catch (_) {}
-      apiClient.postData(
-          AppConstants.tokenUri, {"_method": "put", "token": getUserToken()},
+      // Must start before the token and header are cleared below: the
+      // request takes its headers synchronously when postData is called.
+      apiClient.postData(AppConstants.tokenUri, {"_method": "put"},
           handleError: false);
     }
     await sharedPreferences.remove(AppConstants.token);
@@ -182,8 +183,7 @@ class AuthRepository implements AuthRepositoryInterface {
       updateToken();
     } else {
       if (!GetPlatform.isWeb) {
-        apiClient.postData(
-            AppConstants.tokenUri, {"_method": "put", "token": getUserToken()},
+        apiClient.postData(AppConstants.tokenUri, {"_method": "put"},
             handleError: false);
         for (final t in _topics()) {
           FirebaseMessaging.instance.unsubscribeFromTopic(t);

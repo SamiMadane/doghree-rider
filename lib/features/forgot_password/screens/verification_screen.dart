@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:doghree_rider/common/models/response_model.dart';
 import 'package:doghree_rider/features/splash/controllers/splash_controller.dart';
 import 'package:doghree_rider/features/forgot_password/controllers/forgot_password_controller.dart';
+import 'package:doghree_rider/helper/phone_format_helper.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
 import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/util/styles.dart';
@@ -32,9 +33,8 @@ class VerificationScreenState extends State<VerificationScreen> {
   void initState() {
     super.initState();
 
-    _number = widget.number!.startsWith('+')
-        ? widget.number
-        : '+${widget.number!.substring(1, widget.number!.length)}';
+    // The route encodes the number, so a leading + arrives intact (row 51).
+    _number = PhoneFormat.withPlus(widget.number);
     _startTimer();
   }
 

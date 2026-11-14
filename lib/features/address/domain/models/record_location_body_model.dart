@@ -15,7 +15,9 @@ class RecordLocationBodyModel {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['token'] = token;
+    // Only the WebSocket path sets a token (it cannot carry a header).
+    // The HTTP path uses the Bearer header and sends no token field.
+    if (token != null) data['token'] = token;
     data['longitude'] = longitude;
     data['latitude'] = latitude;
     data['location'] = location;

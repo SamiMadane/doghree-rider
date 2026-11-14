@@ -64,6 +64,8 @@ class ProfileService implements ProfileServiceInterface {
           'lat': '${locationResult.latitude}',
           'lng': '${locationResult.longitude}',
         },
+        // Called by the 10s location timer: silent on failure (audit row 11).
+        handleError: false,
       );
       if (response.statusCode == 200 && response.body is Map) {
         final results = response.body['results'];
@@ -77,7 +79,7 @@ class ProfileService implements ProfileServiceInterface {
         }
       }
     } catch (e) {
-      if (kDebugMode) debugPrint('addressPlaceMark failed: $e');
+      if (kDebugMode) debugPrint('addressPlaceMark failed: ${e.runtimeType}');
     }
     return '';
   }

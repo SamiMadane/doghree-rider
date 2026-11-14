@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:doghree_rider/api/api_checker.dart';
 import 'package:doghree_rider/api/api_client.dart';
 import 'package:doghree_rider/common/models/response_model.dart';
 import 'package:doghree_rider/features/order/domain/models/ignore_model.dart';
@@ -37,18 +38,27 @@ class OrderRepository implements OrderRepositoryInterface {
 
   @override
   Future<Response> get(int? id) async {
-    Response response = await apiClient.getData(
-        '${AppConstants.currentOrderUri}${_getUserToken()}&order_id=$id');
+    Response response = await apiClient
+        .getData(AppConstants.currentOrderUri, query: {'order_id': id});
     return response;
   }
 
+  /// Page 1 is silent: My Orders shows NoInternetScreen with Retry on failure
+  /// (audit row 13), so ApiChecker must not add a toast. A 401 still ends the
+  /// session. Later pages keep the old behaviour (pagination is D-05).
   @override
   Future<PaginatedOrderModel?> getCompletedOrderList(int offset) async {
     PaginatedOrderModel? paginatedOrderModel;
+    final bool firstPage = offset == 1;
     Response response = await apiClient.getData(
-        '${AppConstants.allOrdersUri}?token=${_getUserToken()}&offset=$offset&limit=10');
+      AppConstants.allOrdersUri,
+      query: {'offset': offset, 'limit': 10},
+      handleError: !firstPage,
+    );
     if (response.statusCode == 200) {
       paginatedOrderModel = PaginatedOrderModel.fromJson(response.body);
+    } else if (firstPage) {
+      ApiChecker.checkSession(response);
     }
     return paginatedOrderModel;
   }
@@ -56,8 +66,7 @@ class OrderRepository implements OrderRepositoryInterface {
   @override
   Future<List<OrderModel>?> getList() async {
     List<OrderModel>? currentOrderList;
-    Response response = await apiClient
-        .getData(AppConstants.currentOrdersUri + _getUserToken());
+    Response response = await apiClient.getData(AppConstants.currentOrdersUri);
     if (response.statusCode == 200) {
       currentOrderList = [];
       response.body.forEach(
@@ -69,8 +78,10 @@ class OrderRepository implements OrderRepositoryInterface {
   @override
   Future<List<OrderModel>?> getLatestOrders() async {
     List<OrderModel>? latestOrderList;
-    Response response =
-        await apiClient.getData(AppConstants.latestOrdersUri + _getUserToken());
+    // Polled every 10s: silent on failure (audit row 10). The old list stays.
+    Response response = await apiClient.getData(AppConstants.latestOrdersUri,
+        handleError: false);
+    ApiChecker.checkSession(response);
 
     if (response.statusCode == 200) {
       latestOrderList = [];
@@ -84,7 +95,6 @@ class OrderRepository implements OrderRepositoryInterface {
   Future<ResponseModel> updateOrderStatus(
       UpdateStatusBodyModel updateStatusBody,
       List<MultipartBody> proofAttachment) async {
-    updateStatusBody.token = _getUserToken();
     ResponseModel responseModel;
     Response response = await apiClient.postMultipartData(
         AppConstants.updateOrderStatusUri,
@@ -102,8 +112,8 @@ class OrderRepository implements OrderRepositoryInterface {
   @override
   Future<List<OrderDetailsModel>?> getOrderDetails(int? orderID) async {
     List<OrderDetailsModel>? orderDetailsModel;
-    Response response = await apiClient.getData(
-        '${AppConstants.orderDetailsUri}${_getUserToken()}&order_id=$orderID');
+    Response response = await apiClient
+        .getData(AppConstants.orderDetailsUri, query: {'order_id': orderID});
     if (response.statusCode == 200) {
       orderDetailsModel = [];
       response.body.forEach((orderDetails) =>
@@ -116,7 +126,7 @@ class OrderRepository implements OrderRepositoryInterface {
   Future<ResponseModel> acceptOrder(int? orderID) async {
     ResponseModel responseModel;
     Response response = await apiClient.postData(AppConstants.acceptOrderUri,
-        {"_method": "put", 'token': _getUserToken(), 'order_id': orderID},
+        {"_method": "put", 'order_id': orderID},
         handleError: false);
     if (response.statusCode == 200) {
       responseModel = ResponseModel(true, response.body['message']);
@@ -175,10 +185,6 @@ class OrderRepository implements OrderRepositoryInterface {
       return null;
     }
     return null;
-  }
-
-  String _getUserToken() {
-    return sharedPreferences.getString(AppConstants.token) ?? "";
   }
 
   @override

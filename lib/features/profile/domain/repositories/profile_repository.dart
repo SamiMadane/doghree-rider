@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:doghree_rider/api/api_checker.dart';
 import 'package:doghree_rider/api/api_client.dart';
 import 'package:doghree_rider/common/models/response_model.dart';
 import 'package:doghree_rider/features/address/domain/models/record_location_body_model.dart';
@@ -22,7 +23,7 @@ class ProfileRepository implements ProfileRepositoryInterface {
   @override
   Future<ProfileResult> getProfileInfo() async {
     Response response = await apiClient.getData(
-      AppConstants.profileUri + _getUserToken(),
+      AppConstants.profileUri,
       handleError: false,
     );
 
@@ -46,7 +47,7 @@ class ProfileRepository implements ProfileRepositoryInterface {
     Map<String, String> fields = {};
     fields.addAll(<String, String>{
       '_method': 'put', 'f_name': userInfoModel.fName!, 'l_name': userInfoModel.lName!,
-      'email': userInfoModel.email!, 'token': _getUserToken()
+      'email': userInfoModel.email!,
     });
     Response response = await apiClient.postMultipartData(AppConstants.updateProfileUri, fields, [MultipartBody('image', data)], handleError: false);
     if (response.statusCode == 200) {
@@ -60,7 +61,7 @@ class ProfileRepository implements ProfileRepositoryInterface {
   @override
   Future<ResponseModel> updateActiveStatus() async {
     ResponseModel responseModel;
-    Response response = await apiClient.postData(AppConstants.activeStatusUri, {'token': _getUserToken()}, handleError: false);
+    Response response = await apiClient.postData(AppConstants.activeStatusUri, {}, handleError: false);
     if (response.statusCode == 200) {
       responseModel = ResponseModel(true, response.body['message']);
     } else {
@@ -81,15 +82,21 @@ class ProfileRepository implements ProfileRepositoryInterface {
   }
 
   @override
-  Future<Response> recordLocation(RecordLocationBodyModel recordLocationBody) {
-    recordLocationBody.token = _getUserToken();
-    return apiClient.postData(AppConstants.recordLocationUri, recordLocationBody.toJson());
+  Future<Response> recordLocation(RecordLocationBodyModel recordLocationBody) async {
+    // Background every 10s: silent on failure (audit row 11), but a 401
+    // still ends the session. Bearer header only.
+    recordLocationBody.token = null;
+    final Response response = await apiClient.postData(
+        AppConstants.recordLocationUri, recordLocationBody.toJson(),
+        handleError: false);
+    ApiChecker.checkSession(response);
+    return response;
   }
 
   @override
   Future<ResponseModel> deleteDriver() async {
     ResponseModel responseModel;
-    Response response = await apiClient.deleteData(AppConstants.driverRemoveUri + _getUserToken(), handleError: false);
+    Response response = await apiClient.deleteData(AppConstants.driverRemoveUri, handleError: false);
     if (response.statusCode == 200) {
       responseModel = ResponseModel(true, 'your_account_remove_successfully'.tr);
     }else {

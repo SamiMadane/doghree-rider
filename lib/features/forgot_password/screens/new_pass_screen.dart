@@ -4,6 +4,7 @@ import 'package:doghree_rider/features/auth/controllers/auth_controller.dart';
 import 'package:doghree_rider/features/auth/widgets/pass_view_widget.dart';
 import 'package:doghree_rider/features/forgot_password/controllers/forgot_password_controller.dart';
 import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
+import 'package:doghree_rider/helper/phone_format_helper.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
 import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/common/widgets/custom_app_bar_widget.dart';
@@ -260,7 +261,7 @@ class _NewPassScreenState extends State<NewPassScreen> {
     Get.find<ForgotPasswordController>()
         .resetPassword(
       widget.resetToken,
-      '+${widget.number!.trim()}',
+      PhoneFormat.withPlus(widget.number),
       password,
       confirmPassword,
     )
