@@ -7,6 +7,7 @@ import 'package:doghree_rider/common/models/response_model.dart';
 import 'package:doghree_rider/common/widgets/custom_snackbar_widget.dart';
 import 'package:doghree_rider/features/address/domain/models/record_location_body_model.dart';
 import 'package:doghree_rider/features/profile/domain/models/profile_model.dart';
+import 'package:doghree_rider/features/profile/domain/models/profile_result_model.dart';
 import 'package:doghree_rider/features/profile/domain/repositories/profile_repository_interface.dart';
 import 'package:doghree_rider/features/profile/domain/services/profile_service_interface.dart';
 import 'package:doghree_rider/helper/location_permission_manager.dart';
@@ -16,7 +17,7 @@ class ProfileService implements ProfileServiceInterface {
   ProfileService({required this.profileRepositoryInterface});
 
   @override
-  Future<ProfileModel?> getProfileInfo() async {
+  Future<ProfileResult> getProfileInfo() async {
     return await profileRepositoryInterface.getProfileInfo();
   }
 

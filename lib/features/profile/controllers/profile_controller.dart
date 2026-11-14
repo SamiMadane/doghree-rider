@@ -4,6 +4,7 @@ import 'package:doghree_rider/features/auth/controllers/auth_controller.dart';
 import 'package:doghree_rider/features/address/domain/models/record_location_body_model.dart';
 import 'package:doghree_rider/features/splash/controllers/splash_controller.dart';
 import 'package:doghree_rider/features/profile/domain/models/profile_model.dart';
+import 'package:doghree_rider/features/profile/domain/models/profile_result_model.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
 import 'package:doghree_rider/common/widgets/custom_snackbar_widget.dart';
 import 'package:geolocator/geolocator.dart';
@@ -60,9 +61,13 @@ class ProfileController extends GetxController implements GetxService {
     }
   }
 
-  Future<void> getProfile({bool isFromSplash = false}) async {
-    ProfileModel? profileModel = await profileServiceInterface.getProfileInfo();
-    if (profileModel != null) {
+  /// Loads the profile. On any failure the previous [profileModel] is kept.
+  /// The returned [SessionStatus] lets the caller tell a real session end
+  /// (expired) apart from offline or server trouble.
+  Future<SessionStatus> getProfile({bool isFromSplash = false}) async {
+    final ProfileResult result = await profileServiceInterface.getProfileInfo();
+    final ProfileModel? profileModel = result.profile;
+    if (result.status == SessionStatus.valid && profileModel != null) {
       _profileModel = profileModel;
       if (_profileModel!.active == 1) {
         profileServiceInterface.checkPermission(
@@ -74,6 +79,7 @@ class ProfileController extends GetxController implements GetxService {
       }
     }
     update();
+    return result.status;
   }
 
   Future<bool> updateUserInfo(

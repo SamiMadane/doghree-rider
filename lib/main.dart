@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:camera/camera.dart';
 import 'package:doghree_rider/firebase_options.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -27,7 +26,6 @@ import 'helper/get_di.dart' as di;
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
-late List<CameraDescription> cameras;
 
 Future<void> main() async {
   setPathUrlStrategy();
@@ -61,7 +59,6 @@ Future<void> main() async {
   await DateConverterHelper.initLocaleDateFormatting();
   Get.put(LocationPermissionManager(), permanent: true);
 
-  cameras = await availableCameras();
   runApp(MyApp(languages: languages, body: body));
 }
 

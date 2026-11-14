@@ -4,9 +4,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:doghree_rider/common/models/response_model.dart';
 import 'package:doghree_rider/features/address/domain/models/record_location_body_model.dart';
 import 'package:doghree_rider/features/profile/domain/models/profile_model.dart';
+import 'package:doghree_rider/features/profile/domain/models/profile_result_model.dart';
 
 abstract class ProfileServiceInterface {
-  Future<ProfileModel?> getProfileInfo();
+  Future<ProfileResult> getProfileInfo();
   Future<ResponseModel> updateProfile(ProfileModel userInfoModel, XFile? data, String token);
   Future<ResponseModel> updateActiveStatus();
   Future<void> recordWebSocketLocation(RecordLocationBodyModel recordLocationBody);

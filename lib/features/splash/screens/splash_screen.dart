@@ -8,10 +8,14 @@ import 'package:doghree_rider/features/language/controllers/language_controller.
 import 'package:doghree_rider/features/splash/controllers/splash_controller.dart';
 import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
 import 'package:doghree_rider/features/notification/domain/models/notification_body_model.dart';
+import 'package:doghree_rider/features/profile/domain/models/profile_result_model.dart';
+import 'package:doghree_rider/features/splash/domain/models/splash_load_guard.dart';
 import 'package:doghree_rider/features/splash/widgets/doghree_splash_animation.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
 import 'package:doghree_rider/util/app_constants.dart';
+import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/util/manager_colors.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -30,6 +34,7 @@ class SplashScreenState extends State<SplashScreen> {
   bool _loadFailed = false;
   bool _isLoading = true;
   VoidCallback? _pendingNavigation;
+  final SplashLoadGuard _guard = SplashLoadGuard();
 
   @override
   void initState() {
@@ -43,34 +48,45 @@ class SplashScreenState extends State<SplashScreen> {
 
     Get.find<LocalizationController>();
 
-    // لا نجلب البروفايل هنا - سنفعل ذلك في _validateSession
-    // if (Get.find<AuthController>().isLoggedIn()) {
-    //   await Get.find<ProfileController>().getProfile();
-    // }
-
     _listenConnectivity();
     _loadConfig();
   }
 
-  // في SplashScreen._route()
-  Future<bool> _validateSession() async {
+  /// One profile request. Only a real 401 ends the session; offline,
+  /// timeout and server errors leave the session untouched.
+  Future<SessionStatus> _validateSession() async {
     try {
-      await Get.find<ProfileController>().getProfile(isFromSplash: true);
-      bool isValid = Get.find<ProfileController>().profileModel != null;
-
-      // إذا الجلسة منتهية، حفظ سبب تسجيل الخروج
-      if (!isValid) {
-        await Get.find<AuthController>().setLogoutReason('session_expired');
-      }
-
-      return isValid;
+      return await Get.find<ProfileController>()
+          .getProfile(isFromSplash: true);
     } catch (e) {
-      return false;
+      if (kDebugMode) debugPrint('Splash session check failed: ${e.runtimeType}');
+      return SessionStatus.unverified;
     }
   }
 
+  /// Ends the session for real. Every step is guarded so navigation to
+  /// sign-in always happens, with no toast.
+  Future<void> _endSession() async {
+    try {
+      await Get.find<AuthController>().clearSharedData();
+    } catch (e) {
+      if (kDebugMode) debugPrint('clearSharedData failed: ${e.runtimeType}');
+    }
+    try {
+      Get.find<ProfileController>().stopLocationRecord();
+    } catch (e) {
+      if (kDebugMode) debugPrint('stopLocationRecord failed: ${e.runtimeType}');
+    }
+    try {
+      await Get.find<AuthController>().setLogoutReason('session_expired');
+    } catch (e) {
+      if (kDebugMode) debugPrint('setLogoutReason failed: ${e.runtimeType}');
+    }
+  }
+
+  /// Only job: retry silently when the connection comes back after a failed
+  /// load. Feedback is the compact NoInternetScreen, never a bar or toast.
   void _listenConnectivity() {
-    bool firstTime = true;
     _onConnectivityChanged = Connectivity()
         .onConnectivityChanged
         .listen((List<ConnectivityResult> result) {
@@ -79,21 +95,9 @@ class SplashScreenState extends State<SplashScreen> {
       bool isConnected = result.contains(ConnectivityResult.wifi) ||
           result.contains(ConnectivityResult.mobile);
 
-      if (!firstTime) {
-        if (isConnected && _loadFailed) {
-          ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          _loadConfig();
-        }
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          backgroundColor: isConnected ? Colors.green : Colors.red,
-          duration: Duration(seconds: isConnected ? 3 : 6000),
-          content: Text(
-            isConnected ? 'connected'.tr : 'no_connection'.tr,
-            textAlign: TextAlign.center,
-          ),
-        ));
+      if (isConnected && _loadFailed) {
+        _loadConfig();
       }
-      firstTime = false;
     });
   }
 
@@ -103,22 +107,33 @@ class SplashScreenState extends State<SplashScreen> {
     super.dispose();
   }
 
-  void _loadConfig() async {
-    setState(() {
-      _loadFailed = false;
-      _isLoading = true;
-    });
-
-    bool success = await Get.find<SplashController>().getConfigData();
-    if (!mounted) return;
-
-    if (success) {
-      _route();
-    } else {
+  Future<void> _loadConfig() async {
+    if (_pendingNavigation != null || !_guard.tryStartLoad()) return;
+    try {
       setState(() {
-        _loadFailed = true;
+        _loadFailed = false;
+        _isLoading = true;
       });
+
+      bool success = await Get.find<SplashController>().getConfigData();
+      if (!mounted) return;
+
+      if (success) {
+        await _route();
+      } else {
+        _showLoadFailed();
+      }
+    } finally {
+      _guard.endLoad();
     }
+  }
+
+  void _showLoadFailed() {
+    if (!mounted) return;
+    setState(() {
+      _loadFailed = true;
+      _isLoading = false;
+    });
   }
 
   Future<void> _route() async {
@@ -141,15 +156,23 @@ class SplashScreenState extends State<SplashScreen> {
 
     // فحص صلاحية الجلسة قبل التوجيه
     if (Get.find<AuthController>().isLoggedIn()) {
-      bool isSessionValid = await _validateSession();
+      final SessionStatus status = await _validateSession();
       if (!mounted) return;
 
-      if (!isSessionValid) {
-        // الجلسة منتهية - الانتقال لتسجيل الدخول بدون Dialog
+      if (status == SessionStatus.expired) {
+        // الجلسة منتهية فعلاً (401): مسح الجلسة ثم تسجيل الدخول بدون Dialog
+        await _endSession();
+        if (!mounted) return;
         _finishLoading(() {
           ApiChecker.resetDialogState();
           Get.offAllNamed(RouteHelper.getSignInRoute());
         });
+        return;
+      }
+
+      if (status != SessionStatus.valid) {
+        // لا إنترنت / مهلة / خطأ خادم: الجلسة تبقى كما هي، شاشة Retry
+        _showLoadFailed();
         return;
       }
     }
@@ -170,7 +193,9 @@ class SplashScreenState extends State<SplashScreen> {
   void _onSplashAnimationFinished() {
     final VoidCallback? navigate = _pendingNavigation;
     _pendingNavigation = null;
-    navigate?.call();
+    if (navigate != null && _guard.tryNavigate()) {
+      navigate();
+    }
   }
 
   double? _getMinimumVersion() {
@@ -213,7 +238,7 @@ class SplashScreenState extends State<SplashScreen> {
   void _handleDefaultRouting() async {
     if (Get.find<AuthController>().isLoggedIn()) {
       await Get.find<AuthController>().updateToken();
-      await Get.find<ProfileController>().getProfile();
+      // البروفايل محمّل مسبقاً في _validateSession (وHomeScreen يحدّثه)
       Get.offNamed(RouteHelper.getInitialRoute());
     } else {
       Get.offNamed(RouteHelper.getSignInRoute());
@@ -234,7 +259,7 @@ class SplashScreenState extends State<SplashScreen> {
           : DoghreeSplashAnimation(
               isLoading: _isLoading,
               onFinished: _onSplashAnimationFinished,
-              frameSize: 300, // عدّله بعد المقارنة مع الـ native
+              frameSize: Dimensions.w300, // عدّله بعد المقارنة مع الـ native
               // debugGeometry: true,   // للمعايرة مرة وحدة
             ),
     );
