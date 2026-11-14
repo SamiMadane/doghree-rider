@@ -10,6 +10,7 @@ import 'package:doghree_rider/helper/route_helper.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:doghree_rider/features/auth/domain/services/auth_service_interface.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:doghree_rider/helper/image_picker_helper.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -203,17 +204,28 @@ class AuthController extends GetxController implements GetxService {
     return errors.isEmpty;
   }
 
+  /// One message per tap, and the loader always stops. The session is saved
+  /// fully or not at all; the FCM token update runs in the background and can
+  /// never fail or block the login.
   Future<ResponseModel> login(String phone, String password) async {
+    if (_isLoading) return ResponseModel(false, null);
     _isLoading = true;
     update();
-    Response response = await authServiceInterface.login(phone, password);
-    ResponseModel responseModel;
-    if (response.statusCode == 200) {
-      authServiceInterface.saveUserToken(response.body['token'],
-          response.body['zone_topic'], response.body['topic']);
-      await authServiceInterface.updateToken();
-      responseModel = ResponseModel(true, 'successful');
-    } else {
+    try {
+      final Response response =
+          await authServiceInterface.login(phone, password);
+      if (response.statusCode == 200) {
+        final dynamic body = response.body;
+        final dynamic token = body is Map ? body['token'] : null;
+        if (token is! String || token.isEmpty) {
+          showCustomSnackBar('error_occurred'.tr);
+          return ResponseModel(false, 'error_occurred'.tr);
+        }
+        await authServiceInterface.saveUserToken(
+            token, _topicOrNull(body['zone_topic']), _topicOrNull(body['topic']));
+        _updatePushTokenSilently();
+        return ResponseModel(true, 'successful');
+      }
       final String message =
           (response.statusText != null && response.statusText!.isNotEmpty)
               ? response.statusText!
@@ -222,11 +234,29 @@ class AuthController extends GetxController implements GetxService {
       // Every server-side login failure is a general error: snackbar only.
       // Field errors for login come from the local validation in SignInScreen.
       ApiChecker.checkApi(response, sessionAware: false);
-      responseModel = ResponseModel(false, message);
+      return ResponseModel(false, message);
+    } catch (e) {
+      if (kDebugMode) debugPrint('login failed: ${e.runtimeType}');
+      showCustomSnackBar('error_occurred'.tr);
+      return ResponseModel(false, 'error_occurred'.tr);
+    } finally {
+      _isLoading = false;
+      update();
     }
-    _isLoading = false;
-    update();
-    return responseModel;
+  }
+
+  /// R1: a store rider gets '' and a rider with no zone gets the literal
+  /// No_topic_found; anything that is not a String counts as no topic.
+  static String? _topicOrNull(dynamic value) => value is String ? value : null;
+
+  void _updatePushTokenSilently() {
+    try {
+      authServiceInterface.updateToken().then((_) {}, onError: (Object e) {
+        if (kDebugMode) debugPrint('updateToken failed: ${e.runtimeType}');
+      });
+    } catch (e) {
+      if (kDebugMode) debugPrint('updateToken failed: ${e.runtimeType}');
+    }
   }
 
 
@@ -329,10 +359,24 @@ class AuthController extends GetxController implements GetxService {
     return await authServiceInterface.clearSharedData();
   }
 
-  void saveUserNumberAndPassword(String number, String password,
-      String countryDialCode, String countryCode) {
-    authServiceInterface.saveUserNumberAndPassword(
-        number, password, countryDialCode, countryCode);
+  /// Silent; runs before any login asks FCM for a token.
+  Future<bool> retryPendingPushCleanup() async {
+    try {
+      return await authServiceInterface.retryPendingPushCleanup();
+    } catch (e) {
+      if (kDebugMode) debugPrint('push cleanup failed: ${e.runtimeType}');
+      return false;
+    }
+  }
+
+  Future<void> saveUserNumber(
+      String number, String countryDialCode, String countryCode) async {
+    await authServiceInterface.saveUserNumber(
+        number, countryDialCode, countryCode);
+  }
+
+  Future<void> purgeStoredPassword() async {
+    await authServiceInterface.purgeStoredPassword();
   }
 
   String getUserNumber() {
@@ -347,12 +391,8 @@ class AuthController extends GetxController implements GetxService {
     return authServiceInterface.getUserCountryCode();
   }
 
-  String getUserPassword() {
-    return authServiceInterface.getUserPassword();
-  }
-
-  Future<bool> clearUserNumberAndPassword() async {
-    return authServiceInterface.clearUserNumberAndPassword();
+  Future<bool> clearUserNumber() async {
+    return authServiceInterface.clearUserNumber();
   }
 
   String getUserToken() {

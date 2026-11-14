@@ -1,5 +1,6 @@
 import 'package:doghree_rider/features/profile/widgets/profile_card_widget.dart';
 import 'package:doghree_rider/features/profile/widgets/section_title.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:doghree_rider/api/api_checker.dart';
@@ -57,10 +58,18 @@ class LegalSection extends StatelessWidget {
                   iconSize: Dimensions.w140,
                   acceptText: 'yes_logout'.tr,
                   cancelText: 'no_stay'.tr,
-                  onAccept: () {
+                  onAccept: () async {
+                    if (ApiChecker.isLoggingOut) return;
                     ApiChecker.isLoggingOut = true;
                     Get.find<ProfileController>().stopLocationRecord();
-                    Get.find<AuthController>().clearSharedData();
+                    // Session and FCM cleanup finish before sign-in opens.
+                    try {
+                      await Get.find<AuthController>().clearSharedData();
+                    } catch (e) {
+                      if (kDebugMode) {
+                        debugPrint('logout cleanup failed: ${e.runtimeType}');
+                      }
+                    }
                     Get.offAllNamed(RouteHelper.getSignInRoute());
                   },
                   onCancel: Get.back,

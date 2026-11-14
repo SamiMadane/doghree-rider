@@ -8,19 +8,20 @@ abstract class AuthServiceInterface {
   Future<Response> login(String phone, String password);
   Future<Response> updateToken();
   Future<bool> saveUserToken(
-      String token, String zoneTopic, String vehicleWiseTopic);
+      String token, String? zoneTopic, String? vehicleWiseTopic);
   String getUserToken();
   bool isLoggedIn();
   Future<bool> clearSharedData();
-  Future<void> saveUserNumberAndPassword(String number, String password,
-      String countryDialCode, String countryCode);
+  Future<bool> retryPendingPushCleanup();
+  Future<void> saveUserNumber(
+      String number, String countryDialCode, String countryCode);
+  Future<void> purgeStoredPassword();
   String getUserNumber();
   String getUserCountryDialCode();
   String getUserCountryCode();
-  String getUserPassword();
   bool isNotificationActive();
   void setNotificationActive(bool isActive);
-  Future<bool> clearUserNumberAndPassword();
+  Future<bool> clearUserNumber();
   Future<Response> registerDeliveryMan(
       DeliveryManBodyModel deliveryManBody, List<MultipartBody> multiParts);
   Future<List<VehicleModel>?> getVehicleList();

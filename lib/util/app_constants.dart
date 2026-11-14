@@ -108,6 +108,8 @@ class AppConstants {
   static const String langIntro = 'language_intro';
   static const String notificationIdList = 'notification_id_list';
   static const String logoutReason = 'logout_reason';
+  static const String fcmCleanupPending = 'doghree_rider_fcm_cleanup_pending';
+  static const String fcmCleanupTopics = 'doghree_rider_fcm_cleanup_topics';
 
   /// Order Status
   static const String pending = 'pending';

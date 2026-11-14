@@ -35,9 +35,24 @@ Device steps waiting for the joint D-01 + D-02 + D-03 pass. The pass runs after 
 
 **Unit tests only:** the full list of requests without a token (T3a–T3d, including endpoints the smoke pass does not reach), a reset code containing `+`, `&` or `=` (T10a), and log redaction of GetX route strings (T1). The FCM-token body change on login and logout has no unit test (FirebaseMessaging is static) and is exercised by the smoke login and logout.
 
-## D-03
+## D-03: login, logout, FCM release, remember-me, block, delete account
 
-D-03 adds its own section at its closing.
+- **Branch:** fix/d-03-auth
+- **Status:** pending
+
+| # | Steps | Expected |
+|---|---|---|
+| 1 | Language Arabic. Log out, then log in with a wrong password | Sign-in shows the error in Arabic |
+| 2 | Log in with remember-me ticked, then log out | The phone is prefilled, the password is empty. The OS password manager offers the password |
+| 3 | Log out, then trigger an order push to this rider (user app or admin) | No push arrives on the logged-out device |
+| 4 | Log in again, then trigger a new order | The push arrives |
+| 5 | Admin blocks the rider while the app is open | Sign-in screen. After unblocking, logging in works and pushes arrive |
+| 6 | Settings, delete account, airplane mode on, confirm | One error toast. The sheet closes and Settings stays open |
+| 7 | Settings: notifications off, then trigger an order push | None arrives |
+| 8 | Notifications on, then trigger again | It arrives |
+| 9 | Airplane mode on, log out, airplane mode off, restart the app, trigger an order push | None arrives |
+
+**Unit tests only:** login with a null zone topic or `No_topic_found` (T1, T8), an FCM token failure during login (T2, T8b), an exception during login (T3), the half-saved token rollback (T4), the cleanup order and the 5 s offline bound (T7, T7b), the pending flag and its retry before the next getToken (T12–T14), the delete-account exception and double tap (T9, T10).
 
 ## Combined smoke pass (once, at the end of the joint pass)
 
