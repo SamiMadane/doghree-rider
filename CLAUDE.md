@@ -121,8 +121,15 @@ Everything is in `SharedPreferences`. The keys are in `AppConstants` ("Shared Ke
 
 ### Backend
 - The app adapts to the backend as it is. When a fix needs a backend change (for example removing the token from URLs), add a row to **docs/progress.md → Open backend questions**. Do not work around it in code, and do not add it to `docs/backend-changes.md` until the owner agrees. After agreement, it moves to `docs/backend-changes.md`.
+- When a batch row is blocked by an open backend question, fix only the app side and leave that row open in `docs/progress.md`.
+- Claude Code never changes real admin panel or server settings. When a setting is needed, ask the user to change it.
 - `docs/api-contract.md` records endpoints as they are actually observed (request and response shape).
 - `docs/code-traps.md` records non-obvious pitfalls found while working.
+
+### Device tests
+- Keep device steps short.
+- Any batch that touches orders, money or start-up also includes one short smoke pass covering order accept, status change, delivery proof and earnings.
+- A final end-to-end test is planned after the last batch: the user app creates an order and the rider delivers it.
 
 ### Analyze baseline
 - Measured on 2026-11-14 at `development` dcaf6d5: `flutter analyze --no-pub` reported **No issues found (0)**.
@@ -135,16 +142,27 @@ Everything is in `SharedPreferences`. The keys are in `AppConstants` ("Shared Ke
 
 ### Privacy
 - Never copy tokens, phone numbers, emails, OTPs or real coordinates into docs, audit tables, commit messages or replies. Describe them instead (for example: token appears in URL query).
+- New code never logs tokens or personal data, not even in debug.
 - Audit severity values are crash, wrong data, privacy (tokens or personal data in URLs or logs), bad UX and minor.
 
 ## Batch workflow
 1. Each batch runs on its own branch `fix/d-xx-short-name`, created from a clean `development` that is level with `origin/development` (`git fetch`, then confirm `git status` is clean and HEAD equals `origin/development`).
-2. **Plan mode first.** Present the plan: scope, files, tests, device steps. No implementation before the owner approves the plan.
-3. Implement. Add unit tests where logic allows. Every new test must fail on the old code. Check this by running it against the pre-fix code and say which tests failed there.
-4. Report after implementation:
+2. **Plan mode first.** No implementation before the user approves the plan. The plan lists:
+   - the audit rows covered
+   - the files to change
+   - what the rider sees before and after
+   - the unit tests, and which of them should fail on the old code
+   - short, exact device steps
+   - which rows are covered by unit tests only
+
+   Nothing beyond the listed rows is in scope. Anything else found goes into `docs/progress.md` as a note.
+3. Implement, adding unit tests where the logic allows.
+   - Tests that cover a fixed bug must fail on the old code. Verify this by running them against the pre-fix code.
+   - Guard tests that also pass on the old code are allowed. List them separately in the report.
+4. Report after implementation. Report only numbers from real runs: no placeholders, estimates or invented results. The report covers:
    - test counts (total, passed, failed) for the new tests and the full suite
    - analyze count against the baseline (0)
-   - the new tests that fail on the old code
+   - the new tests that fail on the old code, and the guard tests listed separately
    - exact device test steps, saying which items are covered by unit tests only
 5. The user runs the device tests.
 6. After the user's device tests pass, Claude Code acts on the user's closing message:
