@@ -8,7 +8,7 @@
 | D-01 | fix/d-01-startup | Audit rows 1, 2, 3, 4, 5, 7, 59 | merged, device tests pending (D-11) | 2026-11-14 |
 | D-02 | fix/d-02-silent-network | Audit rows 8, 9, 10, 11, 12, 13, 50, 51 | merged, device tests pending (D-11) | 2026-11-14 |
 | D-03 | fix/d-03-auth | Audit rows 14, 15, 16, 17, 18 + logout FCM (D-02 note) | merged, device tests pending (D-11) | 2026-11-19 |
-| D-04 | fix/d-04-order-actions | Audit rows 19, 20, 21, 22, 23, 24, 25, 28, 29 | implemented on the branch, not merged; device tests pending (D-11) | |
+| D-04 | fix/d-04-order-actions | Audit rows 19, 20, 21, 22, 23, 24, 25, 28, 29 | merged, device tests pending (D-11) | 2026-11-19 |
 | D-05 | fix/d-05-order-lists-parsing | Audit rows 26, 27, 30, 52, 53 | planned | |
 | D-06 | fix/d-06-location-ringing | Audit rows 36, 37, 38, 39 | planned | |
 | D-07 | fix/d-07-notifications | Audit rows 6, 31, 32, 33, 34, 35, 54 | planned | |
@@ -164,7 +164,16 @@
 - **Row 25:** order-details is silent at the repository, and the controller shows exactly one message (404, offline or other).
 - **Row 28:** the parcel branch calls `update()`.
 - **Row 29:** the three delivery sheets no longer call `getProfile` and `getCurrentOrders` again after success.
-- **New translation keys (en and ar):** `order_no_longer_available`, `order_status_changed`, `order_not_delivered_retry`, `otp_not_matched`, `go_online_to_accept_orders`, `error_occurred` (the last one was missing, see the D-01 note).
+- **New translation keys (en and ar).** `error_occurred` was missing (see the D-01 note). The `otp_not_matched` text was revised at closing.
+
+  | Key | English | Arabic |
+  |---|---|---|
+  | `order_no_longer_available` | This order is no longer available | هذا الطلب لم يعد متاحاً |
+  | `order_status_changed` | This order has changed. It has been refreshed | تغيّرت حالة هذا الطلب، وتم تحديثه |
+  | `order_not_delivered_retry` | The order was not delivered. Please try again | لم يتم تسليم الطلب. يرجى المحاولة مرة أخرى |
+  | `otp_not_matched` | The delivery code is wrong. Check it with the customer | رمز التسليم غير صحيح، تأكد منه مع الزبون |
+  | `go_online_to_accept_orders` | You must be online to accept orders. Turn on Online from the home screen | يجب أن تكون متصلاً لتقبل الطلبات. فعّل حالة «متصل» من الشاشة الرئيسية |
+  | `error_occurred` | Something went wrong. Please try again | حدث خطأ. يرجى المحاولة مرة أخرى |
 - **Changes from the plan:**
   - The photos are bound through `prepareProofFor` in Order Details instead of passing the order id through the picker sheets.
   - The offline dialog uses the new key `go_online_to_accept_orders`, because the Arabic text of `make_yourself_online_first` talks about the internet.
