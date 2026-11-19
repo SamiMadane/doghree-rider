@@ -1,12 +1,12 @@
 # Device test backlog
 
-Device steps waiting for the joint D-01 + D-02 + D-03 pass. The pass runs after D-03 is implemented and before `git push`. No device result is recorded as passed until it has been run on a phone.
+All device steps run together in D-11, after D-10. No device result is recorded as passed until it has been run on a phone.
 
 ## D-01: start-up and session
 
 - **Branch:** fix/d-01-startup
 - **Merge commit:** f46460d
-- **Status:** pending
+- **Status:** pending (D-11)
 
 | # | Steps | Expected |
 |---|---|---|
@@ -21,8 +21,8 @@ Device steps waiting for the joint D-01 + D-02 + D-03 pass. The pass runs after 
 
 - **Branch:** fix/d-02-silent-network
 - **Branch commit:** 270146c
-- **Merge commit:** the `--no-ff` merge of fix/d-02-silent-network into development (see `git log`)
-- **Status:** pending
+- **Merge commit:** the `--no-ff` merge of fix/d-02-silent-network into development (265bcfa)
+- **Status:** pending (D-11)
 
 | # | Steps | Expected |
 |---|---|---|
@@ -38,7 +38,9 @@ Device steps waiting for the joint D-01 + D-02 + D-03 pass. The pass runs after 
 ## D-03: login, logout, FCM release, remember-me, block, delete account
 
 - **Branch:** fix/d-03-auth
-- **Status:** pending
+- **Branch commits:** 6135f36 (main fix), 6f10228 (no token while notifications are off)
+- **Merge commit:** the `--no-ff` merge of fix/d-03-auth into development (see `git log`)
+- **Status:** pending (D-11)
 
 | # | Steps | Expected |
 |---|---|---|
@@ -51,10 +53,11 @@ Device steps waiting for the joint D-01 + D-02 + D-03 pass. The pass runs after 
 | 7 | Settings: notifications off, then trigger an order push | None arrives |
 | 8 | Notifications on, then trigger again | It arrives |
 | 9 | Airplane mode on, log out, airplane mode off, restart the app, trigger an order push | None arrives |
+| 10 | Notifications off, restart the app, trigger an order push. Then turn notifications on and trigger again | None arrives after the restart. After toggling on, it arrives |
 
-**Unit tests only:** login with a null zone topic or `No_topic_found` (T1, T8), an FCM token failure during login (T2, T8b), an exception during login (T3), the half-saved token rollback (T4), the cleanup order and the 5 s offline bound (T7, T7b), the pending flag and its retry before the next getToken (T12–T14), the delete-account exception and double tap (T9, T10).
+**Unit tests only:** login with a null zone topic or `No_topic_found` (T1, T8), an FCM token failure during login (T2, T8b), an exception during login (T3), the half-saved token rollback (T4), the cleanup order and the 5 s offline bound (T7, T7b), the pending flag and its retry before the next getToken (T12–T14), the delete-account exception and double tap (T9, T10), and no token registration on the splash path while notifications are off (T16).
 
-## Combined smoke pass (once, at the end of the joint pass)
+## Combined smoke pass (once, in D-11)
 
 | # | Step | Expected |
 |---|---|---|
@@ -67,5 +70,16 @@ Device steps waiting for the joint D-01 + D-02 + D-03 pass. The pass runs after 
 | 7 | Toggle online, then offline | The status changes each time |
 | 8 | Change the password in Settings | Success |
 | 9 | Log out, then log in with the new password | Logout reaches sign-in. Login reaches the dashboard |
+
+**Status:** pending (D-11)
+
+## D-11: final device pass
+
+Runs after D-10. No release build is made from `development` until it passes.
+
+1. Run every pending section above in batch order (D-01, D-02, D-03, then each later batch) on a real device. The Android emulator may cover the steps that need no camera and no push.
+2. Run the combined smoke pass.
+3. End-to-end: the user app creates an order. The rider accepts it, picks it up and delivers it with a proof photo. The delivery appears in earnings.
+4. If a step fails, record the step, the batch and its commit here, and fix it before the pass is marked done.
 
 **Status:** pending

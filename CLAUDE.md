@@ -147,6 +147,12 @@ Everything is in `SharedPreferences`. The keys are in `AppConstants` ("Shared Ke
 - Audit severity values are crash, wrong data, privacy (tokens or personal data in URLs or logs), bad UX and minor.
 
 ## Batch workflow
+
+**Device tests are deferred to a final batch, D-11.**
+- Each batch merges with the status "merged, device tests pending" and adds its device steps, with the branch and commit, to `docs/device-test-backlog.md`.
+- No release build is made from `development` until D-11 passes.
+- Until then, steps 5 and 6 below run on the user's closing message without a device pass, and no device result is recorded as passed.
+
 1. Each batch runs on its own branch `fix/d-xx-short-name`, created from a clean `development` that is level with `origin/development` (`git fetch`, then confirm `git status` is clean and HEAD equals `origin/development`).
 2. **Plan mode first.** No implementation before the user approves the plan. The plan lists:
    - the audit rows covered
