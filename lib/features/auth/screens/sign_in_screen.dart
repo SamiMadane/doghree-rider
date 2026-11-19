@@ -14,6 +14,7 @@ import 'package:doghree_rider/util/styles.dart';
 import 'package:doghree_rider/common/widgets/custom_button_widget.dart';
 import 'package:doghree_rider/common/widgets/custom_text_field_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -49,7 +50,10 @@ class _SignInScreenState extends State<SignInScreen> {
                 Get.find<SplashController>().configModel!.country!)
             .code;
     _phoneController.text = Get.find<AuthController>().getUserNumber();
-    _passwordController.text = Get.find<AuthController>().getUserPassword();
+    // Remember-me keeps the phone only; drop a password an older version saved.
+    Get.find<AuthController>().purgeStoredPassword();
+    // A logout that could not release the device for push finishes here.
+    Get.find<AuthController>().retryPendingPushCleanup();
 
     // نظّف أي أخطاء قديمة (من التسجيل مثلاً) بعد ما ينتهي البناء
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -90,7 +94,7 @@ class _SignInScreenState extends State<SignInScreen> {
             vertical: Dimensions.h16,
           ),
           child: GetBuilder<AuthController>(builder: (authController) {
-            return Column(children: [
+            return AutofillGroup(child: Column(children: [
               Image.asset(
                 isDark ? ManagerAssets.logoDark : ManagerAssets.logo,
                 width: Dimensions.w140,
@@ -117,6 +121,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   focusNode: _phoneFocus,
                   nextFocus: _passwordFocus,
                   inputType: TextInputType.phone,
+                  autofillHints: const [AutofillHints.telephoneNumberNational],
                   isPhone: true,
                   isRequired: true,
                   errorText: authController.fieldError('login_phone'),
@@ -143,6 +148,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   focusNode: _passwordFocus,
                   inputAction: TextInputAction.done,
                   inputType: TextInputType.visiblePassword,
+                  autofillHints: const [AutofillHints.password],
                   isPassword: true,
                   isRequired: true,
                   errorText: authController.fieldError('login_password'),
@@ -231,7 +237,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       ])),
                     )
                   : const SizedBox(),
-            ]);
+            ]));
           }),
         ),
       )),
@@ -281,11 +287,12 @@ class _SignInScreenState extends State<SignInScreen> {
       if (status.isSuccess) {
         ApiChecker.isLoggingOut = false;
         if (authController.isActiveRememberMe) {
-          authController.saveUserNumberAndPassword(
-              phone, password, countryDialCode, countryCode);
+          authController.saveUserNumber(phone, countryDialCode, countryCode);
         } else {
-          authController.clearUserNumberAndPassword();
+          authController.clearUserNumber();
         }
+        // Lets the OS password manager offer to save the password.
+        TextInput.finishAutofillContext();
         await Get.find<ProfileController>().getProfile();
         Get.offAllNamed(RouteHelper.getInitialRoute());
       }

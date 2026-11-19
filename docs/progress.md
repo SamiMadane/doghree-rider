@@ -5,9 +5,9 @@
 | Batch | Branch | Scope | Status | Merged |
 |---|---|---|---|---|
 | D-00 | docs/d-00-setup | CLAUDE.md, docs skeleton, audit | done | |
-| D-01 | fix/d-01-startup | Audit rows 1, 2, 3, 4, 5, 7, 59 | merged, device tests pending (joint pass after D-03) | 2026-11-14 |
-| D-02 | fix/d-02-silent-network | Audit rows 8, 9, 10, 11, 12, 13, 50, 51 | merged, device tests pending (joint pass after D-03) | 2026-11-14 |
-| D-03 | fix/d-03-auth | Audit rows 14, 15, 16, 17, 18 | planned | |
+| D-01 | fix/d-01-startup | Audit rows 1, 2, 3, 4, 5, 7, 59 | merged, device tests pending (D-11) | 2026-11-14 |
+| D-02 | fix/d-02-silent-network | Audit rows 8, 9, 10, 11, 12, 13, 50, 51 | merged, device tests pending (D-11) | 2026-11-14 |
+| D-03 | fix/d-03-auth | Audit rows 14, 15, 16, 17, 18 + logout FCM (D-02 note) | merged, device tests pending (D-11) | 2026-11-19 |
 | D-04 | fix/d-04-order-actions | Audit rows 19, 20, 21, 22, 23, 24, 25, 28, 29 | planned | |
 | D-05 | fix/d-05-order-lists-parsing | Audit rows 26, 27, 30, 52, 53 | planned | |
 | D-06 | fix/d-06-location-ringing | Audit rows 36, 37, 38, 39 | planned | |
@@ -15,8 +15,9 @@
 | D-08 | fix/d-08-wallet | Audit rows 41, 42, 43, 44 | planned | |
 | D-09 | fix/d-09-uploads-profile | Audit rows 45, 46, 47, 48, 49 | planned | |
 | D-10 | fix/d-10-cleanup | Audit rows 40, 55, 56, 57, 58, 60 | planned | |
+| D-11 | (no code branch) | Final device pass: every pending backlog section, the smoke pass and the end-to-end order test (`docs/device-test-backlog.md`) | planned (after D-10) | |
 
-> **Not pushed on purpose.** `development` is not pushed until the joint D-01 + D-02 + D-03 device pass (see `docs/device-test-backlog.md`). D-03 starts from local `development`, which is ahead of `origin/development` by the D-01 and D-02 merges.
+> **Branch state.** When D-03 started, `development` was level with `origin/development` (265bcfa): D-01 and D-02 were already pushed. The earlier note that D-03 would start ahead of origin was wrong. Device tests are deferred to D-11 (see CLAUDE.md, Batch workflow), and no release build is made from `development` until D-11 passes.
 
 ## Batch log
 
@@ -87,7 +88,59 @@
 - The `String token` parameter of `updateProfile` (repository, service and controller) is unused (D-09).
 - Pull-to-refresh on the Requests tab is now silent offline. The old list stays.
 - The WebSocket location body still carries the token, because a WebSocket cannot send the header. Revisit this if `websocket_status` is turned on (it is 0 live).
-- **For D-03:** logout (and turning notifications off) sends `update-fcm-token` without `fcm_token`. The backend requires `fcm_token`, so the call fails silently and the server keeps the device token, which means a logged-out device can still get pushes. Consider `FirebaseMessaging.instance.deleteToken()` on logout.
+- **For D-03:** logout (and turning notifications off) sends `update-fcm-token` without `fcm_token`. The backend requires `fcm_token`, so the call fails silently and the server keeps the device token, which means a logged-out device can still get pushes. Consider `FirebaseMessaging.instance.deleteToken()` on logout. *(Fixed in D-03.)*
+
+### D-03 (2026-11-14 to 2026-11-19)
+- **Row 14 (login):**
+  - `login` runs in try/finally with a double-tap guard. An exception gives one `error_occurred` toast, and the loader always stops.
+  - A 200 without a non-empty `token` counts as a failure.
+  - `saveUserToken(token, String? zoneTopic, String? vehicleTopic)` is awaited and saves all or nothing. Topics are written or removed first, the token last, and `apiClient.token` and the header are set only after the token is saved. A failure rolls back and rethrows.
+  - Topics are null-safe: `''` and `No_topic_found` are never subscribed.
+  - The FCM token update after login runs in the background and can no longer fail or block the login. `updateToken` sends nothing when FCM returns no token.
+- **Row 15:** logout clears `apiClient.token` and keeps the current `X-localization` language.
+- **Row 16 (option a):**
+  - Remember-me keeps the phone only. `getUserPassword` is gone, and any stored password is purged (on sign-in screen init and when the number is saved).
+  - The sign-in fields have `autofillHints` and an `AutofillGroup`, and `finishAutofillContext` runs after a successful login.
+  - No new dependency.
+- **Row 17:** the `block` push awaits the session and FCM cleanup, then opens sign-in. It has a re-entrancy guard.
+- **Row 18:** `deleteDriver` has a double-tap guard and try/finally. It closes the confirm sheet only if it is still open (no bare `Get.back`), shows one message, and awaits the cleanup before sign-in.
+- **Logout FCM (D-02 note):**
+  - New `PushClient` (lib/helper/push_client.dart) wraps FirebaseMessaging.
+  - `clearSharedData` clears the local session first: token, ignore list, address, topic keys, and the header (language kept).
+  - Then it unsubscribes the saved topics and calls `deleteToken`, bounded at 5 s. The `update-fcm-token` call without `fcm_token` is gone.
+  - On failure or timeout, `fcmCleanupPending` and `fcmCleanupTopics` are saved. The cleanup is retried at app start (splash, not awaited), on sign-in screen init, and as the first step of `updateToken`. The flag is cleared only after `deleteToken` succeeds.
+  - The logout sheet now awaits the cleanup before sign-in.
+  - Turning notifications off uses the same release.
+- **Notifications off (fix within D-03):** `updateToken` does nothing while the notification setting is off, so splash, app start, the language change and login no longer register a token. Toggle-on saves the setting first and then registers.
+- **Changes from the plan:**
+  - The splash retry is not awaited, because `updateToken` waits for it before `getToken`. This avoids up to 5 s of extra splash delay offline.
+  - `updateToken` skips the PUT when FCM gives no token.
+  - The remember-me methods were renamed (`saveUserNumber`, `clearUserNumber`), so T11 fails on the old code at compile time only, not by behaviour as planned.
+  - The notifications-off gate was added after the first implementation report.
+  - The profile controller test now sets `Get.testMode = true`, so the old bare `Get.back()` can run in a test.
+- **Tests:** 22 new, 55 total, 55 passed, 0 failed.
+  - **Fail on the old code by behaviour** (`lib/` stashed, new tests run against it):
+    - T1: `type 'Null' is not a subtype of type 'String'`
+    - T2: the `getToken` error escapes
+    - T3: the exception escapes
+    - T4: the topic keys stay saved after the failed token write
+    - T5: the header is `[null, null]` instead of `'ar'`
+    - T6: one `update-fcm-token` call is sent
+    - T9: the exception escapes from `deleteDriver`
+    - T10: 2 delete requests instead of 1
+    - T16: `getToken` is called while notifications are off (run against 6135f36)
+  - **Fail on the old code at compile time only:** T7, T7b, T8, T8b, T11, T12, T13, T14, T15.
+  - **Guards:** G1 (login 401), G2 (a saved token keeps the language), G3 (a failed delete stops the loader), G4 (toggle-on registers a token).
+- **Analyze:** 0 issues.
+- **Device:** **not run.** The steps are in `docs/device-test-backlog.md` (D-03, steps 1–10) and run in D-11.
+
+### Notes (found during D-03, not fixed)
+- `ApiChecker._handleSessionExpired` (api_checker.dart) still calls `clearSharedData()` without await. It is the same pattern as row 17.
+- The remember-me checkbox always starts unticked (`_isActiveRememberMe = false`), so a rider who does not tick it again loses the saved phone at the next login.
+- The Postman note on rider login also mentions subscribing to `zone_{zone_id}_delivery_man`. The app does not do this. Check it against the API guide before D-07.
+- The block push shows no message on the sign-in screen (a `logoutReason` could carry one).
+- `android:allowBackup` is not set, so it defaults to true. SharedPreferences, including the auth token, are part of device backups.
+- Splash called `updateToken()` even with notifications off, so the topics were re-subscribed at every start. *(Fixed in D-03.)*
 
 ## Open backend questions
 

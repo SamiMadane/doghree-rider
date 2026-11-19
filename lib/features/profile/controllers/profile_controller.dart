@@ -11,6 +11,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:doghree_rider/features/profile/domain/services/profile_service_interface.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:doghree_rider/helper/image_picker_helper.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -128,19 +129,37 @@ class ProfileController extends GetxController implements GetxService {
     return responseModel.isSuccess;
   }
 
-  Future deleteDriver() async {
+  /// One request per tap, one message, and the loader always stops. The
+  /// confirm sheet is closed only if it is still open, never a blind back.
+  Future<void> deleteDriver() async {
+    if (_isLoading) return;
     _isLoading = true;
     update();
-    ResponseModel responseModel = await profileServiceInterface.deleteDriver();
-    _isLoading = false;
+    ResponseModel responseModel;
+    try {
+      responseModel = await profileServiceInterface.deleteDriver();
+    } catch (e) {
+      if (kDebugMode) debugPrint('deleteDriver failed: ${e.runtimeType}');
+      responseModel = ResponseModel(false, null);
+    } finally {
+      _isLoading = false;
+      update();
+    }
+    if (Get.isBottomSheetOpen == true) Get.back();
     if (responseModel.isSuccess) {
       showCustomSnackBar(responseModel.message, isError: false);
-      Get.find<AuthController>().clearSharedData();
       stopLocationRecord();
+      try {
+        await Get.find<AuthController>().clearSharedData();
+      } catch (e) {
+        if (kDebugMode) debugPrint('delete cleanup failed: ${e.runtimeType}');
+      }
       Get.offAllNamed(RouteHelper.getSignInRoute());
     } else {
-      Get.back();
-      showCustomSnackBar(responseModel.message, isError: true);
+      final String? message = responseModel.message;
+      showCustomSnackBar(
+          (message == null || message.isEmpty) ? 'error_occurred'.tr : message,
+          isError: true);
     }
   }
 

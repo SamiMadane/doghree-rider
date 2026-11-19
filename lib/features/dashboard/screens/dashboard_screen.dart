@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:doghree_rider/api/api_checker.dart';
 import 'package:doghree_rider/common/widgets/custom_bottom_sheet_widget.dart';
 import 'package:doghree_rider/features/auth/controllers/auth_controller.dart';
 import 'package:doghree_rider/features/dashboard/widgets/bottom_nav_road_indicator.dart';
@@ -15,6 +16,7 @@ import 'package:doghree_rider/features/profile/screens/profile_screen.dart';
 import 'package:doghree_rider/features/order/screens/available_orders_screen.dart';
 import 'package:doghree_rider/features/order/screens/order_screen.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -36,6 +38,7 @@ class DashboardScreenState extends State<DashboardScreen> {
   final _channel = const MethodChannel('com.sixamtech/app_retain');
   late StreamSubscription _stream;
   bool _canExit = false;
+  bool _isBlocking = false;
 
   @override
   void initState() {
@@ -92,11 +95,24 @@ class DashboardScreenState extends State<DashboardScreen> {
           ),
         );
       } else if (type == 'block') {
-        Get.find<AuthController>().clearSharedData();
-        Get.find<ProfileController>().stopLocationRecord();
-        Get.offAllNamed(RouteHelper.getSignInRoute());
+        _handleBlock();
       }
     });
+  }
+
+  /// The session and the FCM cleanup finish before sign-in opens, so a quick
+  /// re-login cannot race the old unsubscribes.
+  Future<void> _handleBlock() async {
+    if (_isBlocking) return;
+    _isBlocking = true;
+    ApiChecker.isLoggingOut = true;
+    Get.find<ProfileController>().stopLocationRecord();
+    try {
+      await Get.find<AuthController>().clearSharedData();
+    } catch (e) {
+      if (kDebugMode) debugPrint('block cleanup failed: ${e.runtimeType}');
+    }
+    Get.offAllNamed(RouteHelper.getSignInRoute());
   }
 
   void _navigateRequestPage() {

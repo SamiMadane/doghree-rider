@@ -57,6 +57,8 @@ class CustomTextFieldWidget extends StatefulWidget {
 
     final String? errorText;
 
+  /// Lets the OS password manager fill this field (sign-in).
+  final Iterable<String>? autofillHints;
 
   const CustomTextFieldWidget({
     super.key,
@@ -100,7 +102,7 @@ class CustomTextFieldWidget extends StatefulWidget {
     this.onTap,
 
     this.errorText,
-
+    this.autofillHints,
   });
 
   @override
@@ -143,6 +145,7 @@ class CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
             controller: widget.controller,
             focusNode: widget.focusNode,
             validator: widget.validator,
+            autofillHints: widget.autofillHints,
             style: textRegular().copyWith(fontSize: Dimensions.fs16),
             textInputAction: widget.inputAction,
             keyboardType: widget.isAmount

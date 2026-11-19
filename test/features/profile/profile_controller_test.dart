@@ -1,16 +1,29 @@
+import 'dart:async';
+
+import 'package:doghree_rider/common/models/response_model.dart';
 import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
 import 'package:doghree_rider/features/profile/domain/models/profile_model.dart';
 import 'package:doghree_rider/features/profile/domain/models/profile_result_model.dart';
 import 'package:doghree_rider/features/profile/domain/services/profile_service_interface.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:get/get.dart';
 
 /// Returns queued results; any other method is unused by these tests.
 class _FakeProfileService implements ProfileServiceInterface {
   final List<ProfileResult> results;
   _FakeProfileService(this.results);
 
+  int deleteCalls = 0;
+  Future<ResponseModel> Function()? onDelete;
+
   @override
   Future<ProfileResult> getProfileInfo() async => results.removeAt(0);
+
+  @override
+  Future<ResponseModel> deleteDriver() {
+    deleteCalls++;
+    return onDelete!();
+  }
 
   @override
   void checkPermission(Function callback, {bool showDialog = true}) {}
@@ -20,6 +33,11 @@ class _FakeProfileService implements ProfileServiceInterface {
 }
 
 void main() {
+  // Get.back and Get.isBottomSheetOpen read the navigator key; test mode
+  // lets them run without a GetMaterialApp.
+  TestWidgetsFlutterBinding.ensureInitialized();
+  Get.testMode = true;
+
   test('T9 guard: offline result keeps the loaded profile (audit row 3)',
       () async {
     final loaded = ProfileModel(id: 7, active: 0);
@@ -35,5 +53,42 @@ void main() {
 
     expect(await controller.getProfile(), SessionStatus.offline);
     expect(controller.profileModel, same(loaded));
+  });
+
+  group('deleteDriver (audit row 18)', () {
+    test('T9 an exception stops the loader and does not escape', () async {
+      final service = _FakeProfileService([])
+        ..onDelete = () => Future<ResponseModel>.error(StateError('boom'));
+      final controller = ProfileController(profileServiceInterface: service);
+
+      await controller.deleteDriver();
+
+      expect(controller.isLoading, isFalse);
+    });
+
+    test('T10 a second tap while the request runs sends nothing', () async {
+      final pending = Completer<ResponseModel>();
+      final service = _FakeProfileService([])..onDelete = () => pending.future;
+      final controller = ProfileController(profileServiceInterface: service);
+
+      final first = controller.deleteDriver();
+      final second = controller.deleteDriver();
+      pending.complete(ResponseModel(false, 'failed'));
+      await first;
+      await second;
+
+      expect(service.deleteCalls, 1);
+      expect(controller.isLoading, isFalse);
+    });
+
+    test('G3 guard: a failure stops the loader', () async {
+      final service = _FakeProfileService([])
+        ..onDelete = () async => ResponseModel(false, 'failed');
+      final controller = ProfileController(profileServiceInterface: service);
+
+      await controller.deleteDriver();
+
+      expect(controller.isLoading, isFalse);
+    });
   });
 }

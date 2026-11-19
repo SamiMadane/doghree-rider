@@ -35,7 +35,7 @@ class AuthService implements AuthServiceInterface {
 
   @override
   Future<bool> saveUserToken(
-      String token, String zoneTopic, String vehicleWiseTopic) async {
+      String token, String? zoneTopic, String? vehicleWiseTopic) async {
     return await authRepositoryInterface.saveUserToken(
         token, zoneTopic, vehicleWiseTopic);
   }
@@ -56,10 +56,20 @@ class AuthService implements AuthServiceInterface {
   }
 
   @override
-  Future<void> saveUserNumberAndPassword(String number, String password,
-      String countryDialCode, String countryCode) async {
-    await authRepositoryInterface.saveUserNumberAndPassword(
-        number, password, countryDialCode, countryCode);
+  Future<bool> retryPendingPushCleanup() async {
+    return await authRepositoryInterface.retryPendingPushCleanup();
+  }
+
+  @override
+  Future<void> saveUserNumber(
+      String number, String countryDialCode, String countryCode) async {
+    await authRepositoryInterface.saveUserNumber(
+        number, countryDialCode, countryCode);
+  }
+
+  @override
+  Future<void> purgeStoredPassword() async {
+    await authRepositoryInterface.purgeStoredPassword();
   }
 
   @override
@@ -78,11 +88,6 @@ class AuthService implements AuthServiceInterface {
   }
 
   @override
-  String getUserPassword() {
-    return authRepositoryInterface.getUserPassword();
-  }
-
-  @override
   bool isNotificationActive() {
     return authRepositoryInterface.isNotificationActive();
   }
@@ -93,8 +98,8 @@ class AuthService implements AuthServiceInterface {
   }
 
   @override
-  Future<bool> clearUserNumberAndPassword() async {
-    return await authRepositoryInterface.clearUserNumberAndPassword();
+  Future<bool> clearUserNumber() async {
+    return await authRepositoryInterface.clearUserNumber();
   }
 
   @override

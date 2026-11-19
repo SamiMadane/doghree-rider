@@ -46,6 +46,10 @@ class SplashScreenState extends State<SplashScreen> {
   Future<void> _initializeApp() async {
     await Get.find<SplashController>().initSharedData();
 
+    // Finishes a logout whose FCM cleanup failed offline. Silent, not awaited:
+    // updateToken waits for it before asking FCM for a token.
+    Get.find<AuthController>().retryPendingPushCleanup();
+
     Get.find<LocalizationController>();
 
     _listenConnectivity();
