@@ -13,15 +13,14 @@ import 'package:doghree_rider/features/address/controllers/address_controller.da
 import 'package:doghree_rider/features/splash/controllers/splash_controller.dart';
 import 'package:doghree_rider/features/order/controllers/order_controller.dart';
 import 'package:doghree_rider/features/order/domain/models/order_model.dart';
-import 'package:doghree_rider/features/order/screens/order_details_screen.dart';
 import 'package:doghree_rider/features/order/screens/order_location_screen.dart';
 import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
 import 'package:doghree_rider/helper/date_converter_helper.dart';
 import 'package:doghree_rider/helper/price_converter_helper.dart';
-import 'package:doghree_rider/helper/route_helper.dart';
 import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/util/manager_assets.dart';
 import 'package:doghree_rider/util/styles.dart';
+import 'package:doghree_rider/features/order/widgets/accept_outcome_handler.dart';
 
 class OrderRequestWidget extends StatelessWidget {
   final OrderModel orderModel;
@@ -319,7 +318,7 @@ class OrderRequestWidget extends StatelessWidget {
                 SizedBox(width: Dimensions.w10),
                 Expanded(
                   child: CustomButtonWidget(
-                      height: 40,
+                      height: Dimensions.h40,
                       radius: Dimensions.r10,
                       buttonText: 'accept'.tr,
                       fontSize: Dimensions.fs16,
@@ -330,31 +329,7 @@ class OrderRequestWidget extends StatelessWidget {
                                       .tr,
                               acceptText: 'yes_accept'.tr,
                               cancelText: 'no_cancel'.tr,
-                              onAccept: () {
-                                orderController
-                                    .acceptOrder(
-                                        orderModel.id, index, orderModel)
-                                    .then((isSuccess) {
-                                  if (isSuccess) {
-                                    onTap();
-                                    orderModel.orderStatus = 'accepted';
-                                    Get.toNamed(
-                                      RouteHelper.getOrderDetailsRoute(
-                                          orderModel.id),
-                                      arguments: OrderDetailsScreen(
-                                        orderId: orderModel.id,
-                                        isRunningOrder: true,
-                                        orderIndex: orderController
-                                                .currentOrderList!.length -
-                                            1,
-                                      ),
-                                    );
-                                  } else {
-                                    Get.find<OrderController>()
-                                        .getLatestOrders();
-                                  }
-                                });
-                              },
+                              onAccept: () => acceptFromCard(orderModel, () => onTap()),
                             ),
                           )),
                 ),

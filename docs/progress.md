@@ -8,7 +8,7 @@
 | D-01 | fix/d-01-startup | Audit rows 1, 2, 3, 4, 5, 7, 59 | merged, device tests pending (D-11) | 2026-11-14 |
 | D-02 | fix/d-02-silent-network | Audit rows 8, 9, 10, 11, 12, 13, 50, 51 | merged, device tests pending (D-11) | 2026-11-14 |
 | D-03 | fix/d-03-auth | Audit rows 14, 15, 16, 17, 18 + logout FCM (D-02 note) | merged, device tests pending (D-11) | 2026-11-19 |
-| D-04 | fix/d-04-order-actions | Audit rows 19, 20, 21, 22, 23, 24, 25, 28, 29 | planned | |
+| D-04 | fix/d-04-order-actions | Audit rows 19, 20, 21, 22, 23, 24, 25, 28, 29 | merged, device tests pending (D-11) | 2026-11-19 |
 | D-05 | fix/d-05-order-lists-parsing | Audit rows 26, 27, 30, 52, 53 | planned | |
 | D-06 | fix/d-06-location-ringing | Audit rows 36, 37, 38, 39 | planned | |
 | D-07 | fix/d-07-notifications | Audit rows 6, 31, 32, 33, 34, 35, 54 | planned | |
@@ -141,6 +141,77 @@
 - The block push shows no message on the sign-in screen (a `logoutReason` could carry one).
 - `android:allowBackup` is not set, so it defaults to true. SharedPreferences, including the auth token, are part of device backups.
 - Splash called `updateToken()` even with notifications off, so the topics were re-subscribed at every start. *(Fixed in D-03.)*
+
+### D-04 (2026-11-19)
+- **Backend check:** accept-order (R3 step 2), update-order-status (R4 step 1), GET order (R4 step 4) and order-details (R3 step 1). Every outcome is decided from the status and `errors[0].code` only (`order_action_result.dart`: `classifyAccept`, `classifyStatus`, `classifyFetch`, `riderMayMoveTo`).
+- **Row 19:** `acceptOrder(OrderModel)` has no index. It removes the accepted card by id and creates the running list if it is null. It has a double-tap guard and try/finally.
+- **Row 20:** the controller no longer navigates. `acceptFromCard` (order widgets) closes the confirm sheet with `Navigator.pop` on the tap itself, then acts on the outcome.
+  - accepted → Order Details
+  - offline (404 `active_status`) → one "you must be online" dialog and a silent profile refresh
+  - taken (404 `order`, 409 `order_already_taken`) → the card is removed by id, one message, and a silent list refresh
+  - refused (405) → the card stays and the server message is shown once
+- **Row 21:** GET order is silent (`handleError: false` plus `checkSession`). It returns found, notFound (404 or 204) or failed.
+  - A failed poll keeps the order on screen. The order is cleared only when another id loads.
+  - notFound: Order Details shows one message and closes itself, including any sheet on top, never a route below.
+  - A failed first load shows `NoInternetScreen` with Retry.
+- **Row 22:** `updateOrderStatus` runs in try/finally with a double-tap guard. A 200 with a non-Map body no longer throws.
+- **Row 23:**
+  - 403 `invalid_status_transition` or `not_found`, or 404 `order`: the app's own message, then the running orders and the open order refresh.
+  - 406 `error`: not delivered. The status and the photos stay, and the rider can retry.
+  - 406 `otp`: the app's own message.
+- **Approval note 1 (transition gate):** a move the local status refuses triggers one fresh GET. The request is sent if the fresh status allows it, or if the fetch failed (the server decides). It is blocked only if the fresh status refuses it too, or the order is gone.
+- **Row 24:** proof photos belong to `_proofOrderId`, set by `prepareProofFor` when Order Details opens. They are kept when the same order reopens and cleared for another order. They are sent only with `delivered` of that order and cleared only after that delivery succeeds.
+- **Row 25:** order-details is silent at the repository, and the controller shows exactly one message (404, offline or other).
+- **Row 28:** the parcel branch calls `update()`.
+- **Row 29:** the three delivery sheets no longer call `getProfile` and `getCurrentOrders` again after success.
+- **New translation keys (en and ar).** `error_occurred` was missing (see the D-01 note). The `otp_not_matched` text was revised at closing.
+
+  | Key | English | Arabic |
+  |---|---|---|
+  | `order_no_longer_available` | This order is no longer available | هذا الطلب لم يعد متاحاً |
+  | `order_status_changed` | This order has changed. It has been refreshed | تغيّرت حالة هذا الطلب، وتم تحديثه |
+  | `order_not_delivered_retry` | The order was not delivered. Please try again | لم يتم تسليم الطلب. يرجى المحاولة مرة أخرى |
+  | `otp_not_matched` | The delivery code is wrong. Check it with the customer | رمز التسليم غير صحيح، تأكد منه مع الزبون |
+  | `go_online_to_accept_orders` | You must be online to accept orders. Turn on Online from the home screen | يجب أن تكون متصلاً لتقبل الطلبات. فعّل حالة «متصل» من الشاشة الرئيسية |
+  | `error_occurred` | Something went wrong. Please try again | حدث خطأ. يرجى المحاولة مرة أخرى |
+- **Changes from the plan:**
+  - The photos are bound through `prepareProofFor` in Order Details instead of passing the order id through the picker sheets.
+  - The offline dialog uses the new key `go_online_to_accept_orders`, because the Arabic text of `make_yourself_online_first` talks about the internet.
+  - A 401 shows no extra toast, because ApiChecker already ends the session.
+  - The accept-row button height uses `Dimensions.h40`.
+  - T17 was possible as a widget test.
+  - T6 caught a bug during implementation: delivering another order cleared the photos. It was fixed before the report.
+- **Tests:** 48 new, 103 total, 103 passed, 0 failed.
+  - Test files: `order_action_result_test` 16, `order_repository_actions_test` 8, `order_actions_controller_test` 23, `delivery_sheet_refresh_test` 1.
+  - **Fail on the old code by behaviour.** Adapted copies were run against the stashed `lib/`:
+
+    | Test | Old-code result |
+    |---|---|
+    | T1 | `[3, 2]` instead of `[3, 1]` |
+    | T2 | Null check operator used on a null value |
+    | T3 | Null check (`Navigator.pop(Get.context!)`) |
+    | T4 | Null check |
+    | T5 | `isLoading` stays true |
+    | R3 | `type 'String' is not a subtype of type 'int' of 'index'` |
+    | T6 | Proof counts `[2, 2, 2]` |
+    | R7 | `handleError` true |
+    | T8 | 0 rebuilds |
+    | T17 | 2 profile refreshes instead of 1 |
+
+  - **Fail on the old code at compile time only:** C1–C4 (16 tests), R1, R2, R4, R5, R6, T7, T9, T10, T11, accept no-internet, T12, T13, T14, T15, T16a, T16b, T18, T19, T20.
+  - **Guards:** G1 (one profile and one running-orders refresh after delivery), G2 (the body field is `status`), G3 (accept 200 moves the order to running). Their logic also holds on the old code, but their files do not compile against the old code, so they were not run there.
+- **Analyze:** 0 issues.
+- **Device:** **not run.** The steps are in `docs/device-test-backlog.md` (D-04, steps 1–7) and run in D-11.
+
+### Notes (found during D-04, not fixed)
+- A non-parcel order in `accepted` shows "waiting for the store" instead of a picked-up slider, although R4 allows accepted → picked_up. This is a UX and owner decision.
+- `order_slider_button` case 1 opens `ConfirmationBottomSheet` through `showCustomBottomSheet`. `Get.isBottomSheetOpen` does not see it, so with `back: true` the `Get.back` pops the sheet rather than the screen (code-traps.md).
+- The `cancellation_dialogue_widget` success path still repeats `getProfile` and `getCurrentOrders` (not a delivery sheet, so outside row 29).
+- `cancel_confirm_row` can send `confirmed`, which the server refuses under the store confirmation model. It is shown only for parcels, which send `handover`.
+- The `OrderDetailsScreen.orderIndex` parameter is unused.
+- `collect_money_delivery_sheet_widget.dart` is a byte-identical copy of `confirm_delivery_sheet_widget.dart` (same class name `ConfirmDeliverySheetWidget`). Clean up in D-10.
+- The Arabic text of `make_yourself_online_first` says to connect to the internet. The handover slider still uses it.
+- The push request sheet calls `getOrderWithId` for its own order. If Order Details is open on another order, the shown order is cleared until the next poll (existing behaviour, unchanged).
 
 ## Open backend questions
 

@@ -1,10 +1,8 @@
-import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:doghree_rider/api/api_client.dart';
-import 'package:doghree_rider/common/models/response_model.dart';
 import 'package:doghree_rider/features/order/domain/models/ignore_model.dart';
+import 'package:doghree_rider/features/order/domain/models/order_action_result.dart';
 import 'package:doghree_rider/features/order/domain/models/order_cancellation_body.dart';
-import 'package:doghree_rider/features/order/domain/models/order_details_model.dart';
 import 'package:doghree_rider/features/order/domain/models/order_model.dart';
 import 'package:doghree_rider/features/order/domain/models/update_status_body_model.dart';
 import 'package:doghree_rider/features/order/domain/repositories/order_repository_interface.dart';
@@ -23,7 +21,7 @@ class OrderService implements OrderServiceInterface {
   }
 
   @override
-  Future<Response> getOrderWithId(int? orderId) async {
+  Future<OrderFetchResult> getOrderWithId(int? orderId) async {
     return await orderRepositoryInterface.get(orderId);
   }
 
@@ -43,7 +41,7 @@ class OrderService implements OrderServiceInterface {
   }
 
   @override
-  Future<ResponseModel> updateOrderStatus(
+  Future<OrderActionResult<StatusOutcome>> updateOrderStatus(
       UpdateStatusBodyModel updateStatusBody,
       List<MultipartBody> proofAttachment) async {
     return await orderRepositoryInterface.updateOrderStatus(
@@ -51,12 +49,12 @@ class OrderService implements OrderServiceInterface {
   }
 
   @override
-  Future<List<OrderDetailsModel>?> getOrderDetails(int? orderID) async {
+  Future<OrderDetailsResult> getOrderDetails(int? orderID) async {
     return await orderRepositoryInterface.getOrderDetails(orderID);
   }
 
   @override
-  Future<ResponseModel> acceptOrder(int? orderID) async {
+  Future<OrderActionResult<AcceptOutcome>> acceptOrder(int? orderID) async {
     return await orderRepositoryInterface.acceptOrder(orderID);
   }
 

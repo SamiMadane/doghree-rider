@@ -57,6 +57,24 @@ All device steps run together in D-11, after D-10. No device result is recorded 
 
 **Unit tests only:** login with a null zone topic or `No_topic_found` (T1, T8), an FCM token failure during login (T2, T8b), an exception during login (T3), the half-saved token rollback (T4), the cleanup order and the 5 s offline bound (T7, T7b), the pending flag and its retry before the next getToken (T12–T14), the delete-account exception and double tap (T9, T10), and no token registration on the splash path while notifications are off (T16).
 
+## D-04: order actions (accept, status change, polling, proof photos)
+
+- **Branch:** fix/d-04-order-actions
+- **Branch commit:** see `git log` on fix/d-04-order-actions (code commit "D-04: order actions")
+- **Status:** pending (D-11)
+
+| # | Steps | Expected |
+|---|---|---|
+| 1 | Two riders online with the same request open. Rider A accepts, then rider B accepts | B: one "no longer available" message and the card disappears. A: Order Details opens |
+| 2 | Turn the rider offline on the server side (admin), keep the request list open, accept a request | One "you must be online" dialog. The card stays |
+| 3 | Rider at the maximum number of orders, accept another request | The server message, once. The card stays |
+| 4 | Order Details open, airplane mode on for 30 s, then off | The screen stays and shows no toast. The status refreshes afterwards |
+| 5 | Admin cancels or reassigns the order while Order Details is open | One message, and the screen closes. The running orders list is updated |
+| 6 | Take a proof photo on order A, go back, open order B and mark it picked up | Order B's pickup carries no photo. After delivering B, the admin panel shows only B's own photos |
+| 7 | Deliver an order with a proof photo | One success message. The photo is on the order in the admin panel |
+
+**Unit tests only:** 406 `error` and 406 `otp` (delivery verification is off live), 409 against 404 `order`, every 405 code except max orders, 204 on GET order, a 200 non-Map body, the exception paths, the double tap on accept and status, the stale-status re-check (T19), the lost delivered response followed by a 403 (T18), and the proof photos kept on reopening the same order (T20).
+
 ## Combined smoke pass (once, in D-11)
 
 | # | Step | Expected |
