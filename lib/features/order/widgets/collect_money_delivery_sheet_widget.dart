@@ -1,7 +1,6 @@
 import 'package:doghree_rider/common/widgets/replay_image.dart';
 import 'package:doghree_rider/features/order/controllers/order_controller.dart';
 import 'package:doghree_rider/features/order/domain/models/order_model.dart';
-import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
 import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/util/manager_assets.dart';
@@ -66,8 +65,6 @@ class ConfirmDeliverySheetWidget extends StatelessWidget {
                               parcel: false)
                           .then((success) {
                         if (success) {
-                          Get.find<ProfileController>().getProfile();
-                          Get.find<OrderController>().getCurrentOrders();
                           Get.offAllNamed(RouteHelper.getInitialRoute());
                         }
                       });

@@ -762,5 +762,11 @@
   "please_contact_the_admin": "يرجى التواصل مع المسؤول.",
   "insufficient_balance": "الرصيد غير كافٍ",
   "application_submitted": "تم تقديم الطلب",
-  "application_received_message": "لقد استلمنا طلبك وسنقوم بمراجعة كل شيء والتواصل معك قريبًا"
+  "application_received_message": "لقد استلمنا طلبك وسنقوم بمراجعة كل شيء والتواصل معك قريبًا",
+  "order_no_longer_available": "هذا الطلب لم يعد متاحاً",
+  "order_status_changed": "تغيّرت حالة هذا الطلب، وتم تحديثه",
+  "order_not_delivered_retry": "لم يتم تسليم الطلب. يرجى المحاولة مرة أخرى",
+  "otp_not_matched": "رمز OTP غير صحيح. تحقق منه مع العميل",
+  "go_online_to_accept_orders": "يجب أن تكون متصلاً لتقبل الطلبات. فعّل حالة «متصل» من الشاشة الرئيسية",
+  "error_occurred": "حدث خطأ. يرجى المحاولة مرة أخرى"
 }

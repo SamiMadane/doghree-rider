@@ -762,5 +762,11 @@
   "please_contact_the_admin": "Please contact the admin.",
   "insufficient_balance": "Insufficient Balance",
   "application_submitted": "Application Submitted",
-  "application_received_message": "We received your application and we will review everything and contact you soon"
+  "application_received_message": "We received your application and we will review everything and contact you soon",
+  "order_no_longer_available": "This order is no longer available",
+  "order_status_changed": "This order has changed. It has been refreshed",
+  "order_not_delivered_retry": "The order was not delivered. Please try again",
+  "otp_not_matched": "The OTP does not match. Check it with the customer",
+  "go_online_to_accept_orders": "You must be online to accept orders. Turn on Online from the home screen",
+  "error_occurred": "Something went wrong. Please try again"
 }

@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:doghree_rider/common/widgets/custom_app_bar_widget.dart';
 import 'package:doghree_rider/common/widgets/custom_bottom_sheet_widget.dart';
+import 'package:doghree_rider/common/widgets/no_internet_screen.dart';
 import 'package:doghree_rider/features/chat/domain/models/conversation_model.dart';
 import 'package:doghree_rider/features/notification/domain/models/notification_body_model.dart';
 import 'package:doghree_rider/features/order/controllers/order_controller.dart';
+import 'package:doghree_rider/features/order/domain/models/order_action_result.dart';
 import 'package:doghree_rider/features/order/domain/models/order_details_model.dart';
 import 'package:doghree_rider/features/order/domain/models/order_model.dart';
 import 'package:doghree_rider/features/order/widgets/additional_note_section.dart';
@@ -59,6 +61,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
     with WidgetsBindingObserver {
   Timer? _timer;
 
+  /// The first load failed (offline or server error) and there is no order
+  /// to show: the compact NoInternetScreen with Retry (audit row 21).
+  bool _loadFailed = false;
+  bool _closing = false;
+
   /// Refreshes the order status every 10s (a store confirming the order, etc.).
   /// Stops by itself once the order reaches a final status.
   void _startApiCalling() {
@@ -75,18 +82,53 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
         timer.cancel();
         return;
       }
-      c.getOrderWithId(id);
+      // After a failed first load the rider retries; polling waits.
+      if (_loadFailed) return;
+      // A failed poll is silent and keeps the order on screen.
+      c.getOrderWithId(id).then((OrderFetch fetch) {
+        if (fetch == OrderFetch.notFound) _closeGoneOrder();
+      });
     });
+  }
+
+  /// The order is no longer this rider's (404/204): one message, then the
+  /// screen closes itself. Never pops another route.
+  void _closeGoneOrder() {
+    if (!mounted || _closing) return;
+    _closing = true;
+    _timer?.cancel();
+    final OrderController c = Get.find<OrderController>();
+    c.announceOrderGone(widget.orderId);
+    c.getCurrentOrders();
+    if (widget.fromNotification || widget.fromLocationScreen) {
+      Get.offAllNamed(RouteHelper.getInitialRoute());
+    } else {
+      // Close this screen, and any sheet open on top of it, never a route
+      // below it.
+      final ModalRoute<dynamic>? route = ModalRoute.of(context);
+      final NavigatorState navigator = Navigator.of(context);
+      if (route != null) navigator.popUntil((r) => r == route);
+      navigator.maybePop();
+    }
   }
 
   Future<void> _loadData() async {
     final OrderController c = Get.find<OrderController>();
-    c.pickPrescriptionImage(isRemove: true, isCamera: false);
-    await c.getOrderWithId(widget.orderId);
+    // Photos stay only when the same order is opened again (audit row 24).
+    c.prepareProofFor(widget.orderId);
+    if (_loadFailed) setState(() => _loadFailed = false);
+    final OrderFetch fetch = await c.getOrderWithId(widget.orderId);
     if (!mounted) return;
+    if (fetch == OrderFetch.notFound) {
+      _closeGoneOrder();
+      return;
+    }
 
     final OrderModel? order = c.orderModel;
-    if (order == null) return;
+    if (order == null || order.id != widget.orderId) {
+      setState(() => _loadFailed = true);
+      return;
+    }
 
     c.getOrderDetails(widget.orderId, order.orderType == 'parcel');
     await c.getLatestOrders();
@@ -229,6 +271,9 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                 final OrderModel? order = orderController.orderModel;
                 final details = orderController.orderDetailsModel;
 
+                if (_loadFailed && order == null) {
+                  return NoInternetScreen(onRetry: _loadData);
+                }
                 if (order == null || details == null) {
                   return const Center(child: CircularProgressIndicator());
                 }

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:doghree_rider/api/api_client.dart';
 import 'package:doghree_rider/features/chat/domain/repositories/chat_repository.dart';
+import 'package:doghree_rider/features/order/domain/models/order_action_result.dart';
 import 'package:doghree_rider/features/order/domain/models/update_status_body_model.dart';
 import 'package:doghree_rider/features/order/domain/repositories/order_repository.dart';
 import 'package:doghree_rider/util/app_constants.dart';
@@ -76,7 +77,7 @@ void main() {
       () => okClient(jsonEncode({'message': 'ok'})),
     );
 
-    expect(result.isSuccess, isTrue);
+    expect(result.outcome, StatusOutcome.updated);
     expect(requests.single, isA<http.Request>());
     expect(requests.single.headers['Authorization'], 'Bearer $secret');
     expect(requests.single.url.queryParameters.containsKey('token'), isFalse);

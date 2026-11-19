@@ -1,11 +1,12 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:doghree_rider/common/models/response_model.dart';
+import 'package:doghree_rider/api/error_message.dart';
+import 'package:doghree_rider/api/error_type.dart';
 import 'package:doghree_rider/features/wallet/controllers/wallet_controller.dart';
 import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
 import 'package:doghree_rider/features/splash/controllers/splash_controller.dart';
 import 'package:doghree_rider/api/api_client.dart';
+import 'package:doghree_rider/features/order/domain/models/order_action_result.dart';
 import 'package:doghree_rider/features/order/domain/models/order_details_model.dart';
 import 'package:doghree_rider/features/order/domain/models/order_model.dart';
 import 'package:doghree_rider/features/order/domain/models/update_status_body_model.dart';
@@ -70,6 +71,23 @@ class OrderController extends GetxController implements GetxService {
 
   List<XFile> _pickedPrescriptions = [];
   List<XFile> get pickedPrescriptions => _pickedPrescriptions;
+
+  /// The order the proof photos belong to (audit row 24). Photos are sent
+  /// only with `delivered` of this order.
+  int? _proofOrderId;
+  int? get proofOrderId => _proofOrderId;
+
+  bool _isAccepting = false;
+  bool _isUpdatingStatus = false;
+
+  /// Orders whose "no longer available" message was already shown, so a
+  /// later poll closes Order Details without a second message.
+  final Set<int> _goneAnnounced = {};
+
+  /// Every message of the order actions goes through here. Production always
+  /// uses [showCustomSnackBar]; tests replace it only to count messages.
+  @visibleForTesting
+  void Function(String? message, {bool isError}) toast = showCustomSnackBar;
   // ---------- خريطة معاينة الطلب ----------
   LatLng? _mapMyPoint;
   LatLng? get mapMyPoint => _mapMyPoint;
@@ -155,7 +173,7 @@ class OrderController extends GetxController implements GetxService {
           imageQuality: 70,
           maxWidth: 1600);
       if (xFile != null) {
-        _pickedPrescriptions.add(xFile);
+        addProofImage(xFile);
         if (Get.isDialogOpen!) {
           Get.back();
         }
@@ -163,6 +181,28 @@ class OrderController extends GetxController implements GetxService {
       update();
     }
   }
+
+  /// Order Details calls this when it opens. Photos picked for the same order
+  /// are kept; opening another order clears them.
+  void prepareProofFor(int? orderId) {
+    if (orderId != _proofOrderId) {
+      _pickedPrescriptions = [];
+      _proofOrderId = orderId;
+    }
+  }
+
+  /// Adds a proof photo for the order prepared by [prepareProofFor].
+  void addProofImage(XFile file) {
+    if (_pickedPrescriptions.length >= 5) return;
+    _pickedPrescriptions.add(file);
+  }
+
+  void _clearProof() {
+    _pickedPrescriptions = [];
+    _proofOrderId = null;
+  }
+
+  String get _noInternetText => ErrorMessages.getMessage(ErrorType.noInternet);
 
   void initLoading() {
     _isLoading = false;
@@ -184,16 +224,38 @@ class OrderController extends GetxController implements GetxService {
     update();
   }
 
-  Future<void> getOrderWithId(int? orderId) async {
-    _orderModel = null;
-    Response response = await orderServiceInterface.getOrderWithId(orderId);
-    if (response.statusCode == 200) {
-      _orderModel = OrderModel.fromJson(response.body);
-    } else {
-      Navigator.pop(Get.context!);
-      await Get.find<OrderController>().getCurrentOrders();
+  /// Silent fetch (polled every 10s). It never navigates and never shows a
+  /// message: the caller decides (audit row 21). A failed poll keeps the
+  /// order on screen; the model is cleared only when another order loads.
+  Future<OrderFetch> getOrderWithId(int? orderId) async {
+    if (_orderModel?.id != orderId) {
+      _orderModel = null;
+    }
+    OrderFetch outcome = OrderFetch.failed;
+    try {
+      final OrderFetchResult result =
+          await orderServiceInterface.getOrderWithId(orderId);
+      outcome = result.outcome;
+      if (outcome == OrderFetch.found && result.order != null) {
+        _orderModel = result.order;
+      } else if (outcome == OrderFetch.found) {
+        outcome = OrderFetch.failed;
+      }
+    } catch (e) {
+      if (kDebugMode) debugPrint('getOrderWithId failed: ${e.runtimeType}');
+      outcome = OrderFetch.failed;
     }
     update();
+    return outcome;
+  }
+
+  /// Shows "no longer available" once per order. Returns false when it was
+  /// already shown (for example by a failed status change).
+  bool announceOrderGone(int? orderId) {
+    if (orderId == null || _goneAnnounced.contains(orderId)) return false;
+    _goneAnnounced.add(orderId);
+    toast('order_no_longer_available'.tr, isError: true);
+    return true;
   }
 
   /// True when page 1 of My Orders failed. The screen shows NoInternetScreen
@@ -319,100 +381,219 @@ class OrderController extends GetxController implements GetxService {
     update();
   }
 
+  /// One request per tap, one message, and the loader always stops
+  /// (audit rows 22, 23, 24). The outcome comes from the status and
+  /// errors[0].code only (backend R4).
   Future<bool> updateOrderStatus(OrderModel currentOrder, String status,
       {bool back = false,
       String? reason,
       bool? parcel = false,
       bool gotoDashboard = false}) async {
+    if (_isUpdatingStatus) return false;
+    _isUpdatingStatus = true;
     _isLoading = true;
     update();
-    List<MultipartBody> multiParts =
-        orderServiceInterface.prepareOrderProofImages(_pickedPrescriptions);
-    UpdateStatusBodyModel updateStatusBody = UpdateStatusBodyModel(
-      orderId: currentOrder.id,
-      status: status,
-      reason: reason,
-      otp: status == AppConstants.delivered ||
-              (parcel! && status == AppConstants.pickedUp)
-          ? _otp
-          : null,
-    );
-    ResponseModel responseModel = await orderServiceInterface.updateOrderStatus(
-        updateStatusBody, multiParts);
-    if (Get.isBottomSheetOpen == true || Get.isDialogOpen == true) {
-      Get.back(result: responseModel.isSuccess);
+    bool success = false;
+    try {
+      if (!await _transitionAllowed(currentOrder, status)) {
+        await _onOrderChanged(currentOrder.id);
+        return false;
+      }
+
+      final bool sendProof = status == AppConstants.delivered &&
+          _proofOrderId != null &&
+          _proofOrderId == currentOrder.id;
+      final List<MultipartBody> multiParts = sendProof
+          ? orderServiceInterface.prepareOrderProofImages(_pickedPrescriptions)
+          : <MultipartBody>[];
+      final UpdateStatusBodyModel updateStatusBody = UpdateStatusBodyModel(
+        orderId: currentOrder.id,
+        status: status,
+        reason: reason,
+        otp: status == AppConstants.delivered ||
+                (parcel == true && status == AppConstants.pickedUp)
+            ? _otp
+            : null,
+      );
+      final OrderActionResult<StatusOutcome> result = await orderServiceInterface
+          .updateOrderStatus(updateStatusBody, multiParts);
+
+      // A 401 already ended the session (ApiChecker.checkSession).
+      if (result.statusCode == 401) return false;
+
+      switch (result.outcome) {
+        case StatusOutcome.updated:
+          success = true;
+          if (Get.isBottomSheetOpen == true || Get.isDialogOpen == true) {
+            Get.back(result: true);
+          }
+          if (back) {
+            Get.back();
+          }
+          if (gotoDashboard) {
+            Get.offAllNamed(
+                RouteHelper.getInitialRoute(fromOrderDetails: true));
+          }
+          currentOrder.orderStatus = status;
+          // Only the delivered order's own photos are spent.
+          if (sendProof) _clearProof();
+          Get.find<ProfileController>().getProfile();
+          if (Get.isRegistered<WalletController>()) {
+            Get.find<WalletController>().getWallet();
+          }
+          getCurrentOrders();
+          toast(result.message, isError: false);
+          break;
+        case StatusOutcome.orderChanged:
+          await _onOrderChanged(currentOrder.id);
+          break;
+        case StatusOutcome.notDelivered:
+          // Not delivered: status and photos stay, the sheet stays for a retry.
+          toast(result.message ?? 'order_not_delivered_retry'.tr);
+          break;
+        case StatusOutcome.otpMismatch:
+          toast('otp_not_matched'.tr);
+          break;
+        case StatusOutcome.noInternet:
+          toast(_noInternetText);
+          break;
+        case StatusOutcome.failed:
+          toast(result.message ?? 'error_occurred'.tr);
+          break;
+      }
+    } catch (e) {
+      if (kDebugMode) debugPrint('updateOrderStatus failed: ${e.runtimeType}');
+      toast('error_occurred'.tr);
+      success = false;
+    } finally {
+      _isUpdatingStatus = false;
+      _isLoading = false;
+      update();
     }
-    if (responseModel.isSuccess) {
-      if (back) {
-        Get.back();
-      }
-      if (gotoDashboard) {
-        Get.offAllNamed(RouteHelper.getInitialRoute(fromOrderDetails: true));
-      }
-      Get.find<ProfileController>().getProfile();
-      if (Get.isRegistered<WalletController>()) {
-        Get.find<WalletController>().getWallet();
-      }
-      getCurrentOrders();
-      currentOrder.orderStatus = status;
-      showCustomSnackBar(responseModel.message, isError: false);
-    } else {
-      showCustomSnackBar(responseModel.message, isError: true);
-      getLatestOrders();
-    }
-    _isLoading = false;
-    update();
-    return responseModel.isSuccess;
+    return success;
   }
 
+  /// The R4 transition map. A stale local status is not trusted: when it
+  /// refuses the move, the order is fetched again and the fresh status
+  /// decides. If the fetch fails, the request is sent and the server decides.
+  Future<bool> _transitionAllowed(OrderModel order, String status) async {
+    if (riderMayMoveTo(order.orderStatus, status,
+        isParcel: order.orderType == 'parcel')) {
+      return true;
+    }
+    final OrderFetchResult fresh =
+        await orderServiceInterface.getOrderWithId(order.id);
+    if (fresh.outcome == OrderFetch.failed || fresh.order == null) {
+      return fresh.outcome != OrderFetch.notFound;
+    }
+    final OrderModel freshOrder = fresh.order!;
+    if (_orderModel?.id == freshOrder.id) _orderModel = freshOrder;
+    order.orderStatus = freshOrder.orderStatus;
+    return riderMayMoveTo(freshOrder.orderStatus, status,
+        isParcel: freshOrder.orderType == 'parcel');
+  }
+
+  /// The order changed on the server (403 invalid_status_transition or
+  /// not_found, 404 order, or a refused move): one message, then refresh the
+  /// running orders and the open order silently.
+  Future<void> _onOrderChanged(int? orderId) async {
+    if (Get.isBottomSheetOpen == true || Get.isDialogOpen == true) {
+      Get.back(result: false);
+    }
+    toast('order_status_changed'.tr);
+    await getCurrentOrders();
+    if (orderId != null && _orderModel?.id == orderId) {
+      final OrderFetch fetch = await getOrderWithId(orderId);
+      // The message above already told the rider; the screen closes quietly.
+      if (fetch == OrderFetch.notFound) _goneAnnounced.add(orderId);
+    }
+    getLatestOrders();
+  }
+
+  /// Exactly one message when the lines fail to load (audit row 25). The
+  /// parcel branch also rebuilds the screen (audit row 28).
   Future<void> getOrderDetails(int? orderID, bool parcel) async {
     if (parcel) {
       _orderDetailsModel = [];
-    } else {
-      _orderDetailsModel = null;
-
-      try {
-        List<OrderDetailsModel>? orderDetailsModel =
-            await orderServiceInterface.getOrderDetails(orderID);
-
-        if (orderDetailsModel != null) {
-          _orderDetailsModel = [];
-          _orderDetailsModel!.addAll(orderDetailsModel);
-        } else {
-          // ✅ معالجة حالة order details = null
-          showCustomSnackBar('order_details_not_found'.tr, isError: true);
-        }
-      } catch (e) {
-        // ✅ معالجة خطأ 404
-        showCustomSnackBar('failed_to_load_order_details'.tr, isError: true);
-      }
-
       update();
+      return;
     }
+    _orderDetailsModel = null;
+    try {
+      final OrderDetailsResult result =
+          await orderServiceInterface.getOrderDetails(orderID);
+      if (result.details != null) {
+        _orderDetailsModel = [...result.details!];
+      } else if (result.statusCode == 401) {
+        // ApiChecker already ended the session.
+      } else if (result.statusCode == 404) {
+        toast('order_details_not_found'.tr);
+      } else if (result.statusCode == 1) {
+        toast(_noInternetText);
+      } else {
+        toast('failed_to_load_order_details'.tr);
+      }
+    } catch (e) {
+      toast('failed_to_load_order_details'.tr);
+    }
+    update();
   }
 
-  Future<bool> acceptOrder(
-      int? orderID, int index, OrderModel orderModel) async {
-    // ✅ التحقق من صحة Order قبل القبول
-    if (!_isValidOrder(orderModel)) {
-      showCustomSnackBar('cannot_accept_order_without_items'.tr, isError: true);
-      return false;
+  /// Accepts by order id, never by list index (audit row 19), and never
+  /// navigates (audit row 20): the caller closed its confirm sheet already.
+  /// One message per tap; [AcceptOutcome.offline] shows none, the caller
+  /// prompts the online toggle.
+  Future<AcceptOutcome> acceptOrder(OrderModel order) async {
+    if (!_isValidOrder(order)) {
+      toast('cannot_accept_order_without_items'.tr);
+      return AcceptOutcome.failed;
     }
-
+    if (_isAccepting) return AcceptOutcome.failed;
+    _isAccepting = true;
     _isLoading = true;
     update();
-    ResponseModel responseModel =
-        await orderServiceInterface.acceptOrder(orderID);
-    Get.back();
-    if (responseModel.isSuccess) {
-      _latestOrderList!.removeAt(index);
-      _currentOrderList!.add(orderModel);
-    } else {
-      showCustomSnackBar(responseModel.message, isError: true);
+    AcceptOutcome outcome = AcceptOutcome.failed;
+    try {
+      final OrderActionResult<AcceptOutcome> result =
+          await orderServiceInterface.acceptOrder(order.id);
+      outcome = result.outcome;
+      if (result.statusCode == 401) return outcome;
+      switch (outcome) {
+        case AcceptOutcome.accepted:
+          _latestOrderList?.removeWhere((o) => o.id == order.id);
+          _currentOrderList ??= [];
+          if (!_currentOrderList!.any((o) => o.id == order.id)) {
+            _currentOrderList!.add(order);
+          }
+          break;
+        case AcceptOutcome.taken:
+          _latestOrderList?.removeWhere((o) => o.id == order.id);
+          toast('order_no_longer_available'.tr);
+          await getLatestOrders();
+          break;
+        case AcceptOutcome.offline:
+          break;
+        case AcceptOutcome.refused:
+          toast(result.message ?? 'error_occurred'.tr);
+          break;
+        case AcceptOutcome.noInternet:
+          toast(_noInternetText);
+          break;
+        case AcceptOutcome.failed:
+          toast(result.message ?? 'error_occurred'.tr);
+          await getLatestOrders();
+          break;
+      }
+    } catch (e) {
+      if (kDebugMode) debugPrint('acceptOrder failed: ${e.runtimeType}');
+      toast('error_occurred'.tr);
+      outcome = AcceptOutcome.failed;
+    } finally {
+      _isAccepting = false;
+      _isLoading = false;
+      update();
     }
-    _isLoading = false;
-    update();
-    return responseModel.isSuccess;
+    return outcome;
   }
 
   void getIgnoreList() {

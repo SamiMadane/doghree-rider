@@ -4,8 +4,9 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:doghree_rider/api/api_checker.dart';
 import 'package:doghree_rider/api/api_client.dart';
-import 'package:doghree_rider/common/models/response_model.dart';
+import 'package:doghree_rider/api/api_error_handler.dart';
 import 'package:doghree_rider/features/order/domain/models/ignore_model.dart';
+import 'package:doghree_rider/features/order/domain/models/order_action_result.dart';
 import 'package:doghree_rider/features/order/domain/models/order_cancellation_body.dart';
 import 'package:doghree_rider/features/order/domain/models/order_details_model.dart';
 import 'package:doghree_rider/features/order/domain/models/order_model.dart';
@@ -36,11 +37,29 @@ class OrderRepository implements OrderRepositoryInterface {
     return orderCancelReasons;
   }
 
+  /// Polled every 10s by Order Details: silent (audit row 21). A 401 still
+  /// ends the session. 404 and 204 mean not found (backend R4 step 4).
   @override
-  Future<Response> get(int? id) async {
-    Response response = await apiClient
-        .getData(AppConstants.currentOrderUri, query: {'order_id': id});
-    return response;
+  Future<OrderFetchResult> get(int? id) async {
+    final Response response = await apiClient.getData(
+        AppConstants.currentOrderUri,
+        query: {'order_id': id},
+        handleError: false);
+    ApiChecker.checkSession(response);
+    final OrderFetch outcome =
+        classifyFetch(response.statusCode, response.body);
+    if (outcome != OrderFetch.found) {
+      return OrderFetchResult(outcome, null, response.statusCode);
+    }
+    try {
+      return OrderFetchResult(
+          OrderFetch.found,
+          OrderModel.fromJson(Map<String, dynamic>.from(response.body)),
+          response.statusCode);
+    } catch (e) {
+      if (kDebugMode) debugPrint('order parse failed: ${e.runtimeType}');
+      return OrderFetchResult(OrderFetch.failed, null, response.statusCode);
+    }
   }
 
   /// Page 1 is silent: My Orders shows NoInternetScreen with Retry on failure
@@ -91,49 +110,78 @@ class OrderRepository implements OrderRepositoryInterface {
     return latestOrderList;
   }
 
+  /// The caller shows the one message, so the call is silent here. The
+  /// outcome comes from the status and errors[0].code only (backend R4).
   @override
-  Future<ResponseModel> updateOrderStatus(
+  Future<OrderActionResult<StatusOutcome>> updateOrderStatus(
       UpdateStatusBodyModel updateStatusBody,
       List<MultipartBody> proofAttachment) async {
-    ResponseModel responseModel;
-    Response response = await apiClient.postMultipartData(
+    final Response response = await apiClient.postMultipartData(
         AppConstants.updateOrderStatusUri,
         updateStatusBody.toJson(),
         proofAttachment,
         handleError: false);
-    if (response.statusCode == 200) {
-      responseModel = ResponseModel(true, response.body['message']);
-    } else {
-      responseModel = ResponseModel(false, response.statusText);
-    }
-    return responseModel;
+    ApiChecker.checkSession(response);
+    return OrderActionResult(
+        classifyStatus(
+            response.statusCode, ApiErrorHandler.extractCode(response.body)),
+        _messageOf(response),
+        response.statusCode);
   }
 
+  /// Silent: the controller shows one message on failure (audit row 25).
   @override
-  Future<List<OrderDetailsModel>?> getOrderDetails(int? orderID) async {
-    List<OrderDetailsModel>? orderDetailsModel;
-    Response response = await apiClient
-        .getData(AppConstants.orderDetailsUri, query: {'order_id': orderID});
-    if (response.statusCode == 200) {
-      orderDetailsModel = [];
-      response.body.forEach((orderDetails) =>
-          orderDetailsModel!.add(OrderDetailsModel.fromJson(orderDetails)));
-    }
-    return orderDetailsModel;
-  }
-
-  @override
-  Future<ResponseModel> acceptOrder(int? orderID) async {
-    ResponseModel responseModel;
-    Response response = await apiClient.postData(AppConstants.acceptOrderUri,
-        {"_method": "put", 'order_id': orderID},
+  Future<OrderDetailsResult> getOrderDetails(int? orderID) async {
+    final Response response = await apiClient.getData(
+        AppConstants.orderDetailsUri,
+        query: {'order_id': orderID},
         handleError: false);
-    if (response.statusCode == 200) {
-      responseModel = ResponseModel(true, response.body['message']);
-    } else {
-      responseModel = ResponseModel(false, response.statusText);
+    ApiChecker.checkSession(response);
+    if (response.statusCode != 200) {
+      return OrderDetailsResult(null, response.statusCode);
     }
-    return responseModel;
+    try {
+      final List<OrderDetailsModel> details = [];
+      final dynamic body = response.body;
+      if (body is List) {
+        for (final dynamic line in body) {
+          details.add(OrderDetailsModel.fromJson(line));
+        }
+      }
+      return OrderDetailsResult(details, 200);
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('order details parse failed: ${e.runtimeType}');
+      }
+      return OrderDetailsResult(null, 200);
+    }
+  }
+
+  /// The caller shows the one message. The outcome comes from the status
+  /// and errors[0].code only (backend R3).
+  @override
+  Future<OrderActionResult<AcceptOutcome>> acceptOrder(int? orderID) async {
+    final Response response = await apiClient.postData(
+        AppConstants.acceptOrderUri, {'_method': 'put', 'order_id': orderID},
+        handleError: false);
+    ApiChecker.checkSession(response);
+    return OrderActionResult(
+        classifyAccept(
+            response.statusCode, ApiErrorHandler.extractCode(response.body)),
+        _messageOf(response),
+        response.statusCode);
+  }
+
+  /// The server message on success (only from a Map body) or the error text
+  /// ApiClient built. Never throws on a non-Map body (audit row 22).
+  String? _messageOf(Response response) {
+    if (response.statusCode == 200) {
+      final dynamic body = response.body;
+      return body is Map && body['message'] is String
+          ? body['message'] as String
+          : null;
+    }
+    return response.statusText;
   }
 
   @override

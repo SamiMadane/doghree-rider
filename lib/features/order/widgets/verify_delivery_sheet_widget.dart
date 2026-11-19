@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:doghree_rider/features/notification/controllers/notification_controller.dart';
 import 'package:doghree_rider/features/order/controllers/order_controller.dart';
 import 'package:doghree_rider/features/order/domain/models/order_model.dart';
-import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
 import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/util/styles.dart';
@@ -150,8 +149,6 @@ class _VerifyDeliverySheetWidgetState extends State<VerifyDeliverySheetWidget> {
                                     parcel: false)
                                 .then((success) {
                               if (success) {
-                                Get.find<ProfileController>().getProfile();
-                                Get.find<OrderController>().getCurrentOrders();
                                 Get.offAllNamed(RouteHelper.getInitialRoute());
                               }
                             });
