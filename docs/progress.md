@@ -141,7 +141,6 @@
 - The block push shows no message on the sign-in screen (a `logoutReason` could carry one).
 - `android:allowBackup` is not set, so it defaults to true. SharedPreferences, including the auth token, are part of device backups.
 - Splash called `updateToken()` even with notifications off, so the topics were re-subscribed at every start. *(Fixed in D-03.)*
-- The working tree had `assets/image/change_password.png` and `assets/image/no_conversation.png` deleted outside D-03. Both are still referenced in `manager_assets.dart`. They were not staged or restored.
 
 ## Open backend questions
 
