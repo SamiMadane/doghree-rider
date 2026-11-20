@@ -5,6 +5,7 @@ import 'package:doghree_rider/api/api_client.dart';
 import 'package:doghree_rider/features/auth/domain/models/delivery_man_body_model.dart';
 import 'package:doghree_rider/features/auth/domain/models/vehicle_model.dart';
 import 'package:doghree_rider/features/auth/domain/repositories/auth_repository_interface.dart';
+import 'package:doghree_rider/helper/json_helper.dart';
 import 'package:doghree_rider/helper/push_client.dart';
 import 'package:doghree_rider/util/app_constants.dart';
 
@@ -39,14 +40,11 @@ class AuthRepository implements AuthRepositoryInterface {
 
   @override
   Future<List<VehicleModel>?> getList() async {
-    List<VehicleModel>? vehicles;
-    Response response = await apiClient.getData(AppConstants.vehiclesUri);
-    if (response.statusCode == 200) {
-      vehicles = [];
-      response.body
-          .forEach((vehicle) => vehicles!.add(VehicleModel.fromJson(vehicle)));
-    }
-    return vehicles;
+    final Response response = await apiClient.getData(AppConstants.vehiclesUri);
+    if (response.statusCode != 200) return null;
+    // A body that is not a List is a failure; a bad item is skipped (row 52).
+    return JsonHelper.mapList(response.body, VehicleModel.fromJson,
+        name: 'vehicles');
   }
 
   @override

@@ -12,6 +12,7 @@ import 'package:doghree_rider/features/order/domain/models/order_details_model.d
 import 'package:doghree_rider/features/order/domain/models/order_model.dart';
 import 'package:doghree_rider/features/order/domain/models/update_status_body_model.dart';
 import 'package:doghree_rider/features/order/domain/repositories/order_repository_interface.dart';
+import 'package:doghree_rider/helper/json_helper.dart';
 import 'package:doghree_rider/util/app_constants.dart';
 import 'package:latlong2/latlong.dart' show LatLng;
 import 'package:doghree_rider/doghree_map/polyline.dart';
@@ -62,52 +63,52 @@ class OrderRepository implements OrderRepositoryInterface {
     }
   }
 
-  /// Page 1 is silent: My Orders shows NoInternetScreen with Retry on failure
-  /// (audit row 13), so ApiChecker must not add a toast. A 401 still ends the
-  /// session. Later pages keep the old behaviour (pagination is D-05).
+  /// Every history page is silent: My Orders shows NoInternetScreen with
+  /// Retry on page 1 (audit row 13) and a footer with Retry on later pages
+  /// (audit row 26), so ApiChecker must not add a toast. A 401 still ends the
+  /// session. A 200 whose body is not a Map is a failure (null), audit row 52.
   @override
   Future<PaginatedOrderModel?> getCompletedOrderList(int offset) async {
-    PaginatedOrderModel? paginatedOrderModel;
-    final bool firstPage = offset == 1;
-    Response response = await apiClient.getData(
+    final Response response = await apiClient.getData(
       AppConstants.allOrdersUri,
-      query: {'offset': offset, 'limit': 10},
-      handleError: !firstPage,
+      query: {'offset': offset, 'limit': AppConstants.historyPageLimit},
+      handleError: false,
     );
-    if (response.statusCode == 200) {
-      paginatedOrderModel = PaginatedOrderModel.fromJson(response.body);
-    } else if (firstPage) {
+    if (response.statusCode != 200) {
       ApiChecker.checkSession(response);
+      return null;
     }
-    return paginatedOrderModel;
+    final dynamic body = response.body;
+    if (body is! Map) return null;
+    try {
+      return PaginatedOrderModel.fromJson(Map<String, dynamic>.from(body));
+    } catch (e) {
+      if (kDebugMode) debugPrint('history parse failed: ${e.runtimeType}');
+      return null;
+    }
   }
 
+  /// A 200 that is not a List is a failure (null) and the old list stays. A
+  /// bad item is skipped (audit row 52). Note that a skipped running order is
+  /// hidden from the rider (see progress.md, D-05 notes).
   @override
   Future<List<OrderModel>?> getList() async {
-    List<OrderModel>? currentOrderList;
-    Response response = await apiClient.getData(AppConstants.currentOrdersUri);
-    if (response.statusCode == 200) {
-      currentOrderList = [];
-      response.body.forEach(
-          (order) => currentOrderList!.add(OrderModel.fromJson(order)));
-    }
-    return currentOrderList;
+    final Response response =
+        await apiClient.getData(AppConstants.currentOrdersUri);
+    if (response.statusCode != 200) return null;
+    return JsonHelper.mapList(response.body, OrderModel.fromJson,
+        name: 'current-orders');
   }
 
   @override
   Future<List<OrderModel>?> getLatestOrders() async {
-    List<OrderModel>? latestOrderList;
     // Polled every 10s: silent on failure (audit row 10). The old list stays.
-    Response response = await apiClient.getData(AppConstants.latestOrdersUri,
-        handleError: false);
+    final Response response = await apiClient
+        .getData(AppConstants.latestOrdersUri, handleError: false);
     ApiChecker.checkSession(response);
-
-    if (response.statusCode == 200) {
-      latestOrderList = [];
-      response.body
-          .forEach((order) => latestOrderList!.add(OrderModel.fromJson(order)));
-    }
-    return latestOrderList;
+    if (response.statusCode != 200) return null;
+    return JsonHelper.mapList(response.body, OrderModel.fromJson,
+        name: 'latest-orders');
   }
 
   /// The caller shows the one message, so the call is silent here. The
@@ -140,21 +141,14 @@ class OrderRepository implements OrderRepositoryInterface {
     if (response.statusCode != 200) {
       return OrderDetailsResult(null, response.statusCode);
     }
-    try {
-      final List<OrderDetailsModel> details = [];
-      final dynamic body = response.body;
-      if (body is List) {
-        for (final dynamic line in body) {
-          details.add(OrderDetailsModel.fromJson(line));
-        }
-      }
-      return OrderDetailsResult(details, 200);
-    } catch (e) {
-      if (kDebugMode) {
-        debugPrint('order details parse failed: ${e.runtimeType}');
-      }
-      return OrderDetailsResult(null, 200);
-    }
+    // A list gives the lines; a parcel object or anything else gives no lines
+    // (R3 step 1). A bad line is skipped.
+    final List<OrderDetailsModel> details = response.body is List
+        ? JsonHelper.mapList(response.body, OrderDetailsModel.fromJson,
+                name: 'order-details') ??
+            <OrderDetailsModel>[]
+        : <OrderDetailsModel>[];
+    return OrderDetailsResult(details, 200);
   }
 
   /// The caller shows the one message. The outcome comes from the status

@@ -66,10 +66,23 @@ class SplashController extends GetxController implements GetxService {
     return module;
   }
 
-  // جلب اعدادات موديول معين من الذاكرة
-  // دون اي تعديل على الخاصية newVariation
-  Module getModule(String? moduleType) =>
-      Module.fromJson(_data!['module_config'][moduleType]);
+  /// The settings of one module, from memory. It is called from `build`, so it
+  /// never throws (audit row 30): a null or unknown [moduleType], a config
+  /// that is not loaded yet, or a broken entry gives an empty `Module()`
+  /// whose flags are all null (callers read them with `?? false`).
+  Module getModule(String? moduleType) {
+    try {
+      final dynamic configs = _data?['module_config'];
+      final dynamic entry =
+          moduleType != null && configs is Map ? configs[moduleType] : null;
+      if (entry is Map) {
+        return Module.fromJson(Map<String, dynamic>.from(entry));
+      }
+    } catch (_) {
+      // fall through to the empty module
+    }
+    return Module();
+  }
 
   Future<bool> initSharedData() {
     return navigationHandlerServiceInterface.initSharedData();

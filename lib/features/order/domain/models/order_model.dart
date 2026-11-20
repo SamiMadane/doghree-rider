@@ -1,3 +1,5 @@
+import 'package:doghree_rider/helper/json_helper.dart';
+
 class PaginatedOrderModel {
   int? totalSize;
   String? limit;
@@ -6,16 +8,15 @@ class PaginatedOrderModel {
 
   PaginatedOrderModel({this.totalSize, this.limit, this.offset, this.orders});
 
+  /// `total_size`, `limit` and `offset` may arrive as numbers or strings
+  /// (audit rows 27, 53). A missing or wrong `orders` gives null, which the
+  /// controller treats as the end of the history. A bad order is skipped.
   PaginatedOrderModel.fromJson(Map<String, dynamic> json) {
-    totalSize = json['total_size'];
+    totalSize = JsonHelper.asInt(json['total_size']);
     limit = json['limit'].toString();
     offset = json['offset'].toString();
-    if (json['orders'] != null) {
-      orders = [];
-      json['orders'].forEach((v) {
-        orders!.add(OrderModel.fromJson(v));
-      });
-    }
+    orders = JsonHelper.mapList(json['orders'], OrderModel.fromJson,
+        name: 'all-orders');
   }
 
   Map<String, dynamic> toJson() {
@@ -140,7 +141,7 @@ class OrderModel {
   });
 
   OrderModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
+    id = JsonHelper.asInt(json['id']);
     itemCampaignId = json['item_campaign_id'];
     userId = json['user_id'];
     orderAmount = json['order_amount']?.toDouble();
@@ -152,7 +153,7 @@ class OrderModel {
     transactionReference = json['transaction_reference'];
     deliveryAddressId = json['delivery_address_id'];
     deliveryManId = json['delivery_man_id'];
-    orderType = json['order_type'];
+    orderType = JsonHelper.asString(json['order_type']);
     storeId = json['store_id'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
@@ -161,22 +162,20 @@ class OrderModel {
     scheduleAt = json['schedule_at'];
     storeName = json['store_name'];
     storeAddress = json['store_address'];
-    storeLat = json['store_lat'];
-    storeLng = json['store_lng'];
+    // store_lat and store_lng arrive as strings, and every store_* key is
+    // null for an order with no store (backend R2).
+    storeLat = JsonHelper.asString(json['store_lat']);
+    storeLng = JsonHelper.asString(json['store_lng']);
     storeLogoFullUrl = json['store_logo_full_url'];
     storePhone = json['store_phone'];
-    detailsCount = json['details_count'];
+    detailsCount = JsonHelper.asInt(json['details_count']);
     orderNote = json['order_note'];
     chargePayer = json['charge_payer'];
-    moduleType = json['module_type'];
+    moduleType = JsonHelper.asString(json['module_type']);
     prescriptionOrder = json['prescription_order'];
     if (json['order_attachment_full_url'] != null) {
-      orderAttachmentFullUrl = <String>[];
-      json['order_attachment_full_url'].forEach((v) {
-        if (v != null) {
-          orderAttachmentFullUrl!.add(v.toString());
-        }
-      });
+      orderAttachmentFullUrl =
+          JsonHelper.stringList(json['order_attachment_full_url']);
     }
     deliveryAddress = json['delivery_address'] != null
         ? DeliveryAddress.fromJson(json['delivery_address'])
@@ -194,19 +193,10 @@ class OrderModel {
     unavailableItemNote = json['unavailable_item_note'];
     deliveryInstruction = json['delivery_instruction'];
     if (json['order_proof_full_url'] != null) {
-      orderProofFullUrl = <String>[];
-      json['order_proof_full_url'].forEach((v) {
-        if (v != null) {
-          orderProofFullUrl!.add(v.toString());
-        }
-      });
+      orderProofFullUrl = JsonHelper.stringList(json['order_proof_full_url']);
     }
-    if (json['payments'] != null) {
-      payments = <Payments>[];
-      json['payments'].forEach((v) {
-        payments!.add(Payments.fromJson(v));
-      });
-    }
+    payments = JsonHelper.mapList(json['payments'], Payments.fromJson,
+        name: 'payments');
     storeDiscountAmount = json['store_discount_amount']?.toDouble();
     taxStatus = json['tax_status'] == 'included' ? true : false;
     additionalCharge = json['additional_charge']?.toDouble() ?? 0;

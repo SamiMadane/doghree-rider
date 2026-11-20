@@ -81,6 +81,26 @@ Endpoints as the rider app actually uses them. Fill one section per endpoint whe
 - Used in: `OrderRepository.getOrderDetails` (`handleError: false`), then `OrderController.getOrderDetails`, which shows exactly one message on failure. Parcels are not fetched.
 - Source: docs/backend R3 step 1.
 
+### GET /api/v1/delivery-man/all-orders?limit=10&offset=<page>
+
+- Auth: Bearer header.
+- Request (query): `limit` (the app sends 10) and `offset`, a **page number starting at 1**.
+- Response 200 shape: `{ "total_size": <server count>, "limit": "10", "offset": "1", "orders": [ ... ] }`. `limit` and `offset` may be strings. The app also accepts a string `total_size`.
+- **Not in Screens R1-R7.** The shape comes from the Postman example only. Its example nests a `store` object, but Screens R2 and the app use flat `store_*` keys.
+- Used in: `OrderRepository.getCompletedOrderList` (always `handleError: false`, a 401 still ends the session), then `OrderController` (`getCompletedOrders(1)` and `loadNextHistoryPage`).
+- Notes:
+  - A body that is not a Map is a failure (null). A missing `orders` list ends the history.
+  - `total_size` counts server rows. The app drops orders without items, so the list on the phone is shorter. More pages exist while `lastLoadedPage * 10 < total_size` and no page came back empty.
+  - The same order id can appear on two pages if orders move meanwhile. The app shows it once.
+
+### GET /api/v1/delivery-man/latest-orders, current-orders and notifications
+
+- Auth: Bearer header. No parameters, no pagination.
+- Response 200 shape: a **bare JSON array** (R2 steps 1, 2, 6). `[]` is a real empty list. latest-orders is `200 []` when the deposit guard hides the board. notifications is `200 []` on any server exception, so an empty list does not prove there are none, and it keeps only the last 15 days.
+- Order fields: `store_lat` and `store_lng` arrive as strings. For an order with no store, every `store_*` key is explicitly null.
+- Used in: `OrderRepository.getLatestOrders` (silent), `OrderRepository.getList` (current), `NotificationRepository.getList`.
+- Notes: a 200 whose body is not a List is a failure (null) and the old list stays. A single item that does not parse is skipped (`JsonHelper.mapList`).
+
 ## Template
 
 ### METHOD /path

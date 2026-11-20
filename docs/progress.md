@@ -9,7 +9,7 @@
 | D-02 | fix/d-02-silent-network | Audit rows 8, 9, 10, 11, 12, 13, 50, 51 | merged, device tests pending (D-11) | 2026-11-14 |
 | D-03 | fix/d-03-auth | Audit rows 14, 15, 16, 17, 18 + logout FCM (D-02 note) | merged, device tests pending (D-11) | 2026-11-19 |
 | D-04 | fix/d-04-order-actions | Audit rows 19, 20, 21, 22, 23, 24, 25, 28, 29 | merged, device tests pending (D-11) | 2026-11-19 |
-| D-05 | fix/d-05-order-lists-parsing | Audit rows 26, 27, 30, 52, 53 | planned | |
+| D-05 | fix/d-05-order-lists-parsing | Audit rows 26, 27, 30, 52, 53 | implemented, awaiting device tests (D-11) | |
 | D-06 | fix/d-06-location-ringing | Audit rows 36, 37, 38, 39 | planned | |
 | D-07 | fix/d-07-notifications | Audit rows 6, 31, 32, 33, 34, 35, 54 | planned | |
 | D-08 | fix/d-08-wallet | Audit rows 41, 42, 43, 44 | planned | |
@@ -212,6 +212,69 @@
 - `collect_money_delivery_sheet_widget.dart` is a byte-identical copy of `confirm_delivery_sheet_widget.dart` (same class name `ConfirmDeliverySheetWidget`). Clean up in D-10.
 - The Arabic text of `make_yourself_online_first` says to connect to the internet. The handover slider still uses it.
 - The push request sheet calls `getOrderWithId` for its own order. If Order Details is open on another order, the shown order is cleared until the next poll (existing behaviour, unchanged).
+
+### D-05 (2026-11-20)
+- **Backend check:** latest-orders, current-orders and notifications are bare arrays (R2 steps 1, 2, 6). `store_lat` and `store_lng` arrive as strings and every `store_*` key is null for an order with no store. order-details has three success shapes (R3 step 1). `all-orders` is **not in R1-R7**; its shape comes from the Postman example only (`total_size`, string `limit` and `offset`, `orders`), and `offset` is a page number from 1.
+- **`JsonHelper`** (lib/helper/json_helper.dart): `asInt`, `asDouble`, `asString`, `stringList` and `mapList`. None throws. `mapList` gives null for anything that is not a List (a failure), `[]` for a real `[]`, and skips items that are not Maps or whose parse throws. It logs in debug only the list name and the number of skipped items, never content.
+- **Rows 52 and 53:**
+  - current-orders, latest-orders, notifications, zones, vehicles and order-details use `mapList`. A 200 with the wrong shape is a failure (null), so the old list stays and no loader hangs.
+  - `PaginatedOrderModel` reads `total_size` with `asInt` and `orders` with `mapList`. `OrderModel` reads `id`, `details_count`, `store_lat`, `store_lng`, `module_type` and `order_type` defensively, and its string lists and `payments` through the helper.
+  - The four `.cast<String>()` lines (profile, message, config module type, choice options) use `stringList`.
+  - `ConfigModel` reads `module_config` only when it is a Map and `ModuleConfig` no longer indexes an empty `module_type`. Before, one bad `module_config` failed the whole config and splash showed the no-connection screen at every start.
+- **Row 30:** `getModule` returns an empty `Module()` for a null or unknown type, an unloaded config or a broken entry. `OrderItemWidget` reads the flags with `?? false`.
+- **Rows 26 and 27:** the controller owns the history paging.
+  - More pages exist when `lastLoadedPage * 10 < total_size` and no page came back empty, so the filtered list length plays no part.
+  - At most one page request is in flight. A failed page sets `historyPageFailed`, and only Retry continues. A late page after a refresh is dropped (generation counter). An order id that appears on two pages is shown once. The bottom loader stops on every path.
+  - Every history page is silent (`handleError: false`). The failure shows in the footer (`HistoryPageFooterWidget`) with Retry.
+  - A short list loads the next page by itself (`historyNeedsFill`) until the screen scrolls, the history ends or a page fails.
+  - Removed `offsetList`, `offset`, `pageSize`, `setOffset` and `showBottomLoader` from `OrderController`.
+- **New translation key (en and ar):**
+
+  | Key | English | Arabic |
+  |---|---|---|
+  | `load_more_failed` | Couldn't load more orders | تعذّر تحميل المزيد من الطلبات |
+- **Changes from the plan:**
+  - `ConfigModel` `module_config` guard (above) was added after test S3 showed a string value failed the whole config.
+  - `JsonHelper.asInt` was fixed during the tests: `NaN.toInt()` throws, so non-finite numbers now give null.
+  - The D-02 guard G3 ("page 2 keeps `handleError: true`, D-05") was replaced by T7b, because D-05 makes page 2 silent on purpose.
+- **Tests:** 49 new, 152 total, 152 passed, 0 failed. Analyze: 0 issues.
+  - Files: `json_helper_test` 8, `parsing_shapes_test` 21, `order_history_paging_test` 13, `splash_module_test` 7, plus T7b in `silent_calls_test`.
+  - **Fail on the old code by behaviour.** The new tests were run against the stashed old `lib/`; the paging tests through a temporary copy that used the old API (`showBottomLoader` then `getCompletedOrders(page)`), which was deleted afterwards:
+
+    | Test | Old-code result |
+    |---|---|
+    | P1 | `paginate` stays true |
+    | P2 | Null check operator used on a null value |
+    | P3 | FormatException escapes |
+    | P4 | requested `[1, 2]` instead of `[1, 2, 2]` |
+    | P5 | `[1, 2, 2, 3]` instead of `[1, 2, 3]` |
+    | P6 | `[9, 3, 4]` instead of `[9]` |
+    | R1, R3, R4 | `type '(dynamic) => void' is not a subtype of type '(String, List<dynamic>) => void'` (a Map body was iterated) |
+    | R2, R5 | `Class 'String' has no instance method 'forEach'` |
+    | R6 | `type 'String' is not a subtype of type 'Map<String, dynamic>'` |
+    | R7, T7b | `handleError` true |
+    | R8 | `type 'List<dynamic>' is not a subtype of type 'Map<String, dynamic>'` |
+    | M1, M2, M4 | `The method 'cast' was called on null` |
+    | M3a | `The method 'cast' was called on null` |
+    | M3b | `RangeError (length): Valid value range is empty: 0` |
+    | M5 | `type 'String' is not a subtype of type 'int?'` |
+    | M6 | `type 'double' is not a subtype of type 'String?'` |
+    | S1 | `type 'Null' is not a subtype of type 'Map<String, dynamic>'` |
+    | S2, S3 | `The method '[]' was called on null` |
+    | W1, W1b | the same `Null` is not a `Map` error, thrown while the row builds |
+
+  - **Fail on the old code at compile time only:** J1–J7 (no `JsonHelper`), and P7–P11 (no `loadNextHistoryPage`, `retryHistoryPage`, `historyPageFailed`, `hasMoreHistory`, `historyNeedsFill`).
+  - **Guards** (pass on the old code too): G1, G2, G3, G4, G8, G9, G12 and M7. G7, G10 and G11 are guards that only compile against the new code.
+- **Device:** **not run.** The steps are in `docs/device-test-backlog.md` (D-05, steps 1–5) and run in D-11.
+
+### Notes (found during D-05, not fixed)
+- **Watch in D-11:** a skipped item in current-orders hides a running order from the rider. `mapList` skips an item that does not parse and logs only the count. If a rider reports a missing running order, check this first.
+- `getModuleConfig` has the same crash as `getModule` but no callers. Remove it in D-10 (row 56).
+- Other unguarded `.forEach` and forced reads outside rows 52 and 53: the lists in `order_details_model` (variation, add_ons, category_ids, food_variations, variations, choice_options), `conversation_model`, `earning_report_model`, the config `language` list, zone `coordinates` and address `zone_data`.
+- The notification sort forces `updatedAt!`, so one notification without `updated_at` throws in `getNotificationList`.
+- On first load, Requests, Running orders, Notifications and Zones still show a spinner after a failure, with no NoInternet state (unchanged).
+- `all-orders` is missing from Screens R1-R7. The Postman example nests a `store` object, while Screens R2 and the app use flat `store_*` keys. The app follows Screens.
+- The `_MetaTag` unit/veg logic in `OrderItemWidget` still forces `itemDetails!` and `.price!` (outside row 30).
 
 ## Open backend questions
 

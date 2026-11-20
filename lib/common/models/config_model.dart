@@ -1,3 +1,5 @@
+import 'package:doghree_rider/helper/json_helper.dart';
+
 class ConfigModel {
   String? businessName;
   String? logo;
@@ -135,8 +137,9 @@ class ConfigModel {
         ? 30
         : json['schedule_order_slot_duration'];
     digitAfterDecimalPoint = json['digit_after_decimal_point'];
-    moduleConfig = json['module_config'] != null
-        ? ModuleConfig.fromJson(json['module_config'])
+    moduleConfig = json['module_config'] is Map
+        ? ModuleConfig.fromJson(
+            Map<String, dynamic>.from(json['module_config'] as Map))
         : null;
     parcelPerKmShippingCharge =
         json['parcel_per_km_shipping_charge']?.toDouble();
@@ -253,10 +256,10 @@ class ModuleConfig {
   ModuleConfig({this.moduleType, this.module});
 
   ModuleConfig.fromJson(Map<String, dynamic> json) {
-    moduleType = json['module_type'].cast<String>();
-    module = json[moduleType![0]] != null
-        ? Module.fromJson(json[moduleType![0]])
-        : null;
+    // A missing or empty module_type must not fail the whole config (row 53).
+    moduleType = JsonHelper.stringList(json['module_type']);
+    final dynamic first = moduleType!.isEmpty ? null : json[moduleType![0]];
+    module = first is Map ? Module.fromJson(Map<String, dynamic>.from(first)) : null;
   }
 
   Map<String, dynamic> toJson() {

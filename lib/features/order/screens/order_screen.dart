@@ -5,6 +5,7 @@ import 'package:doghree_rider/common/widgets/empty_state_widget.dart';
 import 'package:doghree_rider/common/widgets/no_internet_screen.dart';
 import 'package:doghree_rider/features/order/controllers/order_controller.dart';
 import 'package:doghree_rider/features/order/widgets/history_order_widget.dart';
+import 'package:doghree_rider/features/order/widgets/history_page_footer_widget.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
 import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/util/manager_assets.dart';
@@ -34,19 +35,25 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   void _onScroll() {
-    final OrderController c = Get.find<OrderController>();
     if (!_scrollController.hasClients) return;
     final ScrollPosition pos = _scrollController.position;
 
-    // Start loading slightly before the end of the list.
-    final bool nearEnd = pos.pixels >= pos.maxScrollExtent - 200;
-    if (nearEnd && c.completedOrderList != null && !c.paginate) {
-      final int totalPages = ((c.pageSize ?? 0) / 10).ceil();
-      if (c.offset < totalPages) {
-        c.setOffset(c.offset + 1);
-        c.showBottomLoader();
-        c.getCompletedOrders(c.offset);
-      }
+    // Start loading slightly before the end of the list. The controller
+    // decides whether a page is allowed (one in flight, none after a failure).
+    if (pos.pixels >= pos.maxScrollExtent - 200) {
+      Get.find<OrderController>().loadNextHistoryPage();
+    }
+  }
+
+  /// A page can be too short to scroll (orders without items are filtered
+  /// out), so the next page loads by itself until the screen is full, the
+  /// history ends, or a page fails.
+  void _fillIfShort() {
+    if (!mounted || !_scrollController.hasClients) return;
+    final OrderController c = Get.find<OrderController>();
+    final bool fillsScreen = _scrollController.position.maxScrollExtent > 0;
+    if (c.historyNeedsFill(fillsScreen: fillsScreen)) {
+      c.loadNextHistoryPage();
     }
   }
 
@@ -83,6 +90,11 @@ class _OrderScreenState extends State<OrderScreen> {
           );
         }
 
+        WidgetsBinding.instance.addPostFrameCallback((_) => _fillIfShort());
+
+        final bool showFooter =
+            orderController.paginate || orderController.historyPageFailed;
+
         return RefreshIndicator(
           color: cs.onPrimary,
           backgroundColor: cs.primary,
@@ -96,14 +108,13 @@ class _OrderScreenState extends State<OrderScreen> {
               Dimensions.w16,
               Dimensions.h24,
             ),
-            itemCount: orders.length + (orderController.paginate ? 1 : 0),
+            itemCount: orders.length + (showFooter ? 1 : 0),
             itemBuilder: (context, index) {
               if (index >= orders.length) {
-                return Padding(
-                  padding: EdgeInsets.symmetric(vertical: Dimensions.h16),
-                  child: Center(
-                    child: CircularProgressIndicator(color: cs.onSurface),
-                  ),
+                return HistoryPageFooterWidget(
+                  isLoading: orderController.paginate,
+                  failed: orderController.historyPageFailed,
+                  onRetry: orderController.retryHistoryPage,
                 );
               }
               return HistoryOrderWidget(

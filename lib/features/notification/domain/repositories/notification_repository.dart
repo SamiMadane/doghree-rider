@@ -5,6 +5,7 @@ import 'package:doghree_rider/api/api_checker.dart';
 import 'package:doghree_rider/api/api_client.dart';
 import 'package:doghree_rider/features/notification/domain/models/notification_model.dart';
 import 'package:doghree_rider/features/notification/domain/repositories/notification_repository_interface.dart';
+import 'package:doghree_rider/helper/json_helper.dart';
 import 'package:doghree_rider/util/app_constants.dart';
 
 class NotificationRepository implements NotificationRepositoryInterface {
@@ -14,29 +15,16 @@ class NotificationRepository implements NotificationRepositoryInterface {
   NotificationRepository(
       {required this.apiClient, required this.sharedPreferences});
 
+  /// A bare array. A 200 that is not a List is a failure (null) and a bad
+  /// item is skipped (audit row 52). The server also returns `200 []` on its
+  /// own errors, so an empty list is not proof of "no notifications".
   @override
-Future<List<NotificationModel>?> getList({int? offset}) async {
-  List<NotificationModel>? notificationList;
-  Response response = await apiClient.getData(AppConstants.notificationUri);
-
-
-  if (response.statusCode == 200) {
-    notificationList = [];
-
-    response.body.forEach((notification) {
-      // طباعة القيم الخام من API
-
-      // التحويل إلى Model
-      NotificationModel notify = NotificationModel.fromJson(notification);
-
-      // طباعة بعد التحويل
-
-      notificationList!.add(notify);
-    });
+  Future<List<NotificationModel>?> getList({int? offset}) async {
+    final Response response = await apiClient.getData(AppConstants.notificationUri);
+    if (response.statusCode != 200) return null;
+    return JsonHelper.mapList(response.body, NotificationModel.fromJson,
+        name: 'notifications');
   }
-
-  return notificationList;
-}
 
   // ✅ الجديد - Server-side marking
   // Marking one or more as read happens in the background when a

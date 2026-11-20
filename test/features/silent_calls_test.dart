@@ -84,10 +84,13 @@ void main() {
     expect(api.last.handleError, isFalse);
   });
 
-  test('G3 guard: My Orders page 2 keeps its current handling (D-05)',
-      () async {
-    await OrderRepository(apiClient: api, sharedPreferences: prefs)
+  // D-02 pinned page 2 as `handleError: true` because paging was D-05's.
+  // D-05 (audit row 26) makes every history page silent: the failure shows
+  // in the list footer with Retry, not as a toast.
+  test('T7b My Orders page 2 is silent too (audit row 26, D-05)', () async {
+    final result = await OrderRepository(apiClient: api, sharedPreferences: prefs)
         .getCompletedOrderList(2);
-    expect(api.last.handleError, isTrue);
+    expect(result, isNull);
+    expect(api.last.handleError, isFalse);
   });
 }

@@ -37,6 +37,10 @@ class AppConstants {
   // Rider auth is the Bearer header only (B-01, D-02). No token in URLs.
   static const String currentOrdersUri = '/api/v1/delivery-man/current-orders';
   static const String allOrdersUri = '/api/v1/delivery-man/all-orders';
+
+  /// Rows per My Orders history page (`limit`). The controller works out
+  /// whether more pages exist from this and the server `total_size`.
+  static const int historyPageLimit = 10;
   static const String latestOrdersUri = '/api/v1/delivery-man/latest-orders';
   static const String recordLocationUri =
       '/api/v1/delivery-man/record-location-data';

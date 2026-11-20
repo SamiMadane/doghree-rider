@@ -768,5 +768,6 @@
   "order_not_delivered_retry": "The order was not delivered. Please try again",
   "otp_not_matched": "The delivery code is wrong. Check it with the customer",
   "go_online_to_accept_orders": "You must be online to accept orders. Turn on Online from the home screen",
-  "error_occurred": "Something went wrong. Please try again"
+  "error_occurred": "Something went wrong. Please try again",
+  "load_more_failed": "Couldn't load more orders"
 }
