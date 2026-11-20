@@ -1,3 +1,5 @@
+import 'package:doghree_rider/helper/json_helper.dart';
+
 enum NotificationType {
   message,
   order,
@@ -30,13 +32,15 @@ class NotificationBodyModel {
     this.conversationId,
   });
 
+  /// Reads ids defensively: a route or tap payload never throws a cast
+  /// error (audit rows 31, 34).
   NotificationBodyModel.fromJson(Map<String, dynamic> json) {
-    notificationType = convertToEnum(json['order_notification']);
-    orderId = json['order_id'];
-    customerId = json['customer_id'];
-    vendorId = json['vendor_id'];
-    type = json['type'];
-    conversationId = json['conversation_id'];
+    notificationType = convertToEnum(JsonHelper.asString(json['order_notification']));
+    orderId = JsonHelper.asInt(json['order_id']);
+    customerId = JsonHelper.asInt(json['customer_id']);
+    vendorId = JsonHelper.asInt(json['vendor_id']);
+    type = JsonHelper.asString(json['type']);
+    conversationId = JsonHelper.asInt(json['conversation_id']);
   }
 
   Map<String, dynamic> toJson() {

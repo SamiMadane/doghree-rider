@@ -78,6 +78,26 @@ class RouteHelper {
         .toString();
   }
 
+  /// Decodes a base64 JSON route value. The encoding is unchanged (D-02
+  /// note): the query turns `+` into a space, so it is put back first, and
+  /// Dart's decoder reads both base64 alphabets. 'null', a missing value or a
+  /// broken one gives null instead of a throw (rows 31, 34).
+  static Map<String, dynamic>? _decodeJson(String? value) {
+    if (value == null || value.isEmpty || value == 'null') return null;
+    try {
+      final dynamic json =
+          jsonDecode(utf8.decode(base64.decode(value.replaceAll(' ', '+'))));
+      return json is Map<String, dynamic> ? json : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  static NotificationBodyModel? _decodeBody(String? value) {
+    final Map<String, dynamic>? json = _decodeJson(value);
+    return json == null ? null : NotificationBodyModel.fromJson(json);
+  }
+
   static String getSignInRoute() => signIn;
   static String getVerificationRoute(String number, {String? session}) {
     String? authSession;
@@ -143,16 +163,7 @@ class RouteHelper {
             )),
     GetPage(
         name: navigationHandler,
-        page: () {
-          NotificationBodyModel? data;
-          if (Get.parameters['data'] != 'null') {
-            List<int> decode =
-                base64Decode(Get.parameters['data']!.replaceAll(' ', '+'));
-            data =
-                NotificationBodyModel.fromJson(jsonDecode(utf8.decode(decode)));
-          }
-          return SplashScreen(body: data);
-        }),
+        page: () => SplashScreen(body: _decodeBody(Get.parameters['data']))),
     GetPage(name: signIn, page: () => const SignInScreen()),
     GetPage(
         name: verification,
@@ -190,16 +201,19 @@ class RouteHelper {
     GetPage(
         name: orderDetails,
         page: () {
-          OrderDetailsScreen? orderDetails = Get.arguments;
-          return orderDetails ??
-              OrderDetailsScreen(
-                fromNotification: Get.parameters['from'] == 'true',
-                isRunningOrder: null,
-                orderIndex: null,
-                orderId: int.parse(Get.parameters['id']!),
-                fromLocationScreen:
-                    Get.parameters['from_location_screen'] == 'true',
-              );
+          final dynamic arguments = Get.arguments;
+          if (arguments is OrderDetailsScreen) return arguments;
+          // A missing or bad id opens My Orders instead of throwing (row 31).
+          final int? id = int.tryParse(Get.parameters['id'] ?? '');
+          if (id == null) return const DashboardScreen(pageIndex: 2);
+          return OrderDetailsScreen(
+            fromNotification: Get.parameters['from'] == 'true',
+            isRunningOrder: null,
+            orderIndex: null,
+            orderId: id,
+            fromLocationScreen:
+                Get.parameters['from_location_screen'] == 'true',
+          );
         }),
     GetPage(name: updateProfile, page: () => const UpdateProfileScreen()),
     GetPage(
@@ -220,25 +234,27 @@ class RouteHelper {
     GetPage(
         name: chatScreen,
         page: () {
-          NotificationBodyModel? notificationBody;
-          if (Get.parameters['notification_body'] != 'null') {
-            notificationBody = NotificationBodyModel.fromJson(jsonDecode(utf8
-                .decode(base64Url.decode(Get.parameters['notification_body']!
-                    .replaceAll(' ', '+')))));
-          }
+          final NotificationBodyModel? notificationBody =
+              _decodeBody(Get.parameters['notification_body']);
           User? user;
-          if (Get.parameters['user'] != 'null') {
-            user = User.fromJson(jsonDecode(utf8.decode(base64Url
-                .decode(Get.parameters['user']!.replaceAll(' ', '+')))));
+          final Map<String, dynamic>? userJson =
+              _decodeJson(Get.parameters['user']);
+          if (userJson != null) {
+            try {
+              user = User.fromJson(userJson);
+            } catch (_) {
+              user = null;
+            }
           }
+          // ChatScreen needs a body; without one the list is the safe screen.
+          if (notificationBody == null) return const ConversationScreen();
           return ChatScreen(
             notificationBody: notificationBody,
             user: user,
             fromNotification: Get.parameters['from'] == 'true',
-            conversationId: Get.parameters['conversation_id'] != null &&
-                    Get.parameters['conversation_id'] != 'null'
-                ? int.parse(Get.parameters['conversation_id']!)
-                : null,
+            // A non-numeric id is null, never a throw (row 34).
+            conversationId:
+                int.tryParse(Get.parameters['conversation_id'] ?? ''),
           );
         }),
     GetPage(

@@ -101,6 +101,27 @@ Endpoints as the rider app actually uses them. Fill one section per endpoint whe
 - Used in: `OrderRepository.getLatestOrders` (silent), `OrderRepository.getList` (current), `NotificationRepository.getList`.
 - Notes: a 200 whose body is not a List is a failure (null) and the old list stays. A single item that does not parse is skipped (`JsonHelper.mapList`).
 
+### FCM push data (rider)
+
+- Documented types (API guide v3, Screens R2 and R6): `new_order`, `order_status`, `order_request`, `message`, `withdraw`. The app also handles `assign`, `unassign`, `block`, `unblock`, `otp` and `cash_collect`, which come from older server code. They are not in the docs.
+- `order_id` and `conversation_id` arrive as strings. The withdraw push sends `order_id: ''`. The app reads ids with `NotificationRouter.validId`, so a missing, empty or non-numeric id is null.
+- Decisions use `type` (and `body_loc_key`/`title_loc_key` on the dashboard listener) only, never the text.
+- A request push can be for an order this rider cannot carry. The app opens or refreshes the Requests board and never deep-links the pushed order (R2).
+- Withdraw delivery is best-effort. The app refreshes `GET /wallet` and withdrawals instead of trusting the push (R6).
+- Used in: `NotificationHelper.convertNotification`, `NotificationRouter`, `ForegroundOrderPush` (dashboard).
+
+### GET /api/v1/delivery-man/message/details
+
+- Auth: Bearer header.
+- Request (query): `conversation_id`, or `user_id` / `vendor_id`, plus `offset` and `limit` (10).
+- Response 200 shape: a Map with `total_size`, `limit`, `offset`, `conversation` and `messages` (a list).
+- **Not in Screens R1-R7.** Postman has the request only, with no saved response, so the shape comes from the app's model.
+- Used in: `ChatRepository.getMessages`, then `ChatController.getMessages`.
+- Notes:
+  - A 200 body that is not a Map (for example `[]`) is a failure (null).
+  - A missing, null or wrong `messages` field is an empty list. An empty list still gives a model, so a new conversation opens.
+  - The numbers are read with `JsonHelper.asInt` (D-07, row 54).
+
 ## Template
 
 ### METHOD /path

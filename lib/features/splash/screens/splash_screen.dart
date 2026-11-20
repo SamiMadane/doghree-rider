@@ -3,7 +3,6 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:doghree_rider/api/api_checker.dart';
 import 'package:doghree_rider/common/widgets/no_internet_screen.dart';
 import 'package:doghree_rider/features/auth/controllers/auth_controller.dart';
-import 'package:doghree_rider/features/dashboard/screens/dashboard_screen.dart';
 import 'package:doghree_rider/features/language/controllers/language_controller.dart';
 import 'package:doghree_rider/features/splash/controllers/splash_controller.dart';
 import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
@@ -11,6 +10,7 @@ import 'package:doghree_rider/features/notification/domain/models/notification_b
 import 'package:doghree_rider/features/profile/domain/models/profile_result_model.dart';
 import 'package:doghree_rider/features/splash/domain/models/splash_load_guard.dart';
 import 'package:doghree_rider/features/splash/widgets/doghree_splash_animation.dart';
+import 'package:doghree_rider/helper/notification_router.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
 import 'package:doghree_rider/util/app_constants.dart';
 import 'package:doghree_rider/util/dimensions.dart';
@@ -181,8 +181,17 @@ class SplashScreenState extends State<SplashScreen> {
       }
     }
 
-    if (widget.body != null) {
-      _finishLoading(() => _handleNotificationRouting(widget.body));
+    // Exactly one of the two runs: the push target, or the default routing
+    // when the push has none (otp, unblock, logged out) or fails to open.
+    final NotificationBodyModel? body = widget.body;
+    if (NotificationRouter.coldStartPlan(body,
+            isLoggedIn: Get.find<AuthController>().isLoggedIn()) ==
+        ColdStartRouting.notification) {
+      _finishLoading(() {
+        if (!NotificationRouter.open(body, coldStart: true)) {
+          _handleDefaultRouting();
+        }
+      });
     } else {
       _finishLoading(_handleDefaultRouting);
     }
@@ -209,34 +218,6 @@ class SplashScreenState extends State<SplashScreen> {
       return Get.find<SplashController>().configModel!.appMinimumVersionIos;
     }
     return 0;
-  }
-
-  Future<void> _handleNotificationRouting(
-      NotificationBodyModel? notificationBody) async {
-    final notificationType = notificationBody?.notificationType;
-
-    final Map<NotificationType, Function> notificationActions = {
-      NotificationType.order: () => Get.toNamed(
-          RouteHelper.getOrderDetailsRoute(notificationBody?.orderId,
-              fromNotification: true)),
-      NotificationType.order_request: () =>
-          Get.toNamed(RouteHelper.getMainRoute('order-request')),
-      NotificationType.block: () =>
-          Get.offAllNamed(RouteHelper.getSignInRoute()),
-      NotificationType.unblock: () =>
-          Get.offAllNamed(RouteHelper.getSignInRoute()),
-      NotificationType.otp: () {},
-      NotificationType.unassign: () =>
-          Get.to(const DashboardScreen(pageIndex: 1)),
-      NotificationType.message: () => Get.toNamed(RouteHelper.getChatRoute(
-          notificationBody: notificationBody,
-          conversationId: notificationBody?.conversationId,
-          fromNotification: true)),
-      NotificationType.general: () =>
-          Get.toNamed(RouteHelper.getNotificationRoute(fromNotification: true)),
-    };
-
-    notificationActions[notificationType]?.call();
   }
 
   void _handleDefaultRouting() async {

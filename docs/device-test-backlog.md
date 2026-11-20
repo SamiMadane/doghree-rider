@@ -118,6 +118,27 @@ Also run the combined smoke pass (this batch touches orders and start-up). While
 
 **Unit tests only:** the cap rule (R11), the title text (R8–R10), the channel guard (R12, R13), every stop call site (R4–R7), a throwing position read, no position, no config, overlapping ticks and recovery (L1–L6), the usable-fix rules (L7), and the whole WebSocket path (W1–W4, off live).
 
+## D-07: push taps, push ids, chat push, message parsing
+
+- **Branch:** fix/d-07-notifications
+- **Branch commit:** see `git log` on fix/d-07-notifications (code commit "D-07: notifications")
+- **Status:** pending (D-11)
+
+| # | Steps | Expected |
+|---|---|---|
+| 1 | App killed. Admin pays or rejects a withdrawal. Tap the push | The wallet opens with the new state. Back goes to the dashboard |
+| 2 | App killed. The store confirms an order this rider accepted (order_status push). Tap it | Order Details of that order. Back goes to the dashboard, not a blank splash |
+| 3 | App in the background, a new order push. Tap it | The Requests tab with a fresh list. Back goes to Home, and a double back exits (only one dashboard) |
+| 4 | App in the foreground on Home, a new order arrives | The request sheet shows once |
+| 5 | Foreground on the chat list, the customer sends a message. Tap the notification | A notification shows. The tap opens that chat |
+| 6 | Inside that chat, the customer sends another message | The message appears in place. No notification |
+| 7 | Log out, then tap an old push still in the tray | Sign-in. No crash |
+| 8 | App killed, admin unblocks the rider (logged in). Tap the push | The app opens on the dashboard, not sign-in |
+
+**Device only:** the cold-start wiring opening the target exactly once with the dashboard underneath (1, 2, 8; the decision itself is unit-tested by C1 and C2), the real stack depth (3), and the real FCM payloads.
+
+**Unit tests only:** pushes without or with a non-numeric `order_id` or `conversation_id` (N1–N4b, N8, N10, R3, R6), a chat push while the chat is still loading (N9; the timing cannot be forced on a device), a message body that is not a Map or has a bad `messages` field (N5–N7), the full type table including block and unblock (R1–R14), and the base64 round trip with a `+` (G2, G3).
+
 ## Combined smoke pass (once, in D-11)
 
 | # | Step | Expected |
