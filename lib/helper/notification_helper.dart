@@ -8,10 +8,10 @@ import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:doghree_rider/features/auth/controllers/auth_controller.dart';
 import 'package:doghree_rider/features/chat/controllers/chat_controller.dart';
-import 'package:doghree_rider/features/dashboard/screens/dashboard_screen.dart';
 import 'package:doghree_rider/features/notification/controllers/notification_controller.dart';
 import 'package:doghree_rider/features/order/controllers/order_controller.dart';
 import 'package:doghree_rider/features/notification/domain/models/notification_body_model.dart';
+import 'package:doghree_rider/helper/notification_router.dart';
 import 'package:doghree_rider/helper/order_ringing.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
 import 'package:doghree_rider/util/app_constants.dart';
@@ -56,37 +56,14 @@ class NotificationHelper {
         onDidReceiveNotificationResponse: (load) async {
       OrderRinging.stop();
       try {
-        if (load.payload!.isNotEmpty) {
-          NotificationBodyModel payload =
-              NotificationBodyModel.fromJson(jsonDecode(load.payload!));
-
-          final Map<NotificationType, Function> notificationActions = {
-            NotificationType.order: () => Get.toNamed(
-                RouteHelper.getOrderDetailsRoute(payload.orderId,
-                    fromNotification: true)),
-            NotificationType.order_request: () =>
-                Get.toNamed(RouteHelper.getMainRoute('order-request')),
-            NotificationType.block: () =>
-                Get.offAllNamed(RouteHelper.getSignInRoute()),
-            NotificationType.unblock: () =>
-                Get.offAllNamed(RouteHelper.getSignInRoute()),
-            NotificationType.otp: () => null,
-            NotificationType.unassign: () =>
-                Get.to(const DashboardScreen(pageIndex: 1)),
-            NotificationType.message: () => Get.toNamed(
-                RouteHelper.getChatRoute(
-                    notificationBody: payload,
-                    conversationId: payload.conversationId,
-                    fromNotification: true)),
-            NotificationType.general: () => Get.toNamed(
-                RouteHelper.getNotificationRoute(fromNotification: true)),
-            NotificationType.withdraw: () =>
-                Get.toNamed(RouteHelper.getWalletRoute()),
-          };
-
-          notificationActions[payload.notificationType]?.call();
+        final String? payload = load.payload;
+        if (payload != null && payload.isNotEmpty) {
+          NotificationRouter.open(
+              NotificationBodyModel.fromJson(jsonDecode(payload)));
         }
-      } catch (_) {}
+      } catch (e) {
+        if (kDebugMode) debugPrint('Notification tap failed: ${e.runtimeType}');
+      }
       return;
     });
     await createChannel(flutterLocalNotificationsPlugin);
@@ -100,14 +77,15 @@ class NotificationHelper {
       if (message.data['type'] == 'message' &&
           Get.currentRoute.startsWith(RouteHelper.chatScreen)) {
         if (Get.find<AuthController>().isLoggedIn()) {
-          Get.find<ChatController>().getConversationList(1);
-          if (Get.find<ChatController>()
-                  .messageModel!
-                  .conversation!
-                  .id
-                  .toString() ==
-              message.data['conversation_id'].toString()) {
-            Get.find<ChatController>().getMessages(
+          final ChatController chat = Get.find<ChatController>();
+          chat.getConversationList(1);
+          // The chat may still be loading (no conversation yet): no forced
+          // reads (audit row 33).
+          final int? openId = chat.messageModel?.conversation?.id;
+          if (NotificationRouter.chatPushAction(
+                  openId, message.data['conversation_id']) ==
+              ChatPushAction.refreshOpenChat) {
+            chat.getMessages(
               1,
               NotificationBodyModel(
                 notificationType: NotificationType.message,
@@ -118,7 +96,7 @@ class NotificationHelper {
                     : null,
               ),
               null,
-              int.parse(message.data['conversation_id'].toString()),
+              openId,
             );
           } else {
             NotificationHelper.showNotification(
@@ -164,36 +142,11 @@ class NotificationHelper {
       OrderRinging.stop();
       try {
         if (message.data.isNotEmpty) {
-          NotificationBodyModel notificationBody =
-              convertNotification(message.data)!;
-
-          final Map<NotificationType, Function> notificationActions = {
-            NotificationType.order: () => Get.toNamed(
-                RouteHelper.getOrderDetailsRoute(notificationBody.orderId,
-                    fromNotification: true)),
-            NotificationType.order_request: () =>
-                Get.toNamed(RouteHelper.getMainRoute('order-request')),
-            NotificationType.block: () =>
-                Get.offAllNamed(RouteHelper.getSignInRoute()),
-            NotificationType.unblock: () =>
-                Get.offAllNamed(RouteHelper.getSignInRoute()),
-            NotificationType.otp: () => null,
-            NotificationType.unassign: () =>
-                Get.to(const DashboardScreen(pageIndex: 1)),
-            NotificationType.message: () => Get.toNamed(
-                RouteHelper.getChatRoute(
-                    notificationBody: notificationBody,
-                    conversationId: notificationBody.conversationId,
-                    fromNotification: true)),
-            NotificationType.general: () => Get.toNamed(
-                RouteHelper.getNotificationRoute(fromNotification: true)),
-            NotificationType.withdraw: () =>
-                Get.toNamed(RouteHelper.getWalletRoute()),
-          };
-
-          notificationActions[notificationBody.notificationType]?.call();
+          NotificationRouter.open(convertNotification(message.data));
         }
-      } catch (_) {}
+      } catch (e) {
+        if (kDebugMode) debugPrint('Notification open failed: ${e.runtimeType}');
+      }
     });
   }
 
@@ -330,7 +283,8 @@ class NotificationHelper {
 
   static NotificationBodyModel? convertNotification(Map<String, dynamic> data) {
     final type = data['type'];
-    final orderId = data['order_id'];
+    // Missing, '' (the withdraw push) or non-numeric gives null (row 34).
+    final int? orderId = NotificationRouter.validId(data['order_id']);
 
     switch (type) {
       case 'cash_collect':
@@ -341,16 +295,14 @@ class NotificationHelper {
             notificationType: NotificationType.unassign);
       case 'order_status':
         return NotificationBodyModel(
-            orderId: int.tryParse('${orderId ?? ''}'),
-            notificationType: NotificationType.order);
+            orderId: orderId, notificationType: NotificationType.order);
       case 'assign':
         return NotificationBodyModel(
-            orderId: int.tryParse('${orderId ?? ''}'),
-            notificationType: NotificationType.order);
+            orderId: orderId, notificationType: NotificationType.order);
       case 'new_order':
       case 'order_request':
         return NotificationBodyModel(
-            orderId: int.tryParse('${orderId ?? ''}'),
+            orderId: orderId,
             notificationType: NotificationType.order_request);
       case 'withdraw':
         return NotificationBodyModel(
@@ -372,13 +324,11 @@ class NotificationHelper {
 
   static NotificationBodyModel _handleMessageNotification(
       Map<String, dynamic> data) {
-    final conversationId = data['conversation_id'];
     final senderType = data['sender_type'];
 
     return NotificationBodyModel(
-      conversationId: (conversationId != null && conversationId.isNotEmpty)
-          ? int.parse(conversationId)
-          : null,
+      // A missing, non-numeric or int id never throws (audit row 34).
+      conversationId: NotificationRouter.validId(data['conversation_id']),
       notificationType: NotificationType.message,
       type: senderType == AppConstants.user
           ? AppConstants.user

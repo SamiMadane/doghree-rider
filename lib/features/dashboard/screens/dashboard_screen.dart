@@ -7,6 +7,7 @@ import 'package:doghree_rider/features/dashboard/widgets/bottom_nav_road_indicat
 import 'package:doghree_rider/features/dashboard/widgets/lottie_bottom_sheet_order_request.dart';
 import 'package:doghree_rider/features/order/controllers/order_controller.dart';
 import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
+import 'package:doghree_rider/helper/notification_router.dart';
 import 'package:doghree_rider/helper/order_ringing.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
 import 'package:doghree_rider/util/dimensions.dart';
@@ -64,42 +65,38 @@ class DashboardScreenState extends State<DashboardScreen> {
     }
 
     _stream = FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      String? type = message.data['body_loc_key'] ?? message.data['type'];
-      String? orderID =
-          message.data['title_loc_key'] ?? message.data['order_id'];
-      bool isParcel = (message.data['order_type'] == 'parcel_order');
+      // Never throws: a missing or bad order_id is null (audit row 32).
+      final ForegroundOrderPush push =
+          ForegroundOrderPush.fromData(message.data);
+      final int? orderId = push.orderId;
 
-      if (type == 'new_order' || type == 'order_request') {
-        Get.find<OrderController>().getCurrentOrders();
-        Get.find<OrderController>().getLatestOrders();
-
-        showCustomBottomSheet(
-          child: LottieBottomSheetOrderRequest(
-            isRequest: true,
-            onAccept: () => _navigateRequestPage(),
-            onReject: () {},
-            orderId: int.parse(message.data['order_id'].toString()),
-            isParcel: isParcel,
-          ),
-        );
-      } else if (type == 'assign' && orderID != null && orderID.isNotEmpty) {
-        Get.find<OrderController>().getCurrentOrders();
-        Get.find<OrderController>().getLatestOrders();
-        showCustomBottomSheet(
-          child: LottieBottomSheetOrderRequest(
-            isRequest: false,
-            onAccept: () {
-              Get.offAllNamed(RouteHelper.getOrderDetailsRoute(
-                  int.parse(orderID),
-                  fromNotification: true));
-            },
-            onReject: () {},
-            orderId: int.parse(message.data['order_id'].toString()),
-            isParcel: isParcel,
-          ),
-        );
-      } else if (type == 'block') {
-        _handleBlock();
+      switch (push.kind) {
+        case ForegroundPushKind.request:
+        case ForegroundPushKind.assign:
+          // Always refresh the lists. The sheet needs a real id.
+          Get.find<OrderController>().getCurrentOrders();
+          Get.find<OrderController>().getLatestOrders();
+          if (orderId == null) return;
+          final bool isRequest = push.kind == ForegroundPushKind.request;
+          showCustomBottomSheet(
+            child: LottieBottomSheetOrderRequest(
+              isRequest: isRequest,
+              onAccept: isRequest
+                  ? () => _navigateRequestPage()
+                  : () => Get.offAllNamed(RouteHelper.getOrderDetailsRoute(
+                      orderId,
+                      fromNotification: true)),
+              onReject: () {},
+              orderId: orderId,
+              isParcel: push.isParcel,
+            ),
+          );
+          break;
+        case ForegroundPushKind.block:
+          _handleBlock();
+          break;
+        case ForegroundPushKind.other:
+          break;
       }
     });
   }

@@ -11,7 +11,7 @@
 | D-04 | fix/d-04-order-actions | Audit rows 19, 20, 21, 22, 23, 24, 25, 28, 29 | merged, device tests pending (D-11) | 2026-11-19 |
 | D-05 | fix/d-05-order-lists-parsing | Audit rows 26, 27, 30, 52, 53 | merged, device tests pending (D-11) | 2026-11-20 |
 | D-06 | fix/d-06-location-ringing | Audit rows 36, 37, 38, 39 | merged, device tests pending (D-11) | 2026-11-20 |
-| D-07 | fix/d-07-notifications | Audit rows 6, 31, 32, 33, 34, 35, 54 | planned | |
+| D-07 | fix/d-07-notifications | Audit rows 6, 31, 32, 33, 34, 35, 54 | merged, device tests pending (D-11) | 2026-11-20 |
 | D-08 | fix/d-08-wallet | Audit rows 41, 42, 43, 44 | planned | |
 | D-09 | fix/d-09-uploads-profile | Audit rows 45, 46, 47, 48, 49 | planned | |
 | D-10 | fix/d-10-cleanup | Audit rows 40, 55, 56, 57, 58, 60 | planned | |
@@ -84,7 +84,7 @@
 - **Device:** **not run yet.** The steps are pending in `docs/device-test-backlog.md` (joint pass after D-03).
 
 ### Notes (found during D-02, not fixed)
-- `getNavigationHandlerRoute` and `getChatRoute` put standard base64 (`+`, `/`, `=`) into query strings, where `+` decodes to a space (D-07).
+- `getNavigationHandlerRoute` and `getChatRoute` put standard base64 (`+`, `/`, `=`) into query strings, where `+` decodes to a space (D-07). *(Decided in D-07: decoding restores the `+`, so no change is needed. See the D-07 notes.)*
 - The `String token` parameter of `updateProfile` (repository, service and controller) is unused (D-09).
 - Pull-to-refresh on the Requests tab is now silent offline. The old list stays.
 - The WebSocket location body still carries the token, because a WebSocket cannot send the header. Revisit this if `websocket_status` is turned on (it is 0 live).
@@ -310,9 +310,83 @@
 ### Notes (found during D-06, not fixed)
 - **Resume race:** a request that arrives at the same moment as a resume is visible in the Requests tab even if its ringing was stopped by that resume.
 - A backgrounded app cannot learn that another rider took the order (no push for it in R2/R3 of the screens file). Only the 60 s cap ends that ringing.
-- The foreground push handler in `DashboardScreen` runs `int.parse(message.data['order_id'].toString())` for request and assign pushes, which throws when `order_id` is missing (D-07, with the other push rows).
+- The foreground push handler in `DashboardScreen` runs `int.parse(message.data['order_id'].toString())` for request and assign pushes, which throws when `order_id` is missing (D-07, with the other push rows). *(Fixed in D-07, row 32.)*
 - The foreground-service title and text are hard-coded English: the background isolate has no GetX translations.
 - The WebSocket body still carries the token (a socket cannot send a header). Revisit if `websocket_status` is switched on.
+
+### D-07 (2026-11-20)
+- **Backend check:**
+  - Push types are `new_order`, `order_status`, `order_request`, `message` and `withdraw` (API guide v3).
+  - The withdraw push sends `order_id: ''` (Screens R6).
+  - R2: refresh the board on a push and never deep-link the pushed order.
+  - The notifications list is a bare array and `200 []` on exceptions (already handled in D-05).
+  - Rider chat is not in R1-R7, and Postman has no saved chat response.
+- **Rows 35 and 6:** `NotificationRouter` (lib/helper/notification_router.dart) is the only type-to-target map. The local tap, onMessageOpenedApp and splash all call `NotificationRouter.open`.
+
+  | Push | Opens |
+  |---|---|
+  | `order_status` or `assign` with an id | Order Details |
+  | `order_status` or `assign` without an id | My Orders |
+  | `new_order`, `order_request`, `unassign` | the Requests tab |
+  | `message` with an id | that chat |
+  | `message` without an id | the conversation list |
+  | `withdraw` | Wallet |
+  | `general`, `cash_collect`, unknown | Notifications |
+  | `block` | sign-in |
+  | `unblock`, `otp`, no body, or logged out | nothing |
+
+  - Tabs and sign-in use `offAllNamed`, so only one Dashboard exists.
+  - A cold start puts the dashboard under the target, so back never returns to splash.
+  - Splash runs either the push target or the default routing, exactly once (`coldStartPlan`). A failed open falls back to the default routing.
+- **Rows 31 and 34:**
+  - Push ids are read with `NotificationRouter.validId` (missing, `''`, non-numeric or ≤ 0 gives null). `NotificationBodyModel.fromJson` reads its ids with `JsonHelper`.
+  - `/order-details` with a bad id opens My Orders.
+  - `/chat-screen`: a bad `conversation_id` is null, and a broken body opens the conversation list.
+  - `/navigation-handler`: a broken body gives null.
+  - The base64 encoding is unchanged.
+- **Row 32:** the dashboard listener uses `ForegroundOrderPush.fromData`. A request or assign push always refreshes current and latest orders, and shows the sheet only with a real id.
+- **Row 33:** a chat push reads `messageModel?.conversation?.id`. `chatPushAction` refreshes the open chat only when both ids match. Otherwise (still loading, another chat, or a bad id) the rider gets the notification.
+- **Row 54:** `ChatRepository.getMessages` parses only a Map body. `MessageModel` reads `messages` with `mapList` (never null) and its numbers with `asInt`. An empty list still gives a model.
+- **Approval notes:**
+  - `unblock` opens nothing for a logged-in rider (it was sign-in). `block` still opens sign-in.
+  - The cold-start decision is pure and tested (C1, C2).
+- **Changes from the plan:** `chatPushAction` lives in `NotificationRouter`, not in `NotificationHelper` (pure, no Firebase). Extra tests beyond the plan: N4b, N10, R13, R14, F1, F2, P1.
+- **Tests:** 35 new, 221 total, 221 passed, 0 failed. Analyze: 0 issues.
+  - Files: `notification_router_test` 21, `notification_push_test` 4, `route_helper_test` +6, `chat_messages_parsing_test` 4.
+  - **Fail on the old code by behaviour** (stashed `lib/`):
+
+    | Test | Old-code result |
+    |---|---|
+    | N1 | `FormatException: Invalid radix-10 number (at character 1)` |
+    | N2 | `NoSuchMethodError: Class 'int' has no instance getter 'isNotEmpty'` |
+    | N3 | `FormatException: Invalid radix-10 number (at character 1)` |
+    | N4 | `FormatException: Invalid radix-10 number (at character 1)` |
+    | N4b | `FormatException: Invalid character (at character 11)` |
+    | N5 | `type 'String' is not a subtype of type 'int' of 'index'` |
+    | N6 | `NoSuchMethodError: The getter 'isEmpty' was called on null` (messages null) |
+    | N7 | `NoSuchMethodError: Class 'String' has no instance method 'forEach'` |
+    | N10 | `type 'String' is not a subtype of type 'int?'` |
+    | N8 (old expression reproduced inline) | `int.parse` throws FormatException |
+    | N9 (old expression reproduced inline) | `messageModel!` null check throws |
+
+  - **Fail on the old code at compile time only:** R1–R14, C1, C2, F1, F2 and P1 (no `NotificationRouter` or `ForegroundOrderPush`).
+  - **Guards** (pass on the old code too): G1 (withdraw gives no order id), G2 and G3 (base64 round trip with `+`), G4 (empty messages give a model), G5 (a numeric order id still opens the order).
+- **Device:** **not run.** The steps are in `docs/device-test-backlog.md` (D-07, steps 1–8) and run in D-11.
+- **Status:** merged into `development` (2026-11-20), device tests pending (D-11).
+
+### Notes (found during D-07, not fixed)
+- `NotificationController.handleNotificationTap` (the in-app notification list) keeps its own type map. `unassign` opens My Orders there and Requests from a push.
+- `ConversationsModel.fromJson` throws on a non-Map body (chat list and search). The push-triggered `getConversationList` uses `handleError: true`, so a chat push while offline can show a toast.
+- `ChatScreen` forces `notificationBody!` in initState and `conversation!.receiver!` in its app bar.
+- `ChatController.getMessages` with offset > 1 and a null `_messageModel` crashes.
+- A failed first chat load has no retry state.
+- A cold start from a push skips the `updateToken()` that default routing runs. Review it in D-10 or D-11.
+- Tapping a `block` push only opens sign-in. The session is cleared by the foreground listener or the next 401, not by the tap.
+- `assign`, `unassign`, `block`, `unblock`, `otp` and `cash_collect` are not in the documented push types. They are still handled.
+- D-02 base64 note, decided in D-07: no change needed.
+  - Both routes put `+` back (`replaceAll(' ', '+')`) and Dart's decoder reads both alphabets, so the round trip works.
+  - Moving to `base64Url` would be cosmetic.
+  - Guards G2 and G3 lock in the current behaviour.
 
 ## Open backend questions
 

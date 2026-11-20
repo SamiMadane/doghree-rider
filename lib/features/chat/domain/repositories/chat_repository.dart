@@ -42,8 +42,12 @@ class ChatRepository implements ChatRepositoryInterface {
         : userType == AppConstants.user ? 'user_id' : 'vendor_id';
     Response response = await apiClient.getData(AppConstants.getMessageListUri,
         query: {idKey: conversationID ?? userId, 'offset': offset, 'limit': 10});
-    if(response.statusCode == 200 && response.body['messages'] != {}) {
-      messageModel = MessageModel.fromJson(response.body);
+    // The old check `body['messages'] != {}` was always true and threw on a
+    // List body. Only a Map is parsed; an empty `messages` list still gives a
+    // model, so a new conversation opens (audit row 54).
+    final dynamic body = response.body;
+    if(response.statusCode == 200 && body is Map<String, dynamic>) {
+      messageModel = MessageModel.fromJson(body);
     }
     return messageModel;
   }

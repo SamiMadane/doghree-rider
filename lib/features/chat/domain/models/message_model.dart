@@ -12,17 +12,13 @@ class MessageModel {
   MessageModel({this.totalSize, this.limit, this.offset, this.messages,  this.status});
 
   MessageModel.fromJson(Map<String, dynamic> json) {
-    totalSize = json['total_size'];
-    limit = json['limit'];
-    offset = json['offset'];
-    status = json['status'] ?? false;
-    conversation = json['conversation'] != null ? Conversation.fromJson(json['conversation']) : null;
-    if (json['messages'] != null) {
-      messages = <Message>[];
-      json['messages'].forEach((v) {
-        messages!.add(Message.fromJson(v));
-      });
-    }
+    totalSize = JsonHelper.asInt(json['total_size']);
+    limit = JsonHelper.asInt(json['limit']);
+    offset = JsonHelper.asInt(json['offset']);
+    status = json['status'] is bool ? json['status'] : false;
+    conversation = json['conversation'] is Map<String, dynamic> ? Conversation.fromJson(json['conversation']) : null;
+    // Missing, null or a wrong shape is an empty list, never null (row 54).
+    messages = JsonHelper.mapList(json['messages'], Message.fromJson, name: 'messages') ?? <Message>[];
   }
 
   Map<String, dynamic> toJson() {
