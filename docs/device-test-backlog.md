@@ -93,6 +93,31 @@ Also run the combined smoke pass (this batch touches orders and start-up). While
 
 **Unit tests only:** a null or unknown `module_type` (S1–S3, W1), wrong body shapes and bad list items (R1–R8), null string lists and a bad config (M1–M4), a string `total_size` (M5), a missing `orders` list (M7, P2), the stale page after a refresh (P6), one request in flight (P11), the end-of-history rules (P7, P8), no auto-load after a failure (P9) and the auto-fill rule (P10).
 
+## D-06: order ringing, notification title, location recording
+
+- **Branch:** fix/d-06-location-ringing
+- **Branch commit:** see `git log` on fix/d-06-location-ringing (code commit "D-06: location and ringing")
+- **Status:** pending (D-11)
+
+| # | Steps | Expected |
+|---|---|---|
+| 1 | Online, app in the background (home screen). Trigger a new order push, wait for the ringing, open the app from the launcher | The ringing stops at once |
+| 2 | Same, but tap the ringing notification | The app opens and the ringing stops |
+| 3 | Same, then accept the request | No ringing after the accept |
+| 4 | Same, then ignore the request | No ringing after the ignore |
+| 5 | Push, let rider B take the order, then open the app on rider A | The ringing is already stopped on open. The card is gone after the refresh |
+| 6 | Push, do not touch the phone | The ringing stops by itself after about 60 s |
+| 7 | Push to the background app. On Android 14 or newer, swipe the ringing notification away | The ringing stops |
+| 8 | Push, then log out (or block the rider from the admin panel) | No ringing on the sign-in screen |
+| 9 | Assign push with no `order_id` (admin test payload) | The title has no "(null)" |
+| 10 | Android settings, app notifications, after updating over an old build | No "Foreground Service Notification" (stackfood) channel. The server notification channel is still listed |
+| 11 | Online with GPS off for 60 s, then GPS on | No crash, no toast. No new location rows in the admin panel while off, rows again within about 20 s |
+| 12 | Online, revoke location permission in Settings, wait 30 s, grant it, return | Same as step 11 |
+
+**Device only (unit tests prove the decisions, not Android):** the service really stopping and the sound ending (steps 1–8), the real title (9), the channel list (10), real GPS and permission changes (11, 12).
+
+**Unit tests only:** the cap rule (R11), the title text (R8–R10), the channel guard (R12, R13), every stop call site (R4–R7), a throwing position read, no position, no config, overlapping ticks and recovery (L1–L6), the usable-fix rules (L7), and the whole WebSocket path (W1–W4, off live).
+
 ## Combined smoke pass (once, in D-11)
 
 | # | Step | Expected |

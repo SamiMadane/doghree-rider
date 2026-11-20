@@ -34,10 +34,44 @@ class ProfileService implements ProfileServiceInterface {
   }
 
   @override
-  Future<void> recordWebSocketLocation(
+  Future<bool> recordWebSocketLocation(
       RecordLocationBodyModel recordLocationBody) async {
-    await profileRepositoryInterface
+    return await profileRepositoryInterface
         .recordWebSocketLocation(recordLocationBody);
+  }
+
+  /// The server stores whatever it gets (no validator), so a fix is used only
+  /// when it is a real, finite coordinate pair. 0/0 is the "no fix" value.
+  static bool isUsableFix(double? latitude, double? longitude) {
+    if (latitude == null || longitude == null) return false;
+    if (!latitude.isFinite || !longitude.isFinite) return false;
+    if (latitude < -90 || latitude > 90) return false;
+    if (longitude < -180 || longitude > 180) return false;
+    if (latitude == 0 && longitude == 0) return false;
+    return true;
+  }
+
+  @override
+  Future<Position?> currentPositionOrNull() async {
+    try {
+      if (!await Geolocator.isLocationServiceEnabled()) return null;
+      final LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever ||
+          permission == LocationPermission.unableToDetermine) {
+        return null;
+      }
+      final Position position = await Geolocator.getCurrentPosition(
+        locationSettings:
+            const LocationSettings(timeLimit: Duration(seconds: 8)),
+      );
+      return isUsableFix(position.latitude, position.longitude)
+          ? position
+          : null;
+    } catch (e) {
+      if (kDebugMode) debugPrint('currentPosition failed: ${e.runtimeType}');
+      return null;
+    }
   }
 
   @override

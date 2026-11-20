@@ -7,7 +7,9 @@ import 'package:doghree_rider/api/api_checker.dart';
 import 'package:doghree_rider/api/api_client.dart';
 import 'package:doghree_rider/common/models/response_model.dart';
 import 'package:doghree_rider/features/address/domain/models/record_location_body_model.dart';
+import 'package:doghree_rider/common/models/config_model.dart';
 import 'package:doghree_rider/features/splash/controllers/splash_controller.dart';
+import 'package:flutter/foundation.dart';
 import 'package:doghree_rider/features/profile/domain/models/profile_model.dart';
 import 'package:doghree_rider/features/profile/domain/models/profile_result_model.dart';
 import 'package:doghree_rider/features/profile/domain/repositories/profile_repository_interface.dart';
@@ -18,7 +20,21 @@ import 'package:web_socket_channel/status.dart' as status;
 class ProfileRepository implements ProfileRepositoryInterface {
   final ApiClient apiClient;
   final SharedPreferences sharedPreferences;
-  ProfileRepository({required this.apiClient, required this.sharedPreferences});
+  final ConfigModel? Function() _config;
+  final WebSocketChannel Function(Uri) _socketFactory;
+
+  /// [config] and [socketFactory] are replaced in unit tests.
+  ProfileRepository({
+    required this.apiClient,
+    required this.sharedPreferences,
+    ConfigModel? Function()? config,
+    WebSocketChannel Function(Uri)? socketFactory,
+  })  : _config = config ?? _configFromSplash,
+        _socketFactory = socketFactory ?? WebSocketChannel.connect;
+
+  static ConfigModel? _configFromSplash() => Get.isRegistered<SplashController>()
+      ? Get.find<SplashController>().configModel
+      : null;
 
   @override
   Future<ProfileResult> getProfileInfo() async {
@@ -71,14 +87,34 @@ class ProfileRepository implements ProfileRepositoryInterface {
   }
 
   @override
-  Future<void> recordWebSocketLocation(RecordLocationBodyModel recordLocationBody) async {
-    recordLocationBody.token = _getUserToken();
-    String uri = '${Get.find<SplashController>().configModel!.webSocketUri!}:${Get.find<SplashController>().configModel!.webSocketPort!}/delivery-man/live-location?appKey=${Get.find<SplashController>().configModel!.webSocketKey!}';
-    final wsUrl = Uri.parse(uri);
-    var channel = WebSocketChannel.connect(wsUrl);
-
-    channel.sink.add(jsonEncode(recordLocationBody));
-    channel.sink.close(status.goingAway);
+  Future<bool> recordWebSocketLocation(RecordLocationBodyModel recordLocationBody) async {
+    final ConfigModel? config = _config();
+    final String? host = config?.webSocketUri;
+    final int? port = config?.webSocketPort;
+    final String? key = config?.webSocketKey;
+    if (host == null || host.isEmpty || port == null || key == null || key.isEmpty) {
+      return false;
+    }
+    WebSocketChannel? channel;
+    StreamSubscription<dynamic>? subscription;
+    try {
+      recordLocationBody.token = _getUserToken();
+      channel = _socketFactory(Uri.parse('$host:$port/delivery-man/live-location?appKey=$key'));
+      // A late socket error must not become an unhandled exception.
+      subscription = channel.stream.listen((_) {}, onError: (_) {}, cancelOnError: true);
+      await channel.ready.timeout(const Duration(seconds: 5));
+      channel.sink.add(jsonEncode(recordLocationBody));
+      return true;
+    } catch (e) {
+      if (kDebugMode) debugPrint('websocket location failed: ${e.runtimeType}');
+      return false;
+    } finally {
+      recordLocationBody.token = null;
+      try {
+        await subscription?.cancel();
+        await channel?.sink.close(status.goingAway).timeout(const Duration(seconds: 2));
+      } catch (_) {}
+    }
   }
 
   @override

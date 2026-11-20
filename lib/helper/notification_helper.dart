@@ -12,6 +12,7 @@ import 'package:doghree_rider/features/dashboard/screens/dashboard_screen.dart';
 import 'package:doghree_rider/features/notification/controllers/notification_controller.dart';
 import 'package:doghree_rider/features/order/controllers/order_controller.dart';
 import 'package:doghree_rider/features/notification/domain/models/notification_body_model.dart';
+import 'package:doghree_rider/helper/order_ringing.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
 import 'package:doghree_rider/util/app_constants.dart';
 import 'package:get/get.dart';
@@ -53,6 +54,7 @@ class NotificationHelper {
         ?.requestNotificationsPermission();
     await flutterLocalNotificationsPlugin.initialize(initializationsSettings,
         onDidReceiveNotificationResponse: (load) async {
+      OrderRinging.stop();
       try {
         if (load.payload!.isNotEmpty) {
           NotificationBodyModel payload =
@@ -159,8 +161,7 @@ class NotificationHelper {
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      if (kDebugMode) {
-      }
+      OrderRinging.stop();
       try {
         if (message.data.isNotEmpty) {
           NotificationBodyModel notificationBody =
@@ -398,7 +399,7 @@ Future<dynamic> myBackgroundMessageHandler(RemoteMessage message) async {
     FlutterForegroundTask.initCommunicationPort();
     _initService();
     await _startService(
-      orderId.toString(),
+      orderId,
       type == 'assign'
           ? NotificationType.order
           : NotificationType.order_request,
@@ -415,15 +416,13 @@ Future<dynamic> myBackgroundMessageHandler(RemoteMessage message) async {
 
 @pragma('vm:entry-point')
 Future<ServiceRequestResult> _startService(
-    String? orderId, NotificationType notificationType) async {
+    int? orderId, NotificationType notificationType) async {
   if (await FlutterForegroundTask.isRunningService) {
     return FlutterForegroundTask.restartService();
   } else {
     return FlutterForegroundTask.startService(
       serviceId: 256,
-      notificationTitle: notificationType == NotificationType.order_request
-          ? 'Order Notification'
-          : 'You have been assigned a new order ($orderId)',
+      notificationTitle: OrderRinging.title(notificationType, orderId),
       notificationText: notificationType == NotificationType.order_request
           ? 'New order request arrived, you can confirmed this.'
           : 'Open app and check order details.',
@@ -440,8 +439,8 @@ Future<ServiceRequestResult> _startService(
 void _initService() {
   FlutterForegroundTask.init(
     androidNotificationOptions: AndroidNotificationOptions(
-      channelId: 'stackfood',
-      channelName: 'Foreground Service Notification',
+      channelId: OrderRinging.channelId,
+      channelName: 'Order ringing',
       channelDescription:
           'This notification appears when the foreground service is running.',
       onlyAlertOnce: false,
@@ -463,6 +462,7 @@ void _initService() {
 @pragma('vm:entry-point')
 Future<ServiceRequestResult> stopService() async {
   try {
+    await _audioPlayer.stop();
     _audioPlayer.dispose();
   } catch (e) {
   if (kDebugMode) debugPrint('stopService failed: $e');
@@ -478,7 +478,16 @@ void startCallback() {
 final AudioPlayer _audioPlayer = AudioPlayer();
 
 class MyTaskHandler extends TaskHandler {
+  int _rings = 0;
+
   void _playAudio() {
+    // A new push restarts the service, which makes a new handler, so the
+    // count starts again (audit row 36).
+    if (OrderRinging.shouldStopAfter(_rings)) {
+      stopService();
+      return;
+    }
+    _rings++;
     _audioPlayer.play(AssetSource('notification.mp3'));
   }
 
@@ -535,9 +544,7 @@ class MyTaskHandler extends TaskHandler {
   // iOS: only work iOS 10+
   @override
   void onNotificationDismissed() {
-    FlutterForegroundTask.updateService(
-      notificationTitle: 'You got a new order!',
-      notificationText: 'Open app and check order details.',
-    );
+    // Swiping the notification away means the rider has seen it.
+    stopService();
   }
 }

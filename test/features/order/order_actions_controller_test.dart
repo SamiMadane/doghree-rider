@@ -10,9 +10,12 @@ import 'package:doghree_rider/features/order/domain/services/order_service_inter
 import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
 import 'package:doghree_rider/features/profile/domain/models/profile_result_model.dart';
 import 'package:doghree_rider/features/profile/domain/services/profile_service_interface.dart';
+import 'package:doghree_rider/helper/order_ringing.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+
+import '../../helpers/fake_ringing_client.dart';
 
 typedef _Accept = OrderActionResult<AcceptOutcome>;
 typedef _Status = OrderActionResult<StatusOutcome>;
@@ -78,6 +81,9 @@ class _FakeOrderService implements OrderServiceInterface {
 
   @override
   List<int?> prepareIgnoreIdList(List<IgnoreModel> ignoredRequests) => [];
+
+  @override
+  void setIgnoreList(List<IgnoreModel> ignoredRequests) {}
 
   @override
   List<OrderModel> processLatestOrders(
@@ -439,6 +445,65 @@ void main() {
       await controller.getOrderDetails(5, true);
       expect(rebuilds, 1);
       expect(controller.orderDetailsModel, isEmpty);
+    });
+  });
+
+  group('ringing stops (row 36)', () {
+    late FakeRingingClient ringing;
+
+    setUp(() {
+      ringing = FakeRingingClient();
+      OrderRinging.client = ringing;
+    });
+
+    tearDown(() => OrderRinging.client = const RingingClient());
+
+    Future<void> settle() => Future<void>.delayed(Duration.zero);
+
+    test('R4 accepted stops the ringing', () async {
+      service.acceptResults
+          .add(const _Accept(AcceptOutcome.accepted, 'ok', 200));
+      await controller.acceptOrder(_order(2));
+      await settle();
+      expect(ringing.stopCalls, 1);
+    });
+
+    test('R4b taken by another rider stops the ringing', () async {
+      service.latest = [_order(2)];
+      service.acceptResults.add(const _Accept(AcceptOutcome.taken, 'x', 409));
+      await controller.acceptOrder(_order(2));
+      await settle();
+      expect(ringing.stopCalls, 1);
+    });
+
+    test('R5 ignoring a request stops the ringing', () async {
+      service.latest = [_order(1), _order(2)];
+      await controller.getLatestOrders();
+      ringing.running = true;
+      controller.ignoreOrder(0);
+      await settle();
+      expect(ringing.stopCalls, 1);
+    });
+
+    test('R6 an empty pending list stops it, a non-empty one does not',
+        () async {
+      service.latest = [_order(1)];
+      await controller.getLatestOrders();
+      await settle();
+      expect(ringing.stopCalls, 0);
+
+      service.latest = [];
+      await controller.getLatestOrders();
+      await settle();
+      expect(ringing.stopCalls, 1);
+    });
+
+    test('G6 guard: a failed refresh (null list) does not stop the ringing',
+        () async {
+      service.latest = null;
+      await controller.getLatestOrders();
+      await settle();
+      expect(ringing.stopCalls, 0);
     });
   });
 }

@@ -12,6 +12,7 @@ import 'package:doghree_rider/features/order/domain/models/order_model.dart';
 import 'package:doghree_rider/features/order/domain/models/update_status_body_model.dart';
 import 'package:doghree_rider/features/order/domain/models/ignore_model.dart';
 import 'package:doghree_rider/features/order/domain/models/order_cancellation_body.dart';
+import 'package:doghree_rider/helper/order_ringing.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
 import 'package:doghree_rider/util/app_constants.dart';
 import 'package:doghree_rider/common/widgets/custom_snackbar_widget.dart';
@@ -441,6 +442,8 @@ class OrderController extends GetxController implements GetxService {
           processedOrders.where(_isValidOrder).toList();
 
       _latestOrderList!.addAll(validOrders);
+      // No pending request left: nothing may ring (audit row 36).
+      if (_latestOrderList!.isEmpty) OrderRinging.stop();
     }
 
     update();
@@ -625,6 +628,7 @@ class OrderController extends GetxController implements GetxService {
       if (result.statusCode == 401) return outcome;
       switch (outcome) {
         case AcceptOutcome.accepted:
+          OrderRinging.stop();
           _latestOrderList?.removeWhere((o) => o.id == order.id);
           _currentOrderList ??= [];
           if (!_currentOrderList!.any((o) => o.id == order.id)) {
@@ -632,6 +636,7 @@ class OrderController extends GetxController implements GetxService {
           }
           break;
         case AcceptOutcome.taken:
+          OrderRinging.stop();
           _latestOrderList?.removeWhere((o) => o.id == order.id);
           toast('order_no_longer_available'.tr);
           await getLatestOrders();
@@ -672,6 +677,7 @@ class OrderController extends GetxController implements GetxService {
   }
 
   void ignoreOrder(int index) {
+    OrderRinging.stop();
     _ignoredRequests.add(
         IgnoreModel(id: _latestOrderList![index].id, time: DateTime.now()));
     _latestOrderList!.removeAt(index);

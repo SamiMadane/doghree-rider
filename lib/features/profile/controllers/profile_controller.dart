@@ -175,24 +175,45 @@ class ProfileController extends GetxController implements GetxService {
     _timer = null;
   }
 
+  bool _recording = false;
+
+  /// One tick of the 10 s timer. It never throws and never shows anything
+  /// (audit rows 38, 39): with no real position, no GPS, no permission or no
+  /// config it skips the tick, and the next tick tries again, so recording
+  /// recovers by itself.
   Future<void> recordLocation() async {
-    final Position locationResult = await Geolocator.getCurrentPosition();
-    String address =
-        await profileServiceInterface.addressPlaceMark(locationResult);
+    if (_recording) return;
+    _recording = true;
+    try {
+      final Position? position =
+          await profileServiceInterface.currentPositionOrNull();
+      if (position == null) return;
+      final String address =
+          await profileServiceInterface.addressPlaceMark(position);
 
-    if (_timer == null || !_timer!.isActive) return;
-    _recordLocation = RecordLocationBodyModel(
-      location: address,
-      latitude: locationResult.latitude,
-      longitude: locationResult.longitude,
-    );
+      if (_timer == null || !_timer!.isActive) return;
+      final RecordLocationBodyModel body = RecordLocationBodyModel(
+        location: address,
+        latitude: position.latitude,
+        longitude: position.longitude,
+      );
+      _recordLocation = body;
 
-    if (Get.find<SplashController>().configModel!.webSocketStatus!) {
-      await profileServiceInterface.recordWebSocketLocation(_recordLocation!);
-    } else {
-      await profileServiceInterface.recordLocation(_recordLocation!);
+      if (_webSocketEnabled()) {
+        await profileServiceInterface.recordWebSocketLocation(body);
+      } else {
+        await profileServiceInterface.recordLocation(body);
+      }
+    } catch (e) {
+      if (kDebugMode) debugPrint('recordLocation failed: ${e.runtimeType}');
+    } finally {
+      _recording = false;
     }
   }
+
+  bool _webSocketEnabled() =>
+      Get.isRegistered<SplashController>() &&
+      Get.find<SplashController>().configModel?.webSocketStatus == true;
 
   void setBackgroundNotificationActive(bool isActive) {
     _backgroundNotification = isActive;
