@@ -10,7 +10,7 @@
 | D-03 | fix/d-03-auth | Audit rows 14, 15, 16, 17, 18 + logout FCM (D-02 note) | merged, device tests pending (D-11) | 2026-11-19 |
 | D-04 | fix/d-04-order-actions | Audit rows 19, 20, 21, 22, 23, 24, 25, 28, 29 | merged, device tests pending (D-11) | 2026-11-19 |
 | D-05 | fix/d-05-order-lists-parsing | Audit rows 26, 27, 30, 52, 53 | merged, device tests pending (D-11) | 2026-11-20 |
-| D-06 | fix/d-06-location-ringing | Audit rows 36, 37, 38, 39 | implemented on branch, awaiting device tests and closing | |
+| D-06 | fix/d-06-location-ringing | Audit rows 36, 37, 38, 39 | merged, device tests pending (D-11) | 2026-11-20 |
 | D-07 | fix/d-07-notifications | Audit rows 6, 31, 32, 33, 34, 35, 54 | planned | |
 | D-08 | fix/d-08-wallet | Audit rows 41, 42, 43, 44 | planned | |
 | D-09 | fix/d-09-uploads-profile | Audit rows 45, 46, 47, 48, 49 | planned | |
@@ -285,6 +285,13 @@
 - **Row 37:** the title is built by `OrderRinging.title`. An assign push without an id reads "You have been assigned a new order", never "(null)". The service channel is now `doghree_rider_ringing` ("Order ringing"). The old `stackfood` channel is deleted once at start-up by `retireLegacyChannel`, which accepts only that exact id and never runs while a service runs. Side effect: settings the rider changed on the old channel are gone and the new one starts with defaults.
 - **Row 38:** `ProfileService.currentPositionOrNull` checks GPS and permission, reads the position with an 8 s limit and returns null for any failure or unusable fix (null, NaN, infinite, out of range, exactly 0/0). `recordLocation` skips the tick silently (nothing sent, last real position kept), has an in-flight guard, never throws, and reads the config null-safely (no config means the HTTP path). It recovers by itself on the next tick.
 - **Row 39:** `recordWebSocketLocation` returns a bool and never throws. A missing URI, port or key opens nothing. It waits for `ready` (5 s), swallows late stream errors, always closes the socket, and clears the token from the body afterwards. One socket per tick remains (not redesigned).
+- **Changes from the plan:**
+  - `ProfileRepository` takes an optional config reader and socket factory (used only by tests), so the WebSocket path could be tested.
+  - The WebSocket body token is cleared after the send (not in the plan).
+  - The ring counter runs inside `_playAudio`, so the first ring at start-up counts toward the 12.
+  - The old `webSocketStatus` null case is covered by the no-config test (L3: no `SplashController` registered). A registered controller with a null field was not built as a test.
+  - Extra tests beyond the plan: R3b, R4b, L6, L7, G5, G6, R7b.
+  - The old-code check for L1 used the `MissingPluginException` that the test environment raises for the geolocator call, which is the same failure as GPS off.
 - **Tests:** 34 new, 186 total, 186 passed, 0 failed. Analyze: 0 issues.
   - Files: `order_ringing_test` 12, `location_record_test` 10, `websocket_location_test` 5, `logout_ringing_test` 2, plus 5 in `order_actions_controller_test` (R4, R4b, R5, R6, G6).
   - **Fail on the old code by behaviour** (adapted copies run against the stashed `lib/`, then deleted):
