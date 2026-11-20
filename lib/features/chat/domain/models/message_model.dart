@@ -1,4 +1,5 @@
 import 'package:doghree_rider/features/chat/domain/models/conversation_model.dart';
+import 'package:doghree_rider/helper/json_helper.dart';
 
 class MessageModel {
   int? totalSize;
@@ -66,7 +67,7 @@ class Message {
     conversationId = json['conversation_id'];
     senderId = json['sender_id'];
     message = json['message'];
-    filesFullUrl = json['file_full_url'].cast<String>();
+    filesFullUrl = JsonHelper.stringList(json['file_full_url']);
     isSeen = json['is_seen'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];

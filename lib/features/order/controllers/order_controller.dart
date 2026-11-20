@@ -45,17 +45,9 @@ class OrderController extends GetxController implements GetxService {
   String _otp = '';
   String get otp => _otp;
 
+  /// True while a history page after page 1 is loading (bottom spinner).
   bool _paginate = false;
   bool get paginate => _paginate;
-
-  int? _pageSize;
-  int? get pageSize => _pageSize;
-
-  List<int> _offsetList = [];
-  List<int> get offsetList => _offsetList;
-
-  int _offset = 1;
-  int get offset => _offset;
 
   OrderModel? _orderModel;
   OrderModel? get orderModel => _orderModel;
@@ -263,75 +255,148 @@ class OrderController extends GetxController implements GetxService {
   bool _completedOrdersFailed = false;
   bool get completedOrdersFailed => _completedOrdersFailed;
 
+  // ---------- My Orders history paging (audit rows 26, 27) ----------
+  // The controller owns the paging. Whether more pages exist comes from the
+  // pages the server returned, never from the list shown on the phone, which
+  // is shorter because orders without items are filtered out.
+
+  /// The last page that loaded. Retry asks for the page after it.
+  int _lastLoadedPage = 0;
+
+  /// The server `total_size` of the history.
+  int _historyTotal = 0;
+
+  /// A page came back empty (or without `orders`): the history ended.
+  bool _historyEnded = false;
+
+  /// The last page failed. Only Retry continues, so scrolling never repeats
+  /// the request on its own.
+  bool _historyPageFailed = false;
+  bool get historyPageFailed => _historyPageFailed;
+
+  /// At most one page request is in flight.
+  bool _pageInFlight = false;
+
+  /// Page 1 bumps this. A page that comes back for an older generation is
+  /// thrown away, so a late page cannot land on a refreshed list.
+  int _historyGeneration = 0;
+
+  bool get hasMoreHistory =>
+      !_historyEnded &&
+      _lastLoadedPage > 0 &&
+      _lastLoadedPage * AppConstants.historyPageLimit < _historyTotal;
+
+  bool get canLoadMoreHistory =>
+      _completedOrderList != null &&
+      !_pageInFlight &&
+      !_historyPageFailed &&
+      hasMoreHistory;
+
+  /// Whether the screen should load the next page by itself because the
+  /// list is too short to scroll.
+  bool historyNeedsFill({required bool fillsScreen}) =>
+      !fillsScreen && canLoadMoreHistory;
+
+  /// Page 1 (also Retry and pull-to-refresh). A page above 1 is the same as
+  /// [loadNextHistoryPage].
   Future<void> getCompletedOrders(int offset, {bool willUpdate = true}) async {
-    if (offset == 1) {
-      _offsetList = [];
-      _offset = 1;
-      _completedOrderList = null;
-      _completedOrdersFailed = false;
-      if (willUpdate) {
-        update();
-      }
-      await _loadFirstCompletedPage();
+    if (offset != 1) {
+      await loadNextHistoryPage();
       return;
     }
-    if (!_offsetList.contains(offset)) {
-      _offsetList.add(offset);
-      PaginatedOrderModel? paginatedOrderModel =
-          await orderServiceInterface.getCompletedOrderList(offset);
-      if (paginatedOrderModel != null) {
-        if (offset == 1) {
-          _completedOrderList = [];
-        }
-
-        // ✅ فلترة Orders بدون items
-        List<OrderModel> validOrders =
-            paginatedOrderModel.orders!.where(_isValidOrder).toList();
-
-        _completedOrderList!.addAll(validOrders);
-        _pageSize = paginatedOrderModel.totalSize;
-        _paginate = false;
-        update();
-      }
-    } else {
-      if (_paginate) {
-        _paginate = false;
-        update();
-      }
+    final int generation = ++_historyGeneration;
+    _completedOrderList = null;
+    _completedOrdersFailed = false;
+    _lastLoadedPage = 0;
+    _historyTotal = 0;
+    _historyEnded = false;
+    _historyPageFailed = false;
+    _pageInFlight = false;
+    _paginate = false;
+    if (willUpdate) {
+      update();
     }
+    await _loadFirstCompletedPage(generation);
   }
 
   /// Page 1 always ends in a list or the failed state, never a stuck spinner.
-  Future<void> _loadFirstCompletedPage() async {
-    _offsetList.add(1);
+  Future<void> _loadFirstCompletedPage(int generation) async {
+    List<OrderModel>? loaded;
+    PaginatedOrderModel? page;
     try {
-      final PaginatedOrderModel? paginatedOrderModel =
-          await orderServiceInterface.getCompletedOrderList(1);
-      if (paginatedOrderModel != null) {
-        _completedOrderList = (paginatedOrderModel.orders ?? [])
-            .where(_isValidOrder)
-            .toList();
-        _pageSize = paginatedOrderModel.totalSize;
-        _paginate = false;
-      }
+      page = await orderServiceInterface.getCompletedOrderList(1);
     } catch (e) {
       if (kDebugMode) debugPrint('getCompletedOrders failed: ${e.runtimeType}');
-    } finally {
-      if (_completedOrderList == null) {
-        _completedOrdersFailed = true;
-        _offsetList.remove(1);
-      }
-      update();
     }
-  }
-
-  void showBottomLoader() {
-    _paginate = true;
+    if (generation != _historyGeneration) return; // a newer load took over
+    if (page != null) {
+      final List<OrderModel> rows = page.orders ?? <OrderModel>[];
+      loaded = _uniqueValid(rows, const <OrderModel>[]);
+      _lastLoadedPage = 1;
+      _historyTotal = page.totalSize ?? 0;
+      _historyEnded = rows.isEmpty;
+    }
+    _completedOrderList = loaded;
+    _completedOrdersFailed = loaded == null;
     update();
   }
 
-  void setOffset(int offset) {
-    _offset = offset;
+  /// Loads the page after the last loaded one. Never more than one request
+  /// in flight, nothing after a failed page or at the end, and the bottom
+  /// loader always stops.
+  Future<void> loadNextHistoryPage() async {
+    if (!canLoadMoreHistory) return;
+    final int generation = _historyGeneration;
+    final int page = _lastLoadedPage + 1;
+    _pageInFlight = true;
+    _paginate = true;
+    update();
+    try {
+      final PaginatedOrderModel? result =
+          await orderServiceInterface.getCompletedOrderList(page);
+      if (generation != _historyGeneration) return;
+      if (result == null) {
+        _historyPageFailed = true;
+        return;
+      }
+      final List<OrderModel> rows = result.orders ?? <OrderModel>[];
+      _completedOrderList = [
+        ...?_completedOrderList,
+        ..._uniqueValid(rows, _completedOrderList ?? const <OrderModel>[]),
+      ];
+      _lastLoadedPage = page;
+      if (result.totalSize != null) _historyTotal = result.totalSize!;
+      if (rows.isEmpty) _historyEnded = true;
+    } catch (e) {
+      if (kDebugMode) debugPrint('history page failed: ${e.runtimeType}');
+      if (generation == _historyGeneration) _historyPageFailed = true;
+    } finally {
+      if (generation == _historyGeneration) {
+        _pageInFlight = false;
+        _paginate = false;
+        update();
+      }
+    }
+  }
+
+  /// The footer Retry button: asks for the same page again.
+  Future<void> retryHistoryPage() async {
+    _historyPageFailed = false;
+    await loadNextHistoryPage();
+  }
+
+  /// Orders with items (or parcels) that are not in [existing] yet. When
+  /// orders move between pages the same id can arrive twice.
+  List<OrderModel> _uniqueValid(
+      List<OrderModel> rows, List<OrderModel> existing) {
+    final Set<int?> seen = existing.map((o) => o.id).toSet();
+    final List<OrderModel> result = <OrderModel>[];
+    for (final OrderModel order in rows) {
+      if (!_isValidOrder(order)) continue;
+      if (order.id != null && !seen.add(order.id)) continue;
+      result.add(order);
+    }
+    return result;
   }
 
   Future<void> getCurrentOrders() async {

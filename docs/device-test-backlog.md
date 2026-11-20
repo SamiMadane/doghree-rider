@@ -75,6 +75,24 @@ All device steps run together in D-11, after D-10. No device result is recorded 
 
 **Unit tests only:** 406 `error` and 406 `otp` (delivery verification is off live), 409 against 404 `order`, every 405 code except max orders, 204 on GET order, a 200 non-Map body, the exception paths, the double tap on accept and status, the stale-status re-check (T19), the lost delivered response followed by a 403 (T18), and the proof photos kept on reopening the same order (T20).
 
+## D-05: order history paging, getModule, list and model parsing
+
+- **Branch:** fix/d-05-order-lists-parsing
+- **Branch commit:** see `git log` on fix/d-05-order-lists-parsing (code commit "D-05: order lists and parsing")
+- **Status:** pending (D-11)
+
+| # | Steps | Expected |
+|---|---|---|
+| 1 | My Orders with more than 10 past orders: scroll to the end | Older orders load, none appears twice, and the bottom spinner stops at the end of the history |
+| 2 | Scroll to the end with airplane mode on, then turn it off and tap Retry | No toast. The footer shows "Couldn't load more orders" with Retry. Retry adds the page once |
+| 3 | After scrolling a few pages, pull to refresh | The list restarts from the newest orders with no duplicates |
+| 4 | Cold start, then open Requests, Running orders, Notifications, a chat with an image, and the profile | Everything loads normally. No red screen, no no-connection screen |
+| 5 | Open Order Details of a store order and of a parcel | Items, attachments and the map show as before |
+
+Also run the combined smoke pass (this batch touches orders and start-up). While running orders: if a running order is missing from the list, check the debug log for a "skipped" line from `current-orders` (a skipped item hides an order).
+
+**Unit tests only:** a null or unknown `module_type` (S1–S3, W1), wrong body shapes and bad list items (R1–R8), null string lists and a bad config (M1–M4), a string `total_size` (M5), a missing `orders` list (M7, P2), the stale page after a refresh (P6), one request in flight (P11), the end-of-history rules (P7, P8), no auto-load after a failure (P9) and the auto-fill rule (P10).
+
 ## Combined smoke pass (once, in D-11)
 
 | # | Step | Expected |

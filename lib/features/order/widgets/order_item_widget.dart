@@ -1,6 +1,7 @@
 import 'package:doghree_rider/util/manager_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:doghree_rider/common/models/config_model.dart' show Module;
 import 'package:doghree_rider/features/splash/controllers/splash_controller.dart';
 import 'package:doghree_rider/features/order/domain/models/order_details_model.dart';
 import 'package:doghree_rider/features/order/domain/models/order_model.dart';
@@ -22,6 +23,9 @@ class OrderItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    // A null or unknown module_type gives an empty Module (audit row 30).
+    final SplashController splash = Get.find<SplashController>();
+    final Module moduleConfig = splash.getModule(order.moduleType);
 
     String addOnText = '';
     for (var addOn in orderDetails.addOns ?? []) {
@@ -93,27 +97,17 @@ class OrderItemWidget extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   SizedBox(height: Dimensions.h4),
-                  if (((Get.find<SplashController>()
-                              .getModule(order.moduleType)
-                              .unit! &&
+                  if (((moduleConfig.unit ?? false) &&
                           orderDetails.itemDetails!.unitType != null) ||
-                      (Get.find<SplashController>()
-                              .configModel!
-                              .toggleVegNonVeg! &&
-                          Get.find<SplashController>()
-                              .getModule(order.moduleType)
-                              .vegNonVeg!))) ...[
+                      ((splash.configModel?.toggleVegNonVeg ?? false) &&
+                          (moduleConfig.vegNonVeg ?? false))) ...[
                     _MetaTag(
-                      label: Get.find<SplashController>()
-                              .getModule(order.moduleType)
-                              .unit!
+                      label: (moduleConfig.unit ?? false)
                           ? orderDetails.itemDetails!.unitType ?? ''
                           : orderDetails.itemDetails!.veg == 0
                               ? 'non_veg'.tr
                               : 'veg'.tr,
-                      dotColor: Get.find<SplashController>()
-                              .getModule(order.moduleType)
-                              .unit!
+                      dotColor: (moduleConfig.unit ?? false)
                           ? null
                           : (orderDetails.itemDetails!.veg == 0
                               ? scheme.error

@@ -1,3 +1,5 @@
+import 'package:doghree_rider/helper/json_helper.dart';
+
 class ProfileModel {
   int? id;
   String? fName;
@@ -67,7 +69,7 @@ class ProfileModel {
     email = json['email'];
     identityNumber = json['identity_number'];
     identityType = json['identity_type'];
-    identityImageFullUrl = json['identity_image_full_url'].cast<String>();
+    identityImageFullUrl = JsonHelper.stringList(json['identity_image_full_url']);
     imageFullUrl = json['image_full_url'];
     fcmToken = json['fcm_token'];
     zoneId = json['zone_id'];

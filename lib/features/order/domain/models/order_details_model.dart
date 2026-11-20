@@ -1,3 +1,5 @@
+import 'package:doghree_rider/helper/json_helper.dart';
+
 class OrderDetailsModel {
   int? id;
   int? itemId;
@@ -348,7 +350,7 @@ class ChoiceOptions {
   ChoiceOptions.fromJson(Map<String, dynamic> json) {
     name = json['name'];
     title = json['title'];
-    options = json['options'].cast<String>();
+    options = JsonHelper.stringList(json['options']);
   }
 
   Map<String, dynamic> toJson() {

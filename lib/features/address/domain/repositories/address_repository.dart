@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:doghree_rider/api/api_client.dart';
 import 'package:doghree_rider/features/address/domain/models/zone_model.dart';
 import 'package:doghree_rider/features/address/domain/repositories/address_repository_interface.dart';
+import 'package:doghree_rider/helper/json_helper.dart';
 import 'package:doghree_rider/util/app_constants.dart';
 
 class AddressRepository implements AddressRepositoryInterface {
@@ -12,13 +13,10 @@ class AddressRepository implements AddressRepositoryInterface {
 
   @override
   Future<List<ZoneModel>?> getList() async {
-    List<ZoneModel>? zoneList;
-    Response response = await apiClient.getData(AppConstants.zoneListUri);
-    if (response.statusCode == 200) {
-      zoneList = [];
-      response.body.forEach((zone) => zoneList!.add(ZoneModel.fromJson(zone)));
-    }
-    return zoneList;
+    final Response response = await apiClient.getData(AppConstants.zoneListUri);
+    if (response.statusCode != 200) return null;
+    // A body that is not a List is a failure; a bad zone is skipped (row 52).
+    return JsonHelper.mapList(response.body, ZoneModel.fromJson, name: 'zones');
   }
 
   @override
