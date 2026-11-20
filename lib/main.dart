@@ -12,6 +12,7 @@ import 'package:doghree_rider/features/notification/domain/models/notification_b
 import 'package:doghree_rider/helper/date_converter_helper.dart';
 import 'package:doghree_rider/helper/location_permission_manager.dart';
 import 'package:doghree_rider/helper/notification_helper.dart';
+import 'package:doghree_rider/helper/order_ringing.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
 import 'package:doghree_rider/theme/dark_theme.dart';
 import 'package:doghree_rider/theme/light_theme.dart';
@@ -56,6 +57,13 @@ Future<void> main() async {
 } catch (e) {
   if (kDebugMode) debugPrint('main failed: $e');
 }
+
+  // Opening the app means the rider has seen the request: stop any ringing
+  // left by a background push, then retire the old channel (audit rows 36,
+  // 37). Both calls are silent and never throw.
+  await OrderRinging.stop();
+  await OrderRinging.retireLegacyChannel();
+  WidgetsBinding.instance.addObserver(OrderRingingObserver());
 
   await DateConverterHelper.initLocaleDateFormatting();
   Get.put(LocationPermissionManager(), permanent: true);

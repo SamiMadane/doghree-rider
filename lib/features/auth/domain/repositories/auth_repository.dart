@@ -6,6 +6,7 @@ import 'package:doghree_rider/features/auth/domain/models/delivery_man_body_mode
 import 'package:doghree_rider/features/auth/domain/models/vehicle_model.dart';
 import 'package:doghree_rider/features/auth/domain/repositories/auth_repository_interface.dart';
 import 'package:doghree_rider/helper/json_helper.dart';
+import 'package:doghree_rider/helper/order_ringing.dart';
 import 'package:doghree_rider/helper/push_client.dart';
 import 'package:doghree_rider/util/app_constants.dart';
 
@@ -142,6 +143,8 @@ class AuthRepository implements AuthRepositoryInterface {
   /// start, on the sign-in screen and before the next login gets a token.
   @override
   Future<bool> clearSharedData() async {
+    // First, and it cannot throw: a logged-out rider must not keep ringing.
+    await OrderRinging.stop();
     final List<String> topics = _topics();
     await sharedPreferences.remove(AppConstants.token);
     await sharedPreferences.setStringList(AppConstants.ignoreList, []);

@@ -10,7 +10,10 @@ abstract class ProfileServiceInterface {
   Future<ProfileResult> getProfileInfo();
   Future<ResponseModel> updateProfile(ProfileModel userInfoModel, XFile? data, String token);
   Future<ResponseModel> updateActiveStatus();
-  Future<void> recordWebSocketLocation(RecordLocationBodyModel recordLocationBody);
+  Future<bool> recordWebSocketLocation(RecordLocationBodyModel recordLocationBody);
+  /// The real current position, or null when there is none (GPS off,
+  /// permission missing, timeout, or an unusable fix). Never throws.
+  Future<Position?> currentPositionOrNull();
   Future<Response> recordLocation(RecordLocationBodyModel recordLocationBody);
   Future<ResponseModel> deleteDriver();
   void checkPermission(Function callback,{bool showDialog = true});

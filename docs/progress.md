@@ -10,7 +10,7 @@
 | D-03 | fix/d-03-auth | Audit rows 14, 15, 16, 17, 18 + logout FCM (D-02 note) | merged, device tests pending (D-11) | 2026-11-19 |
 | D-04 | fix/d-04-order-actions | Audit rows 19, 20, 21, 22, 23, 24, 25, 28, 29 | merged, device tests pending (D-11) | 2026-11-19 |
 | D-05 | fix/d-05-order-lists-parsing | Audit rows 26, 27, 30, 52, 53 | merged, device tests pending (D-11) | 2026-11-20 |
-| D-06 | fix/d-06-location-ringing | Audit rows 36, 37, 38, 39 | planned | |
+| D-06 | fix/d-06-location-ringing | Audit rows 36, 37, 38, 39 | merged, device tests pending (D-11) | 2026-11-20 |
 | D-07 | fix/d-07-notifications | Audit rows 6, 31, 32, 33, 34, 35, 54 | planned | |
 | D-08 | fix/d-08-wallet | Audit rows 41, 42, 43, 44 | planned | |
 | D-09 | fix/d-09-uploads-profile | Audit rows 45, 46, 47, 48, 49 | planned | |
@@ -276,6 +276,44 @@
 - `all-orders` is missing from Screens R1-R7. The Postman example nests a `store` object, while Screens R2 and the app use flat `store_*` keys. The app follows Screens.
 - The `_MetaTag` unit/veg logic in `OrderItemWidget` still forces `itemDetails!` and `.price!` (outside row 30).
 
+### D-06 (2026-11-20)
+- **Backend check:** record-location-data (R2 step 4) has no validator and stores whatever it gets, so the app sends only a real position. `websocket_status` is 0 live (Screens config), so the WebSocket path is made safe, not redesigned. The server notification channel is untouched: the manifest default (`doghree_rider`), `NotificationHelper.channelId` and the local notification channel stay as they were. The name `6ammart` comes from the backend API guide and is not used by the app.
+- **Row 36 (ringing never continues with no pending request):** `OrderRinging` (lib/helper/order_ringing.dart) stops the foreground service. It is idempotent, silent and never throws.
+  - Stops: `main()` at start-up; `OrderRingingObserver` on every app resume (app level, so it works on splash and sign-in too); the two notification tap handlers; `DashboardScreen` init and the switch to the Requests tab; `acceptOrder` (accepted and taken); `ignoreOrder`; `getLatestOrders` when the pending list is empty; `AuthRepository.clearSharedData` (logout, block, session expiry and delete account all end there), first and never blocking; swipe-away of the service notification (Android 14+).
+  - Cap: `MyTaskHandler` stops the service after 12 rings (60 s). A new push restarts the service with a fresh count. This is the only guard for a backgrounded app that never learns the order was taken.
+  - The player is stopped before it is disposed.
+- **Row 37:** the title is built by `OrderRinging.title`. An assign push without an id reads "You have been assigned a new order", never "(null)". The service channel is now `doghree_rider_ringing` ("Order ringing"). The old `stackfood` channel is deleted once at start-up by `retireLegacyChannel`, which accepts only that exact id and never runs while a service runs. Side effect: settings the rider changed on the old channel are gone and the new one starts with defaults.
+- **Row 38:** `ProfileService.currentPositionOrNull` checks GPS and permission, reads the position with an 8 s limit and returns null for any failure or unusable fix (null, NaN, infinite, out of range, exactly 0/0). `recordLocation` skips the tick silently (nothing sent, last real position kept), has an in-flight guard, never throws, and reads the config null-safely (no config means the HTTP path). It recovers by itself on the next tick.
+- **Row 39:** `recordWebSocketLocation` returns a bool and never throws. A missing URI, port or key opens nothing. It waits for `ready` (5 s), swallows late stream errors, always closes the socket, and clears the token from the body afterwards. One socket per tick remains (not redesigned).
+- **Changes from the plan:**
+  - `ProfileRepository` takes an optional config reader and socket factory (used only by tests), so the WebSocket path could be tested.
+  - The WebSocket body token is cleared after the send (not in the plan).
+  - The ring counter runs inside `_playAudio`, so the first ring at start-up counts toward the 12.
+  - The old `webSocketStatus` null case is covered by the no-config test (L3: no `SplashController` registered). A registered controller with a null field was not built as a test.
+  - Extra tests beyond the plan: R3b, R4b, L6, L7, G5, G6, R7b.
+  - The old-code check for L1 used the `MissingPluginException` that the test environment raises for the geolocator call, which is the same failure as GPS off.
+- **Tests:** 34 new, 186 total, 186 passed, 0 failed. Analyze: 0 issues.
+  - Files: `order_ringing_test` 12, `location_record_test` 10, `websocket_location_test` 5, `logout_ringing_test` 2, plus 5 in `order_actions_controller_test` (R4, R4b, R5, R6, G6).
+  - **Fail on the old code by behaviour** (adapted copies run against the stashed `lib/`, then deleted):
+
+    | Test | Old-code result |
+    |---|---|
+    | L1 | `MissingPluginException(No implementation found for method getCurrentPosition on channel flutter.baseflow.com/geolocator)` escapes from `recordLocation` |
+    | W2 | `"SplashController" not found` escapes from `recordWebSocketLocation` |
+    | R8 | the old title expression `(${orderId.toString()})` gives "(null)". The old expression was reproduced inline, because the old code has no callable title function |
+
+  - **Fail on the old code at compile time only** (the old code has no seam): L2–L7, W1, W3, W4, R1–R7, R4b, R9–R13. They test decisions that did not exist before.
+  - **Guards:** G1 (a real position is sent once), G2 (no token field over HTTP), G3 (a good socket tick), G4 (the server channel constants), G5 (usable-fix boundaries), G6 (a failed refresh does not stop the ringing).
+- **Proven only by unit tests of the decisions, device needed in D-11:** the foreground service really stopping and the sound ending (row 36 events and the cap), the real notification title and the channel list in Android settings (row 37), and real GPS and permission changes (row 38). The WebSocket path cannot run live (`websocket_status` is 0), so row 39 stays unit-tested.
+- **Device:** **not run.** Steps are in `docs/device-test-backlog.md` (D-06, steps 1–12).
+
+### Notes (found during D-06, not fixed)
+- **Resume race:** a request that arrives at the same moment as a resume is visible in the Requests tab even if its ringing was stopped by that resume.
+- A backgrounded app cannot learn that another rider took the order (no push for it in R2/R3 of the screens file). Only the 60 s cap ends that ringing.
+- The foreground push handler in `DashboardScreen` runs `int.parse(message.data['order_id'].toString())` for request and assign pushes, which throws when `order_id` is missing (D-07, with the other push rows).
+- The foreground-service title and text are hard-coded English: the background isolate has no GetX translations.
+- The WebSocket body still carries the token (a socket cannot send a header). Revisit if `websocket_status` is switched on.
+
 ## Open backend questions
 
 <!-- The only place new backend questions are recorded. Move a row to docs/backend-changes.md once the owner agrees. -->
@@ -286,3 +324,4 @@
 | B-02 | /api/v1/delivery-man/update-order-status | When `dm_picture_upload_status` is on, is a delivery photo mandatory? Does the server reject `delivered` without `order_proof`? | The app shows the photo section but never requires it (audit row 49) | D-00 | answered (same docs): `order_proof` is optional on the server (array, max 5, stored only with `delivered`). Requiring it in the app is an owner decision before D-09 |
 | B-03 | /api/v1/delivery-man/wallet/withdrawals | Does the response include a total count for paging past `limit=20`? | Older withdrawals are never shown (audit row 42) | D-00 | answered (same docs): returns `total_size`; `limit` 1-50; `offset` is a page number starting at 1 |
 | B-04 | /deliveryman-earning-report-invoice/{id} | What Content-Type and charset does the PDF response use? | The app saves decoded text as bytes, so a utf-8 charset would corrupt the file (audit row 41) | D-00 | open |
+| B-05 | /api/v1/delivery-man/record-location-data | The screens file describes this as the ticker that runs while the rider is carrying an order, and it reads `order_id`. The app posts every 10 s whenever the rider is online and sends no `order_id`. Does the backend want location only while carrying an order, and with the `order_id`? | Rows with no order may be stored as junk history (follow-up of audit row 38). Question only: no app change in D-06 | D-06 | open |

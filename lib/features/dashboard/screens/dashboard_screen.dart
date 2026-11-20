@@ -7,6 +7,7 @@ import 'package:doghree_rider/features/dashboard/widgets/bottom_nav_road_indicat
 import 'package:doghree_rider/features/dashboard/widgets/lottie_bottom_sheet_order_request.dart';
 import 'package:doghree_rider/features/order/controllers/order_controller.dart';
 import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
+import 'package:doghree_rider/helper/order_ringing.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
 import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/common/widgets/custom_alert_dialog_widget.dart';
@@ -43,6 +44,9 @@ class DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
+
+    // The rider is looking at the app (or at the requests): no ringing.
+    OrderRinging.stop();
 
     _pageIndex = widget.pageIndex;
     _pageController = PageController(initialPage: widget.pageIndex);
@@ -271,6 +275,7 @@ class DashboardScreenState extends State<DashboardScreen> {
   }
 
   void _setPage(int pageIndex) {
+    if (pageIndex == 1) OrderRinging.stop();
     setState(() {
       _pageController!.jumpToPage(pageIndex);
       _pageIndex = pageIndex;
