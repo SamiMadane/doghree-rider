@@ -11,7 +11,7 @@
 | D-04 | fix/d-04-order-actions | Audit rows 19, 20, 21, 22, 23, 24, 25, 28, 29 | merged, device tests pending (D-11) | 2026-11-19 |
 | D-05 | fix/d-05-order-lists-parsing | Audit rows 26, 27, 30, 52, 53 | merged, device tests pending (D-11) | 2026-11-20 |
 | D-06 | fix/d-06-location-ringing | Audit rows 36, 37, 38, 39 | merged, device tests pending (D-11) | 2026-11-20 |
-| D-07 | fix/d-07-notifications | Audit rows 6, 31, 32, 33, 34, 35, 54 | implemented on branch, not merged | |
+| D-07 | fix/d-07-notifications | Audit rows 6, 31, 32, 33, 34, 35, 54 | merged, device tests pending (D-11) | 2026-11-20 |
 | D-08 | fix/d-08-wallet | Audit rows 41, 42, 43, 44 | planned | |
 | D-09 | fix/d-09-uploads-profile | Audit rows 45, 46, 47, 48, 49 | planned | |
 | D-10 | fix/d-10-cleanup | Audit rows 40, 55, 56, 57, 58, 60 | planned | |
@@ -84,7 +84,7 @@
 - **Device:** **not run yet.** The steps are pending in `docs/device-test-backlog.md` (joint pass after D-03).
 
 ### Notes (found during D-02, not fixed)
-- `getNavigationHandlerRoute` and `getChatRoute` put standard base64 (`+`, `/`, `=`) into query strings, where `+` decodes to a space (D-07).
+- `getNavigationHandlerRoute` and `getChatRoute` put standard base64 (`+`, `/`, `=`) into query strings, where `+` decodes to a space (D-07). *(Decided in D-07: decoding restores the `+`, so no change is needed. See the D-07 notes.)*
 - The `String token` parameter of `updateProfile` (repository, service and controller) is unused (D-09).
 - Pull-to-refresh on the Requests tab is now silent offline. The old list stays.
 - The WebSocket location body still carries the token, because a WebSocket cannot send the header. Revisit this if `websocket_status` is turned on (it is 0 live).
@@ -310,7 +310,7 @@
 ### Notes (found during D-06, not fixed)
 - **Resume race:** a request that arrives at the same moment as a resume is visible in the Requests tab even if its ringing was stopped by that resume.
 - A backgrounded app cannot learn that another rider took the order (no push for it in R2/R3 of the screens file). Only the 60 s cap ends that ringing.
-- The foreground push handler in `DashboardScreen` runs `int.parse(message.data['order_id'].toString())` for request and assign pushes, which throws when `order_id` is missing (D-07, with the other push rows).
+- The foreground push handler in `DashboardScreen` runs `int.parse(message.data['order_id'].toString())` for request and assign pushes, which throws when `order_id` is missing (D-07, with the other push rows). *(Fixed in D-07, row 32.)*
 - The foreground-service title and text are hard-coded English: the background isolate has no GetX translations.
 - The WebSocket body still carries the token (a socket cannot send a header). Revisit if `websocket_status` is switched on.
 
@@ -371,7 +371,8 @@
 
   - **Fail on the old code at compile time only:** R1–R14, C1, C2, F1, F2 and P1 (no `NotificationRouter` or `ForegroundOrderPush`).
   - **Guards** (pass on the old code too): G1 (withdraw gives no order id), G2 and G3 (base64 round trip with `+`), G4 (empty messages give a model), G5 (a numeric order id still opens the order).
-- **Device:** **not run.** The steps are in `docs/device-test-backlog.md` (D-07, steps 1–8).
+- **Device:** **not run.** The steps are in `docs/device-test-backlog.md` (D-07, steps 1–8) and run in D-11.
+- **Status:** merged into `development` (2026-11-20), device tests pending (D-11).
 
 ### Notes (found during D-07, not fixed)
 - `NotificationController.handleNotificationTap` (the in-app notification list) keeps its own type map. `unassign` opens My Orders there and Requests from a push.
@@ -379,7 +380,7 @@
 - `ChatScreen` forces `notificationBody!` in initState and `conversation!.receiver!` in its app bar.
 - `ChatController.getMessages` with offset > 1 and a null `_messageModel` crashes.
 - A failed first chat load has no retry state.
-- A cold start through a push skips the `updateToken()` that default routing runs.
+- A cold start from a push skips the `updateToken()` that default routing runs. Review it in D-10 or D-11.
 - Tapping a `block` push only opens sign-in. The session is cleared by the foreground listener or the next 401, not by the tap.
 - `assign`, `unassign`, `block`, `unblock`, `otp` and `cash_collect` are not in the documented push types. They are still handled.
 - D-02 base64 note, decided in D-07: no change needed.
