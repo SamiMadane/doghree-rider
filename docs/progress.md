@@ -12,7 +12,7 @@
 | D-05 | fix/d-05-order-lists-parsing | Audit rows 26, 27, 30, 52, 53 | merged, device tests pending (D-11) | 2026-11-20 |
 | D-06 | fix/d-06-location-ringing | Audit rows 36, 37, 38, 39 | merged, device tests pending (D-11) | 2026-11-20 |
 | D-07 | fix/d-07-notifications | Audit rows 6, 31, 32, 33, 34, 35, 54 | merged, device tests pending (D-11) | 2026-11-20 |
-| D-08 | fix/d-08-wallet | Audit rows 41, 42, 43, 44 | implemented on branch, awaiting closing (device tests in D-11) | |
+| D-08 | fix/d-08-wallet | Audit rows 41, 42, 43, 44 | merged, device tests pending (D-11) | 2026-11-21 |
 | D-09 | fix/d-09-uploads-profile | Audit rows 45, 46, 47, 48, 49 | planned | |
 | D-10 | fix/d-10-cleanup | Audit rows 40, 55, 56, 57, 58, 60 | planned | |
 | D-11 | (no code branch) | Final device pass: every pending backlog section, the smoke pass and the end-to-end order test (`docs/device-test-backlog.md`) | planned (after D-10) | |
@@ -463,6 +463,7 @@
   - **Fail on the old code at compile time only:** every C-* classifier test, P2–P9, R1–R3, B2–B9, W1–W7, K2, D3–D6. The old code has no classifiers, no `WithdrawalsPage`, no `InvoiceDownload` or `InvoiceSaver`, and no `toast` seam.
   - **Guards** (their logic also holds on the old code; they were not run there): GB1 (a PDF without a charset round-trips byte for byte, because latin1 maps one to one), GM1 (money is read as sent), GW1 (`withdrawBusy` resets after an exception), G410 (a failed page is not requested again by itself), K1 (the old `getWallet` also kept the wallet on a null result).
 - **Device:** **not run.** The steps are in `docs/device-test-backlog.md` (D-08, steps 1–9) and run in D-11.
+- **Status:** merged into `development` (2026-11-21), device tests pending (D-11). Rows 41–44 are closed on the app side. B-04 stays open, and the on-device balance and amount checks stay a D-10 candidate (notes below).
 
 ### Notes (found during D-08, not fixed)
 - **D-10 candidate:** the device repeats server withdraw rules. The withdraw sheet refuses an amount above `availableBalance` (`wallet_withdraw_exceeds`), and `_WithdrawButton` refuses when `availableBalance <= 0`. With stale wallet data this can block a request the server would accept. R5 and R6 say the screen follows `can_request_withdraw` and `withdraw_block` only, and the server answers `withdraw_insufficient_balance` / `withdraw_no_balance` itself.
