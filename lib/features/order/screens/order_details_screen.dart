@@ -40,7 +40,6 @@ bool _isFinishedStatus(String? status) =>
 class OrderDetailsScreen extends StatefulWidget {
   final int? orderId;
   final bool? isRunningOrder;
-  final int? orderIndex;
   final bool fromNotification;
   final bool fromLocationScreen;
 
@@ -48,7 +47,6 @@ class OrderDetailsScreen extends StatefulWidget {
     super.key,
     required this.orderId,
     required this.isRunningOrder,
-    required this.orderIndex,
     this.fromNotification = false,
     this.fromLocationScreen = false,
   });

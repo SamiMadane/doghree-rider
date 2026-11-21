@@ -78,15 +78,6 @@ class ProfileController extends GetxController implements GetxService {
     return true;
   }
 
-  // ========== ⚠️ KEEP OLD METHOD (for backward compatibility) ==========
-  Future<void> pickProfileImage() async {
-    XFile? image = await profileServiceInterface.pickImageFromGallery();
-    if (image != null) {
-      _pickedFile = image;
-      update();
-    }
-  }
-
   /// Loads the profile. On any failure the previous [profileModel] is kept.
   /// The returned [SessionStatus] lets the caller tell a real session end
   /// (expired) apart from offline or server trouble.
@@ -157,11 +148,6 @@ class ProfileController extends GetxController implements GetxService {
     if (edit.fName != null) current.fName = edit.fName;
     if (edit.lName != null) current.lName = edit.lName;
     if (edit.email != null) current.email = edit.email;
-  }
-
-  void pickImage() async {
-    _pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
-    update();
   }
 
   void initData() {

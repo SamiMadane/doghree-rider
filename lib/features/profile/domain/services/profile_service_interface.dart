@@ -18,7 +18,6 @@ abstract class ProfileServiceInterface {
   Future<ResponseModel> deleteDriver();
   void checkPermission(Function callback,{bool showDialog = true});
   Future<String> addressPlaceMark(Position locationResult);
-  Future<XFile?> pickImageFromGallery();
 
 
 }

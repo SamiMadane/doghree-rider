@@ -167,24 +167,6 @@ Future<Map<String, Map<String, String>>> init() async {
       OrderService(orderRepositoryInterface: Get.find());
   Get.lazyPut(() => orderServiceInterface);
 
-  /// Service
-  Get.lazyPut(() => HtmlService(htmlRepositoryInterface: Get.find()));
-
-  Get.lazyPut(
-      () => WalletService(walletRepositoryInterface: Get.find()));
-  Get.lazyPut(() =>
-      ForgotPasswordService(forgotPasswordRepositoryInterface: Get.find()));
-  Get.lazyPut(() => ChatService(chatRepositoryInterface: Get.find()));
-  Get.lazyPut(() => LanguageService(languageRepositoryInterface: Get.find()));
-  Get.lazyPut(
-      () => SplashService(navigationHandlerRepositoryInterface: Get.find()));
-  Get.lazyPut(
-      () => NotificationService(notificationRepositoryInterface: Get.find()));
-  Get.lazyPut(() => ProfileService(profileRepositoryInterface: Get.find()));
-  Get.lazyPut(() => AddressService(addressRepositoryInterface: Get.find()));
-  Get.lazyPut(() => AuthService(authRepositoryInterface: Get.find()));
-  Get.lazyPut(() => OrderService(orderRepositoryInterface: Get.find()));
-
   /// Controller
   Get.lazyPut(() => HtmlController(htmlServiceInterface: Get.find()));
 

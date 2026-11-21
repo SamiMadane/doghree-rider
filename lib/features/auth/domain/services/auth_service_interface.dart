@@ -28,7 +28,6 @@ abstract class AuthServiceInterface {
   List<MultipartBody> prepareMultiPartsBody(
       XFile? pickedImage, List<XFile> pickedIdentities);
   List<int?> vehicleIds(List<VehicleModel>? vehicles);
-  Future<XFile?> pickImageFromGallery();
   Future<void> setLogoutReason(String reason);
   Future<String?> getLogoutReason();
   Future<void> clearLogoutReason();

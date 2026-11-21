@@ -24,15 +24,11 @@ Future<void> acceptFromCard(
     case AcceptOutcome.accepted:
       onAccepted();
       orderModel.orderStatus = 'accepted';
-      final int index = orderController.currentOrderList
-              ?.indexWhere((o) => o.id == orderModel.id) ??
-          -1;
       Get.toNamed(
         RouteHelper.getOrderDetailsRoute(orderModel.id),
         arguments: OrderDetailsScreen(
           orderId: orderModel.id,
           isRunningOrder: true,
-          orderIndex: index < 0 ? null : index,
         ),
       );
       break;

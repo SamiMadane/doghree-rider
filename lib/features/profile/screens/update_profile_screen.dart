@@ -24,11 +24,9 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   // Field error keys live in the controller.
   static const String _kName = AuthController.profileNameKey;
   static const String _kEmail = AuthController.profileEmailKey;
-  static const String _kPhone = AuthController.profilePhoneKey;
 
   final FocusNode _fullNameFocus = FocusNode();
   final FocusNode _emailFocus = FocusNode();
-  final FocusNode _phoneFocus = FocusNode();
 
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -56,7 +54,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     _phoneController.dispose();
     _fullNameFocus.dispose();
     _emailFocus.dispose();
-    _phoneFocus.dispose();
     super.dispose();
   }
 
@@ -196,7 +193,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                       inputType: TextInputType.emailAddress,
                                       isRequired: true,
                                       focusNode: _emailFocus,
-                                      nextFocus: _phoneFocus,
                                       errorText:
                                           authController.fieldError(_kEmail),
                                       onChanged: (_) => authController
@@ -205,26 +201,18 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                   ),
                                   SizedBox(height: Dimensions.h16),
 
-                                  // Phone
+                                  // Phone: read-only. update-profile has no
+                                  // phone field, so an edit here could never
+                                  // be saved (D-10, owner decision).
                                   WidgetWithLabel(
                                     label: 'mobile_number'.tr,
                                     textField: CustomTextFieldWidget(
                                       labelText: 'phone_number'.tr,
                                       hintText: 'xxx-xxx-xxxxx'.tr,
-                                      isRequired: true,
                                       controller: _phoneController,
-                                      focusNode: _phoneFocus,
                                       inputType: TextInputType.phone,
                                       isPhone: true,
-                                      errorText:
-                                          authController.fieldError(_kPhone),
-                                      onChanged: (_) => authController
-                                          .clearFieldError(_kPhone),
-                                      onCountryChanged: (code) {
-                                        setState(() {
-                                          _countryDialCode = code.dialCode!;
-                                        });
-                                      },
+                                      readOnly: true,
                                       countryDialCode: _countryDialCode,
                                     ),
                                   ),
@@ -277,13 +265,11 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     final List<String> names =
         AuthController.splitFullName(_fullNameController.text);
     final String email = _emailController.text.trim();
-    final String fullPhoneNumber =
-        '$_countryDialCode${_phoneController.text.trim()}';
 
-    // General message (not tied to a field): nothing was changed.
+    // General message (not tied to a field): nothing was changed. The phone
+    // is read-only and never sent, so it plays no part here.
     if (current.fName == names[0] &&
         current.lName == names[1] &&
-        current.phone == fullPhoneNumber &&
         current.email == email &&
         profileController.pickedFile == null) {
       authController.setFieldErrors({});
@@ -295,7 +281,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     final bool valid = authController.validateProfileForm(
       fullName: _fullNameController.text,
       email: _emailController.text,
-      phone: _phoneController.text,
     );
     if (!valid) {
       _focusFirstError(authController);
@@ -306,7 +291,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       fName: names[0],
       lName: names[1],
       email: email,
-      phone: fullPhoneNumber,
     );
 
     // Server errors are shown by ProfileController (snackbar).
@@ -321,7 +305,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     final Map<String, FocusNode> nodes = {
       _kName: _fullNameFocus,
       _kEmail: _emailFocus,
-      _kPhone: _phoneFocus,
     };
     nodes[authController.firstFieldErrorKey]?.requestFocus();
   }

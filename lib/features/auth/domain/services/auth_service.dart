@@ -1,7 +1,6 @@
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:doghree_rider/api/api_client.dart';
-import 'package:doghree_rider/common/widgets/custom_snackbar_widget.dart';
 import 'package:doghree_rider/features/auth/domain/models/delivery_man_body_model.dart';
 import 'package:doghree_rider/features/auth/domain/models/vehicle_model.dart';
 import 'package:doghree_rider/features/auth/domain/repositories/auth_repository_interface.dart';
@@ -123,21 +122,6 @@ class AuthService implements AuthServiceInterface {
     return vehicleIds;
   }
 
-  @override
-  Future<XFile?> pickImageFromGallery() async {
-    XFile? pickImage =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pickImage != null) {
-      pickImage.length().then((value) {
-        if (value > 2000000) {
-          showCustomSnackBar('please_upload_lower_size_file'.tr);
-        } else {
-          return pickImage;
-        }
-      });
-    }
-    return pickImage;
-  }
 @override
   Future<void> setLogoutReason(String reason) async {
     await authRepositoryInterface.setLogoutReason(reason);

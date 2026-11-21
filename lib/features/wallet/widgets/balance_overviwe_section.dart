@@ -151,10 +151,8 @@ class _WithdrawButton extends StatelessWidget {
           w.withdrawBlock?.message ?? 'wallet_withdraw_unavailable'.tr);
       return;
     }
-    if (w.availableBalance <= 0) {
-      showCustomSnackBar('wallet_withdraw_no_balance'.tr);
-      return;
-    }
+    // The balance rules are the server's (withdraw_no_balance and
+    // withdraw_insufficient_balance come back as one inline message).
     if (w.accounts.isEmpty) {
       showCustomSnackBar('wallet_withdraw_add_account_first'.tr);
       showWalletAccountSheet();
@@ -172,8 +170,8 @@ class _WithdrawButton extends StatelessWidget {
         
 
     final WalletModel? w = wallet;
-    final bool canWithdraw =
-        w != null && w.canRequestWithdraw && w.availableBalance > 0;
+    // Follows only can_request_withdraw / withdraw_block (Screens R5, R6).
+    final bool canWithdraw = w != null && w.canRequestWithdraw;
     // Server message when withdrawing is blocked right now.
     final String? blockMessage =
         (w != null && !w.canRequestWithdraw) ? w.withdrawBlock?.message : null;

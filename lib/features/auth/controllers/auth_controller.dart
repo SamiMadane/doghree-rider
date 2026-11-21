@@ -126,11 +126,13 @@ class AuthController extends GetxController implements GetxService {
   bool validateProfileForm({
     required String fullName,
     required String email,
-    required String phone,
+    // Null skips the phone rules: Edit Profile shows the phone read-only
+    // and never sends it (D-10).
+    String? phone,
   }) {
     final List<String> names = splitFullName(fullName);
     final String mail = email.trim();
-    final String number = phone.trim();
+    final String? number = phone?.trim();
     final Map<String, String> errors = {};
 
     if (names[0].isEmpty) {
@@ -145,10 +147,12 @@ class AuthController extends GetxController implements GetxService {
       errors[profileEmailKey] = 'enter_a_valid_email_address'.tr;
     }
 
-    if (number.isEmpty) {
-      errors[profilePhoneKey] = 'enter_phone_number'.tr;
-    } else if (number.length < 6) {
-      errors[profilePhoneKey] = 'enter_a_valid_phone_number'.tr;
+    if (number != null) {
+      if (number.isEmpty) {
+        errors[profilePhoneKey] = 'enter_phone_number'.tr;
+      } else if (number.length < 6) {
+        errors[profilePhoneKey] = 'enter_a_valid_phone_number'.tr;
+      }
     }
 
     _fieldErrors = errors;
@@ -455,25 +459,6 @@ class AuthController extends GetxController implements GetxService {
         return;
       }
       _pickedIdentities.add(croppedImage);
-      update();
-    }
-  }
-
-  // ========== ⚠️ KEEP OLD METHOD (for backward compatibility) ==========
-  void pickDmImageForRegistration(bool isLogo, bool isRemove) async {
-    if (isRemove) {
-      _pickedImage = null;
-      _pickedIdentities = [];
-    } else {
-      if (isLogo) {
-        _pickedImage = await authServiceInterface.pickImageFromGallery();
-      } else {
-        XFile? pickedIdentities =
-            await authServiceInterface.pickImageFromGallery();
-        if (pickedIdentities != null) {
-          _pickedIdentities.add(pickedIdentities);
-        }
-      }
       update();
     }
   }

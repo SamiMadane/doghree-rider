@@ -43,7 +43,6 @@ class HistoryOrderWidget extends StatelessWidget {
               builder: (_) => OrderDetailsScreen(
                 orderId: orderModel.id,
                 isRunningOrder: isRunning,
-                orderIndex: index,
               ),
             ),
           ),

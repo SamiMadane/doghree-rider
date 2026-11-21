@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:doghree_rider/api/api_checker.dart';
 import 'package:doghree_rider/common/widgets/custom_bottom_sheet_widget.dart';
 import 'package:doghree_rider/features/auth/controllers/auth_controller.dart';
-import 'package:doghree_rider/features/dashboard/widgets/bottom_nav_road_indicator.dart';
+import 'package:doghree_rider/features/dashboard/widgets/dashboard_bottom_nav_widget.dart';
 import 'package:doghree_rider/features/dashboard/widgets/lottie_bottom_sheet_order_request.dart';
 import 'package:doghree_rider/features/order/controllers/order_controller.dart';
 import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
@@ -12,7 +12,6 @@ import 'package:doghree_rider/helper/order_ringing.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
 import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/common/widgets/custom_alert_dialog_widget.dart';
-import 'package:doghree_rider/features/dashboard/widgets/bottom_nav_item_widget.dart';
 import 'package:doghree_rider/features/home/screens/home_screen.dart';
 import 'package:doghree_rider/features/profile/screens/profile_screen.dart';
 import 'package:doghree_rider/features/order/screens/available_orders_screen.dart';
@@ -22,7 +21,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:doghree_rider/util/manager_assets.dart';
 import 'package:doghree_rider/util/session_checker.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -184,82 +182,11 @@ class DashboardScreenState extends State<DashboardScreen> {
         resizeToAvoidBottomInset: false,
         bottomNavigationBar: GetPlatform.isDesktop
             ? const SizedBox()
-            : SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
-                  child: Container(
-                    height: 76,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(24),
-                      boxShadow: [
-                        BoxShadow(
-                          color: cs.shadow.withValues(
-                            alpha: theme.brightness == Brightness.dark
-                                ? 0.0
-                                : 0.12,
-                          ),
-                          blurRadius: 18,
-                          offset: const Offset(0, 6),
-                        ),
-                      ],
-                    ),
-                    child: Material(
-                      color: theme.cardColor,
-                      clipBehavior: Clip.antiAlias,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(24),
-                        side: BorderSide(color: cs.outline),
-                      ),
-                      child: Stack(
-                        children: [
-                          Positioned.fill(
-                            child: Row(
-                              children: [
-                                BottomNavItemWidget(
-                                  label: 'home'.tr,
-                                  isSelected: _pageIndex == 0,
-                                  onTap: () => _setPage(0),
-                                  selectedIcon: ManagerAssets.homeSelectedIcon,
-                                  unSelectedIcon: ManagerAssets.homeIcon,
-                                ),
-                                BottomNavItemWidget(
-                                  label: 'orders'.tr,
-                                  isSelected: _pageIndex == 1,
-                                  pageIndex: 1,
-                                  onTap: () => _navigateRequestPage(),
-                                  selectedIcon: ManagerAssets.orderSelectedIcon,
-                                  unSelectedIcon: ManagerAssets.orderIcon,
-                                ),
-                                BottomNavItemWidget(
-                                  label: 'my_orders'.tr,
-                                  isSelected: _pageIndex == 2,
-                                  onTap: () => _setPage(2),
-                                  selectedIcon:
-                                      ManagerAssets.myOrderSelectedIcon,
-                                  unSelectedIcon: ManagerAssets.myOrderIcon,
-                                ),
-                                BottomNavItemWidget(
-                                  label: 'profile'.tr,
-                                  isSelected: _pageIndex == 3,
-                                  onTap: () => _setPage(3),
-                                  selectedIcon:
-                                      ManagerAssets.profileSelectedIcon,
-                                  unSelectedIcon: ManagerAssets.userIcon,
-                                ),
-                              ],
-                            ),
-                          ),
-                          Positioned.fill(
-                            child: BottomNavRoadIndicator(
-                              index: _pageIndex,
-                              count: _screens.length,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+            : DashboardBottomNavWidget(
+                pageIndex: _pageIndex,
+                itemCount: _screens.length,
+                onTap: (int index) =>
+                    index == 1 ? _navigateRequestPage() : _setPage(index),
               ),
         body: PageView.builder(
           controller: _pageController,

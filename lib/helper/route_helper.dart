@@ -209,7 +209,6 @@ class RouteHelper {
           return OrderDetailsScreen(
             fromNotification: Get.parameters['from'] == 'true',
             isRunningOrder: null,
-            orderIndex: null,
             orderId: id,
             fromLocationScreen:
                 Get.parameters['from_location_screen'] == 'true',
