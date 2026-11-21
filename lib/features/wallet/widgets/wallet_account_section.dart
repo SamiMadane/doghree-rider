@@ -15,14 +15,23 @@ import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/util/styles.dart';
 
 void _confirmDeleteAccount(BuildContext context, int id) {
+  // Audit row 44: a second tap while the sheet closes must not pop the
+  // wallet screen or send a second delete.
+  bool handled = false;
   showCustomBottomSheet(
     child: ConfirmationBottomSheet(
       title: 'wallet_delete_account'.tr,
       description: 'wallet_delete_account_confirm'.tr,
       acceptText: 'wallet_delete'.tr,
       cancelText: 'wallet_cancel'.tr,
-      onCancel: () => Navigator.of(context).pop(),
+      onCancel: () {
+        if (handled) return;
+        handled = true;
+        Navigator.of(context).pop();
+      },
       onAccept: () {
+        if (handled) return;
+        handled = true;
         Navigator.of(context).pop();
         Get.find<WalletController>().deleteWalletAccount(id);
       },

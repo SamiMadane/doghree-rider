@@ -22,7 +22,10 @@ class WithdrawalHistorySection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         GetBuilder<WalletController>(builder: (c) {
-          final bool hasMore = (c.withdrawals?.length ?? 0) > _previewCount;
+          // Server count (audit row 42); the loaded list is only page 1.
+          final int count = c.withdrawalsTotal ?? c.withdrawals?.length ?? 0;
+          final bool hasMore = count > _previewCount ||
+              (c.withdrawals?.length ?? 0) > _previewCount;
           return WalletSectionHeader(
             title: 'wallet_withdraw_requests'.tr,
             onSeeAll: hasMore

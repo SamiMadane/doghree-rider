@@ -1,10 +1,14 @@
+import 'dart:typed_data';
+
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:doghree_rider/api/api_checker.dart';
 import 'package:doghree_rider/api/api_client.dart';
 import 'package:doghree_rider/common/models/response_model.dart';
 import 'package:doghree_rider/features/wallet/domain/models/earning_report_model.dart';
-import 'package:doghree_rider/features/wallet/domain/models/wallet_withdrawal_model.dart';
+import 'package:doghree_rider/features/wallet/domain/models/invoice_download.dart';
+import 'package:doghree_rider/features/wallet/domain/models/wallet_action_result.dart';
+import 'package:doghree_rider/features/wallet/domain/models/withdrawals_page.dart';
 import 'package:doghree_rider/features/wallet/domain/repositories/wallet_repository_interface.dart';
 import 'package:doghree_rider/util/app_constants.dart';
 import 'package:doghree_rider/features/wallet/domain/models/wallet_model.dart';
@@ -45,10 +49,11 @@ class WalletRepository implements WalletRepositoryInterface {
     return earningReportModel;
   }
 
-  /// Invoice PDF. All filters are optional: without them the backend returns
-  /// the full statement. The dates are sent together or not at all.
+  /// Invoice PDF as raw bytes (audit row 41). All filters are optional:
+  /// without them the backend returns the full statement. The dates are sent
+  /// together or not at all. Silent; a 401 still ends the session.
   @override
-  Future<Response> downloadEarningInvoice({
+  Future<InvoiceDownload> downloadEarningInvoice({
     required int dmId,
     String? type,
     String? startDate,
@@ -62,10 +67,16 @@ class WalletRepository implements WalletRepositoryInterface {
       if (type != null && type.isNotEmpty) 'type': type,
     };
 
-    return apiClient.getData(
+    final Response response = await apiClient.getBytes(
       '${AppConstants.earningReportInvoiceUri}/$dmId',
       query: query,
-      handleError: false,
+    );
+    ApiChecker.checkSession(response);
+    final dynamic body = response.body;
+    return InvoiceDownload(
+      statusCode: response.statusCode,
+      bytes: body is Uint8List ? body : null,
+      message: response.statusCode == 200 ? null : response.statusText,
     );
   }
 
@@ -91,7 +102,9 @@ class WalletRepository implements WalletRepositoryInterface {
 
   @override
   Future<WalletModel?> getWallet() async {
-    final Response response = await apiClient.getData(AppConstants.walletUri);
+    final Response response =
+        await apiClient.getData(AppConstants.walletUri, handleError: false);
+    ApiChecker.checkSession(response);
     if (response.statusCode == 200 && response.body is Map) {
       return WalletModel.fromJson(Map<String, dynamic>.from(response.body));
     }
@@ -116,11 +129,18 @@ class WalletRepository implements WalletRepositoryInterface {
   }
 
   @override
-  Future<ResponseModel> deleteWalletAccount(int id) async {
+  Future<DeleteAccountResult> deleteWalletAccount(int id) async {
     final Response response = await apiClient.deleteData(
         '${AppConstants.walletAccountsUri}/$id',
         handleError: false);
-    return _walletResult(response);
+    ApiChecker.checkSession(response);
+    final DeleteAccountOutcome outcome =
+        classifyDeleteAccount(response.statusCode, errorCodes(response.body));
+    final dynamic body = response.body;
+    final String? message = outcome == DeleteAccountOutcome.deleted
+        ? (body is Map ? body['message']?.toString() : null)
+        : response.statusText;
+    return DeleteAccountResult(outcome, message);
   }
 
   ResponseModel _walletResult(Response response) {
@@ -137,29 +157,34 @@ class WalletRepository implements WalletRepositoryInterface {
   }
 
   @override
-  Future<ResponseModel> requestWithdraw(
+  Future<WithdrawResult> requestWithdraw(
       {required double amount, int? accountId, String? note}) async {
     final Map<String, dynamic> body = {'amount': amount};
     if (accountId != null) body['account_id'] = accountId;
     if (note != null && note.trim().isNotEmpty) body['note'] = note.trim();
     final Response response = await apiClient
         .postData(AppConstants.walletWithdrawUri, body, handleError: false);
-    return _walletResult(response);
+    ApiChecker.checkSession(response);
+    final WithdrawDecision decision =
+        classifyWithdraw(response.statusCode, errorCodes(response.body));
+    final dynamic resBody = response.body;
+    final String? message = decision.outcome == WithdrawOutcome.sent
+        ? (resBody is Map ? resBody['message']?.toString() : null)
+        : response.statusText;
+    return WithdrawResult(decision, message);
   }
 
+  /// One page of withdrawal requests (audit row 42). Silent; a 401 still
+  /// ends the session. Null on any failure.
   @override
-  Future<List<WalletWithdrawal>?> getWithdrawals({int offset = 1}) async {
+  Future<WithdrawalsPage?> getWithdrawals({int page = 1}) async {
     final Response response = await apiClient.getData(
-        '${AppConstants.walletWithdrawalsUri}?limit=20&offset=$offset');
-    if (response.statusCode == 200 && response.body is Map) {
-      final raw = (response.body as Map)['withdrawals'];
-      if (raw is List) {
-        return raw
-            .whereType<Map>()
-            .map((e) => WalletWithdrawal.fromJson(Map<String, dynamic>.from(e)))
-            .toList();
-      }
-    }
-    return null;
+      AppConstants.walletWithdrawalsUri,
+      query: {'limit': WithdrawalsPage.limit, 'offset': page},
+      handleError: false,
+    );
+    ApiChecker.checkSession(response);
+    if (response.statusCode != 200) return null;
+    return WithdrawalsPage.fromBody(response.body);
   }
 }

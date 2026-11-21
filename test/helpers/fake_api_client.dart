@@ -37,6 +37,12 @@ class FakeApiClient extends ApiClient {
   }
 
   @override
+  Future<Response> getBytes(String uri, {Map<String, dynamic>? query}) async {
+    calls.add(RecordedCall('BYTES', uri, query, null, false));
+    return nextResponse;
+  }
+
+  @override
   Future<Response> postData(String uri, dynamic body,
       {Map<String, String>? headers, bool handleError = true}) async {
     calls.add(RecordedCall('POST', uri, null, body, handleError));

@@ -5,7 +5,7 @@ import 'package:doghree_rider/common/widgets/empty_state_widget.dart';
 import 'package:doghree_rider/common/widgets/no_internet_screen.dart';
 import 'package:doghree_rider/features/order/controllers/order_controller.dart';
 import 'package:doghree_rider/features/order/widgets/history_order_widget.dart';
-import 'package:doghree_rider/features/order/widgets/history_page_footer_widget.dart';
+import 'package:doghree_rider/common/widgets/history_page_footer_widget.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
 import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/util/manager_assets.dart';
