@@ -15,6 +15,8 @@
 | D-08 | fix/d-08-wallet | Audit rows 41, 42, 43, 44 | merged, device tests pending (D-11) | 2026-11-21 |
 | D-09 | fix/d-09-uploads-profile | Audit rows 45, 46, 47, 48, 49 | merged, device tests pending (D-11) | 2026-11-21 |
 | D-10 | fix/d-10-cleanup | Audit rows 40, 55, 56, 57, 58, 60 + D-10 candidates and owner decisions Q1-Q7 | merged, device tests pending (D-11) | 2026-11-21 |
+| D-12 | fix/d-12-static-checks | Audit rows 61-75 (static sweep: safety net, start-up, failure texts, crash patterns, unused assets) | implemented on the branch, not merged; device tests pending (D-11) | |
+| D-13 | (planned) | Audit row 78: Retry states for Conversations, Chat, Notifications and HTML pages | planned | |
 | D-11 | (no code branch) | Final device pass: every pending backlog section, the smoke pass and the end-to-end order test (`docs/device-test-backlog.md`) | planned (after D-10) | |
 
 > **Branch state.** When D-03 started, `development` was level with `origin/development` (265bcfa): D-01 and D-02 were already pushed. The earlier note that D-03 would start ahead of origin was wrong. Device tests are deferred to D-11 (see CLAUDE.md, Batch workflow), and no release build is made from `development` until D-11 passes.
@@ -605,6 +607,60 @@
 - iOS proof picker: still gallery only (Q3, left as is).
 - `RECORD_AUDIO` is declared in the app manifest with no audio feature in the app.
 - D-07 note "a cold start from a push skips `updateToken()`" is behaviour, not cleanup: review in D-11.
+
+### D-12 (2026-11-21)
+- **Scope:** a static sweep before the D-11 device pass (no device needed). Part A: failure scenarios on start-up and on every first load, the global safety net, and the remaining crash patterns. Part B: app size and unused assets (report only, except the four certain-unused items the owner approved). Audit rows 61-75 are fixed; rows 76-78 are open notes or D-13.
+- **Owner answers:** no Crashlytics (local hook only); Retry states for Conversations, Chat, Notifications and HTML go to D-13; the splash gets a server-problem text; `+970` becomes one named constant; Part B images and GIFs go to a later batch; no dead-key list; one size build, measurement only.
+- **Commits:**
+  - d3667ab safety net: `AppErrorHandler` (`FlutterError.onError`, `PlatformDispatcher.onError` returning true, release-only neutral `ErrorWidget.builder`, sanitized debug logs, one `report` hook), start-up guards in `main()`, `StartupFailedApp`, `FirebaseState.ready` (rows 61, 62).
+  - d0f6b52 splash: `splashFailureFor` gives `noInternet` for statusCode 1 or an offline session and `serverProblem` for everything else (500, 403, 0, a 200 with an HTML body, unverified). `NoInternetScreen(serverProblem: true)` shows the new keys `server_problem` and `server_problem_try_again` (en, ar) with the same Retry (row 63).
+  - a745ad4 Home loads: current orders and notifications use `handleError: false` plus `ApiChecker.checkSession`. `FirstLoadNotice.pick` gives at most one message for a load with no data on screen (statusCode 1 wins, a 401 gives none). Data on screen, app resume and push refreshes are always silent. Pull-to-refresh with no data shows one message (row 64).
+  - bc03be4 crash fixes C1-C10 (rows 65-74) and the country fallback: `AppConstants.fallbackDialCode = '+970'` (just above the Shared Key block in `lib/util/app_constants.dart`) and `CountryHelper.countryFromConfig` (ISO code, then the dial code, then a hard-coded Palestine entry; never throws, never null).
+  - d72e23e removed `assets/image/earning.png`, `assets/icon/wallet_withdraw.svg` and the constants `earningImage`, `walletWithdrawIcon`, `location`, `list` (grep proof right before the delete: no reference left). `ChooseLanguageScreen` and `languageBackground` stay (row 75).
+- **Firebase places guarded** (each checks `FirebaseState.ready` or runs in a try): `main` (`initializeApp`, `getInitialMessage`, `onBackgroundMessage`); `NotificationHelper.initialize` (`onMessage`, `onMessageOpenedApp`); `myBackgroundMessageHandler` (whole body in a try); the dashboard `onMessage` listener (an empty stream when not ready); `PushClient` (permission, `getToken`, topic subscribe: no-ops; unsubscribe and `deleteToken` throw `firebase_not_ready`, so the logout cleanup stays pending and is retried); through it the auth repository `updateToken`, the logout cleanup and `retryPendingPushCleanup`; the forgot-password `getToken`; `FirebaseAuth.verifyPhoneNumber` (one `error_occurred` message, loader reset).
+- **CustomTextFieldWidget** (owner note N2, phone prefix only): line 285 `95` to `Dimensions.w95`; 289-290 `85`, `50` to `w85`, `h50`; 299-300 `25`, `25` to `w25`, `h25`; 304 `'+970'` to `AppConstants.fallbackDialCode`; 315-316 `20`, `2` to `h20`, `w2`; plus the `app_constants` import. `w85` was added to `Dimensions`. Every other size in the widget is unchanged.
+- **Tests:** 52 new, 417 total, 417 passed, 0 failed (baseline before D-12: 365). Analyze: 0 issues before every commit.
+  - Files: `firebase_not_ready_test` 3, `app_error_handler_test` 6, `splash_failure_test` 9, `silent_home_loads_test` 2, `first_load_notice_test` 14, `crash_fixes_test` 13, `country_helper_test` 5.
+  - **Fail on the old code by behaviour** (a temporary `git worktree` at `development` cbe44a1, removed afterwards):
+
+    | Test | Old-code result |
+    |---|---|
+    | F1 | `[core/no-app]` No Firebase App created (`PushClient.subscribe` via `updateToken`) |
+    | H1, H2 | `handleError` Expected: false, Actual: true |
+    | C1a, C1b, C1c | type 'String' is not a subtype of type 'Map<String, dynamic>' |
+    | C2a, C2b | `isLoading` stayed true |
+    | C3a, C3b | type 'String' is not a subtype of type 'int' of 'index' |
+    | C4 | Null check operator used on a null value |
+    | C5 | `isLoading` stayed true |
+    | C8 | type 'String' is not a subtype of type 'Map<String, dynamic>' |
+    | C10a, C10b | FormatException |
+
+  - **Fail on the old code at compile time only** (the API is new): `app_error_handler_test` (E1-E6), `splash_failure_test` (K1-K9), `first_load_notice_test` (P1-P6, O1-O5, N1-N3), `country_helper_test` (Y1-Y5).
+  - **Guards** (pass on the old code): F2 (login completes without Firebase), F3 (logout completes, cleanup pending), C3c (a JSON 200 is still a success).
+  - **Device only:** C6 (paginate after leaving a chat) and C7 (`checkPermission` after teardown).
+- **Device:** **not run.** Steps in `docs/device-test-backlog.md` (D-12) for D-11.
+- **Status:** implemented on `fix/d-12-static-checks`, not merged. Device tests pending (D-11).
+
+### Part B: app size (D-12 measurement, report only)
+- **Build:** `flutter build apk --analyze-size --target-platform android-arm64` at d72e23e, once, measurement only (640.7 s, exit 0). Nothing from `build/` is tracked or staged.
+- **Result:** `app-release.apk` 62.0 MB (64,987,395 bytes). By zip entry (compressed): images 25.03 MB, native libraries 19.76 MB, GIFs 12.33 MB, dex 2.07 MB, other 2.54 MB, icons 0.10 MB. The `flutter_assets` folder is 39 MB.
+- **Native libraries:** arm64-v8a 13 MB, armeabi-v7a 3 MB, x86_64 4 MB. The `--target-platform` flag limits the Flutter engine only; plugins still ship their own libraries for the other two ABIs.
+- **Dart AOT** (decompressed, 11 MB): `package:flutter` 3 MB, `package:doghree_rider` 1 MB, then `flutter_widget_from_html_core` 295 KB, `syncfusion_flutter_datepicker` 234 KB, `html` 207 KB, `vector_tile_renderer` 206 KB, `flutter_map` 168 KB, `vector_graphics_compiler` 163 KB.
+- **Icon fonts** are tree-shaken by Flutter (CupertinoIcons 257,628 to 912 bytes, MaterialIcons 1,645,184 to 5,048 bytes).
+- **Before D-12:** the release APK from 2026-11-06 (3 ABIs, not HEAD) was 62.9 MB with images at 25.8 MB. The D-12 deletion removed 771 KB of assets.
+- **Release config:** `build.gradle.kts` sets no minify flags, but the Flutter Gradle plugin turns on R8 and resource shrinking for release by default (a `mapping.txt` is produced). Nothing to enable. Any change to R8 rules needs a release test on a real device.
+- **Biggest wins (a later batch, not D-12):** resize the 30+ illustration PNGs to about 600 px and convert them to WebP; resize the 4 map markers to 128-192 px; replace the two GIFs (9.1 MB and 3.5 MB) with animated WebP, Lottie or a short video. Estimated 32-35 MB less (an estimate: no WebP encoder was run). Every illustrated screen then needs a visual check on a device. An app bundle (Play) or `--split-per-abi` removes the unused ABIs from each device's download.
+
+### Notes (found during D-12, not fixed)
+- **D-13:** Conversations, Chat, Notifications and HTML pages show an endless spinner after a failed first load (row 78). They need the compact `NoInternetScreen` with Retry.
+- **Images and GIFs:** a later batch (see Part B).
+- **C11 (row 76):** `ChooseLanguageScreen` uses `ManagerAssets.languageBackground`, whose file does not exist. No code navigates to `/language`. Kept on purpose.
+- **C12 (row 77):** `ChatScreen` reads `widget.notificationBody!`. Not reachable today.
+- `toggleDmRegistration!` and `demo!` on `ConfigModel` are force-unwrapped in the sign-in and registration screens; a config without them would throw. Not seen from the backend.
+- `verifyFirebaseOtp` keeps the default `handleError: true` while the controller also shows its own message: a possible double message on a failure.
+- Language keys: 787 en / 787 ar; 325 never appear as a literal (some are server values passed to `.tr`). No list made (owner answer Q7).
+- `android/$null` is a stray untracked file (a PowerShell redirect). Not tracked, not touched.
+- The D-10 note about the phone prefix sizes and fixed `+970` in `CustomTextFieldWidget` is closed by D-12 (N2).
 
 ## Open backend questions
 

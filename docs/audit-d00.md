@@ -70,6 +70,24 @@
 | 58 | bash.exe.stackdump, script.dart, unused_related.txt (repo root) | Stray files are tracked in git (a crash dump, a folder generator script, notes) | Repo noise. script.dart imports `args`, which is only a dev dependency | minor | unit | D-10 |
 | 59 | test/widget_test.dart:16-28 | Only the default counter test exists. It pumps `MyApp` without DI or Firebase | The suite cannot pass, so there is no unit test base yet | minor | unit | D-01 |
 | 60 | lib/features/dashboard/screens/dashboard_screen.dart:172-185 | The bottom nav uses raw sizes (16, 10, 76, 24, 18, 6) instead of `Dimensions` | It does not scale with ScreenUtil like the rest of the app | minor | device | D-10 |
+| 61 | lib/main.dart | No global error hooks: no `FlutterError.onError`, no `PlatformDispatcher.onError`, no `ErrorWidget.builder` | An uncaught async error only reaches the console; a build error shows a grey box in release | crash | unit | D-12 |
+| 62 | lib/main.dart | `Firebase.initializeApp`, `di.init()` and `initLocaleDateFormatting` are not guarded, and Firebase calls assume init worked | A throw leaves the native splash on screen; without Firebase, login fails at `updateToken` (`[core/no-app]`) | crash | unit | D-12 |
+| 63 | lib/features/splash/screens/splash_screen.dart | Every config or profile failure shows "No connection, check your internet" | A 500, 403 or an HTML page tells the rider to check a working connection | bad UX | unit | D-12 |
+| 64 | lib/features/home/screens/home_screen.dart (current orders, notifications) | Both Home loads use `handleError: true`, also on app resume | Offline Home shows 2 toasts, plus one on every resume | bad UX | unit | D-12 |
+| 65 | lib/features/chat/domain/repositories/chat_repository.dart:20,32,61 | `fromJson(response.body)` with no `is Map` guard | A 200 with an HTML body throws a TypeError; endless spinner | crash | unit | D-12 |
+| 66 | lib/features/chat/controllers/chat_controller.dart:138 | `sendMessage` never resets `_isLoading` on a failure or throw | The send button keeps spinning; the rider cannot send again | bad UX | unit | D-12 |
+| 67 | lib/features/forgot_password/controllers/forgot_password_controller.dart:21-77 + repository | No try/finally; the repository reads `body['message']` on any 200 | A 200 with an HTML body throws; the loader stays on | bad UX | unit | D-12 |
+| 68 | lib/features/notification/controllers/notification_controller.dart:188 | `updatedAt!` in the sort | One notification without `updated_at` hides the whole list | crash | unit | D-12 |
+| 69 | lib/features/notification/controllers/notification_controller.dart:113 | `markAllNotificationsAsRead` has no try/finally | Loader stuck after a throw | bad UX | unit | D-12 |
+| 70 | lib/common/widgets/paginated_list_view_widget.dart:43-63 | `setState` after await with no `mounted`, no finally, `totalSize!` | Leaving a chat while a page loads: setState after dispose; a throw leaves the footer spinner | crash | device | D-12 |
+| 71 | lib/features/home/screens/home_screen.dart:89-110 | `checkPermission` calls `setState` after awaits with no `mounted` | Logout or tab teardown during the await: setState after dispose | crash | device | D-12 |
+| 72 | lib/features/order/domain/repositories/order_repository.dart:32 | Cancel reasons parsed with no `is Map` guard, then `reasons!` | A 200 with an HTML body or no `reasons`: exception, empty cancel sheet | crash | unit | D-12 |
+| 73 | sign_in, dm_registration, forget_pass screens (initState) | `configModel!.country!` | A config without `country` crashes the sign-in screen | crash | unit | D-12 |
+| 74 | order_repository.dart:190, notification_repository.dart:94 | `jsonDecode` of stored entries with no guard | One corrupt stored entry makes Home throw on every launch | crash | unit | D-12 |
+| 75 | lib/util/manager_assets.dart, assets/image/earning.png, assets/icon/wallet_withdraw.svg | Unused assets (771 KB) and constants pointing to missing files (`location`, `list`) | APK size; dead code | minor | unit | D-12 |
+| 76 | lib/features/language/screens/language_screen.dart:29 | `ManagerAssets.languageBackground` points to a missing file; no code navigates to `/language` | A broken image if the route is ever opened | minor | device | open |
+| 77 | lib/features/chat/screens/chat_screen.dart:49 | `widget.notificationBody!` | A crash only if a route builds ChatScreen without a body (not seen) | minor | unit | open |
+| 78 | Conversations, Chat, Notifications, HTML pages | A failed first load leaves an endless spinner (no Retry state) | Offline or server error: the rider waits forever | bad UX | device | D-13 |
 
 ## Proposed batches
 
@@ -85,5 +103,8 @@
 | D-08 | fix/d-08-wallet | Invoice bytes, withdrawals paging, single message, delete guard | 41, 42, 43, 44 |
 | D-09 | fix/d-09-uploads-profile | Upload types and sizes, profile save, delivery proof policy | 45, 46, 47, 48, 49 |
 | D-10 | fix/d-10-cleanup | DI duplicates, dead code, stray files, Dimensions in nav | 40, 55, 56, 57, 58, 60 |
+| D-12 | fix/d-12-static-checks | Safety net, start-up guards, failure texts, silent Home loads, crash patterns, unused assets | 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75 |
 
 Rows 9, 42 and 49 depend on backend answers (docs/progress.md, Open backend questions).
+
+Rows 61-78 were added by the D-12 static sweep (2026-11-21, read at cbe44a1). Rows 76 and 77 are open notes; row 78 is planned for D-13.
