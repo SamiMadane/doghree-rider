@@ -15,7 +15,7 @@
 | D-08 | fix/d-08-wallet | Audit rows 41, 42, 43, 44 | merged, device tests pending (D-11) | 2026-11-21 |
 | D-09 | fix/d-09-uploads-profile | Audit rows 45, 46, 47, 48, 49 | merged, device tests pending (D-11) | 2026-11-21 |
 | D-10 | fix/d-10-cleanup | Audit rows 40, 55, 56, 57, 58, 60 + D-10 candidates and owner decisions Q1-Q7 | merged, device tests pending (D-11) | 2026-11-21 |
-| D-12 | fix/d-12-static-checks | Audit rows 61-75 (static sweep: safety net, start-up, failure texts, crash patterns, unused assets) | implemented on the branch, not merged; device tests pending (D-11) | |
+| D-12 | fix/d-12-static-checks | Audit rows 61-75 (static sweep: safety net, start-up, failure texts, crash patterns, unused assets) | merged, device tests pending (D-11) | 2026-11-22 |
 | D-13 | (planned) | Audit row 78: Retry states for Conversations, Chat, Notifications and HTML pages | planned | |
 | D-11 | (no code branch) | Final device pass: every pending backlog section, the smoke pass and the end-to-end order test (`docs/device-test-backlog.md`) | planned (after D-10) | |
 
@@ -639,7 +639,18 @@
   - **Guards** (pass on the old code): F2 (login completes without Firebase), F3 (logout completes, cleanup pending), C3c (a JSON 200 is still a success).
   - **Device only:** C6 (paginate after leaving a chat) and C7 (`checkPermission` after teardown).
 - **Device:** **not run.** Steps in `docs/device-test-backlog.md` (D-12) for D-11.
-- **Status:** implemented on `fix/d-12-static-checks`, not merged. Device tests pending (D-11).
+- **Status:** merged into `development` (2026-11-22), device tests pending (D-11). Rows 61-75 are closed on the app side.
+- **Still open after D-12:**
+  - **D-13:** Retry states for Conversations, Chat, Notifications and HTML pages (row 78).
+  - **Image and GIF size batch:** measured at d72e23e: images 25.03 MB, GIFs 12.33 MB, native libraries 19.76 MB, APK 62.0 MB (Part B below).
+  - **Translation rewrite:** includes the unused language keys (787 en / 787 ar; 325 never appear as a literal, some are server values passed to `.tr`).
+  - `verifyFirebaseOtp` keeps `handleError: true` while the controller shows its own message: a possible double message.
+  - **C11 (row 76):** the language screen's missing image (`languageBackground`).
+  - Force-unwraps on config fields (`toggleDmRegistration!`, `demo!`).
+  - **B-04:** invoice PDF content type and the upload-limit questions (Open backend questions).
+  - The Edit Profile avatar badge in nested `PositionedDirectional` (D-10 note).
+  - The iOS proof picker is gallery only (D-10, Q3).
+  - The D-07 note: a cold start from a push skips `updateToken()` (review in D-11).
 
 ### Part B: app size (D-12 measurement, report only)
 - **Build:** `flutter build apk --analyze-size --target-platform android-arm64` at d72e23e, once, measurement only (640.7 s, exit 0). Nothing from `build/` is tracked or staged.

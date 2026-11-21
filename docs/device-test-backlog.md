@@ -206,7 +206,7 @@ Also run the combined smoke pass (this batch touches orders and start-up). While
 ## D-12: safety net, start-up, failure texts, silent Home loads, crash fixes
 
 - **Branch:** fix/d-12-static-checks
-- **Branch commits:** d3667ab, d0f6b52, a745ad4, bc03be4, d72e23e
+- **Branch commits:** d3667ab, d0f6b52, a745ad4, bc03be4, d72e23e (docs b469a8d); merged into `development` 2026-11-22
 - **Status:** pending (D-11)
 
 | # | Steps | Expected |
