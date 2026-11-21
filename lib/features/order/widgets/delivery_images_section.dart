@@ -44,6 +44,15 @@ class DeliveryImagesSection extends StatelessWidget {
             'completed_after_delivery_picture'.tr,
             style: textSemiBold().copyWith(fontSize: Dimensions.fs16),
           ),
+          // The photo is optional (owner decision B-02).
+          SizedBox(height: Dimensions.h4),
+          Text(
+            'proof_photo_optional_hint'.tr,
+            style: textRegular().copyWith(
+              fontSize: Dimensions.fs14,
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
           SizedBox(height: Dimensions.h16),
           SizedBox(
             height: tile,

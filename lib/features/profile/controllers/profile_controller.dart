@@ -14,6 +14,9 @@ import 'package:doghree_rider/features/profile/domain/services/profile_service_i
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:doghree_rider/helper/image_picker_helper.dart';
+import 'package:doghree_rider/helper/image_upload_rules.dart';
+import 'package:doghree_rider/api/error_message.dart';
+import 'package:doghree_rider/api/error_type.dart';
 import 'package:image_cropper/image_cropper.dart';
 
 class ProfileController extends GetxController implements GetxService {
@@ -37,20 +40,42 @@ class ProfileController extends GetxController implements GetxService {
   bool _backgroundNotification = true;
   bool get backgroundNotification => _backgroundNotification;
 
-  // ========== ✅ NEW: Pick Profile Image with Crop ==========
-  /// اختيار صورة البروفايل مع القص الاحترافي
-  Future<void> pickProfileImageWithCrop(BuildContext context) async {
-    final XFile? croppedImage =
-        await ImagePickerHelper.showImageSourceBottomSheet(
-      context: context,
-      cropStyle: CropStyle.circle,
-      lockAspectRatio: false,
-    );
+  /// Every message of the profile edit goes through here. Production always
+  /// uses [showCustomSnackBar]; tests replace it only to count messages.
+  @visibleForTesting
+  void Function(String? message, {bool isError}) toast = showCustomSnackBar;
 
-    if (croppedImage != null) {
-      _pickedFile = croppedImage;
-      update();
+  bool _picking = false;
+
+  /// اختيار صورة البروفايل مع القص الاحترافي. One picker at a time; the
+  /// helper shows the one message for a picker failure (audit row 46).
+  Future<void> pickProfileImageWithCrop(BuildContext context) async {
+    if (_picking) return;
+    _picking = true;
+    try {
+      final XFile? croppedImage =
+          await ImagePickerHelper.showImageSourceBottomSheet(
+        context: context,
+        cropStyle: CropStyle.circle,
+        lockAspectRatio: false,
+      );
+      if (croppedImage != null) await acceptProfileImage(croppedImage);
+    } finally {
+      _picking = false;
     }
+  }
+
+  /// Keeps [file] as the new profile photo only if it passes
+  /// [ImageUploadRules]. Otherwise one message, and the old photo stays.
+  Future<bool> acceptProfileImage(XFile file) async {
+    final ImageCheck check = await ImageUploadRules.check(file);
+    if (check != ImageCheck.ok) {
+      toast(ImageUploadRules.messageKey(check).tr);
+      return false;
+    }
+    _pickedFile = file;
+    update();
+    return true;
   }
 
   // ========== ⚠️ KEEP OLD METHOD (for backward compatibility) ==========
@@ -83,22 +108,55 @@ class ProfileController extends GetxController implements GetxService {
     return result.status;
   }
 
-  Future<bool> updateUserInfo(
-      ProfileModel updateUserModel, String token) async {
+  /// One request per tap, one message, and the loader always stops (audit
+  /// row 48). On success only the edited fields change: the rest of the
+  /// loaded profile (id, online state, wallet) is kept.
+  Future<bool> updateUserInfo(ProfileModel updateUserModel) async {
+    if (_isLoading) return false;
     _isLoading = true;
     update();
-    ResponseModel responseModel = await profileServiceInterface.updateProfile(
-        updateUserModel, _pickedFile, token);
-    _isLoading = false;
-    if (responseModel.isSuccess) {
-      _profileModel = updateUserModel;
-      Get.back();
-      showCustomSnackBar(responseModel.message, isError: false);
-    } else {
-      showCustomSnackBar(responseModel.message, isError: true);
+    bool success = false;
+    try {
+      final ResponseModel responseModel = await profileServiceInterface
+          .updateProfile(updateUserModel, _pickedFile);
+      if (responseModel.isSuccess) {
+        success = true;
+        _applyProfileEdit(updateUserModel);
+        _pickedFile = null;
+        _isLoading = false;
+        // Closing the screen can never turn a saved profile into an error.
+        try {
+          Get.back();
+        } catch (e) {
+          if (kDebugMode) debugPrint('close edit screen failed: ${e.runtimeType}');
+        }
+        final String? message = responseModel.message;
+        toast((message == null || message.isEmpty) ? 'profile_updated'.tr : message,
+            isError: false);
+      } else if (responseModel.statusCode == 401) {
+        // checkSession already ended the session: no second message.
+      } else if (responseModel.statusCode == 1) {
+        toast(ErrorMessages.getMessage(ErrorType.noInternet));
+      } else {
+        final String? message = responseModel.message;
+        toast((message == null || message.isEmpty) ? 'error_occurred'.tr : message);
+      }
+    } catch (e) {
+      if (kDebugMode) debugPrint('updateUserInfo failed: ${e.runtimeType}');
+      toast('error_occurred'.tr);
+    } finally {
+      _isLoading = false;
+      update();
     }
-    update();
-    return responseModel.isSuccess;
+    return success;
+  }
+
+  void _applyProfileEdit(ProfileModel edit) {
+    final ProfileModel? current = _profileModel;
+    if (current == null) return;
+    if (edit.fName != null) current.fName = edit.fName;
+    if (edit.lName != null) current.lName = edit.lName;
+    if (edit.email != null) current.email = edit.email;
   }
 
   void pickImage() async {

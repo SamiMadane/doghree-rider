@@ -64,6 +64,14 @@ Endpoints as the rider app actually uses them. Fill one section per endpoint whe
   - 406 `error`: delivered failed while writing the wallet transaction. The order is **not** delivered. The app shows the server message and the rider can retry.
 - Used in: `OrderRepository.updateOrderStatus` (`classifyStatus`), then `OrderController.updateOrderStatus`.
 - Source: docs/backend R4 step 1.
+- **Proof photos (D-09, owner decision B-02: optional).** The server rule is `order_proof => 'array|max:5'`: no required, mime or size rule. Photos and the status travel in **one** request; there is no separate photo endpoint, and `delivered` is refused from anything but `picked_up`, so photos can never be uploaded later.
+  - Before sending `delivered`, photos that can no longer be read are dropped (`ImageUploadRules`). The rest go as `order_proof[]`, each labelled by its real content type.
+  - A `delivered` request **with photos** that ends in 413, 403 with an `errors[].code` of `order_id` or `status`, 5xx, statusCode 0 or 1 is never resent automatically. One silent `GET order` decides (`classifyProofFailure`):
+    - `delivered`: success. `order_proof_full_url` (read with `hasProofImages`) picks `order_delivered` or `delivered_photos_not_saved`.
+    - `picked_up` after 413 or the 403 field code: the rider is asked to deliver without photos. Yes sends the same body once with no files.
+    - `picked_up` after 5xx: `order_not_delivered_retry`. After 0 or 1: `delivery_unconfirmed` (the request may still finish).
+    - not found: the D-04 order-changed path. Fetch failed: `delivery_unconfirmed`.
+  - **Not documented:** what the server answers when PHP drops an oversize body. The 403 `order_id`/`status` case follows the documented validation envelope (Screens, error shape 1). The lost `_method=put` could also give 405, or Laravel `ValidatePostSize` a 413; 405 is not treated as a photo failure (B-04 questions 7–11).
 
 ### GET /api/v1/delivery-man/order?order_id=<id>
 
@@ -121,6 +129,16 @@ Endpoints as the rider app actually uses them. Fill one section per endpoint whe
   - A 200 body that is not a Map (for example `[]`) is a failure (null).
   - A missing, null or wrong `messages` field is an empty list. An empty list still gives a model, so a new conversation opens.
   - The numbers are read with `JsonHelper.asInt` (D-07, row 54).
+
+### PUT /api/v1/delivery-man/update-profile
+
+- **Not in Screens R1-R7.** The request comes from Postman (request example and one saved 200); nothing was observed on a device yet.
+- Auth: Bearer header. Sent as multipart POST with `_method=put`, 60 s timeout, `handleError: false` plus `checkSession`.
+- Request (fields): `f_name`, `l_name`, `email` (each only when the app has a value), `image` (only when a photo was picked; jpeg, png or webp up to 2 MB on the app side). Postman also lists `password` with `current_password` and `vehicle_id`, which the app does not send. The phone shown on the screen is never sent.
+- Response 200 shape: `{ "message": "successfully updated!" }`.
+- Errors: 403 with a field `code` (for example `email`, `current_password`). The app shows the server text once. 401: the session sheet only.
+- **Unknown:** the server rules for `image` (mimes, maximum size). See B-04 questions 7–11.
+- Used in: `ProfileRepository.updateProfile`, then `ProfileController.updateUserInfo`.
 
 ### GET /api/v1/delivery-man/wallet
 

@@ -310,9 +310,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     );
 
     // Server errors are shown by ProfileController (snackbar).
-    profileController
-        .updateUserInfo(updatedUser, authController.getUserToken())
-        .then((isSuccess) async {
+    profileController.updateUserInfo(updatedUser).then((isSuccess) async {
       if (isSuccess) {
         await profileController.getProfile();
       }

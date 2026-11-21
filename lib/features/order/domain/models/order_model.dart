@@ -72,6 +72,11 @@ class OrderModel {
   String? unavailableItemNote;
   String? deliveryInstruction;
   List<String>? orderProofFullUrl;
+
+  /// True when the server holds at least one proof photo URL (D-09). A
+  /// missing, null, empty or non-list `order_proof_full_url` is false.
+  bool get hasProofImages =>
+      JsonHelper.stringList(orderProofFullUrl).any((u) => u.trim().isNotEmpty);
   List<Payments>? payments;
   double? storeDiscountAmount;
   bool? taxStatus;

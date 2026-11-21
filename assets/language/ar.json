@@ -771,5 +771,19 @@
   "error_occurred": "حدث خطأ. يرجى المحاولة مرة أخرى",
   "load_more_failed": "تعذّر تحميل المزيد من الطلبات",
   "wallet_load_more_failed": "تعذّر تحميل المزيد من طلبات السحب",
-  "invoice_download_failed": "تعذّر تنزيل الكشف. يرجى المحاولة مرة أخرى"
+  "invoice_download_failed": "تعذّر تنزيل الكشف. يرجى المحاولة مرة أخرى",
+  "please_upload_lower_size_file": "حجم الصورة كبير. يرجى اختيار صورة أقل من 2 ميغابايت",
+  "photo_format_not_supported": "صيغة الصورة غير مدعومة. استخدم صورة JPG أو PNG أو WEBP، أو التقط صورة جديدة من الكاميرا",
+  "camera_permission_denied": "الوصول إلى الكاميرا غير مسموح. فعّله من إعدادات الهاتف",
+  "gallery_permission_denied": "الوصول إلى الصور غير مسموح. فعّله من إعدادات الهاتف",
+  "no_camera_available": "لا توجد كاميرا متاحة على هذا الجهاز",
+  "image_pick_failed": "تعذّر استخدام هذه الصورة. يرجى المحاولة مرة أخرى",
+  "proof_photo_optional_hint": "اختيارية. يمكنك التسليم بدون صورة",
+  "order_delivered": "تم تسليم الطلب",
+  "delivered_photos_not_saved": "تم تسليم الطلب، لكن لم يتم حفظ صور إثبات التسليم",
+  "delivered_some_photos_skipped": "تم تسليم الطلب. تعذّر إرفاق بعض الصور",
+  "delivery_unconfirmed": "تعذّر تأكيد التسليم حتى الآن. سيتم تحديث الطلب تلقائياً",
+  "photos_upload_failed_deliver_without": "تعذّر رفع الصور. هل تريد تسليم الطلب بدون صور؟",
+  "deliver_without_photos": "التسليم بدون صور",
+  "profile_updated": "تم تحديث ملفك الشخصي"
 }

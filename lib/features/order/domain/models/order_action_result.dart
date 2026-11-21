@@ -75,6 +75,37 @@ StatusOutcome classifyStatus(int? status, String? code) {
   return StatusOutcome.failed;
 }
 
+/// What a failed `delivered` request that carried proof photos means (D-09,
+/// owner decision B-02: a photo never blocks a delivery). Only used for that
+/// request; every other request keeps [classifyStatus] alone.
+enum ProofFailure {
+  /// Not a photo problem: a server decision (D-04 outcomes) or a success.
+  none,
+
+  /// The body was probably too big: 413, or a 403 validation code for a
+  /// required field of this endpoint (`order_id`, `status`), which is what
+  /// a body dropped by PHP would give (Screens, error shape 1).
+  tooLarge,
+
+  /// 5xx: the server failed.
+  serverError,
+
+  /// statusCode 0 or 1: the request may still have completed.
+  unknown,
+}
+
+ProofFailure classifyProofFailure(int? status, List<String> codes) {
+  if (status == 413) return ProofFailure.tooLarge;
+  if (status == 403 && codes.any((c) => c == 'order_id' || c == 'status')) {
+    return ProofFailure.tooLarge;
+  }
+  if (status != null && status >= 500 && status <= 599) {
+    return ProofFailure.serverError;
+  }
+  if (status == 0 || status == 1) return ProofFailure.unknown;
+  return ProofFailure.none;
+}
+
 /// GET delivery-man/order (R4 step 4).
 enum OrderFetch { found, notFound, failed }
 
@@ -114,7 +145,11 @@ class OrderActionResult<T> {
   final T outcome;
   final String? message;
   final int? statusCode;
-  const OrderActionResult(this.outcome, this.message, this.statusCode);
+
+  /// Every `errors[].code`, in order. Empty when there is none.
+  final List<String> codes;
+  const OrderActionResult(this.outcome, this.message, this.statusCode,
+      {this.codes = const []});
 }
 
 /// GET order result: the outcome, the parsed order when found, and the

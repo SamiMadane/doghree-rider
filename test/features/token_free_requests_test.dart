@@ -74,7 +74,7 @@ void main() {
     final r = ProfileRepository(apiClient: api, sharedPreferences: prefs);
     await r.getProfileInfo();
     await r.updateProfile(
-        ProfileModel(fName: 'A', lName: 'B', email: 'a@b.c'), null, '');
+        ProfileModel(fName: 'A', lName: 'B', email: 'a@b.c'), null);
     await r.updateActiveStatus();
     await r.recordLocation(
         RecordLocationBodyModel(latitude: 1, longitude: 2, location: 'x'));
