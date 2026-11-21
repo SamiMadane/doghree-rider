@@ -13,6 +13,14 @@ class ImageUploadRules {
   /// so this stays the registration value until the owner confirms them.
   static const int maxImageBytes = 2 * 1024 * 1024;
 
+  /// Largest width and height, in image pixels, of a picked or cropped photo
+  /// (registration and profile). Pixels of the output file, not layout
+  /// sizes, so never from `Dimensions`.
+  static const int pickMaxDimension = 1600;
+
+  /// JPEG quality (0-100) of a picked or cropped photo.
+  static const int pickJpegQuality = 85;
+
   /// Never throws. A missing, empty or unreadable file is [ImageCheck.unreadable].
   static Future<ImageCheck> check(XFile file,
       {int maxBytes = maxImageBytes}) async {

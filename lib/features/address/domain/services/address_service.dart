@@ -1,4 +1,3 @@
-import 'package:get/get.dart';
 import 'package:doghree_rider/features/address/domain/models/zone_model.dart';
 import 'package:doghree_rider/features/address/domain/repositories/address_repository_interface.dart';
 import 'package:doghree_rider/features/address/domain/services/address_service_interface.dart';
@@ -10,11 +9,6 @@ class AddressService implements AddressServiceInterface {
   @override
   Future<List<ZoneModel>?> getZoneList() async {
     return await addressRepositoryInterface.getList();
-  }
-
-  @override
-  Future<Response> getZone(String lat, String lng) async {
-    return await addressRepositoryInterface.getZone(lat, lng);
   }
 
   @override

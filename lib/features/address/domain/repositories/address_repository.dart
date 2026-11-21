@@ -20,11 +20,6 @@ class AddressRepository implements AddressRepositoryInterface {
   }
 
   @override
-  Future<Response> getZone(String lat, String lng) async {
-    return await apiClient.getData('${AppConstants.zoneUri}?lat=$lat&lng=$lng');
-  }
-
-  @override
   String? getUserAddress() {
     return sharedPreferences.getString(AppConstants.userAddress);
   }

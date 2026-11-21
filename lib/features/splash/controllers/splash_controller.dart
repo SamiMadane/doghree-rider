@@ -14,15 +14,6 @@ class SplashController extends GetxController implements GetxService {
   DoghreeMapConfig? _doghreeMapConfig;
   DoghreeMapConfig? get doghreeMapConfig => _doghreeMapConfig;
 
-  bool _firstTimeConnectionCheck = true;
-  bool get firstTimeConnectionCheck => _firstTimeConnectionCheck;
-
-  int? _storeCategoryID;
-  int? get storeCategoryID => _storeCategoryID;
-
-  String? _storeType;
-  String? get storeType => _storeType;
-
   Map<String, dynamic>? _data = {};
 
   DateTime get currentTime => DateTime.now();
@@ -56,16 +47,6 @@ class SplashController extends GetxController implements GetxService {
     }
   }
 
-  // جلب اعدادات موديول معين من السيرفر والموديول يتم تمريره
-  // في حال كانت ال moduleType هي food يتم اضافة خاصية newVariation
-  Module getModuleConfig(String? moduleType) {
-    Module module = Module.fromJson(_data!['module_config'][moduleType]);
-    moduleType == 'food'
-        ? module.newVariation = true
-        : module.newVariation = false;
-    return module;
-  }
-
   /// The settings of one module, from memory. It is called from `build`, so it
   /// never throws (audit row 30): a null or unknown [moduleType], a config
   /// that is not loaded yet, or a broken entry gives an empty `Module()`
@@ -90,9 +71,5 @@ class SplashController extends GetxController implements GetxService {
 
   Future<bool> removeSharedData() {
     return navigationHandlerServiceInterface.removeSharedData();
-  }
-
-  void setFirstTimeConnectionCheck(bool isChecked) {
-    _firstTimeConnectionCheck = isChecked;
   }
 }

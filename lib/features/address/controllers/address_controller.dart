@@ -6,7 +6,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
 import 'package:doghree_rider/features/address/domain/models/address_model.dart';
 import 'package:doghree_rider/features/address/domain/models/zone_model.dart';
-import 'package:doghree_rider/features/address/domain/models/zone_response_model.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:doghree_rider/features/address/domain/services/address_service_interface.dart';
@@ -29,18 +28,6 @@ class AddressController extends GetxController implements GetxService {
 
   List<int>? _zoneIds;
   List<int>? get zoneIds => _zoneIds;
-
-  bool _loading = false;
-  bool get loading => _loading;
-
-  bool _inZone = false;
-  bool get inZone => _inZone;
-
-  int _zoneID = 0;
-  int get zoneID => _zoneID;
-
-  bool _isLoading = false;
-  bool get isLoading => _isLoading;
 
   String? _selectedDeliveryZoneId;
   String? get selectedDeliveryZoneId => _selectedDeliveryZoneId;
@@ -65,30 +52,6 @@ class AddressController extends GetxController implements GetxService {
 
   void resetSelectedDeliveryZone() {
     _selectedDeliveryZoneId = null;
-  }
-
-  Future<ZoneResponseModel?> getZone(String lat, String long, bool markerLoad,
-      {bool updateInAddress = false}) async {
-    markerLoad ? _loading = true : _isLoading = true;
-    if (!updateInAddress) {
-      update();
-    }
-    ZoneResponseModel? responseModel;
-    Response response = await addressServiceInterface.getZone(lat, long);
-    if (response.statusCode == 200) {
-      _inZone = true;
-      _zoneID = int.parse(jsonDecode(response.body['zone_id'])[0].toString());
-      List<int> zoneIds = [];
-      jsonDecode(response.body['zone_id']).forEach((zoneId) {
-        zoneIds.add(int.parse(zoneId.toString()));
-      });
-    } else {
-      _inZone = false;
-      responseModel = ZoneResponseModel(false, response.statusText, [], []);
-    }
-    markerLoad ? _loading = false : _isLoading = false;
-    update();
-    return responseModel;
   }
 
   AddressModel? getUserAddress() {

@@ -65,7 +65,6 @@ class AppConstants {
   static const String driverRemoveUri = '/api/v1/delivery-man/remove-account';
   static const String dmRegisterUri = '/api/v1/auth/delivery-man/store';
   static const String zoneListUri = '/api/v1/zone/list';
-  static const String zoneUri = '/api/v1/config/get-zone-id';
   static const String currentOrderUri = '/api/v1/delivery-man/order';
   static const String vehiclesUri = '/api/v1/get-vehicles';
   static const String orderCancellationUri =

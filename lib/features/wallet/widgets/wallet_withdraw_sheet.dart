@@ -63,6 +63,14 @@ class _WalletWithdrawSheetState extends State<WalletWithdrawSheet> {
     return double.tryParse(s);
   }
 
+  /// True when the typed amount is above the balance the app last loaded.
+  /// Shown as a hint only; it never blocks the request.
+  bool _exceedsShownBalance(double? available) {
+    if (available == null) return false;
+    final double? typed = _parse(_amount.text);
+    return typed != null && typed > available + 0.0001;
+  }
+
   Future<void> _submit() async {
     final c = Get.find<WalletController>();
     final WalletModel? w = c.wallet;
@@ -78,10 +86,8 @@ class _WalletWithdrawSheetState extends State<WalletWithdrawSheet> {
       return;
     }
     final double amount = double.parse(parsed.toStringAsFixed(2));
-    if (amount > w.availableBalance + 0.0001) {
-      setState(() => _amountError = 'wallet_withdraw_exceeds'.tr);
-      return;
-    }
+    // An amount above the shown balance is only a hint (see build): the
+    // balance may be stale, and the server decides.
     setState(() {
       _amountError = null;
       _formError = null;
@@ -201,12 +207,11 @@ class _WalletWithdrawSheetState extends State<WalletWithdrawSheet> {
                         const TextInputType.numberWithOptions(decimal: true),
                     errorText: _amountError,
                     onChanged: (_) {
-                      if (_amountError != null) {
-                        setState(() => _amountError = null);
-                      }
-                      if (_formError != null) {
-                        setState(() => _formError = null);
-                      }
+                      // Always rebuild: the balance hint follows the text.
+                      setState(() {
+                        _amountError = null;
+                        _formError = null;
+                      });
                       c.clearWithdrawError();
                     },
                     isRequired: true,
@@ -215,6 +220,13 @@ class _WalletWithdrawSheetState extends State<WalletWithdrawSheet> {
                     inputAction: TextInputAction.next,
                   ),
                 ),
+                if (_exceedsShownBalance(c.wallet?.availableBalance)) ...[
+                  SizedBox(height: Dimensions.h8),
+                  Text('wallet_withdraw_exceeds'.tr,
+                      style: textMedium().copyWith(
+                          color: scheme.onSurfaceVariant,
+                          fontSize: Dimensions.fs12)),
+                ],
                 SizedBox(height: Dimensions.h8),
                 Text('wallet_withdraw_one_per_week'.tr,
                     style: textRegular().copyWith(

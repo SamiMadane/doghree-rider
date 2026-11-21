@@ -64,6 +64,7 @@ class Dimensions {
   static double h68 = 68.h;
   static double h70 = 70.h;
   static double h72 = 72.h;
+  static double h76 = 76.h;
   static double h80 = 80.h;
   static double h85 = 85.h;
   static double h90 = 90.h;

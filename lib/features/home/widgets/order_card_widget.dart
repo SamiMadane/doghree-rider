@@ -143,8 +143,7 @@ class OrderCardWidget extends StatelessWidget {
                 RouteHelper.getOrderDetailsRoute(order.id),
                 arguments: OrderDetailsScreen(
                     orderId: order.id,
-                    isRunningOrder: isRunningOrder,
-                    orderIndex: index),
+                    isRunningOrder: isRunningOrder),
               );
             },
             isBorder: true,

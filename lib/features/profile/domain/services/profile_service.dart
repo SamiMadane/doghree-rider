@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:doghree_rider/api/api_client.dart';
 import 'package:doghree_rider/common/models/response_model.dart';
-import 'package:doghree_rider/common/widgets/custom_snackbar_widget.dart';
 import 'package:doghree_rider/features/address/domain/models/record_location_body_model.dart';
 import 'package:doghree_rider/features/profile/domain/models/profile_model.dart';
 import 'package:doghree_rider/features/profile/domain/models/profile_result_model.dart';
@@ -123,21 +122,5 @@ class ProfileService implements ProfileServiceInterface {
       onGranted: () async => callback(),
       showDialogIfDenied: showDialog,
     );
-  }
-
-  @override
-  Future<XFile?> pickImageFromGallery() async {
-    XFile? pickImage =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pickImage != null) {
-      pickImage.length().then((value) {
-        if (value > 2000000) {
-          showCustomSnackBar('please_upload_lower_size_file'.tr);
-        } else {
-          return pickImage;
-        }
-      });
-    }
-    return pickImage;
   }
 }

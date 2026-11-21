@@ -14,6 +14,12 @@ import 'package:doghree_rider/helper/image_upload_rules.dart';
 class ImagePickerHelper {
   static final ImagePicker _picker = ImagePicker();
 
+  // Native crop screen settings (plugin units, not Flutter layout sizes).
+  static const int _cropFrameStrokeWidth = 3;
+  static const int _cropGridStrokeWidth = 1;
+  static const int _cropGridLines = 3;
+  static const double _iosMinimumAspectRatio = 0.5;
+
   /// Pick and crop image - Main method
   static Future<XFile?> pickAndCropImage({
     required BuildContext context,
@@ -27,9 +33,9 @@ class ImagePickerHelper {
       // 1. Pick image
       final XFile? image = await _picker.pickImage(
         source: source,
-        imageQuality: 85,
-        maxWidth: 1600,
-        maxHeight: 1600,
+        imageQuality: ImageUploadRules.pickJpegQuality,
+        maxWidth: ImageUploadRules.pickMaxDimension.toDouble(),
+        maxHeight: ImageUploadRules.pickMaxDimension.toDouble(),
       );
 
       if (image == null) return null;
@@ -57,31 +63,6 @@ class ImagePickerHelper {
       showCustomSnackBar(pickFailureKey(classifyPickError(e)).tr);
       return null;
     }
-  }
-
-  /// Pick circular profile image
-  static Future<XFile?> pickProfileImage(BuildContext context) async {
-    return await pickAndCropImage(
-      context: context,
-      cropStyle: CropStyle.circle,
-      lockAspectRatio: true,
-      aspectRatioPresets: [CropAspectRatioPreset.square],
-    );
-  }
-
-  /// Pick normal image (square or free)
-  static Future<XFile?> pickNormalImage(BuildContext context) async {
-    return await pickAndCropImage(
-      context: context,
-      cropStyle: CropStyle.rectangle,
-      lockAspectRatio: false,
-      aspectRatioPresets: [
-        CropAspectRatioPreset.original,
-        CropAspectRatioPreset.square,
-        CropAspectRatioPreset.ratio4x3,
-        CropAspectRatioPreset.ratio16x9,
-      ],
-    );
   }
 
   /// Show bottom sheet - KEPT AS IS (NO CHANGES)
@@ -228,10 +209,10 @@ class ImagePickerHelper {
     final croppedFile = await ImageCropper().cropImage(
       sourcePath: imagePath,
       aspectRatio: aspectRatio, 
-      compressQuality: 85,
-      compressFormat: ImageCompressFormat.jpg, 
-      maxWidth: 1600,
-      maxHeight: 1600,
+      compressQuality: ImageUploadRules.pickJpegQuality,
+      compressFormat: ImageCompressFormat.jpg,
+      maxWidth: ImageUploadRules.pickMaxDimension,
+      maxHeight: ImageUploadRules.pickMaxDimension,
       uiSettings: [
         AndroidUiSettings(
           toolbarTitle: 'crop_image'.tr,
@@ -250,13 +231,13 @@ class ImagePickerHelper {
 
   
           cropFrameColor: frameColor,
-          cropFrameStrokeWidth: 3, 
+          cropFrameStrokeWidth: _cropFrameStrokeWidth,
 
           cropGridColor: gridColor.withValues(alpha: 0.30),
-          cropGridStrokeWidth: 1, 
+          cropGridStrokeWidth: _cropGridStrokeWidth,
 
-          cropGridRowCount: 3,
-          cropGridColumnCount: 3,
+          cropGridRowCount: _cropGridLines,
+          cropGridColumnCount: _cropGridLines,
           showCropGrid: true,
 
           hideBottomControls: false,
@@ -280,7 +261,7 @@ class ImagePickerHelper {
           doneButtonTitle: 'done'.tr,
           cancelButtonTitle: 'cancel'.tr,
 
-          minimumAspectRatio: 0.5, 
+          minimumAspectRatio: _iosMinimumAspectRatio,
           rectX: 0.0,
           rectY: 0.0,
           rectWidth: 1.0,

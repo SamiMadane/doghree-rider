@@ -181,27 +181,6 @@ class NotificationHelper {
     }
   }
 
-  static Future<void> showTextNotification(
-      String title,
-      String body,
-      NotificationBodyModel notificationBody,
-      FlutterLocalNotificationsPlugin fln) async {
-    const AndroidNotificationDetails androidPlatformChannelSpecifics =
-        AndroidNotificationDetails(
-      'doghree_rider',
-      AppConstants.appName,
-      color:  Color(0xFFFFC233),
-      playSound: true,
-      importance: Importance.max,
-      priority: Priority.max,
-      sound: RawResourceAndroidNotificationSound('notification'),
-    );
-    const NotificationDetails platformChannelSpecifics =
-        NotificationDetails(android: androidPlatformChannelSpecifics);
-    await fln.show(_newId(), title, body, platformChannelSpecifics,
-        payload: jsonEncode(notificationBody.toJson()));
-  }
-
   static Future<void> showBigTextNotification(
       String? title,
       String body,
