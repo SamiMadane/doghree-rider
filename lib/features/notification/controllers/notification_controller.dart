@@ -1,7 +1,10 @@
 import 'package:doghree_rider/common/widgets/custom_snackbar_widget.dart';
 import 'package:doghree_rider/features/notification/domain/models/notification_body_model.dart';
 import 'package:doghree_rider/features/notification/domain/models/notification_model.dart';
+import 'package:doghree_rider/common/models/list_load.dart';
 import 'package:doghree_rider/helper/date_converter_helper.dart';
+import 'package:doghree_rider/helper/first_load_notice.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:doghree_rider/features/notification/domain/services/notification_service_interface.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
@@ -20,6 +23,11 @@ class NotificationController extends GetxController implements GetxService {
   bool get isLoading => _isLoading;
   bool _hideNotificationButton = false;
   bool get hideNotificationButton => _hideNotificationButton;
+
+  /// Every message of this controller goes through here. Production always
+  /// uses [showCustomSnackBar]; tests replace it only to count messages.
+  @visibleForTesting
+  void Function(String? message, {bool isError}) toast = showCustomSnackBar;
 
   
 
@@ -113,21 +121,26 @@ class NotificationController extends GetxController implements GetxService {
     _isLoading = true;
     update();
 
-    bool success =
-        await notificationServiceInterface.markAllNotificationsAsRead();
+    // The loader stops even when the call throws (D-12, C5).
+    try {
+      bool success =
+          await notificationServiceInterface.markAllNotificationsAsRead();
 
-    if (success) {
-      // تحديث جميع الإشعارات محلياً
-      if (_notificationList != null) {
-        for (var notification in _notificationList!) {
-          notification.isRead = true;
+      if (success) {
+        // تحديث جميع الإشعارات محلياً
+        if (_notificationList != null) {
+          for (var notification in _notificationList!) {
+            notification.isRead = true;
+          }
+          _hasNotification = false;
         }
-        _hasNotification = false;
       }
+    } catch (e) {
+      if (kDebugMode) debugPrint('markAllNotificationsAsRead failed: ${e.runtimeType}');
+    } finally {
+      _isLoading = false;
+      update();
     }
-
-    _isLoading = false;
-    update();
   }
 
   NotificationType _convertStringToNotificationType(String type) {
@@ -177,29 +190,65 @@ class NotificationController extends GetxController implements GetxService {
     }
   }
 
-  Future<void> getNotificationList([bool reload = false]) async {
-    if (_notificationList == null || reload) {
-      List<NotificationModel>? notificationList =
+  /// Silent load (D-12). With [announce], a failure while no list was ever
+  /// loaded shows exactly one message (FirstLoadNotice); with data on screen
+  /// it stays silent. Push and resume refreshes never announce.
+  Future<LoadAttempt> getNotificationList(
+      {bool reload = false, bool announce = false}) async {
+    final bool hadData = _notificationList != null;
+    if (hadData && !reload) {
+      return const LoadAttempt(ok: true, hadData: true);
+    }
+    LoadAttempt attempt;
+    try {
+      final ListLoad<NotificationModel> load =
           await notificationServiceInterface.getNotificationList();
+      final List<NotificationModel>? notificationList = load.list;
+      attempt = LoadAttempt(
+          ok: load.ok,
+          hadData: hadData,
+          statusCode: load.statusCode,
+          message: load.message);
       if (notificationList != null) {
         _notificationList = [];
         _notificationList!.addAll(notificationList);
+        // Newest first. A missing or unreadable date sorts last instead of
+        // throwing and hiding the whole list (D-12, C4).
         _notificationList!.sort((a, b) {
-          return DateConverterHelper.isoStringToLocalDate(a.updatedAt!)
-              .compareTo(
-                  DateConverterHelper.isoStringToLocalDate(b.updatedAt!));
+          final DateTime? da = _dateOf(a);
+          final DateTime? db = _dateOf(b);
+          if (da == null && db == null) return 0;
+          if (da == null) return 1;
+          if (db == null) return -1;
+          return db.compareTo(da);
         });
-        Iterable iterable = _notificationList!.reversed;
-        _notificationList = iterable.toList() as List<NotificationModel>?;
 
         // ✅ حساب الإشعارات غير المقروءة من الـ Backend
         _updateHasNotification();
       }
+    } catch (e) {
+      if (kDebugMode) debugPrint('getNotificationList failed: ${e.runtimeType}');
+      attempt = LoadAttempt(ok: false, hadData: hadData, statusCode: 0);
     }
     update();
+    if (announce) {
+      final String? message = FirstLoadNotice.pick([attempt]);
+      if (message != null) toast(message);
+    }
+    return attempt;
   }
 
   /// ✅ حساب عدد الإشعارات غير المقروءة
+  static DateTime? _dateOf(NotificationModel n) {
+    final String? value = n.updatedAt;
+    if (value == null || value.isEmpty) return null;
+    try {
+      return DateConverterHelper.isoStringToLocalDate(value);
+    } catch (_) {
+      return null;
+    }
+  }
+
   int getUnreadNotificationCount() {
     if (_notificationList == null) return 0;
     return _notificationList!.where((n) => !n.isRead).length;

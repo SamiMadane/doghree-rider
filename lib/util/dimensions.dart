@@ -122,6 +122,7 @@ class Dimensions {
   static double w70 = 70.w;
   static double w75 = 75.w;
   static double w80 = 80.w;
+  static double w85 = 85.w;
   static double w90 = 90.w;
   static double w95 = 95.w;
   static double w100 = 100.w;

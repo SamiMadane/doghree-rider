@@ -16,7 +16,9 @@ class ChatRepository implements ChatRepositoryInterface {
     ConversationsModel? conversationModel;
     Response response = await apiClient.getData(AppConstants.getConversationListUri,
         query: {'offset': offset, 'limit': 10});
-    if(response.statusCode == 200) {
+    // Only a JSON object is parsed: a 200 with an HTML page (captive Wi-Fi)
+    // is a failure (null), not a TypeError (D-12, C1).
+    if(response.statusCode == 200 && response.body is Map<String, dynamic>) {
       conversationModel = ConversationsModel.fromJson(response.body);
     }
     return conversationModel;
@@ -28,7 +30,7 @@ class ChatRepository implements ChatRepositoryInterface {
     // The query map is URL-encoded by ApiClient, so & # + in a name are safe (audit row 50).
     Response response = await apiClient.getData(AppConstants.searchConversationListUri,
         query: {'name': name, 'limit': 20, 'offset': 1});
-    if(response.statusCode == 200) {
+    if(response.statusCode == 200 && response.body is Map<String, dynamic>) {
       searchConversationModel = ConversationsModel.fromJson(response.body);
     }
     return searchConversationModel;
@@ -57,7 +59,7 @@ class ChatRepository implements ChatRepositoryInterface {
     MessageModel? messageModel;
     Response response = await apiClient.postMultipartData(AppConstants.sendMessageUri,
       {'message': message, 'receiver_type': userType,  conversationId != null ? 'conversation_id' : 'receiver_id': '${conversationId ?? userId}', 'offset': '1', 'limit': '10'}, file);
-    if(response.statusCode == 200) {
+    if(response.statusCode == 200 && response.body is Map<String, dynamic>) {
       messageModel = MessageModel.fromJson(response.body);
     }
     return messageModel;

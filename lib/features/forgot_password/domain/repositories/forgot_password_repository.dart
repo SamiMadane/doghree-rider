@@ -3,7 +3,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:doghree_rider/api/api_client.dart';
 import 'package:doghree_rider/common/models/response_model.dart';
 import 'package:doghree_rider/features/profile/domain/models/profile_model.dart';
+import 'package:doghree_rider/helper/firebase_state.dart';
 import 'package:doghree_rider/util/app_constants.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:doghree_rider/features/forgot_password/domain/repositories/forgot_password_repository_interface.dart';
@@ -35,11 +37,11 @@ class ForgotPasswordRepository implements ForgotPasswordRepositoryInterface {
       body,
       handleError: false,
     );
-    if (response.statusCode == 200) {
-      responseModel = ResponseModel(true, response.body["message"]);
+    if (_isOk(response)) {
+      responseModel = ResponseModel(true, _message(response));
     } else {
       responseModel =
-          ResponseModel(false, response.statusText ?? 'error_occurred'.tr);
+          ResponseModel(false, _failText(response));
     }
 
     return responseModel;
@@ -52,10 +54,10 @@ class ForgotPasswordRepository implements ForgotPasswordRepositoryInterface {
     Response response = await apiClient.postData(AppConstants.forgetPasswordUri,
         {"phone": phone, "fcm_token": deviceToken},
         handleError: false);
-    if (response.statusCode == 200) {
-      responseModel = ResponseModel(true, response.body["message"]);
+    if (_isOk(response)) {
+      responseModel = ResponseModel(true, _message(response));
     } else {
-      responseModel = ResponseModel(false, response.statusText,
+      responseModel = ResponseModel(false, _failText(response),
           statusCode: response.statusCode);
     }
     return responseModel;
@@ -67,10 +69,10 @@ class ForgotPasswordRepository implements ForgotPasswordRepositoryInterface {
     Response response = await apiClient.postData(
         AppConstants.verifyTokenUri, {"phone": phone, "reset_token": token},
         handleError: false);
-    if (response.statusCode == 200) {
-      responseModel = ResponseModel(true, response.body["message"]);
+    if (_isOk(response)) {
+      responseModel = ResponseModel(true, _message(response));
     } else {
-      responseModel = ResponseModel(false, response.statusText,
+      responseModel = ResponseModel(false, _failText(response),
           statusCode: response.statusCode);
     }
     return responseModel;
@@ -90,10 +92,10 @@ class ForgotPasswordRepository implements ForgotPasswordRepositoryInterface {
         'is_reset_token': 1,
       },
     );
-    if (response.statusCode == 200) {
-      return ResponseModel(true, response.body["message"]);
+    if (_isOk(response)) {
+      return ResponseModel(true, _message(response));
     } else {
-      return ResponseModel(false, response.statusText);
+      return ResponseModel(false, _failText(response));
     }
   }
 
@@ -111,21 +113,46 @@ class ForgotPasswordRepository implements ForgotPasswordRepositoryInterface {
           "confirm_password": confirmPassword
         },
         handleError: false);
-    if (response.statusCode == 200) {
-      responseModel = ResponseModel(true, response.body["message"]);
+    if (_isOk(response)) {
+      responseModel = ResponseModel(true, _message(response));
     } else {
-      responseModel = ResponseModel(false, response.statusText,
+      responseModel = ResponseModel(false, _failText(response),
           statusCode: response.statusCode);
     }
     return responseModel;
   }
 
-  Future<String?> _saveDeviceToken() async {
-    String? deviceToken = '';
-    if (!GetPlatform.isWeb) {
-      deviceToken = (await FirebaseMessaging.instance.getToken())!;
+  /// A 200 is a success only when the body is a JSON object. A 200 with an
+  /// HTML page (captive Wi-Fi) or anything else cannot confirm the step, so
+  /// it is a failure with the generic message (D-12, C3).
+  static bool _isOk(Response response) =>
+      response.statusCode == 200 && response.body is Map;
+
+  /// The failure text: the server's, or the generic one for an unreadable
+  /// 200 (its status text would be a bare OK).
+  static String _failText(Response response) {
+    final String? text = response.statusText;
+    if (response.statusCode == 200 || text == null || text.trim().isEmpty) {
+      return 'error_occurred'.tr;
     }
-    return deviceToken;
+    return text;
+  }
+
+  static String? _message(Response response) {
+    final dynamic message = (response.body as Map)['message'];
+    return message is String ? message : null;
+  }
+
+  /// The FCM token sent with forget-password. Empty when Firebase did not
+  /// start or FCM fails: the request still goes out (D-12).
+  Future<String?> _saveDeviceToken() async {
+    if (GetPlatform.isWeb || !FirebaseState.ready) return '';
+    try {
+      return await FirebaseMessaging.instance.getToken() ?? '';
+    } catch (e) {
+      if (kDebugMode) debugPrint('FCM getToken failed: ${e.runtimeType}');
+      return '';
+    }
   }
 
   @override

@@ -88,6 +88,11 @@ class AppConstants {
   static const String searchConversationListUri =
       '/api/v1/delivery-man/message/search-list';
 
+  /// The phone prefix the phone fields show, and the fallback country when
+  /// the config has none (D-12, C9). Was a literal in CustomTextFieldWidget
+  /// and UpdateProfileScreen.
+  static const String fallbackDialCode = '+970';
+
   /// Shared Key
   static const String theme = 'doghree_rider_theme';
   static const String token = 'doghree_rider_token';

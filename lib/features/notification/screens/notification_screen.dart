@@ -24,7 +24,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
     super.initState();
     // ✅ جلب البيانات من API مع تأكد من الاستدعاء
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Get.find<NotificationController>().getNotificationList(true);
+      Get.find<NotificationController>().getNotificationList(reload: true, announce: true);
     });
   }
 
@@ -71,7 +71,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
         return RefreshIndicator(
           onRefresh: () async {
-            await controller.getNotificationList(true);
+            await controller.getNotificationList(reload: true, announce: true);
           },
           child: Container(
             color: Theme.of(context).cardColor,

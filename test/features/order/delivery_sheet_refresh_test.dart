@@ -1,3 +1,4 @@
+import 'package:doghree_rider/common/models/list_load.dart';
 import 'package:doghree_rider/api/api_client.dart';
 import 'package:doghree_rider/features/order/controllers/order_controller.dart';
 import 'package:doghree_rider/features/order/domain/models/order_action_result.dart';
@@ -24,9 +25,9 @@ class _FakeOrderService implements OrderServiceInterface {
       const OrderActionResult(StatusOutcome.updated, 'ok', 200);
 
   @override
-  Future<List<OrderModel>?> getCurrentOrders() async {
+  Future<ListLoad<OrderModel>> getCurrentOrders() async {
     currentCalls++;
-    return [];
+    return const ListLoad<OrderModel>([], statusCode: 200);
   }
 
   @override

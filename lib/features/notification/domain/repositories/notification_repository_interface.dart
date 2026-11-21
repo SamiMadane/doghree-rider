@@ -1,3 +1,4 @@
+import 'package:doghree_rider/common/models/list_load.dart';
 import 'package:doghree_rider/interface/repository_interface.dart';
 import 'package:doghree_rider/features/notification/domain/models/notification_model.dart';
 
@@ -5,6 +6,7 @@ abstract class NotificationRepositoryInterface extends RepositoryInterface {
   // ✅ الجديد - Server-side read status
   @override
   Future<List<NotificationModel>?> getList({int? offset});
+  Future<ListLoad<NotificationModel>> loadList();
   Future<bool> markNotificationAsRead(int notificationId);
   Future<bool> markNotificationsAsRead(List<int> notificationIds);
   Future<bool> markAllNotificationsAsRead();

@@ -522,6 +522,8 @@
   "no_connection": "No Connection",
   "please_check_your_internet_and_try_again": "Please check your internet and try again",
   "retry": "Retry",
+  "server_problem": "Server problem",
+  "server_problem_try_again": "Something went wrong on our side. Please try again in a moment",
   "approx_path": "Approximate Path",
   "locating": "Locating...",
   "current_location": "Current Location",

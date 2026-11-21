@@ -13,6 +13,8 @@ import 'package:doghree_rider/features/order/domain/models/update_status_body_mo
 import 'package:doghree_rider/features/order/domain/models/ignore_model.dart';
 import 'package:doghree_rider/features/order/domain/models/order_cancellation_body.dart';
 import 'package:doghree_rider/features/order/widgets/deliver_without_photos_dialog.dart';
+import 'package:doghree_rider/common/models/list_load.dart';
+import 'package:doghree_rider/helper/first_load_notice.dart';
 import 'package:doghree_rider/helper/image_upload_rules.dart';
 import 'package:doghree_rider/helper/order_ringing.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
@@ -435,19 +437,41 @@ class OrderController extends GetxController implements GetxService {
     return result;
   }
 
-  Future<void> getCurrentOrders() async {
-    List<OrderModel>? currentOrderList =
-        await orderServiceInterface.getCurrentOrders();
-    if (currentOrderList != null) {
-      _currentOrderList = [];
+  /// Silent load of the running orders (D-12). With [announce], a failure
+  /// while no list was ever loaded shows exactly one message
+  /// (FirstLoadNotice); with data on screen it stays silent. Push, resume and
+  /// after-action refreshes never announce.
+  Future<LoadAttempt> getCurrentOrders({bool announce = false}) async {
+    final bool hadData = _currentOrderList != null;
+    LoadAttempt attempt;
+    try {
+      final ListLoad<OrderModel> load =
+          await orderServiceInterface.getCurrentOrders();
+      final List<OrderModel>? currentOrderList = load.list;
+      if (currentOrderList != null) {
+        _currentOrderList = [];
 
-      // ✅ فلترة Orders بدون items
-      List<OrderModel> validOrders =
-          currentOrderList.where(_isValidOrder).toList();
+        // ✅ فلترة Orders بدون items
+        List<OrderModel> validOrders =
+            currentOrderList.where(_isValidOrder).toList();
 
-      _currentOrderList!.addAll(validOrders);
+        _currentOrderList!.addAll(validOrders);
+      }
+      attempt = LoadAttempt(
+          ok: load.ok,
+          hadData: hadData,
+          statusCode: load.statusCode,
+          message: load.message);
+    } catch (e) {
+      if (kDebugMode) debugPrint('getCurrentOrders failed: ${e.runtimeType}');
+      attempt = LoadAttempt(ok: false, hadData: hadData, statusCode: 0);
     }
     update();
+    if (announce) {
+      final String? message = FirstLoadNotice.pick([attempt]);
+      if (message != null) toast(message);
+    }
+    return attempt;
   }
 
   /// ✅ فلترة Orders: استبعاد orders بدون items

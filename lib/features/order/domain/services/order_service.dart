@@ -1,5 +1,6 @@
 import 'package:image_picker/image_picker.dart';
 import 'package:doghree_rider/api/api_client.dart';
+import 'package:doghree_rider/common/models/list_load.dart';
 import 'package:doghree_rider/features/order/domain/models/ignore_model.dart';
 import 'package:doghree_rider/features/order/domain/models/order_action_result.dart';
 import 'package:doghree_rider/features/order/domain/models/order_cancellation_body.dart';
@@ -31,8 +32,8 @@ class OrderService implements OrderServiceInterface {
   }
 
   @override
-  Future<List<OrderModel>?> getCurrentOrders() async {
-    return await orderRepositoryInterface.getList();
+  Future<ListLoad<OrderModel>> getCurrentOrders() async {
+    return await orderRepositoryInterface.loadCurrentOrders();
   }
 
   @override

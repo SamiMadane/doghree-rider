@@ -12,6 +12,8 @@ import 'package:doghree_rider/features/home/widgets/profile_order_section.dart';
 import 'package:doghree_rider/features/notification/controllers/notification_controller.dart';
 import 'package:doghree_rider/features/order/controllers/order_controller.dart';
 import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
+import 'package:doghree_rider/common/widgets/custom_snackbar_widget.dart';
+import 'package:doghree_rider/helper/first_load_notice.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
 import 'package:doghree_rider/util/app_constants.dart';
 import 'package:doghree_rider/util/dimensions.dart';
@@ -55,8 +57,14 @@ class _HomeScreenState extends State<HomeScreen> {
     Get.find<OrderController>().removeFromIgnoreList();
     Get.find<WalletController>().getWallet();
     await Get.find<ProfileController>().getProfile();
-    await Get.find<OrderController>().getCurrentOrders();
-    await Get.find<NotificationController>().getNotificationList();
+    // Both loads are silent. If the rider has no data yet and one fails,
+    // exactly one message for the pair; with data on screen, none (D-12).
+    final List<LoadAttempt> attempts = [
+      await Get.find<OrderController>().getCurrentOrders(),
+      await Get.find<NotificationController>().getNotificationList(),
+    ];
+    final String? message = FirstLoadNotice.pick(attempts);
+    if (message != null) showCustomSnackBar(message);
   }
 
   Future<void> _checkSystemNotification() async {
@@ -74,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
       case AppLifecycleState.resumed:
         checkPermission();
         if (Get.isRegistered<NotificationController>()) {
-          Get.find<NotificationController>().getNotificationList(true);
+          Get.find<NotificationController>().getNotificationList(reload: true);
         }
         break;
       case AppLifecycleState.inactive:
@@ -89,6 +97,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> checkPermission() async {
     var notificationStatus = await Permission.notification.status;
     var batteryStatus = await Permission.ignoreBatteryOptimizations.status;
+    // Home can be gone by now (logout, tab teardown): no setState then
+    // (D-12, C7).
+    if (!mounted) return;
 
     if (notificationStatus.isDenied || notificationStatus.isPermanentlyDenied) {
       setState(() {

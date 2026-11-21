@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:doghree_rider/api/api_checker.dart';
 import 'package:doghree_rider/api/api_client.dart';
+import 'package:doghree_rider/common/models/list_load.dart';
 import 'package:doghree_rider/api/api_error_handler.dart';
 import 'package:doghree_rider/features/order/domain/models/ignore_model.dart';
 import 'package:doghree_rider/features/order/domain/models/order_action_result.dart';
@@ -27,12 +28,16 @@ class OrderRepository implements OrderRepositoryInterface {
     List<CancellationData>? orderCancelReasons;
     Response response = await apiClient.getData(
         '${AppConstants.orderCancellationUri}?offset=1&limit=30&type=deliveryman');
-    if (response.statusCode == 200) {
-      OrderCancellationBody orderCancellationBody =
-          OrderCancellationBody.fromJson(response.body);
-      orderCancelReasons = [];
-      for (var element in orderCancellationBody.reasons!) {
-        orderCancelReasons.add(element);
+    // Only a JSON object is parsed. An HTML 200 or a body without reasons
+    // gives no list (null), never a TypeError (D-12, C8).
+    if (response.statusCode == 200 && response.body is Map<String, dynamic>) {
+      try {
+        OrderCancellationBody orderCancellationBody =
+            OrderCancellationBody.fromJson(response.body);
+        final List<CancellationData>? reasons = orderCancellationBody.reasons;
+        if (reasons != null) orderCancelReasons = [...reasons];
+      } catch (e) {
+        if (kDebugMode) debugPrint('cancel reasons parse failed: ${e.runtimeType}');
       }
     }
     return orderCancelReasons;
@@ -92,12 +97,22 @@ class OrderRepository implements OrderRepositoryInterface {
   /// bad item is skipped (audit row 52). Note that a skipped running order is
   /// hidden from the rider (see progress.md, D-05 notes).
   @override
-  Future<List<OrderModel>?> getList() async {
-    final Response response =
-        await apiClient.getData(AppConstants.currentOrdersUri);
-    if (response.statusCode != 200) return null;
-    return JsonHelper.mapList(response.body, OrderModel.fromJson,
+  Future<List<OrderModel>?> getList() async => (await loadCurrentOrders()).list;
+
+  /// Silent (D-12): the screen decides whether to show one message
+  /// (FirstLoadNotice). A 401 still ends the session.
+  @override
+  Future<ListLoad<OrderModel>> loadCurrentOrders() async {
+    final Response response = await apiClient
+        .getData(AppConstants.currentOrdersUri, handleError: false);
+    ApiChecker.checkSession(response);
+    if (response.statusCode != 200) return ListLoad.failed(response);
+    final List<OrderModel>? list = JsonHelper.mapList(
+        response.body, OrderModel.fromJson,
         name: 'current-orders');
+    return list == null
+        ? ListLoad<OrderModel>(null, statusCode: 0)
+        : ListLoad<OrderModel>(list, statusCode: 200);
   }
 
   @override
@@ -186,8 +201,14 @@ class OrderRepository implements OrderRepositoryInterface {
     List<IgnoreModel> ignoreList = [];
     List<String> stringList =
         sharedPreferences.getStringList(AppConstants.ignoreList) ?? [];
+    // One corrupt entry is skipped; it used to throw on every launch
+    // (D-12, C10).
     for (var ignore in stringList) {
-      ignoreList.add(IgnoreModel.fromJson(jsonDecode(ignore)));
+      try {
+        ignoreList.add(IgnoreModel.fromJson(jsonDecode(ignore)));
+      } catch (e) {
+        if (kDebugMode) debugPrint('ignore entry skipped: ${e.runtimeType}');
+      }
     }
     return ignoreList;
   }

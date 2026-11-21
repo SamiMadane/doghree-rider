@@ -56,7 +56,12 @@ The app-level folders are:
 - Many rider endpoints still send the auth token as a `?token=` query parameter or a `token` body field, in addition to the Bearer header (see `AppConstants` URIs ending in `?token=`).
 
 ### Start-up and routes
-- `main()` runs `Firebase.initializeApp`, then `di.init()` (which loads `assets/language/{en,ar}.json`), then `getInitialMessage` → `NotificationHelper.initialize` → `onBackgroundMessage`, then date locale, then `LocationPermissionManager` (permanent), then `availableCameras()`, then `runApp`.
+- `main()` runs, in order:
+  - `AppErrorHandler.install()` (`lib/helper/app_error_handler.dart`): `FlutterError.onError`, `PlatformDispatcher.onError` (returns true) and, in release only, a neutral `ErrorWidget.builder`. Logs go through `LogSanitizer`, in debug only. `AppErrorHandler.report` is the one hook for crash reporting later (no Crashlytics today).
+  - `Firebase.initializeApp` in a try. On success `FirebaseState.ready = true` (`lib/helper/firebase_state.dart`). On failure the app starts without push: every Firebase call checks the flag or is in a try (see D-12 in `docs/progress.md`).
+  - `di.init()` (which loads `assets/language/{en,ar}.json`). This one is fatal: on a throw it is reported and `StartupFailedApp` (a fixed bilingual message) runs instead of the app.
+  - When Firebase is ready: `getInitialMessage`, then `NotificationHelper.initialize`, then `onBackgroundMessage` (all in one try).
+  - `OrderRinging.stop` and `retireLegacyChannel`, then the date locale (in a try), then `LocationPermissionManager` (permanent), then `runApp`.
 - `MyApp` uses `ScreenUtilInit(designSize: 376x812)` and `GetMaterialApp`. The initial route is `/language-init` on the first launch, otherwise `/navigation-handler?data=<base64 notification body>` (SplashScreen).
 - `SplashScreen` (`features/splash/screens/splash_screen.dart`) runs `initSharedData`, then the connectivity listener, then `getConfigData`. On failure it shows `NoInternetScreen`. On success it checks the minimum version and maintenance mode (to `/update`), then validates the session via `getProfile`, then routes from the notification body or to dashboard or sign-in after the splash animation.
 - Routes are in `lib/helper/route_helper.dart` as `RouteHelper` (24 `GetPage`s). Arguments travel as query parameters. Complex objects (notification body, chat user) are base64-encoded JSON. `/order-details` also accepts a prebuilt `OrderDetailsScreen` via `Get.arguments`.

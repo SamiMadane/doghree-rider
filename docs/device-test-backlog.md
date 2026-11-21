@@ -203,6 +203,29 @@ Also run the combined smoke pass (this batch touches orders and start-up). While
 
 **Unit tests only:** single DI registration per service (T1, G1); the withdraw decisions with the server flag false (Q1b) and within the balance (Q1e); phone-less profile save (P2, P3).
 
+## D-12: safety net, start-up, failure texts, silent Home loads, crash fixes
+
+- **Branch:** fix/d-12-static-checks
+- **Branch commits:** d3667ab, d0f6b52, a745ad4, bc03be4, d72e23e (docs b469a8d); merged into `development` 2026-11-22
+- **Status:** pending (D-11)
+
+| # | Steps | Expected |
+|---|---|---|
+| 1 | Block the API host on Wi-Fi (or point to a server that answers 500), then cold start | "Server problem" with Retry |
+| 2 | Airplane mode on, cold start | "No connection" with Retry; turning the network on loads the app |
+| 3 | Turn airplane mode on as soon as the splash animation ends, so the Home first load fails | Exactly one message |
+| 4 | Reconnect and pull to refresh on Home | Data shows, no message |
+| 5 | Send the app to the background and back while offline, with data on screen | No message |
+| 6 | Chat: send a message with airplane mode on | One message; the send button works again |
+| 7 | Chat: open a long conversation, scroll up to load older messages, leave the chat while it loads | No crash; the list works when opened again |
+| 8 | Forgot password with airplane mode on | One message; the button stops loading |
+| 9 | Sign-in screen | The phone prefix shows the same flag and +970 as before; the sizes look unchanged |
+| 10 | Home: log out right after opening Home (location permission check running) | No crash; sign-in opens |
+
+**Device only:** steps 7 and 10 (C6, C7) and the real look of the phone prefix (step 9). The smoke pass applies (start-up).
+
+**Unit tests only:** a 200 with an HTML body (chat, forgot password, cancel reasons, splash), a notification without `updated_at`, corrupt stored entries, an unknown or missing country, Firebase not ready, `StartupFailedApp`, and the error handler.
+
 ## Combined smoke pass (once, in D-11)
 
 | # | Step | Expected |

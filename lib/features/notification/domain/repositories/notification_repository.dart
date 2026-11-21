@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:doghree_rider/api/api_checker.dart';
 import 'package:doghree_rider/api/api_client.dart';
+import 'package:doghree_rider/common/models/list_load.dart';
 import 'package:doghree_rider/features/notification/domain/models/notification_model.dart';
 import 'package:doghree_rider/features/notification/domain/repositories/notification_repository_interface.dart';
 import 'package:doghree_rider/helper/json_helper.dart';
@@ -19,11 +20,23 @@ class NotificationRepository implements NotificationRepositoryInterface {
   /// item is skipped (audit row 52). The server also returns `200 []` on its
   /// own errors, so an empty list is not proof of "no notifications".
   @override
-  Future<List<NotificationModel>?> getList({int? offset}) async {
-    final Response response = await apiClient.getData(AppConstants.notificationUri);
-    if (response.statusCode != 200) return null;
-    return JsonHelper.mapList(response.body, NotificationModel.fromJson,
+  Future<List<NotificationModel>?> getList({int? offset}) async =>
+      (await loadList()).list;
+
+  /// Silent (D-12): the screen decides whether to show one message
+  /// (FirstLoadNotice). A 401 still ends the session.
+  @override
+  Future<ListLoad<NotificationModel>> loadList() async {
+    final Response response = await apiClient
+        .getData(AppConstants.notificationUri, handleError: false);
+    ApiChecker.checkSession(response);
+    if (response.statusCode != 200) return ListLoad.failed(response);
+    final List<NotificationModel>? list = JsonHelper.mapList(
+        response.body, NotificationModel.fromJson,
         name: 'notifications');
+    return list == null
+        ? ListLoad<NotificationModel>(null, statusCode: 0)
+        : ListLoad<NotificationModel>(list, statusCode: 200);
   }
 
   // ✅ الجديد - Server-side marking
@@ -90,8 +103,12 @@ class NotificationRepository implements NotificationRepositoryInterface {
       list = sharedPreferences.getStringList(AppConstants.notificationIdList);
     }
     List<int> notificationIdList = [];
+    // A corrupt entry is skipped instead of throwing (D-12, C10).
     for (var id in list ?? []) {
-      notificationIdList.add(jsonDecode(id));
+      try {
+        final dynamic value = jsonDecode(id);
+        if (value is int) notificationIdList.add(value);
+      } catch (_) {}
     }
     return notificationIdList;
   }
