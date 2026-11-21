@@ -13,7 +13,7 @@
 | D-06 | fix/d-06-location-ringing | Audit rows 36, 37, 38, 39 | merged, device tests pending (D-11) | 2026-11-20 |
 | D-07 | fix/d-07-notifications | Audit rows 6, 31, 32, 33, 34, 35, 54 | merged, device tests pending (D-11) | 2026-11-20 |
 | D-08 | fix/d-08-wallet | Audit rows 41, 42, 43, 44 | merged, device tests pending (D-11) | 2026-11-21 |
-| D-09 | fix/d-09-uploads-profile | Audit rows 45, 46, 47, 48, 49 | implemented, awaiting closing (device tests in D-11) | |
+| D-09 | fix/d-09-uploads-profile | Audit rows 45, 46, 47, 48, 49 | merged, device tests pending (D-11) | 2026-11-21 |
 | D-10 | fix/d-10-cleanup | Audit rows 40, 55, 56, 57, 58, 60 | planned | |
 | D-11 | (no code branch) | Final device pass: every pending backlog section, the smoke pass and the end-to-end order test (`docs/device-test-backlog.md`) | planned (after D-10) | |
 
@@ -546,8 +546,10 @@
   - **Fail on the old code at compile time only:** F1–F7, I1–I7, E1–E4, R2, R3a, R3b, U4–U6, P1, P2, D2, D2b, D2c, D2d, D4–D10, C1–C5, J1–J6, K1–K4 (no `UploadFormats`, `ImageUploadRules`, `classifyPickError`, `classifyProofFailure`, `hasProofImages`, `acceptProfileImage`, `pickImageFn`, `confirmDeliverWithoutPhotos` or `DeliverWithoutPhotosDialog`; the old `updateProfile`/`updateUserInfo` take a token).
   - **Guards** (their logic also holds on the old code; their files do not compile against it): M3, G1, G2, G3, G4, G5, G6.
 - **Device:** **not run.** The steps are in `docs/device-test-backlog.md` (D-09, steps 1–8) and run in D-11.
+- **Status:** merged into `development` (2026-11-21), device tests pending (D-11). Rows 45–49 are closed on the app side. B-04 stays open, now with the upload-limit questions 7–11. The D-10 candidates stay open: the phone field that is never sent (below), the on-device balance and amount checks (D-08 notes), and the `stash@{0}` review (below).
 
 ### Notes (found during D-09, not fixed)
+- **D-10 candidate:** review `stash@{0}` ("WIP on development: 8a04c88", from before D-09). It was left untouched in D-09; decide with the owner whether to keep or drop it.
 - **D-10 candidate:** Edit Profile shows a phone field, but the phone is never sent (Postman lists no phone field), and the "nothing changed" check compares it. A phone-only edit reports success and changes nothing.
 - On iOS the proof "add photo" opens the gallery directly, with no camera option (`DeliveryImagesSection`).
 - `please_upload_lower_size_file` was used by registration but missing from en/ar. Added in D-09.
