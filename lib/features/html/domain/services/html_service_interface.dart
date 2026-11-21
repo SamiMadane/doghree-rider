@@ -1,5 +1,5 @@
-import 'package:get/get.dart';
+import 'package:doghree_rider/common/models/data_load.dart';
 
 abstract class HtmlServiceInterface {
-  Future<Response> getHtmlText(bool isPrivacyPolicy);
+  Future<DataLoad<String>> getHtmlText(bool isPrivacyPolicy);
 }

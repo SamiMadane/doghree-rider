@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:doghree_rider/common/widgets/custom_image_widget.dart';
+import 'package:doghree_rider/common/widgets/empty_state_widget.dart';
+import 'package:doghree_rider/common/widgets/load_failed_widget.dart';
 import 'package:doghree_rider/features/html/controllers/html_controller.dart';
 import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/common/widgets/custom_app_bar_widget.dart';
@@ -38,7 +40,15 @@ class _HtmlViewerScreenState extends State<HtmlViewerScreen> {
           color: Theme.of(context).cardColor,
           padding: EdgeInsets.symmetric(horizontal:Dimensions.w16 ,vertical: Dimensions.h16,),
           margin: EdgeInsets.only(top: Dimensions.h16),
-          child: htmlController.htmlText != null
+          child: htmlController.htmlText != null &&
+                  htmlController.htmlText!.trim().isEmpty
+              // The server has no text for this page (an admin panel
+              // setting): an empty state, not a blank page (D-13).
+              ? EmptyStateWidget(
+                  image: ManagerAssets.privacyTermsImage,
+                  title: 'not_found'.tr,
+                )
+              : htmlController.htmlText != null
               ? SingleChildScrollView(
                   physics: const BouncingScrollPhysics(),
                   child: Column(
@@ -80,7 +90,15 @@ class _HtmlViewerScreenState extends State<HtmlViewerScreen> {
                     ],
                   ),
                 )
-              : const Center(child: CircularProgressIndicator()),
+              : htmlController.failure != null
+                  // A failed first load: one state with Retry instead of an
+                  // endless spinner (D-13).
+                  ? LoadFailedWidget(
+                      failure: htmlController.failure!,
+                      onRetry: () =>
+                          htmlController.retry(widget.isPrivacyPolicy),
+                    )
+                  : const Center(child: CircularProgressIndicator()),
         );
       }),
     );

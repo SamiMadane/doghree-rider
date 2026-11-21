@@ -1,4 +1,5 @@
 import 'package:doghree_rider/common/widgets/empty_state_widget.dart';
+import 'package:doghree_rider/common/widgets/load_failed_widget.dart';
 import 'package:doghree_rider/features/notification/controllers/notification_controller.dart';
 import 'package:doghree_rider/helper/date_converter_helper.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
@@ -24,7 +25,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
     super.initState();
     // ✅ جلب البيانات من API مع تأكد من الاستدعاء
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Get.find<NotificationController>().getNotificationList(reload: true, announce: true);
+      // The failure state replaces the toast here (D-13): one message.
+      Get.find<NotificationController>().getNotificationList(reload: true);
     });
   }
 
@@ -45,6 +47,21 @@ class _NotificationScreenState extends State<NotificationScreen> {
       ),
       body: GetBuilder<NotificationController>(builder: (controller) {
         final notifications = controller.notificationList;
+
+        // A failed first load: one state with Retry instead of an endless
+        // spinner (D-13).
+        if (notifications == null &&
+            !controller.isLoading &&
+            controller.listFailure != null) {
+          return Container(
+            margin: EdgeInsets.only(top: Dimensions.h16),
+            color: Theme.of(context).cardColor,
+            child: LoadFailedWidget(
+              failure: controller.listFailure!,
+              onRetry: controller.retryNotificationList,
+            ),
+          );
+        }
 
         // ✅ Loading state
         if (controller.isLoading || notifications == null) {
