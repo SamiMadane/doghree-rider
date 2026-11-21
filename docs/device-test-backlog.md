@@ -139,6 +139,28 @@ Also run the combined smoke pass (this batch touches orders and start-up). While
 
 **Unit tests only:** pushes without or with a non-numeric `order_id` or `conversation_id` (N1–N4b, N8, N10, R3, R6), a chat push while the chat is still loading (N9; the timing cannot be forced on a device), a message body that is not a Map or has a bad `messages` field (N5–N7), the full type table including block and unblock (R1–R14), and the base64 round trip with a `+` (G2, G3).
 
+## D-08: wallet (invoice PDF, withdrawals paging, withdraw messages, account delete)
+
+- **Branch:** fix/d-08-wallet
+- **Branch commit:** cd20147
+- **Status:** pending (D-11)
+
+| # | Steps | Expected |
+|---|---|---|
+| 1 | Earnings → Download, with no filter, then with a type and a date filter | A PDF opens in a viewer each time. The download spinner stops |
+| 2 | Airplane mode on → Download | One message. The spinner stops |
+| 3 | A rider with more than 20 withdrawal requests → Wallet → See all, scroll to the end | Older requests load. No row appears twice. Newest first |
+| 4 | Step 3, airplane mode on before scrolling to the end, then off and tap Retry | The footer shows "Couldn't load more withdrawal requests" with Retry. Retry continues. No toast |
+| 5 | Pull to refresh on the list after step 3 | The list starts again from the newest page |
+| 6 | Airplane mode on → Request withdrawal → submit | One inline message under the form. No toast. The sheet stays open |
+| 7 | Request a withdrawal this week, then open the Wallet again | The button is grey and the server notice shows (withdraw_block). If the sheet is still reachable, a second request shows the server weekly-limit text inline and the wallet refreshes |
+| 8 | Delete the payout account, tapping Delete twice fast | One delete, one toast. The wallet screen stays open |
+| 9 | Airplane mode on, open Home and the Wallet | No toasts from the wallet or the withdrawals. The last known balance stays |
+
+**Device only:** the PDF really opening, the real Content-Type and charset of the invoice route and whether it accepts the Bearer header (B-04, steps 1 and 2); the real withdraw rules from the server state (weekly limit, minimum, no balance; step 7); the confirm sheet ignoring a second tap (step 8). The smoke pass applies (orders and money).
+
+**Unit tests only:** every withdraw error code, several codes in one `errors[]`, 401 and 410 for withdraw and delete (C-*, W1–W7, D1–D6); a PDF with a utf-8 charset byte for byte (B1); a 200 that is not a PDF (B2); a late page after a refresh, duplicate ids, an empty page, a missing `total_size` (P3–P9); keeping the last known values after a failed refresh (K1, K2).
+
 ## Combined smoke pass (once, in D-11)
 
 | # | Step | Expected |

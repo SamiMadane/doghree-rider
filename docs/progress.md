@@ -12,7 +12,7 @@
 | D-05 | fix/d-05-order-lists-parsing | Audit rows 26, 27, 30, 52, 53 | merged, device tests pending (D-11) | 2026-11-20 |
 | D-06 | fix/d-06-location-ringing | Audit rows 36, 37, 38, 39 | merged, device tests pending (D-11) | 2026-11-20 |
 | D-07 | fix/d-07-notifications | Audit rows 6, 31, 32, 33, 34, 35, 54 | merged, device tests pending (D-11) | 2026-11-20 |
-| D-08 | fix/d-08-wallet | Audit rows 41, 42, 43, 44 | planned | |
+| D-08 | fix/d-08-wallet | Audit rows 41, 42, 43, 44 | implemented on branch, awaiting closing (device tests in D-11) | |
 | D-09 | fix/d-09-uploads-profile | Audit rows 45, 46, 47, 48, 49 | planned | |
 | D-10 | fix/d-10-cleanup | Audit rows 40, 55, 56, 57, 58, 60 | planned | |
 | D-11 | (no code branch) | Final device pass: every pending backlog section, the smoke pass and the end-to-end order test (`docs/device-test-backlog.md`) | planned (after D-10) | |
@@ -388,6 +388,90 @@
   - Moving to `base64Url` would be cosmetic.
   - Guards G2 and G3 lock in the current behaviour.
 
+### D-08 (2026-11-21)
+- **Backend check:**
+  - Screens R5 and R6. `GET wallet` is the UI contract (`can_request_withdraw`, `withdraw_block`). Money fields are JSON numbers rounded to 2 decimals, and the app recomputes nothing.
+  - `wallet/withdrawals`: `limit` 1-50, `offset` is a page number from 1, `total_size`, newest first (B-03).
+  - `wallet/withdraw` 403 has two families of code: field names, and domain codes (R6 table) plus `rider_withdraw_account_required` (R6 text).
+  - The store-transfer delivery-fee routes answer 410. The app calls neither of them (grep), and nothing in the wallet retries by itself.
+  - The invoice route is in no backend file (Screens, API guide, Postman). B-04 stays open.
+- **Row 41:**
+  - `ApiClient.getBytes`:
+    - always silent, 60 s timeout
+    - normal headers (Bearer), no token in the query
+    - logs the path, the query keys and the byte length only
+  - The pure `handleBytesResponse` keeps `bodyBytes` untouched on 200, and decodes an error body leniently for the server message.
+  - The controller writes the bytes only when they start with `%PDF-`. Writing and opening go through `InvoiceSaver` (`FileInvoiceSaver` by default).
+  - One message per tap. Double-tap guard. try/finally.
+- **Row 42:** the controller pages `wallet/withdrawals` with limit 20 (`WithdrawalsPage`):
+  - more pages exist while `page*20 < total_size` and no page came back empty; a missing `total_size` ends the paging
+  - at most one request is in flight
+  - pull-to-refresh reloads page 1 and bumps a generation counter, so a late page is dropped
+  - ids are de-duplicated
+  - a failed page waits for Retry
+  - The footer moved to `lib/common/widgets/history_page_footer_widget.dart` (now used by two features), with an optional `failedText`.
+  - The scroll controller is disposed, and a short list fills itself.
+  - The wallet preview's See all uses `total_size`.
+- **Row 43:** `GET wallet` and `GET withdrawals` are silent (`handleError: false` plus `checkSession`) and keep the last known values on any failure. `classifyWithdraw` uses the status and the **first recognized** `errors[].code` in list order:
+
+  | Input | Outcome | Silent refresh |
+  |---|---|---|
+  | 200 | sent (one success toast) | wallet and withdrawals |
+  | 403 field codes (`amount`, `fields`, `withdrawal_method_id`, `note`, `account_id`) | invalidInput | none |
+  | 403 `withdraw_amount` | invalidInput | wallet only |
+  | 403 `withdraw_weekly_limit`, `withdraw_no_balance`, `withdraw_minimum`, `withdraw_insufficient_balance` | blocked | wallet and withdrawals |
+  | 403 `withdraw`, `rider_withdraw_account_required` | accountProblem | wallet |
+  | 403 with an unknown code | failed | wallet and withdrawals |
+  | 401 | sessionEnded (no inline text) | none |
+  | offline | localized no-internet text | none |
+  | 410, 5xx, other | failed | none, never retried |
+
+  - The rider sees one inline message: the server text, or a local key for that outcome.
+  - **`withdraw_amount` decision:** R6 only says "write an amount greater than zero". It does not say the balance is unaffected, so the wallet is refreshed silently as well (approval note 3).
+- **Row 44:** `deleteWalletAccount` ignores a second tap while busy and runs in try/finally. `classifyDeleteAccount` decides the message:
+  - 200: one toast and a silent refresh
+  - 404 `account`: the server text and a refresh
+  - 401: no toast
+  - offline: the no-internet text
+  - an exception: `error_occurred`
+
+  The confirm sheet ignores a second tap.
+- **New translation keys (en and ar):**
+
+  | Key | English | Arabic |
+  |---|---|---|
+  | `wallet_load_more_failed` | Couldn't load more withdrawal requests | تعذّر تحميل المزيد من طلبات السحب |
+  | `invoice_download_failed` | Couldn't download the statement. Please try again | تعذّر تنزيل الكشف. يرجى المحاولة مرة أخرى |
+- **Changes from the plan:**
+  - `account_id` is also treated as a field code. It is a request field and needs no separate rule.
+  - Extra tests beyond the plan: B6 (Bearer header, no token, log length only), B7, B8, B9, K1, K2, P8, P9, W6, C-multi and C-codes.
+  - `FakeApiClient` gained a `getBytes` override.
+- **Tests:** 63 new, 284 total, 284 passed, 0 failed. Analyze: 0 issues.
+  - Files: `wallet_action_result_test` 20, `wallet_repository_test` 11, `wallet_controller_test` 32.
+  - **Fail on the old code by behaviour.** Adapted copies were run against the stashed `lib/`, then deleted:
+
+    | Test | Old-code result |
+    |---|---|
+    | B1 | `API ✖ … → FormatException`, statusCode `0` instead of `200` (the utf-8 decode of the PDF bytes throws) |
+    | P1 | uri `…/wallet/withdrawals?limit=20&offset=2` with no query map, instead of the query `{limit: 20, offset: 2}` |
+    | S1 | `handleError` true |
+    | S2 | `handleError` true |
+    | S3 | inline text `Connection to API server failed due to internet connection` instead of the localized no-internet text |
+    | D1 | 2 deletes instead of 1 |
+    | D2 | `Exception: x` escapes, `accountBusy` stays true |
+
+  - **Fail on the old code at compile time only:** every C-* classifier test, P2–P9, R1–R3, B2–B9, W1–W7, K2, D3–D6. The old code has no classifiers, no `WithdrawalsPage`, no `InvoiceDownload` or `InvoiceSaver`, and no `toast` seam.
+  - **Guards** (their logic also holds on the old code; they were not run there): GB1 (a PDF without a charset round-trips byte for byte, because latin1 maps one to one), GM1 (money is read as sent), GW1 (`withdrawBusy` resets after an exception), G410 (a failed page is not requested again by itself), K1 (the old `getWallet` also kept the wallet on a null result).
+- **Device:** **not run.** The steps are in `docs/device-test-backlog.md` (D-08, steps 1–9) and run in D-11.
+
+### Notes (found during D-08, not fixed)
+- **D-10 candidate:** the device repeats server withdraw rules. The withdraw sheet refuses an amount above `availableBalance` (`wallet_withdraw_exceeds`), and `_WithdrawButton` refuses when `availableBalance <= 0`. With stale wallet data this can block a request the server would accept. R5 and R6 say the screen follows `can_request_withdraw` and `withdraw_block` only, and the server answers `withdraw_insufficient_balance` / `withdraw_no_balance` itself.
+- R6: the successful withdraw response already carries a fresh `wallet`, so the app's second `GET wallet` after success is not needed.
+- `saveWalletAccount` on a 401 shows the session sheet and also sets an inline account error.
+- `saveWalletAccount` still calls `showCustomSnackBar` directly, not through the controller's `toast` hook.
+- A failed first wallet load shows the account card refresh icon, not `NoInternetScreen`.
+- The invoice route (`/deliveryman-earning-report-invoice/{id}`) is not under `/api/v1` and is not documented. If it does not accept the Bearer header, it may answer with an HTML login page. The app now refuses that (not a PDF), but the download would never work (B-04).
+
 ## Open backend questions
 
 <!-- The only place new backend questions are recorded. Move a row to docs/backend-changes.md once the owner agrees. -->
@@ -397,5 +481,5 @@
 | B-01 | /api/v1/delivery-man/* (current-orders, latest-orders, all-orders, order, order-details, profile, remove-account, earning-report, message/*) | Can these accept the Bearer header only, so the app stops sending `?token=` in URLs and `token` in bodies? | Tokens in URLs end up in server, proxy and CDN logs (audit row 9) | D-00 | resolved in D-02: Bearer only (backend docs Doghri-App-Screens, rider R1-R7, 2026-10-14: the token query or body field is only a fallback). The only exception is the WebSocket location body, while `websocket_status` is 0 |
 | B-02 | /api/v1/delivery-man/update-order-status | When `dm_picture_upload_status` is on, is a delivery photo mandatory? Does the server reject `delivered` without `order_proof`? | The app shows the photo section but never requires it (audit row 49) | D-00 | answered (same docs): `order_proof` is optional on the server (array, max 5, stored only with `delivered`). Requiring it in the app is an owner decision before D-09 |
 | B-03 | /api/v1/delivery-man/wallet/withdrawals | Does the response include a total count for paging past `limit=20`? | Older withdrawals are never shown (audit row 42) | D-00 | answered (same docs): returns `total_size`; `limit` 1-50; `offset` is a page number starting at 1 |
-| B-04 | /deliveryman-earning-report-invoice/{id} | What Content-Type and charset does the PDF response use? | The app saves decoded text as bytes, so a utf-8 charset would corrupt the file (audit row 41) | D-00 | open |
+| B-04 | /deliveryman-earning-report-invoice/{id} | What Content-Type and charset does the PDF response use? Full question list in docs/backend-changes.md (B-04 questions) | The app saved decoded text as bytes, so a utf-8 charset corrupted the file (audit row 41) | D-00 | open. Since D-08 the app writes the raw bytes and checks the `%PDF-` signature, so the charset no longer matters to the app. Route, auth and parameters are still unverified |
 | B-05 | /api/v1/delivery-man/record-location-data | The screens file describes this as the ticker that runs while the rider is carrying an order, and it reads `order_id`. The app posts every 10 s whenever the rider is online and sends no `order_id`. Does the backend want location only while carrying an order, and with the `order_id`? | Rows with no order may be stored as junk history (follow-up of audit row 38). Question only: no app change in D-06 | D-06 | open |

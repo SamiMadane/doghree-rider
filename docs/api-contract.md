@@ -122,6 +122,63 @@ Endpoints as the rider app actually uses them. Fill one section per endpoint whe
   - A missing, null or wrong `messages` field is an empty list. An empty list still gives a model, so a new conversation opens.
   - The numbers are read with `JsonHelper.asInt` (D-07, row 54).
 
+### GET /api/v1/delivery-man/wallet
+
+- Auth: Bearer header. No parameters.
+- Response 200 shape: a Map with `available_balance`, `total_earning`, `total_withdrawn`, `pending_withdraw`, `cash_in_hand`, `rider_share_percent`, `withdraw_min_amount`, `week_start`, `week_end`, `timezone`, `can_request_withdraw`, `withdraw_block` (`{code, message}` or null), `next_withdraw_from`, `this_week_request`, `accounts[]` and `methods[]` (Screens R5).
+- Money: JSON numbers rounded to 2 decimals. The app shows them as sent and never recomputes a balance or a share. Do not apply `digit_after_decimal_point`.
+- The screen follows `can_request_withdraw` and `withdraw_block` (`withdraw_block.code` is only `withdraw_weekly_limit`, `withdraw_no_balance` or `withdraw_minimum`).
+- Used in: `WalletRepository.getWallet` (silent: `handleError: false` plus `checkSession`), then `WalletController.getWallet`. Called on Home, on the Wallet screen, after a delivery, on a withdraw push and after wallet actions. A failure keeps the last known wallet (D-08, row 43).
+
+### POST /api/v1/delivery-man/wallet/withdraw
+
+- Auth: Bearer header.
+- Request (body): `amount` (required, numeric, 0.01–1000000), `account_id`, `withdrawal_method_id`, `fields`, `note` (max 255). The app sends `amount`, `account_id` (the default account) and a trimmed `note`.
+- Response 200 shape: `{ message, withdraw: {...}, wallet: {...} }` (R6).
+- Error codes: 403 with two families. The service returns the first match:
+  - field-name codes: `amount`, `fields`, `withdrawal_method_id`, `note`
+  - domain codes, in this order: `withdraw_weekly_limit`, `withdraw_no_balance`, `withdraw_amount`, `withdraw_minimum`, `withdraw_insufficient_balance`
+  - `withdraw` for any account or method problem
+  - `rider_withdraw_account_required` when there is no saved account (R6 text)
+- Used in: `WalletRepository.requestWithdraw` (`classifyWithdraw`), then `WalletController.requestWithdraw`.
+  - The decision uses the status and the first recognized `errors[].code` in list order, never the text.
+  - The rider sees one inline message (the server text, or a local key).
+  - The silent refreshes follow the outcome (see progress.md D-08).
+- Notes:
+  - Key off `payout_method` and `withdrawal_method_id`, never off a `*_label` or `method`.
+  - One request per Saturday-to-Friday week (Asia/Gaza). A rejected request frees the week.
+
+### GET /api/v1/delivery-man/wallet/withdrawals?limit=20&offset=<page>
+
+- Auth: Bearer header.
+- Request (query): `limit` (no validator; clamps to 1–50, default 20) and `offset`, a **page number from 1**.
+- Response 200 shape: `{ "total_size": N, "limit": 20, "offset": 1, "withdrawals": [ ... ] }`, newest first. Each row has `id`, `amount`, `status` (`pending | paid | rejected`), `status_label`, `requested_at` (ISO 8601), `method`, `account`, `note`, `payout_*`, `paid_at`, `rejection_reason`, `admin_note`.
+- Used in: `WalletRepository.getWithdrawals(page)` (silent, `query:` map, `WithdrawalsPage.fromBody`), then `WalletController.getWithdrawals` (page 1) and `loadNextWithdrawalsPage`.
+- Notes:
+  - A body that is not a Map, or `withdrawals` that is not a List, is a failure (null). Bad rows are skipped.
+  - More pages exist while `page*20 < total_size` and no page came back empty. A missing `total_size` ends the paging.
+  - The same id can appear on two pages after a new request. The app shows it once.
+
+### DELETE /api/v1/delivery-man/wallet/accounts/{id}
+
+- Auth: Bearer header.
+- Response 200 shape: `{ "message": "..." }`.
+- Error codes: 404 `{ "errors": [ { "code": "account", ... } ] }` when the account is not found.
+- Used in: `WalletRepository.deleteWalletAccount` (`classifyDeleteAccount`, silent), then `WalletController.deleteWalletAccount`, which shows one message and refreshes the wallet on 200 or 404.
+
+### GET /deliveryman-earning-report-invoice/{deliveryman_id}
+
+- **Not in any backend file** (Screens, API guide v3, Postman). B-04 is open; see the questions in docs/backend-changes.md.
+- Auth: the app sends the Bearer header. Whether the route accepts it is unverified.
+- Request (query): `type` (`all`, `delivery_fee`, `delivery_tips`), and `start_date` and `end_date` only as a pair.
+- Response: expected `application/pdf`. The real Content-Type and charset are unverified.
+- Used in: `WalletRepository.downloadEarningInvoice` → `ApiClient.getBytes` (raw `bodyBytes`, silent, 60 s timeout, logs the byte length only), then `WalletController.downloadEarningInvoice`. The file is written only when it starts with `%PDF-`.
+- Error bodies are decoded leniently (UTF-8, malformed bytes allowed) for the server message.
+
+### Retired: store-transfer delivery fees
+
+- `GET /api/v1/delivery-man/store-transfer/delivery-fees` and `PUT .../store-transfer/delivery-fee-received` answer **410** `{ deprecated: true, replacement: "/api/v1/delivery-man/wallet", errors: [{ code: "endpoint_removed" }] }` (R5). The app calls neither of them. Never retry on a 410.
+
 ## Template
 
 ### METHOD /path
