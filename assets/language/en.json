@@ -769,5 +769,7 @@
   "otp_not_matched": "The delivery code is wrong. Check it with the customer",
   "go_online_to_accept_orders": "You must be online to accept orders. Turn on Online from the home screen",
   "error_occurred": "Something went wrong. Please try again",
-  "load_more_failed": "Couldn't load more orders"
+  "load_more_failed": "Couldn't load more orders",
+  "wallet_load_more_failed": "Couldn't load more withdrawal requests",
+  "invoice_download_failed": "Couldn't download the statement. Please try again"
 }

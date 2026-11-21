@@ -1,10 +1,11 @@
-import 'package:get/get.dart';
 import 'package:doghree_rider/common/models/response_model.dart';
 import 'package:doghree_rider/features/wallet/domain/models/earning_report_model.dart';
 import 'package:doghree_rider/features/wallet/domain/repositories/wallet_repository_interface.dart';
 import 'package:doghree_rider/features/wallet/domain/services/wallet_service_interface.dart';
 import 'package:doghree_rider/features/wallet/domain/models/wallet_model.dart';
-import 'package:doghree_rider/features/wallet/domain/models/wallet_withdrawal_model.dart';
+import 'package:doghree_rider/features/wallet/domain/models/invoice_download.dart';
+import 'package:doghree_rider/features/wallet/domain/models/wallet_action_result.dart';
+import 'package:doghree_rider/features/wallet/domain/models/withdrawals_page.dart';
 
 class WalletService implements WalletServiceInterface {
   final WalletRepositoryInterface walletRepositoryInterface;
@@ -21,7 +22,7 @@ class WalletService implements WalletServiceInterface {
   }
 
   @override
-  Future<Response> downloadEarningInvoice({
+  Future<InvoiceDownload> downloadEarningInvoice({
     required int dmId,
     String? type,
     String? startDate,
@@ -46,19 +47,19 @@ class WalletService implements WalletServiceInterface {
   }
 
   @override
-  Future<ResponseModel> deleteWalletAccount(int id) async {
+  Future<DeleteAccountResult> deleteWalletAccount(int id) async {
     return await walletRepositoryInterface.deleteWalletAccount(id);
   }
 
   @override
-  Future<ResponseModel> requestWithdraw(
+  Future<WithdrawResult> requestWithdraw(
       {required double amount, int? accountId, String? note}) async {
     return await walletRepositoryInterface.requestWithdraw(
         amount: amount, accountId: accountId, note: note);
   }
 
   @override
-  Future<List<WalletWithdrawal>?> getWithdrawals({int offset = 1}) async {
-    return await walletRepositoryInterface.getWithdrawals(offset: offset);
+  Future<WithdrawalsPage?> getWithdrawals({int page = 1}) async {
+    return await walletRepositoryInterface.getWithdrawals(page: page);
   }
 }

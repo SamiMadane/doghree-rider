@@ -89,6 +89,55 @@ class ApiClient extends GetxService {
         return http.get(url, headers: headers ?? _mainHeaders);
       }, handleError, query: query);
 
+  /// Binary download (audit row 41). Always silent: the caller shows the one
+  /// message. Sends the normal headers (Bearer), never a token in the query.
+  /// On 200 the body is the raw `Uint8List`; see [handleBytesResponse].
+  Future<Response> getBytes(String uri, {Map<String, dynamic>? query}) async {
+    try {
+      final String keys =
+          (query == null || query.isEmpty) ? '' : ' query: ${query.keys.join(',')}';
+      _log('API ▶ $uri (bytes)$keys');
+      var url = Uri.parse(appBaseUrl + uri);
+      if (query != null && query.isNotEmpty) {
+        url = url.replace(queryParameters: {
+          ...url.queryParameters,
+          ...query.map((k, v) => MapEntry(k, '$v')),
+        });
+      }
+      final res = await http
+          .get(url, headers: _mainHeaders)
+          .timeout(const Duration(seconds: 60));
+      _log('API ◀ $uri ${res.statusCode} (${res.bodyBytes.length} bytes)');
+      return handleBytesResponse(res);
+    } catch (e) {
+      return _failure(e, uri);
+    }
+  }
+
+  /// 200: `body` is the untouched `bodyBytes`, whatever the charset header
+  /// says. Otherwise the body is decoded leniently for the server message.
+  static Response handleBytesResponse(http.Response response) {
+    if (response.statusCode == 200) {
+      return Response(
+        body: response.bodyBytes,
+        headers: response.headers,
+        statusCode: 200,
+      );
+    }
+    dynamic body;
+    try {
+      body = jsonDecode(utf8.decode(response.bodyBytes, allowMalformed: true));
+    } catch (_) {}
+    return Response(
+      body: body,
+      headers: response.headers,
+      statusCode: response.statusCode,
+      statusText: ApiErrorHandler.extractMessage(body) ??
+          ErrorMessages.getMessage(
+              ApiErrorHandler.getErrorType(response.statusCode)),
+    );
+  }
+
   Future<Response> postData(String uri, dynamic body,
           {Map<String, String>? headers, bool handleError = true}) =>
       _send(

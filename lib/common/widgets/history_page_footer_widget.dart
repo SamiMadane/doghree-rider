@@ -3,18 +3,23 @@ import 'package:get/get.dart';
 import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/util/styles.dart';
 
-/// The bottom row of My Orders (audit row 26): a spinner while the next page
-/// loads, or a message with Retry when that page failed.
+/// The bottom row of a paged list (My Orders, audit row 26; withdrawal
+/// requests, audit row 42): a spinner while the next page loads, or a
+/// message with Retry when that page failed.
 class HistoryPageFooterWidget extends StatelessWidget {
   final bool isLoading;
   final bool failed;
   final VoidCallback onRetry;
+
+  /// Text of the failed state. Defaults to `load_more_failed` (orders).
+  final String? failedText;
 
   const HistoryPageFooterWidget({
     super.key,
     required this.isLoading,
     required this.failed,
     required this.onRetry,
+    this.failedText,
   });
 
   @override
@@ -27,7 +32,7 @@ class HistoryPageFooterWidget extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'load_more_failed'.tr,
+              failedText ?? 'load_more_failed'.tr,
               textAlign: TextAlign.center,
               style: textRegular()
                   .copyWith(fontSize: Dimensions.fs14, color: scheme.onSurface),
