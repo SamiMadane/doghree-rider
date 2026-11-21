@@ -103,8 +103,12 @@ class NotificationRepository implements NotificationRepositoryInterface {
       list = sharedPreferences.getStringList(AppConstants.notificationIdList);
     }
     List<int> notificationIdList = [];
+    // A corrupt entry is skipped instead of throwing (D-12, C10).
     for (var id in list ?? []) {
-      notificationIdList.add(jsonDecode(id));
+      try {
+        final dynamic value = jsonDecode(id);
+        if (value is int) notificationIdList.add(value);
+      } catch (_) {}
     }
     return notificationIdList;
   }

@@ -1,3 +1,4 @@
+import 'package:doghree_rider/helper/country_helper.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:doghree_rider/api/api_checker.dart';
 import 'package:doghree_rider/common/widgets/custom_bottom_sheet_widget.dart';
@@ -41,13 +42,13 @@ class _SignInScreenState extends State<SignInScreen> {
     _countryDialCode =
         Get.find<AuthController>().getUserCountryDialCode().isNotEmpty
             ? Get.find<AuthController>().getUserCountryDialCode()
-            : CountryCode.fromCountryCode(
-                    Get.find<SplashController>().configModel!.country!)
+            : CountryHelper.countryFromConfig(
+                    Get.find<SplashController>().configModel?.country)
                 .dialCode;
     _countryCode = Get.find<AuthController>().getUserCountryCode().isNotEmpty
         ? Get.find<AuthController>().getUserCountryCode()
-        : CountryCode.fromCountryCode(
-                Get.find<SplashController>().configModel!.country!)
+        : CountryHelper.countryFromConfig(
+                Get.find<SplashController>().configModel?.country)
             .code;
     _phoneController.text = Get.find<AuthController>().getUserNumber();
     // Remember-me keeps the phone only; drop a password an older version saved.

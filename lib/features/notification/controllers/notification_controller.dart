@@ -121,21 +121,26 @@ class NotificationController extends GetxController implements GetxService {
     _isLoading = true;
     update();
 
-    bool success =
-        await notificationServiceInterface.markAllNotificationsAsRead();
+    // The loader stops even when the call throws (D-12, C5).
+    try {
+      bool success =
+          await notificationServiceInterface.markAllNotificationsAsRead();
 
-    if (success) {
-      // تحديث جميع الإشعارات محلياً
-      if (_notificationList != null) {
-        for (var notification in _notificationList!) {
-          notification.isRead = true;
+      if (success) {
+        // تحديث جميع الإشعارات محلياً
+        if (_notificationList != null) {
+          for (var notification in _notificationList!) {
+            notification.isRead = true;
+          }
+          _hasNotification = false;
         }
-        _hasNotification = false;
       }
+    } catch (e) {
+      if (kDebugMode) debugPrint('markAllNotificationsAsRead failed: ${e.runtimeType}');
+    } finally {
+      _isLoading = false;
+      update();
     }
-
-    _isLoading = false;
-    update();
   }
 
   NotificationType _convertStringToNotificationType(String type) {
@@ -207,13 +212,16 @@ class NotificationController extends GetxController implements GetxService {
       if (notificationList != null) {
         _notificationList = [];
         _notificationList!.addAll(notificationList);
+        // Newest first. A missing or unreadable date sorts last instead of
+        // throwing and hiding the whole list (D-12, C4).
         _notificationList!.sort((a, b) {
-          return DateConverterHelper.isoStringToLocalDate(a.updatedAt!)
-              .compareTo(
-                  DateConverterHelper.isoStringToLocalDate(b.updatedAt!));
+          final DateTime? da = _dateOf(a);
+          final DateTime? db = _dateOf(b);
+          if (da == null && db == null) return 0;
+          if (da == null) return 1;
+          if (db == null) return -1;
+          return db.compareTo(da);
         });
-        Iterable iterable = _notificationList!.reversed;
-        _notificationList = iterable.toList() as List<NotificationModel>?;
 
         // ✅ حساب الإشعارات غير المقروءة من الـ Backend
         _updateHasNotification();
@@ -231,6 +239,16 @@ class NotificationController extends GetxController implements GetxService {
   }
 
   /// ✅ حساب عدد الإشعارات غير المقروءة
+  static DateTime? _dateOf(NotificationModel n) {
+    final String? value = n.updatedAt;
+    if (value == null || value.isEmpty) return null;
+    try {
+      return DateConverterHelper.isoStringToLocalDate(value);
+    } catch (_) {
+      return null;
+    }
+  }
+
   int getUnreadNotificationCount() {
     if (_notificationList == null) return 0;
     return _notificationList!.where((n) => !n.isRead).length;

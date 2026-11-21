@@ -1,3 +1,4 @@
+import 'package:doghree_rider/util/app_constants.dart';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -31,7 +32,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
-  String _countryDialCode = '+970';
+  String _countryDialCode = AppConstants.fallbackDialCode;
 
   @override
   void initState() {

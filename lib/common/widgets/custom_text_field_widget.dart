@@ -1,3 +1,4 @@
+import 'package:doghree_rider/util/app_constants.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -281,12 +282,12 @@ class CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
   Widget? _buildPrefix(BuildContext context) {
     if (widget.isPhone) {
       return SizedBox(
-        width: 95,
+        width: Dimensions.w95,
         child: Row(
           children: [
             Container(
-              width: 85,
-              height: 50,
+              width: Dimensions.w85,
+              height: Dimensions.h50,
               margin: EdgeInsets.zero,
               padding: EdgeInsetsDirectional.only(start: Dimensions.w5),
               child: Center(
@@ -295,12 +296,12 @@ class CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
                     SizedBox(width: Dimensions.w5),
                     Image.asset(
                       ManagerAssets.psFlag,
-                      width: 25,
-                      height: 25,
+                      width: Dimensions.w25,
+                      height: Dimensions.h25,
                     ),
                     SizedBox(width: Dimensions.w5),
                     Text(
-                      '+970',
+                      AppConstants.fallbackDialCode,
                       style: textRegular().copyWith(
                         fontSize: Dimensions.fs14,
                         color: Theme.of(context).textTheme.bodyMedium!.color,
@@ -311,8 +312,8 @@ class CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
               ),
             ),
             Container(
-              height: 20,
-              width: 2,
+              height: Dimensions.h20,
+              width: Dimensions.w2,
               color: Theme.of(context).disabledColor,
             ),
           ],

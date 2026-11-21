@@ -97,6 +97,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> checkPermission() async {
     var notificationStatus = await Permission.notification.status;
     var batteryStatus = await Permission.ignoreBatteryOptimizations.status;
+    // Home can be gone by now (logout, tab teardown): no setState then
+    // (D-12, C7).
+    if (!mounted) return;
 
     if (notificationStatus.isDenied || notificationStatus.isPermanentlyDenied) {
       setState(() {

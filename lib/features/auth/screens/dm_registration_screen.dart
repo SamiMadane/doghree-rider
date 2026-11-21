@@ -1,4 +1,4 @@
-import 'package:country_code_picker/country_code_picker.dart';
+import 'package:doghree_rider/helper/country_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -50,8 +50,8 @@ class _DmRegistrationScreenState extends State<DmRegistrationScreen> {
   @override
   void initState() {
     super.initState();
-    _countryDialCode = CountryCode.fromCountryCode(
-            Get.find<SplashController>().configModel!.country!)
+    _countryDialCode = CountryHelper.countryFromConfig(
+            Get.find<SplashController>().configModel?.country)
         .dialCode;
     Get.find<AuthController>().resetDmRegistrationData();
     Get.find<AddressController>().resetSelectedDeliveryZone();

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:doghree_rider/helper/responsive_helper.dart';
@@ -40,19 +41,28 @@ class _PaginatedListViewWidgetState extends State<PaginatedListViewWidget> {
     });
   }
 
+  /// The footer loader always stops, and nothing is set after the list is
+  /// gone (leaving a chat while a page loads) (D-12, C6).
   void _paginate() async {
-    int pageSize = (widget.totalSize! / 10).ceil();
-    if (_offset! < pageSize && !_offsetList.contains(_offset!+1)) {
+    int pageSize = ((widget.totalSize ?? 0) / 10).ceil();
+    if ((_offset ?? 1) < pageSize && !_offsetList.contains((_offset ?? 1) + 1)) {
 
       setState(() {
-        _offset = _offset! + 1;
+        _offset = (_offset ?? 1) + 1;
         _offsetList.add(_offset);
         _isLoading = true;
       });
-      await widget.onPaginate(_offset);
-      setState(() {
-        _isLoading = false;
-      });
+      try {
+        await widget.onPaginate(_offset);
+      } catch (e) {
+        if (kDebugMode) debugPrint('paginate failed: ${e.runtimeType}');
+      } finally {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
+      }
 
     }else {
       if(_isLoading) {

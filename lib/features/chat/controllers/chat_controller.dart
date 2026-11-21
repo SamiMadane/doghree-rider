@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:doghree_rider/api/api_client.dart';
@@ -138,27 +139,34 @@ class ChatController extends GetxController implements GetxService {
     _isLoading = true;
     update();
 
-    List<MultipartBody> chatImage =
-        chatServiceInterface.processMultipartBody(_chatImage!);
-    MessageModel? messageModel = await chatServiceInterface.processSendMessage(
-        notificationBody, chatImage, message, conversationId);
+    // The loader stops on every path: a failed send or an exception used to
+    // leave the send button spinning (D-12, C2).
+    try {
+      List<MultipartBody> chatImage =
+          chatServiceInterface.processMultipartBody(_chatImage ?? []);
+      MessageModel? messageModel = await chatServiceInterface.processSendMessage(
+          notificationBody, chatImage, message, conversationId);
 
-    if (messageModel != null) {
-      _imageFiles = [];
-      _chatImage = [];
-      _isSendButtonActive = false;
-      _isLoading = false;
-      _messageModel = messageModel;
-      if (_messageModel!.conversation != null &&
-          _messageModel!.conversation!.receiverType == 'delivery_man') {
-        User? receiver = _messageModel!.conversation!.receiver;
-        _messageModel!.conversation!.receiver =
-            _messageModel!.conversation!.sender;
-        _messageModel!.conversation!.sender = receiver;
+      if (messageModel != null) {
+        _imageFiles = [];
+        _chatImage = [];
+        _isSendButtonActive = false;
+        _messageModel = messageModel;
+        if (_messageModel!.conversation != null &&
+            _messageModel!.conversation!.receiverType == 'delivery_man') {
+          User? receiver = _messageModel!.conversation!.receiver;
+          _messageModel!.conversation!.receiver =
+              _messageModel!.conversation!.sender;
+          _messageModel!.conversation!.sender = receiver;
+        }
+        isSuccess = true;
       }
-      isSuccess = true;
+    } catch (e) {
+      if (kDebugMode) debugPrint('sendMessage failed: ${e.runtimeType}');
+    } finally {
+      _isLoading = false;
+      update();
     }
-    update();
     return isSuccess;
   }
 

@@ -1,3 +1,4 @@
+import 'package:doghree_rider/helper/country_helper.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:doghree_rider/common/widgets/widget_with_label.dart';
 import 'package:doghree_rider/features/splash/controllers/splash_controller.dart';
@@ -25,11 +26,11 @@ class _ForgetPassScreenState extends State<ForgetPassScreen> {
   final FocusNode _phoneFocus = FocusNode();
 
   final TextEditingController _numberController = TextEditingController();
-  String? _countryDialCode = CountryCode.fromCountryCode(
-          Get.find<SplashController>().configModel!.country!)
+  String? _countryDialCode = CountryHelper.countryFromConfig(
+          Get.find<SplashController>().configModel?.country)
       .dialCode;
-  String? _countryCode = CountryCode.fromCountryCode(
-          Get.find<SplashController>().configModel!.country!)
+  String? _countryCode = CountryHelper.countryFromConfig(
+          Get.find<SplashController>().configModel?.country)
       .code;
 
   @override
@@ -85,8 +86,8 @@ class _ForgetPassScreenState extends State<ForgetPassScreen> {
                   _countryCode = countryCode.code;
                 },
                 countryDialCode: _countryCode ??
-                    CountryCode.fromCountryCode(
-                            Get.find<SplashController>().configModel!.country!)
+                    CountryHelper.countryFromConfig(
+                            Get.find<SplashController>().configModel?.country)
                         .code,
                 inputAction: TextInputAction.done,
                 onSubmit: (text) =>

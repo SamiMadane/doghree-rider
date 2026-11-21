@@ -19,56 +19,47 @@ class ForgotPasswordController extends GetxController implements GetxService {
   String _verificationCode = '';
   String get verificationCode => _verificationCode;
 
-  Future<bool> changePassword(ProfileModel updatedUserModel, String currentPassword, String password) async {
+  /// Runs one request with the loader on. The loader always stops, and an
+  /// exception becomes a failed result instead of a stuck button (D-12, C3).
+  Future<ResponseModel> _withLoader(Future<ResponseModel> Function() call) async {
     _isLoading = true;
     update();
-    ResponseModel responseModel = await forgotPasswordServiceInterface.changePassword(updatedUserModel, currentPassword, password);
-    _isLoading = false;
+    try {
+      return await call();
+    } catch (e) {
+      if (kDebugMode) debugPrint('forgot password call failed: ${e.runtimeType}');
+      return ResponseModel(false, 'error_occurred'.tr);
+    } finally {
+      _isLoading = false;
+      update();
+    }
+  }
+
+  Future<bool> changePassword(ProfileModel updatedUserModel, String currentPassword, String password) async {
+    final ResponseModel responseModel = await _withLoader(() =>
+        forgotPasswordServiceInterface.changePassword(updatedUserModel, currentPassword, password));
     if (responseModel.isSuccess) {
       Get.back();
       showCustomSnackBar(responseModel.message, isError: false);
     } else {
       showCustomSnackBar(responseModel.message, isError: true);
     }
-    update();
     return responseModel.isSuccess;
   }
 
-  Future<ResponseModel> forgetPassword(String? phone) async {
-    _isLoading = true;
-    update();
-    ResponseModel responseModel = await forgotPasswordServiceInterface.forgetPassword(phone);
-    _isLoading = false;
-    update();
-    return responseModel;
-  }
+  Future<ResponseModel> forgetPassword(String? phone) =>
+      _withLoader(() => forgotPasswordServiceInterface.forgetPassword(phone));
 
-  Future<ResponseModel> verifyToken(String? number) async {
-    _isLoading = true;
-    update();
-    ResponseModel responseModel = await forgotPasswordServiceInterface.verifyToken(number, _verificationCode);
-    _isLoading = false;
-    update();
-    return responseModel;
-  }
+  Future<ResponseModel> verifyToken(String? number) => _withLoader(
+      () => forgotPasswordServiceInterface.verifyToken(number, _verificationCode));
 
-  Future<ResponseModel> verifyFirebaseOtp({required String phoneNumber, required String session, required String otp}) async {
-    _isLoading = true;
-    update();
-    ResponseModel responseModel = await forgotPasswordServiceInterface.verifyFirebaseOtp(phoneNumber: phoneNumber, session: session, otp: otp);
-    _isLoading = false;
-    update();
-    return responseModel;
-  }
+  Future<ResponseModel> verifyFirebaseOtp({required String phoneNumber, required String session, required String otp}) =>
+      _withLoader(() => forgotPasswordServiceInterface.verifyFirebaseOtp(
+          phoneNumber: phoneNumber, session: session, otp: otp));
 
-  Future<ResponseModel> resetPassword(String? resetToken, String phone, String password, String confirmPassword) async {
-    _isLoading = true;
-    update();
-    ResponseModel responseModel = await forgotPasswordServiceInterface.resetPassword(resetToken, phone, password, confirmPassword);
-    _isLoading = false;
-    update();
-    return responseModel;
-  }
+  Future<ResponseModel> resetPassword(String? resetToken, String phone, String password, String confirmPassword) =>
+      _withLoader(() => forgotPasswordServiceInterface.resetPassword(
+          resetToken, phone, password, confirmPassword));
 
   void updateVerificationCode(String query) {
     _verificationCode = query;

@@ -28,12 +28,16 @@ class OrderRepository implements OrderRepositoryInterface {
     List<CancellationData>? orderCancelReasons;
     Response response = await apiClient.getData(
         '${AppConstants.orderCancellationUri}?offset=1&limit=30&type=deliveryman');
-    if (response.statusCode == 200) {
-      OrderCancellationBody orderCancellationBody =
-          OrderCancellationBody.fromJson(response.body);
-      orderCancelReasons = [];
-      for (var element in orderCancellationBody.reasons!) {
-        orderCancelReasons.add(element);
+    // Only a JSON object is parsed. An HTML 200 or a body without reasons
+    // gives no list (null), never a TypeError (D-12, C8).
+    if (response.statusCode == 200 && response.body is Map<String, dynamic>) {
+      try {
+        OrderCancellationBody orderCancellationBody =
+            OrderCancellationBody.fromJson(response.body);
+        final List<CancellationData>? reasons = orderCancellationBody.reasons;
+        if (reasons != null) orderCancelReasons = [...reasons];
+      } catch (e) {
+        if (kDebugMode) debugPrint('cancel reasons parse failed: ${e.runtimeType}');
       }
     }
     return orderCancelReasons;
@@ -197,8 +201,14 @@ class OrderRepository implements OrderRepositoryInterface {
     List<IgnoreModel> ignoreList = [];
     List<String> stringList =
         sharedPreferences.getStringList(AppConstants.ignoreList) ?? [];
+    // One corrupt entry is skipped; it used to throw on every launch
+    // (D-12, C10).
     for (var ignore in stringList) {
-      ignoreList.add(IgnoreModel.fromJson(jsonDecode(ignore)));
+      try {
+        ignoreList.add(IgnoreModel.fromJson(jsonDecode(ignore)));
+      } catch (e) {
+        if (kDebugMode) debugPrint('ignore entry skipped: ${e.runtimeType}');
+      }
     }
     return ignoreList;
   }
