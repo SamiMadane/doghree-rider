@@ -14,7 +14,7 @@
 | D-07 | fix/d-07-notifications | Audit rows 6, 31, 32, 33, 34, 35, 54 | merged, device tests pending (D-11) | 2026-11-20 |
 | D-08 | fix/d-08-wallet | Audit rows 41, 42, 43, 44 | merged, device tests pending (D-11) | 2026-11-21 |
 | D-09 | fix/d-09-uploads-profile | Audit rows 45, 46, 47, 48, 49 | merged, device tests pending (D-11) | 2026-11-21 |
-| D-10 | fix/d-10-cleanup | Audit rows 40, 55, 56, 57, 58, 60 | planned | |
+| D-10 | fix/d-10-cleanup | Audit rows 40, 55, 56, 57, 58, 60 + D-10 candidates and owner decisions Q1-Q7 | implemented, awaiting closing (device tests in D-11) | |
 | D-11 | (no code branch) | Final device pass: every pending backlog section, the smoke pass and the end-to-end order test (`docs/device-test-backlog.md`) | planned (after D-10) | |
 
 > **Branch state.** When D-03 started, `development` was level with `origin/development` (265bcfa): D-01 and D-02 were already pushed. The earlier note that D-03 would start ahead of origin was wrong. Device tests are deferred to D-11 (see CLAUDE.md, Batch workflow), and no release build is made from `development` until D-11 passes.
@@ -556,6 +556,54 @@
 - A 405 on `delivered` with photos (if the server answers that for a dropped body) is a plain failure: the photos stay and the rider can remove them and retry. Revisit when B-04 questions 7–11 are answered.
 - Registration (`AuthService.pickImageFromGallery`, `ProfileService.pickImageFromGallery`) still has its own size checks; row 56 (D-10).
 - `flutter test` and `flutter analyze` rewrite the macOS and Windows generated plugin files with line-ending-only changes. They were restored and are never committed.
+
+### D-10 (2026-11-21)
+- **Scope:** audit rows 40, 55, 56, 57, 58, 60, the D-10 candidates from earlier batches, and the owner decisions Q1, Q2, Q4 (Q3 left as is). Every deletion was checked by grep over `lib/`, `test/`, pubspec, routes and string references, then by analyze.
+- **Row 40:** removed `AddressController.getZone` and its service, repository and interface methods, the fields only it wrote (`loading`, `isLoading`, `inZone`, `zoneID`) and `AppConstants.zoneUri`. `ZoneResponseModel` stays (`address_model.dart` imports it).
+- **Row 55:** removed the second "/// Service" block in `get_di.dart` (11 concrete registrations). No code finds a concrete service type; every controller takes the interface.
+- **Row 56:** removed the old pickers (`AuthController.pickDmImageForRegistration`, `ProfileController.pickProfileImage` and `pickImage`, `pickImageFromGallery` in both services and interfaces, `ImagePickerHelper.pickProfileImage` and `pickNormalImage`). The broken size check (`length().then` result ignored) went with them; the live pickers use `ImageUploadRules` since D-09. Also removed `SplashController.getModuleConfig`, `storeCategoryID`, `storeType`, `firstTimeConnectionCheck` with its setter, and `NotificationHelper.showTextNotification` (no caller, no isolate entry point, no string reference).
+- **Row 57:** removed the 110 commented-out lines of the old ApiChecker.
+- **Row 58:** removed the tracked stray files `bash.exe.stackdump`, `script.dart`, `unused_related.txt` and `$null` (a `flutter pub deps` output committed by a PowerShell redirect), and the `args` dev dependency that only `script.dart` used (`args` stays in the lock as a transitive package).
+- **Row 60:** the bottom nav moved, unchanged, to `lib/features/dashboard/widgets/dashboard_bottom_nav_widget.dart`. Its sizes come from `Dimensions` (`w16`, `h10`, new `h76`, `r24`, `r18`, `h6`). The children (`bottom_nav_item_widget`, `bottom_nav_road_indicator`) keep their raw sizes (note below).
+- **Candidates:**
+  - Deleted `collect_money_delivery_sheet_widget.dart`, a byte-identical, never-imported copy of `confirm_delivery_sheet_widget.dart`.
+  - Removed the `camera` dependency (D-01 note). Lock diff: only `camera`, `camera_android_camerax`, `camera_avfoundation`, `camera_platform_interface`, `camera_web` and `stream_transform` (used only by camera) are gone, plus `args` direct dev → transitive (row 58). No version changed. `NSCameraUsageDescription` and the CAMERA permission stay. Merged debug manifest (`flutter build apk --debug` before and after): the permission lines are identical; the only differences are the plugin's `<uses-feature android:name="android.hardware.camera.any" />` (no `required` attribute, so it counted as required) and CameraX's `MetadataHolderService` entry, both gone. Google Play still infers a required camera from the CAMERA permission, so device filtering should be about the same. Check the Play Console device catalog at the next release.
+  - Removed the unused `OrderDetailsScreen.orderIndex` and its 4 call-site arguments (D-04 note).
+  - `image_picker_helper.dart` numbers (Q4): `ImageUploadRules.pickMaxDimension = 1600` and `pickJpegQuality = 85`, private constants for the native crop screen. Not `Dimensions`: they are output pixels and quality, and screen scaling would change the saved image size per phone.
+- **Owner decisions:**
+  - **Q1:** the withdraw button follows only `can_request_withdraw` / `withdraw_block`; the `availableBalance <= 0` check and its toast are gone. In the sheet, an amount above the shown balance shows `wallet_withdraw_exceeds` as a live hint (not an error) and never blocks; the server answers `withdraw_insufficient_balance` / `withdraw_no_balance` (mapped in D-08). No new translation key.
+  - **Q2:** Edit Profile shows the phone read-only. The phone is out of the "nothing changed" check, the validation (`validateProfileForm` takes an optional `phone`; null skips the phone rules) and the model sent.
+  - **Q3:** the iOS proof picker stays gallery-only (note below).
+  - **Q6:** `stash@{0}` was re-checked hunk by hunk: all 37 added lines and every removal are already in HEAD (f2d42ac). Dropped; commit 58affccc8321eeeb064649f893fd991c82e46542 can be restored with `git stash store`.
+- **Tests:** 14 new, 365 total, 365 passed, 0 failed. Analyze: 0 issues.
+  - Files: `get_di_test` 2, `withdraw_hint_test` 5, `profile_phone_readonly_test` 3, `bottom_nav_overflow_<size>_test` 4 (one file per size, see code-traps).
+  - **Fail on the old code by behaviour** (a temporary `git worktree` at `development` 4c109ba, removed afterwards; the profile file ran without P3, which does not compile there):
+
+    | Test | Old-code result |
+    |---|---|
+    | T1 | all 11 concrete services registered: `[HtmlService, WalletService, ForgotPasswordService, ChatService, LanguageService, SplashService, NotificationService, ProfileService, AddressService, AuthService, OrderService]` instead of empty |
+    | Q1a | 0 `WalletWithdrawSheet` (the no-balance toast instead) |
+    | Q1c | 0 widgets with text `wallet_withdraw_exceeds` while typing |
+    | Q1d | 0 widgets with text `wallet_withdraw_confirm_title` (blocked by the old check) |
+    | P1 | `readOnly` false |
+    | P2 | 0 update requests instead of 1 (the empty phone failed validation) |
+
+  - **Fail on the old code at compile time only:** P3 (optional `phone`), G2 x4 (no `DashboardBottomNavWidget`).
+  - **Guards** (pass on the old code): G1 (every interface resolves, languages load), Q1b (a server block opens no sheet), Q1e (no hint within the balance).
+  - G2 renders with the test font, so it checks the layout arithmetic only; the real nav check stays on a device (D-11).
+  - **Covered by compile, analyze and the full suite only:** rows 40, 56, 57, 58, the duplicate widget, `camera`, `orderIndex`.
+- **Device:** **not run.** The steps are in `docs/device-test-backlog.md` (D-10, steps 1–8) and run in D-11.
+
+### Notes (found during D-10, not fixed)
+- Edit Profile: the avatar badge sits in two nested `PositionedDirectional` (`update_profile_screen.dart`), which reports "Incorrect use of ParentDataWidget" in debug. The D-10 profile tests ignore that one report.
+- The phone prefix in `CustomTextFieldWidget._buildPrefix` uses raw sizes (95, 85, 50, 25, 20, 2) and a fixed `+970`; with a wide font it overflows its 85 px box. Tests ignore that overflow too.
+- The bottom nav children (`bottom_nav_item_widget.dart`: 56x30 pill, paddings 16/14/6/4/2, fonts 9/9.5/10.5, `Get.width < 360` branch; `bottom_nav_road_indicator.dart`: 45x8, 7, 11/6/3) keep raw sizes.
+- The dashboard "press back again to exit" still uses `ScaffoldMessenger.showSnackBar` (not migrated: no row covers it).
+- `wallet_withdraw_no_balance` is no longer used by the app (kept in en/ar).
+- The order proof picker keeps its own `imageQuality: 70, maxWidth: 1600` (`order_controller.dart`), separate from `ImageUploadRules.pickJpegQuality` (Q4: unchanged on purpose).
+- iOS proof picker: still gallery only (Q3, left as is).
+- `RECORD_AUDIO` is declared in the app manifest with no audio feature in the app.
+- D-07 note "a cold start from a push skips `updateToken()`" is behaviour, not cleanup: review in D-11.
 
 ## Open backend questions
 

@@ -182,6 +182,27 @@ Also run the combined smoke pass (this batch touches orders and start-up). While
 
 **Unit tests only:** 413 and the dropped-body 403 with the deliver-without-photos confirm, Yes and No, identical resend fields, a double Yes (D2, D2b, D2c, D2d, D10); a proof file gone from the cache (D1, D9); 5xx, statusCode 0 and 1 with the order still picked up, and a failed check (D5–D8); `order_proof_full_url` shapes (J1–J6); the null email and the profile save exception and double tap (R1, U1–U6); content-type labelling (M1–M3).
 
+## D-10: cleanup (dead code, DI, stray files, bottom nav sizes, withdraw and phone decisions)
+
+- **Branch:** fix/d-10-cleanup
+- **Branch commit:** 346c25a
+- **Status:** pending (D-11)
+
+| # | Steps | Expected |
+|---|---|---|
+| 1 | Cold start while logged in; open Home, Requests, My Orders, Profile from the bottom nav | Dashboard opens; each tab opens; back from a tab returns to Home |
+| 2 | Look at the bottom nav on the smallest and the largest phone available, light and dark theme | Labels readable, no yellow/black stripe, the road indicator sits over the active tab |
+| 3 | Registration: pick the profile photo and an ID photo, once from the gallery and once from the camera, with crop; open the zone list | Photos show after crop; the zone list loads |
+| 4 | Edit Profile: try to type in the phone field; change the photo (camera) and the name; Save | The phone cannot be edited; one success message; new name and photo show |
+| 5 | Edit Profile: change nothing, Save | One "change something to update" message, no request |
+| 6 | Wallet with a balance shown and withdrawing allowed: open Request withdraw, type more than the balance, submit | The hint "Amount exceeds your available balance" shows while typing, the confirm dialog still opens, and the server's message decides (one inline message) |
+| 7 | Wallet with a zero balance shown but `can_request_withdraw` true | The button is active and opens the sheet; the server answers |
+| 8 | Cash order: deliver through the confirm-delivery sheet (OTP, one proof photo from the camera on Android) | Delivered, one message |
+
+**Device only:** real nav sizes and fonts (step 2; G2 uses the test font), camera and crop after the `camera` package removal (steps 3, 4, 8). The smoke pass applies (orders and money).
+
+**Unit tests only:** single DI registration per service (T1, G1); the withdraw decisions with the server flag false (Q1b) and within the balance (Q1e); phone-less profile save (P2, P3).
+
 ## Combined smoke pass (once, in D-11)
 
 | # | Step | Expected |
