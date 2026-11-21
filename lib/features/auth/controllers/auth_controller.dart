@@ -13,6 +13,7 @@ import 'package:doghree_rider/features/auth/domain/services/auth_service_interfa
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:doghree_rider/helper/image_picker_helper.dart';
+import 'package:doghree_rider/helper/image_upload_rules.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:doghree_rider/util/app_constants.dart';
 
@@ -411,7 +412,7 @@ class AuthController extends GetxController implements GetxService {
 
   // ========== ✅ NEW: Pick Image with Crop Support ==========
   /// اختيار صورة الديلفري مان مع القص الاحترافي
-  static const int _maxImageBytes = 2 * 1024 * 1024;
+  static const int _maxImageBytes = ImageUploadRules.maxImageBytes;
 
   Future<bool> _imageSizeOk(XFile file) async {
     try {

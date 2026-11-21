@@ -771,5 +771,19 @@
   "error_occurred": "Something went wrong. Please try again",
   "load_more_failed": "Couldn't load more orders",
   "wallet_load_more_failed": "Couldn't load more withdrawal requests",
-  "invoice_download_failed": "Couldn't download the statement. Please try again"
+  "invoice_download_failed": "Couldn't download the statement. Please try again",
+  "please_upload_lower_size_file": "This photo is too large. Please choose a photo under 2 MB",
+  "photo_format_not_supported": "This photo format is not supported. Use a JPG, PNG or WEBP photo, or take a new one with the camera",
+  "camera_permission_denied": "Camera access is off. Allow it in your phone settings",
+  "gallery_permission_denied": "Photo access is off. Allow it in your phone settings",
+  "no_camera_available": "No camera is available on this device",
+  "image_pick_failed": "Couldn't use this photo. Please try again",
+  "proof_photo_optional_hint": "Optional. You can deliver without a photo",
+  "order_delivered": "The order was delivered",
+  "delivered_photos_not_saved": "The order was delivered, but the photos were not saved",
+  "delivered_some_photos_skipped": "The order was delivered. Some photos could not be attached",
+  "delivery_unconfirmed": "We couldn't confirm the delivery yet. The order will refresh by itself",
+  "photos_upload_failed_deliver_without": "The photos could not be uploaded. Deliver the order without photos?",
+  "deliver_without_photos": "Deliver without photos",
+  "profile_updated": "Your profile was updated"
 }

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:doghree_rider/api/api_client.dart';
 import 'package:doghree_rider/features/order/controllers/order_controller.dart';
@@ -120,6 +121,16 @@ OrderModel _order(int id, {String? status, String type = 'delivery'}) =>
 
 OrderFetchResult _found(int id, String status) =>
     OrderFetchResult(OrderFetch.found, _order(id, status: status), 200);
+
+/// A real, readable JPEG: since D-09 an unreadable proof photo is dropped
+/// before the delivered request.
+XFile _realJpeg(String name) {
+  final Directory dir = Directory('${Directory.systemTemp.path}/d04_proof')
+    ..createSync(recursive: true);
+  final File f = File('${dir.path}/$name')
+    ..writeAsBytesSync([0xFF, 0xD8, 0xFF, 0xE0, ...List<int>.filled(64, 1)]);
+  return XFile(f.path);
+}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -279,8 +290,8 @@ void main() {
 
     test('T6 photos go only with delivered of their own order', () async {
       controller.prepareProofFor(1);
-      controller.addProofImage(XFile('a.jpg'));
-      controller.addProofImage(XFile('b.jpg'));
+      controller.addProofImage(_realJpeg('a.jpg'));
+      controller.addProofImage(_realJpeg('b.jpg'));
       service.statusResults.addAll(const [
         _Status(StatusOutcome.updated, 'ok', 200),
         _Status(StatusOutcome.updated, 'ok', 200),
@@ -301,7 +312,7 @@ void main() {
     test('T20 reopening the same order keeps the photos, another clears them',
         () {
       controller.prepareProofFor(1);
-      controller.addProofImage(XFile('a.jpg'));
+      controller.addProofImage(_realJpeg('a.jpg'));
       controller.prepareProofFor(1);
       expect(controller.pickedPrescriptions, hasLength(1));
       controller.prepareProofFor(2);
@@ -332,7 +343,7 @@ void main() {
         () async {
       await openOrder(5, 'picked_up');
       controller.prepareProofFor(5);
-      controller.addProofImage(XFile('a.jpg'));
+      controller.addProofImage(_realJpeg('a.jpg'));
       service.statusResults
         ..add(const _Status(StatusOutcome.notDelivered, 'wallet error', 406))
         ..add(const _Status(StatusOutcome.updated, 'ok', 200));

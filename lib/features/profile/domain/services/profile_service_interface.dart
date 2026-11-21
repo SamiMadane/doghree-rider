@@ -8,7 +8,7 @@ import 'package:doghree_rider/features/profile/domain/models/profile_result_mode
 
 abstract class ProfileServiceInterface {
   Future<ProfileResult> getProfileInfo();
-  Future<ResponseModel> updateProfile(ProfileModel userInfoModel, XFile? data, String token);
+  Future<ResponseModel> updateProfile(ProfileModel userInfoModel, XFile? data);
   Future<ResponseModel> updateActiveStatus();
   Future<bool> recordWebSocketLocation(RecordLocationBodyModel recordLocationBody);
   /// The real current position, or null when there is none (GPS off,

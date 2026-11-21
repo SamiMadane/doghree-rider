@@ -127,7 +127,10 @@ class OrderRepository implements OrderRepositoryInterface {
         classifyStatus(
             response.statusCode, ApiErrorHandler.extractCode(response.body)),
         _messageOf(response),
-        response.statusCode);
+        response.statusCode,
+        codes: ApiErrorHandler.extractErrors(response.body)
+            .map((e) => e.key)
+            .toList());
   }
 
   /// Silent: the controller shows one message on failure (audit row 25).

@@ -12,6 +12,8 @@ import 'package:doghree_rider/features/order/domain/models/order_model.dart';
 import 'package:doghree_rider/features/order/domain/models/update_status_body_model.dart';
 import 'package:doghree_rider/features/order/domain/models/ignore_model.dart';
 import 'package:doghree_rider/features/order/domain/models/order_cancellation_body.dart';
+import 'package:doghree_rider/features/order/widgets/deliver_without_photos_dialog.dart';
+import 'package:doghree_rider/helper/image_upload_rules.dart';
 import 'package:doghree_rider/helper/order_ringing.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
 import 'package:doghree_rider/util/app_constants.dart';
@@ -81,6 +83,26 @@ class OrderController extends GetxController implements GetxService {
   /// uses [showCustomSnackBar]; tests replace it only to count messages.
   @visibleForTesting
   void Function(String? message, {bool isError}) toast = showCustomSnackBar;
+
+  /// Opens the proof picker. Tests replace it; production uses image_picker
+  /// with the same quality and width as before.
+  @visibleForTesting
+  Future<XFile?> Function(ImageSource source) pickImageFn = _pickProofImage;
+
+  static Future<XFile?> _pickProofImage(ImageSource source) => ImagePicker()
+      .pickImage(source: source, imageQuality: 70, maxWidth: 1600);
+
+  /// Asks whether to deliver without the photos after the server refused a
+  /// too-large request (D-09). Tests replace it.
+  @visibleForTesting
+  Future<bool> Function() confirmDeliverWithoutPhotos = _askDeliverWithoutPhotos;
+
+  static Future<bool> _askDeliverWithoutPhotos() async =>
+      await Get.dialog<bool>(const DeliverWithoutPhotosDialog(),
+          barrierDismissible: false) ==
+      true;
+
+  bool _pickingProof = false;
   // ---------- خريطة معاينة الطلب ----------
   LatLng? _mapMyPoint;
   LatLng? get mapMyPoint => _mapMyPoint;
@@ -151,26 +173,39 @@ class OrderController extends GetxController implements GetxService {
     }
   }
 
-  void pickPrescriptionImage(
+  /// One picker at a time, one message per failure, and a cancel is silent
+  /// (audit rows 46, 49). A photo is kept only if it passes
+  /// [ImageUploadRules], so nothing unusable reaches the delivery request.
+  Future<void> pickPrescriptionImage(
       {required bool isRemove, required bool isCamera}) async {
     if (isRemove) {
       _pickedPrescriptions = [];
-    } else {
-      if (_pickedPrescriptions.length >= 5) {
-        if (Get.isDialogOpen ?? false) Get.back();
-        showCustomSnackBar('maximum_proof_images_5'.tr);
+      update();
+      return;
+    }
+    if (_pickingProof) return;
+    if (_pickedPrescriptions.length >= 5) {
+      if (Get.isDialogOpen == true) Get.back();
+      toast('maximum_proof_images_5'.tr);
+      return;
+    }
+    _pickingProof = true;
+    try {
+      final XFile? xFile =
+          await pickImageFn(isCamera ? ImageSource.camera : ImageSource.gallery);
+      if (xFile == null) return;
+      final ImageCheck check = await ImageUploadRules.check(xFile);
+      if (check != ImageCheck.ok) {
+        toast(ImageUploadRules.messageKey(check).tr);
         return;
       }
-      XFile? xFile = await ImagePicker().pickImage(
-          source: isCamera ? ImageSource.camera : ImageSource.gallery,
-          imageQuality: 70,
-          maxWidth: 1600);
-      if (xFile != null) {
-        addProofImage(xFile);
-        if (Get.isDialogOpen!) {
-          Get.back();
-        }
-      }
+      addProofImage(xFile);
+      if (Get.isDialogOpen == true) Get.back();
+    } catch (e) {
+      if (kDebugMode) debugPrint('proof pick failed: ${e.runtimeType}');
+      toast(pickFailureKey(classifyPickError(e)).tr);
+    } finally {
+      _pickingProof = false;
       update();
     }
   }
@@ -471,9 +506,16 @@ class OrderController extends GetxController implements GetxService {
       final bool sendProof = status == AppConstants.delivered &&
           _proofOrderId != null &&
           _proofOrderId == currentOrder.id;
-      final List<MultipartBody> multiParts = sendProof
-          ? orderServiceInterface.prepareOrderProofImages(_pickedPrescriptions)
-          : <MultipartBody>[];
+      // A photo that can no longer be read is dropped, never blocking the
+      // delivery (B-02).
+      final List<XFile> usable =
+          sendProof ? await _usableProofImages() : const <XFile>[];
+      final bool skippedPhotos =
+          sendProof && usable.length < _pickedPrescriptions.length;
+      final List<MultipartBody> multiParts = usable.isEmpty
+          ? <MultipartBody>[]
+          : orderServiceInterface.prepareOrderProofImages(usable);
+      // Built once: a resend without photos reuses exactly these fields.
       final UpdateStatusBodyModel updateStatusBody = UpdateStatusBodyModel(
         orderId: currentOrder.id,
         status: status,
@@ -483,34 +525,79 @@ class OrderController extends GetxController implements GetxService {
             ? _otp
             : null,
       );
-      final OrderActionResult<StatusOutcome> result = await orderServiceInterface
+      OrderActionResult<StatusOutcome> result = await orderServiceInterface
           .updateOrderStatus(updateStatusBody, multiParts);
 
       // A 401 already ended the session (ApiChecker.checkSession).
       if (result.statusCode == 401) return false;
 
+      String? successMessage =
+          skippedPhotos ? 'delivered_some_photos_skipped'.tr : null;
+
+      if (multiParts.isNotEmpty) {
+        final ProofFailure failure =
+            classifyProofFailure(result.statusCode, result.codes);
+        if (failure != ProofFailure.none) {
+          // The server state is unknown: look, never resend by itself.
+          final OrderFetchResult fresh =
+              await orderServiceInterface.getOrderWithId(currentOrder.id);
+          final OrderModel? freshOrder = fresh.order;
+          if (freshOrder != null && _orderModel?.id == freshOrder.id) {
+            _orderModel = freshOrder;
+          }
+          if (fresh.outcome == OrderFetch.notFound) {
+            await _onOrderChanged(currentOrder.id);
+            return false;
+          }
+          if (fresh.outcome != OrderFetch.found || freshOrder == null) {
+            toast('delivery_unconfirmed'.tr);
+            return false;
+          }
+          if (freshOrder.orderStatus == AppConstants.delivered) {
+            success = true;
+            _onStatusUpdated(currentOrder, status,
+                back: back,
+                gotoDashboard: gotoDashboard,
+                clearProof: true,
+                message: freshOrder.hasProofImages
+                    ? 'order_delivered'.tr
+                    : 'delivered_photos_not_saved'.tr);
+            return true;
+          }
+          if (freshOrder.orderStatus != AppConstants.pickedUp) {
+            await _onOrderChanged(currentOrder.id);
+            return false;
+          }
+          // Still picked up: the delivery did not happen (yet).
+          switch (failure) {
+            case ProofFailure.serverError:
+              toast('order_not_delivered_retry'.tr);
+              return false;
+            case ProofFailure.unknown:
+            case ProofFailure.none:
+              // The request may still finish on the server.
+              toast('delivery_unconfirmed'.tr);
+              return false;
+            case ProofFailure.tooLarge:
+              if (!await confirmDeliverWithoutPhotos()) return false;
+              // The refused request never ran, so this is the first send.
+              result = await orderServiceInterface
+                  .updateOrderStatus(updateStatusBody, const <MultipartBody>[]);
+              if (result.statusCode == 401) return false;
+              successMessage = null;
+              break;
+          }
+        }
+      }
+
       switch (result.outcome) {
         case StatusOutcome.updated:
           success = true;
-          if (Get.isBottomSheetOpen == true || Get.isDialogOpen == true) {
-            Get.back(result: true);
-          }
-          if (back) {
-            Get.back();
-          }
-          if (gotoDashboard) {
-            Get.offAllNamed(
-                RouteHelper.getInitialRoute(fromOrderDetails: true));
-          }
-          currentOrder.orderStatus = status;
-          // Only the delivered order's own photos are spent.
-          if (sendProof) _clearProof();
-          Get.find<ProfileController>().getProfile();
-          if (Get.isRegistered<WalletController>()) {
-            Get.find<WalletController>().getWallet();
-          }
-          getCurrentOrders();
-          toast(result.message, isError: false);
+          _onStatusUpdated(currentOrder, status,
+              back: back,
+              gotoDashboard: gotoDashboard,
+              clearProof: sendProof,
+              message: successMessage ?? result.message);
           break;
         case StatusOutcome.orderChanged:
           await _onOrderChanged(currentOrder.id);
@@ -539,6 +626,44 @@ class OrderController extends GetxController implements GetxService {
       update();
     }
     return success;
+  }
+
+  /// The success path of a status change (D-04), shared with a delivery the
+  /// D-09 check found already done.
+  void _onStatusUpdated(OrderModel currentOrder, String status,
+      {required bool back,
+      required bool gotoDashboard,
+      required bool clearProof,
+      String? message}) {
+    if (Get.isBottomSheetOpen == true || Get.isDialogOpen == true) {
+      Get.back(result: true);
+    }
+    if (back) {
+      Get.back();
+    }
+    if (gotoDashboard) {
+      Get.offAllNamed(RouteHelper.getInitialRoute(fromOrderDetails: true));
+    }
+    currentOrder.orderStatus = status;
+    // Only the delivered order's own photos are spent.
+    if (clearProof) _clearProof();
+    Get.find<ProfileController>().getProfile();
+    if (Get.isRegistered<WalletController>()) {
+      Get.find<WalletController>().getWallet();
+    }
+    getCurrentOrders();
+    toast(message, isError: false);
+  }
+
+  /// The bound proof photos that can still be read and uploaded.
+  Future<List<XFile>> _usableProofImages() async {
+    final List<XFile> usable = <XFile>[];
+    for (final XFile file in _pickedPrescriptions) {
+      if (await ImageUploadRules.check(file) == ImageCheck.ok) {
+        usable.add(file);
+      }
+    }
+    return usable;
   }
 
   /// The R4 transition map. A stale local status is not trusted: when it

@@ -57,21 +57,28 @@ class ProfileRepository implements ProfileRepositoryInterface {
     }
   }
 
+  /// Multipart (60 s), silent: the controller shows the one message. A 401
+  /// still ends the session. Only fields that have a value are sent, and the
+  /// image part only when a photo was picked (audit row 47).
   @override
-  Future<ResponseModel> updateProfile(ProfileModel userInfoModel, XFile? data, String token) async {
-    ResponseModel responseModel;
-    Map<String, String> fields = {};
-    fields.addAll(<String, String>{
-      '_method': 'put', 'f_name': userInfoModel.fName!, 'l_name': userInfoModel.lName!,
-      'email': userInfoModel.email!,
-    });
-    Response response = await apiClient.postMultipartData(AppConstants.updateProfileUri, fields, [MultipartBody('image', data)], handleError: false);
+  Future<ResponseModel> updateProfile(ProfileModel userInfoModel, XFile? data) async {
+    final Map<String, String> fields = <String, String>{'_method': 'put'};
+    if (userInfoModel.fName != null) fields['f_name'] = userInfoModel.fName!;
+    if (userInfoModel.lName != null) fields['l_name'] = userInfoModel.lName!;
+    if (userInfoModel.email != null) fields['email'] = userInfoModel.email!;
+    final Response response = await apiClient.postMultipartData(
+        AppConstants.updateProfileUri,
+        fields,
+        [if (data != null) MultipartBody('image', data)],
+        handleError: false);
+    ApiChecker.checkSession(response);
     if (response.statusCode == 200) {
-      responseModel = ResponseModel(true, response.body['message']);
-    } else {
-      responseModel = ResponseModel(false, response.statusText);
+      final dynamic body = response.body;
+      final String? message =
+          body is Map && body['message'] is String ? body['message'] as String : null;
+      return ResponseModel(true, message, statusCode: 200);
     }
-    return responseModel;
+    return ResponseModel(false, response.statusText, statusCode: response.statusCode);
   }
 
   @override

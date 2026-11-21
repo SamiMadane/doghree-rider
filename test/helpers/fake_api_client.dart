@@ -18,6 +18,9 @@ class FakeApiClient extends ApiClient {
   final List<bool> getHandleErrors = [];
   final List<RecordedCall> calls = [];
 
+  /// The file parts of each multipart call, in order.
+  final List<List<MultipartBody>> multipartFiles = [];
+
   FakeApiClient({
     required super.sharedPreferences,
     this.nextResponse = const Response(statusCode: 200),
@@ -75,6 +78,7 @@ class FakeApiClient extends ApiClient {
       String uri, Map<String, String> body, List<MultipartBody> multipartBody,
       {Map<String, String>? headers, bool handleError = true}) async {
     calls.add(RecordedCall('MULTIPART', uri, null, body, handleError));
+    multipartFiles.add([...multipartBody]);
     return nextResponse;
   }
 }

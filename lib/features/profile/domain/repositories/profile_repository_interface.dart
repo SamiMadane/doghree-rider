@@ -6,7 +6,7 @@ import 'package:doghree_rider/features/profile/domain/models/profile_result_mode
 
 abstract class ProfileRepositoryInterface implements RepositoryInterface {
   Future<ProfileResult> getProfileInfo();
-  Future<dynamic> updateProfile(ProfileModel userInfoModel, XFile? data, String token);
+  Future<dynamic> updateProfile(ProfileModel userInfoModel, XFile? data);
   Future<dynamic> updateActiveStatus();
   /// True when the position was handed to the socket. Never throws.
   Future<bool> recordWebSocketLocation(RecordLocationBodyModel recordLocationBody);

@@ -22,8 +22,8 @@ class CameraButtonSheetWidget extends StatelessWidget {
       child: Column(mainAxisSize: MainAxisSize.min, children: [
         // الخط العلوي للـ drag
         Container(
-          height: 4,
-          width: 50,
+          height: Dimensions.h4,
+          width: Dimensions.w50,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(Dimensions.r10),
               color: Theme.of(context).disabledColor),
@@ -44,7 +44,7 @@ class CameraButtonSheetWidget extends StatelessWidget {
             // اختيار من المعرض
             InkWell(
               onTap: () {
-                if (Get.isBottomSheetOpen!) {
+                if (Get.isBottomSheetOpen == true) {
                   Get.back();
                 }
                 Get.find<OrderController>()
@@ -59,8 +59,8 @@ class CameraButtonSheetWidget extends StatelessWidget {
                   children: [
                     SvgPicture.asset(
                       ManagerAssets.galleryIcon,
-                      height: 35,
-                      width: 35,
+                      height: Dimensions.w35,
+                      width: Dimensions.w35,
                       colorFilter: ColorFilter.mode(
                         Theme.of(context).colorScheme.onSurface,
                         BlendMode.srcIn,
@@ -78,7 +78,7 @@ class CameraButtonSheetWidget extends StatelessWidget {
             // اختيار من الكاميرا
             InkWell(
               onTap: () {
-                if (Get.isBottomSheetOpen!) {
+                if (Get.isBottomSheetOpen == true) {
                   Get.back();
                 }
                 Get.find<OrderController>()
@@ -93,8 +93,8 @@ class CameraButtonSheetWidget extends StatelessWidget {
                   children: [
                     SvgPicture.asset(
                       ManagerAssets.cameraIcon,
-                      height: 35,
-                      width: 35,
+                      height: Dimensions.w35,
+                      width: Dimensions.w35,
                       colorFilter: ColorFilter.mode(
                         Theme.of(context).colorScheme.onSurface,
                         BlendMode.srcIn,

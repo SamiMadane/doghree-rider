@@ -8,6 +8,8 @@ import 'package:get/get.dart';
 import 'package:doghree_rider/util/manager_assets.dart';
 import 'package:doghree_rider/util/styles.dart';
 import 'package:doghree_rider/util/dimensions.dart';
+import 'package:doghree_rider/common/widgets/custom_snackbar_widget.dart';
+import 'package:doghree_rider/helper/image_upload_rules.dart';
 
 class ImagePickerHelper {
   static final ImagePicker _picker = ImagePicker();
@@ -49,7 +51,10 @@ class ImagePickerHelper {
       // 3. Return XFile from cropped path
       return XFile(croppedFile.path);
     } catch (e) {
-      if (kDebugMode) debugPrint('pickAndCropImage failed: $e');
+      // One message per failure (permission, no camera, other). A cancel
+      // never reaches here: it returns null above (audit row 46).
+      if (kDebugMode) debugPrint('pickAndCropImage failed: ${e.runtimeType}');
+      showCustomSnackBar(pickFailureKey(classifyPickError(e)).tr);
       return null;
     }
   }
@@ -104,8 +109,8 @@ class ImagePickerHelper {
           children: [
             // الخط العلوي للـ drag
             Container(
-              height: 4,
-              width: 50,
+              height: Dimensions.h4,
+              width: Dimensions.w50,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(Dimensions.r10),
                 color: Theme.of(context).disabledColor,
@@ -133,8 +138,8 @@ class ImagePickerHelper {
                   children: [
                     SvgPicture.asset(
                       ManagerAssets.galleryIcon,
-                      height: 35,
-                      width: 35,
+                      height: Dimensions.w35,
+                      width: Dimensions.w35,
                       colorFilter: ColorFilter.mode(
                         Theme.of(context).colorScheme.onSurface,
                         BlendMode.srcIn,
@@ -162,8 +167,8 @@ class ImagePickerHelper {
                   children: [
                     SvgPicture.asset(
                       ManagerAssets.cameraIcon,
-                      height: 35,
-                      width: 35,
+                      height: Dimensions.w35,
+                      width: Dimensions.w35,
                       colorFilter: ColorFilter.mode(
                           Theme.of(context).colorScheme.onSurface,
                           BlendMode.srcIn),

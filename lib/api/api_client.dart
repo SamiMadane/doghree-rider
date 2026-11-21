@@ -6,7 +6,6 @@ import 'package:flutter/foundation.dart' as foundation;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as p;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,6 +14,7 @@ import 'package:doghree_rider/api/api_error_handler.dart';
 import 'package:doghree_rider/api/error_message.dart';
 import 'package:doghree_rider/api/error_type.dart';
 import 'package:doghree_rider/api/log_sanitizer.dart';
+import 'package:doghree_rider/helper/upload_format.dart';
 import 'package:doghree_rider/util/app_constants.dart';
 
 class ApiClient extends GetxService {
@@ -180,17 +180,22 @@ class ApiClient extends GetxService {
       request.headers.addAll(headers ?? _mainHeaders);
       for (final multipart in multipartBody) {
         if (multipart.file == null) continue;
-        final name = p.basename(multipart.file!.path);
-        final type = _mediaType(name);
+        // Labelled by content, not extension (audit row 45).
+        final String original = p.basename(multipart.file!.path);
         if (foundation.kIsWeb) {
           final Uint8List list = await multipart.file!.readAsBytes();
+          final UploadFormat format = UploadFormats.sniff(
+              list.take(UploadFormats.headLength).toList());
           request.files.add(http.MultipartFile.fromBytes(multipart.key, list,
-              filename: name, contentType: type));
+              filename: UploadFormats.fileNameFor(original, format),
+              contentType: UploadFormats.mediaTypeFor(format)));
         } else {
           final file = File(multipart.file!.path);
+          final UploadFormat format = UploadFormats.sniff(await _head(file));
           request.files.add(http.MultipartFile(
               multipart.key, file.openRead(), file.lengthSync(),
-              filename: name, contentType: type));
+              filename: UploadFormats.fileNameFor(original, format),
+              contentType: UploadFormats.mediaTypeFor(format)));
         }
       }
       request.fields.addAll(body);
@@ -203,19 +208,13 @@ class ApiClient extends GetxService {
     }
   }
 
-  MediaType _mediaType(String filename) {
-    switch (p.extension(filename).toLowerCase()) {
-      case '.png':
-        return MediaType('image', 'png');
-      case '.webp':
-        return MediaType('image', 'webp');
-      case '.pdf':
-        return MediaType('application', 'pdf');
-      case '.jpg':
-      case '.jpeg':
-      default:
-        return MediaType('image', 'jpeg');
+  static Future<List<int>> _head(File file) async {
+    final List<int> head = <int>[];
+    await for (final List<int> chunk
+        in file.openRead(0, UploadFormats.headLength)) {
+      head.addAll(chunk);
     }
+    return head;
   }
 
   // ---------- معالجة الجواب (المكان الوحيد للأخطاء) ----------
