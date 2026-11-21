@@ -14,7 +14,12 @@ class NoInternetScreen extends StatelessWidget {
   /// When set, Retry reruns this load in place instead of navigating
   /// (used inside a tab, for example My Orders).
   final VoidCallback? onRetry;
-  const NoInternetScreen({super.key, this.child, this.onRetry});
+
+  /// True when the server failed (5xx, 403, a body that is not JSON) while
+  /// the internet works: same screen, server text (D-12).
+  final bool serverProblem;
+  const NoInternetScreen(
+      {super.key, this.child, this.onRetry, this.serverProblem = false});
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +49,7 @@ class NoInternetScreen extends StatelessWidget {
                     ),
                     SizedBox(height: Dimensions.h25),
                     Text(
-                      "no_connection".tr,
+                      (serverProblem ? 'server_problem' : 'no_connection').tr,
                       style: textBold().copyWith(
                         fontSize: Dimensions.fs24,
                         color: Theme.of(context).textTheme.bodyLarge!.color,
@@ -53,7 +58,10 @@ class NoInternetScreen extends StatelessWidget {
                     ),
                     SizedBox(height: Dimensions.h10),
                     Text(
-                      "please_check_your_internet_and_try_again".tr,
+                      (serverProblem
+                              ? 'server_problem_try_again'
+                              : 'please_check_your_internet_and_try_again')
+                          .tr,
                       style: textRegular().copyWith(
                         fontSize: Dimensions.fs18,
                         color: Theme.of(context).hintColor,

@@ -16,6 +16,12 @@ class SplashController extends GetxController implements GetxService {
 
   Map<String, dynamic>? _data = {};
 
+  /// Status of the last config load: the HTTP status, 1 for no internet or
+  /// a timeout, 0 when a 200 body could not be read (HTML, malformed JSON).
+  /// The splash uses it to pick its Retry text (D-12).
+  int? _lastConfigStatus;
+  int? get lastConfigStatus => _lastConfigStatus;
+
   DateTime get currentTime => DateTime.now();
 
   Future<bool> getConfigData() async {
@@ -23,6 +29,7 @@ class SplashController extends GetxController implements GetxService {
       Response response = await navigationHandlerServiceInterface
           .getConfigData()
           .timeout(Duration(seconds: 10));
+      _lastConfigStatus = response.statusCode;
 
       if (response.statusCode == 200) {
         _data = response.body;
@@ -41,8 +48,10 @@ class SplashController extends GetxController implements GetxService {
         return false;
       }
     } on TimeoutException catch (_) {
+      _lastConfigStatus = 1;
       return false;
     } catch (e) {
+      _lastConfigStatus = 0;
       return false;
     }
   }

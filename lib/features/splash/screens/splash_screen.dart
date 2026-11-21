@@ -32,6 +32,7 @@ class SplashScreenState extends State<SplashScreen> {
   StreamSubscription<List<ConnectivityResult>>? _onConnectivityChanged;
 
   bool _loadFailed = false;
+  SplashFailure _failure = SplashFailure.noInternet;
   bool _isLoading = true;
   VoidCallback? _pendingNavigation;
   final SplashLoadGuard _guard = SplashLoadGuard();
@@ -119,22 +120,25 @@ class SplashScreenState extends State<SplashScreen> {
         _isLoading = true;
       });
 
-      bool success = await Get.find<SplashController>().getConfigData();
+      final SplashController splash = Get.find<SplashController>();
+      bool success = await splash.getConfigData();
       if (!mounted) return;
 
       if (success) {
         await _route();
       } else {
-        _showLoadFailed();
+        _showLoadFailed(
+            splashFailureFor(configStatus: splash.lastConfigStatus));
       }
     } finally {
       _guard.endLoad();
     }
   }
 
-  void _showLoadFailed() {
+  void _showLoadFailed(SplashFailure failure) {
     if (!mounted) return;
     setState(() {
+      _failure = failure;
       _loadFailed = true;
       _isLoading = false;
     });
@@ -176,7 +180,7 @@ class SplashScreenState extends State<SplashScreen> {
 
       if (status != SessionStatus.valid) {
         // لا إنترنت / مهلة / خطأ خادم: الجلسة تبقى كما هي، شاشة Retry
-        _showLoadFailed();
+        _showLoadFailed(splashFailureFor(session: status));
         return;
       }
     }
@@ -252,6 +256,7 @@ class SplashScreenState extends State<SplashScreen> {
 
   Widget _buildNoInternetScreen() {
     return NoInternetScreen(
+      serverProblem: _failure == SplashFailure.serverProblem,
       child: SplashScreen(body: widget.body),
     );
   }

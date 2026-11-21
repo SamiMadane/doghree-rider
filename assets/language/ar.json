@@ -509,6 +509,8 @@
   "no_connection": "لا يوجد اتصال",
   "please_check_your_internet_and_try_again": "يرجى التحقق من الإنترنت والمحاولة مرة أخرى",
   "retry": "إعادة المحاولة",
+  "server_problem": "مشكلة في الخادم",
+  "server_problem_try_again": "حدث خطأ من جهتنا. يرجى المحاولة مرة أخرى بعد قليل",
   "choose_your_language": "اختر لغتك",
   "yes_enable": "نعم، تفعيل",
   "task_management": "إدارة المهام",
