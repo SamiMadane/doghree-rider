@@ -91,11 +91,16 @@ class ForgotPasswordRepository implements ForgotPasswordRepositoryInterface {
         'code': otp,
         'is_reset_token': 1,
       },
+      // The screen shows the one message, like verifyToken: with ApiChecker
+      // a 200 with an HTML body or an exception showed nothing at all, and
+      // the status was lost, so the rate-limit timer never started (D-13).
+      handleError: false,
     );
     if (_isOk(response)) {
       return ResponseModel(true, _message(response));
     } else {
-      return ResponseModel(false, _failText(response));
+      return ResponseModel(false, _failText(response),
+          statusCode: response.statusCode);
     }
   }
 

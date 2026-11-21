@@ -100,6 +100,10 @@ class VerificationScreenState extends State<VerificationScreen> {
         if (value.isSuccess) {
           Get.toNamed(RouteHelper.getResetPasswordRoute(
               _number, controller.verificationCode, 'reset-password'));
+        } else {
+          // One message on every failure path, as for verifyToken (D-13).
+          _handleRateLimit(value);
+          showCustomSnackBar(value.message);
         }
       });
     } else {
