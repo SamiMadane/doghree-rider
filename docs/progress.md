@@ -13,7 +13,7 @@
 | D-06 | fix/d-06-location-ringing | Audit rows 36, 37, 38, 39 | merged, device tests pending (D-11) | 2026-11-20 |
 | D-07 | fix/d-07-notifications | Audit rows 6, 31, 32, 33, 34, 35, 54 | merged, device tests pending (D-11) | 2026-11-20 |
 | D-08 | fix/d-08-wallet | Audit rows 41, 42, 43, 44 | merged, device tests pending (D-11) | 2026-11-21 |
-| D-09 | fix/d-09-uploads-profile | Audit rows 45, 46, 47, 48, 49 | planned | |
+| D-09 | fix/d-09-uploads-profile | Audit rows 45, 46, 47, 48, 49 | implemented, awaiting closing (device tests in D-11) | |
 | D-10 | fix/d-10-cleanup | Audit rows 40, 55, 56, 57, 58, 60 | planned | |
 | D-11 | (no code branch) | Final device pass: every pending backlog section, the smoke pass and the end-to-end order test (`docs/device-test-backlog.md`) | planned (after D-10) | |
 
@@ -473,6 +473,88 @@
 - A failed first wallet load shows the account card refresh icon, not `NoInternetScreen`.
 - The invoice route (`/deliveryman-earning-report-invoice/{id}`) is not under `/api/v1` and is not documented. If it does not accept the Bearer header, it may answer with an HTML login page. The app now refuses that (not a PDF), but the download would never work (B-04).
 
+### D-09 (2026-11-21)
+- **Backend check:**
+  - update-order-status (Screens R4 step 1): `order_proof => 'array|max:5'`, no required, mime or size rule, stored only with `delivered`. **The server does not require a photo**, so owner decision B-02 (proof optional) needs nothing from the server.
+  - Photos and the status are one request, and there is no separate photo endpoint.
+  - GET order returns the formatted order with `order_proof_full_url`.
+  - API guide v3: uploads are whitelisted to jpg, jpeg, png, webp, pdf and stored by the detected content type.
+  - update-profile is not in Screens R1-R7. Postman gives the fields; the image rules are undocumented.
+  - **Approval note 1 (empty body):** the docs do not say what update-order-status answers when PHP drops an oversize body. The documented validation envelope for a missing required field is 403 `{"errors":[{"code":"order_id",…}]}` (Screens, error shape 1). That shape is handled. 405 (lost `_method`) and a Laravel `ValidatePostSize` 413 are possible but undocumented; 413 is handled by status, and 405 is left as a plain failure (B-04 questions 7–11).
+- **Row 45:** `UploadFormats.sniff` (lib/helper/upload_format.dart) reads the first 16 bytes. `postMultipartData` labels each part by content (unknown → `application/octet-stream`) and fixes the filename extension to match.
+- **Row 46:**
+  - `ImageUploadRules` (lib/helper/image_upload_rules.dart): one constant `maxImageBytes` (2 MB, also used by registration), jpeg/png/webp only, unreadable for a missing or empty file. Never throws.
+  - `classifyPickError` maps plugin codes (`camera_access_denied`, `photo_access_denied`, `no_available_camera`) to one message. A cancel is silent.
+  - The profile photo goes through `acceptProfileImage`; a refused photo keeps the old one. One picker at a time.
+  - The proof picker (`pickPrescriptionImage`) is `Future<void>` with a guard, try/catch and the same rules. `Get.isDialogOpen!` is gone.
+- **Row 47:** `updateProfile` sends only non-null fields, has no `token` parameter (D-02 note), sends the `image` part only when picked, and calls `checkSession`.
+- **Row 48:** `updateUserInfo` has a double-tap guard and try/finally. One message per outcome (server text, `profile_updated`, no-internet text, `error_occurred`, nothing on 401). Success copies only the edited fields into the loaded profile, so id, online state and wallet fields stay.
+- **Row 49 (B-02, proof optional):**
+  - The photo section says the photo is optional. Delivery is never gated.
+  - Before `delivered`, unreadable photos are dropped (`delivered_some_photos_skipped` on success).
+  - A `delivered` request with photos that fails with 413, 403 `order_id`/`status`, 5xx, 0 or 1 is never resent automatically. One silent `GET order` decides (`classifyProofFailure`):
+
+    | Fresh order | Outcome |
+    |---|---|
+    | delivered | success path; `order_delivered` if `hasProofImages`, else `delivered_photos_not_saved` |
+    | picked_up after 413 / 403 field code | `DeliverWithoutPhotosDialog`; Yes resends the same body object once with no files |
+    | picked_up after 5xx | `order_not_delivered_retry`, photos kept |
+    | picked_up after 0 or 1 | `delivery_unconfirmed`, photos kept |
+    | another status or not found | D-04 order-changed path |
+    | fetch failed | `delivery_unconfirmed`, photos kept |
+  - A `delivered` without photos, and 403/404/406 server decisions, keep the D-04 behaviour exactly.
+- **New translation keys (en and ar):**
+
+  | Key | English | Arabic |
+  |---|---|---|
+  | `please_upload_lower_size_file` | This photo is too large. Please choose a photo under 2 MB | حجم الصورة كبير. يرجى اختيار صورة أقل من 2 ميغابايت |
+  | `photo_format_not_supported` | This photo format is not supported. Use a JPG, PNG or WEBP photo, or take a new one with the camera | صيغة الصورة غير مدعومة. استخدم صورة JPG أو PNG أو WEBP، أو التقط صورة جديدة من الكاميرا |
+  | `camera_permission_denied` | Camera access is off. Allow it in your phone settings | الوصول إلى الكاميرا غير مسموح. فعّله من إعدادات الهاتف |
+  | `gallery_permission_denied` | Photo access is off. Allow it in your phone settings | الوصول إلى الصور غير مسموح. فعّله من إعدادات الهاتف |
+  | `no_camera_available` | No camera is available on this device | لا توجد كاميرا متاحة على هذا الجهاز |
+  | `image_pick_failed` | Couldn't use this photo. Please try again | تعذّر استخدام هذه الصورة. يرجى المحاولة مرة أخرى |
+  | `proof_photo_optional_hint` | Optional. You can deliver without a photo | اختيارية. يمكنك التسليم بدون صورة |
+  | `order_delivered` | The order was delivered | تم تسليم الطلب |
+  | `delivered_photos_not_saved` | The order was delivered, but the photos were not saved | تم تسليم الطلب، لكن لم يتم حفظ صور إثبات التسليم |
+  | `delivered_some_photos_skipped` | The order was delivered. Some photos could not be attached | تم تسليم الطلب. تعذّر إرفاق بعض الصور |
+  | `delivery_unconfirmed` | We couldn't confirm the delivery yet. The order will refresh by itself | تعذّر تأكيد التسليم حتى الآن. سيتم تحديث الطلب تلقائياً |
+  | `photos_upload_failed_deliver_without` | The photos could not be uploaded. Deliver the order without photos? | تعذّر رفع الصور. هل تريد تسليم الطلب بدون صور؟ |
+  | `deliver_without_photos` | Deliver without photos | التسليم بدون صور |
+  | `profile_updated` | Your profile was updated | تم تحديث ملفك الشخصي |
+- **Changes from the plan:**
+  - `OrderActionResult` carries every `errors[].code` (`codes`), needed for the 403 field-code rule.
+  - `OrderModel.hasProofImages` reads `order_proof_full_url` through `JsonHelper.stringList` (approval note 6).
+  - In `updateUserInfo` the screen close (`Get.back`) is in its own try, so a navigation failure never turns a saved profile into an error message.
+  - An unreadable picked photo gives `image_pick_failed`, not the format text.
+  - The D-04 tests T6 and T13 now bind real JPEG files, because unreadable photos are dropped since D-09.
+  - Extra tests beyond the plan: M3, I7, R3a/R3b (R3 split), U4–U6, D2d, D7–D10, G6, J6.
+- **Tests:** 67 new, 351 total, 351 passed, 0 failed. Analyze: 0 issues.
+  - Files: `upload_rules_test` 21, `profile_update_test` 13, `delivery_proof_test` 33.
+  - **Fail on the old code by behaviour** (adapted copies run against the stashed `lib/`, then deleted):
+
+    | Test | Old-code result |
+    |---|---|
+    | M1 | content type `image/jpeg` for a HEIC file |
+    | M2 | content type `image/png` for JPEG bytes named .png |
+    | R1 | Null check operator used on a null value |
+    | U1 | `isLoading` true after the exception |
+    | U2 | 2 update requests instead of 1 |
+    | U3 | profile id null instead of 7 |
+    | D1 | the missing file sent as well: 2 paths instead of 1 |
+    | D3 | toast `No internet connection / Please check your connection and try again` instead of `order_delivered` |
+
+  - **Fail on the old code at compile time only:** F1–F7, I1–I7, E1–E4, R2, R3a, R3b, U4–U6, P1, P2, D2, D2b, D2c, D2d, D4–D10, C1–C5, J1–J6, K1–K4 (no `UploadFormats`, `ImageUploadRules`, `classifyPickError`, `classifyProofFailure`, `hasProofImages`, `acceptProfileImage`, `pickImageFn`, `confirmDeliverWithoutPhotos` or `DeliverWithoutPhotosDialog`; the old `updateProfile`/`updateUserInfo` take a token).
+  - **Guards** (their logic also holds on the old code; their files do not compile against it): M3, G1, G2, G3, G4, G5, G6.
+- **Device:** **not run.** The steps are in `docs/device-test-backlog.md` (D-09, steps 1–8) and run in D-11.
+
+### Notes (found during D-09, not fixed)
+- **D-10 candidate:** Edit Profile shows a phone field, but the phone is never sent (Postman lists no phone field), and the "nothing changed" check compares it. A phone-only edit reports success and changes nothing.
+- On iOS the proof "add photo" opens the gallery directly, with no camera option (`DeliveryImagesSection`).
+- `please_upload_lower_size_file` was used by registration but missing from en/ar. Added in D-09.
+- A 405 on `delivered` with photos (if the server answers that for a dropped body) is a plain failure: the photos stay and the rider can remove them and retry. Revisit when B-04 questions 7–11 are answered.
+- Registration (`AuthService.pickImageFromGallery`, `ProfileService.pickImageFromGallery`) still has its own size checks; row 56 (D-10).
+- `flutter test` and `flutter analyze` rewrite the macOS and Windows generated plugin files with line-ending-only changes. They were restored and are never committed.
+
 ## Open backend questions
 
 <!-- The only place new backend questions are recorded. Move a row to docs/backend-changes.md once the owner agrees. -->
@@ -480,7 +562,7 @@
 | ID | Endpoint | Question / needed change | Why | Raised in | Status |
 |---|---|---|---|---|---|
 | B-01 | /api/v1/delivery-man/* (current-orders, latest-orders, all-orders, order, order-details, profile, remove-account, earning-report, message/*) | Can these accept the Bearer header only, so the app stops sending `?token=` in URLs and `token` in bodies? | Tokens in URLs end up in server, proxy and CDN logs (audit row 9) | D-00 | resolved in D-02: Bearer only (backend docs Doghri-App-Screens, rider R1-R7, 2026-10-14: the token query or body field is only a fallback). The only exception is the WebSocket location body, while `websocket_status` is 0 |
-| B-02 | /api/v1/delivery-man/update-order-status | When `dm_picture_upload_status` is on, is a delivery photo mandatory? Does the server reject `delivered` without `order_proof`? | The app shows the photo section but never requires it (audit row 49) | D-00 | answered (same docs): `order_proof` is optional on the server (array, max 5, stored only with `delivered`). Requiring it in the app is an owner decision before D-09 |
+| B-02 | /api/v1/delivery-man/update-order-status | When `dm_picture_upload_status` is on, is a delivery photo mandatory? Does the server reject `delivered` without `order_proof`? | The app shows the photo section but never requires it (audit row 49) | D-00 | answered (same docs): `order_proof` is optional on the server (array, max 5, stored only with `delivered`). Owner decision for D-09: the photo is optional and never blocks a delivery. Done on the app side in D-09 |
 | B-03 | /api/v1/delivery-man/wallet/withdrawals | Does the response include a total count for paging past `limit=20`? | Older withdrawals are never shown (audit row 42) | D-00 | answered (same docs): returns `total_size`; `limit` 1-50; `offset` is a page number starting at 1 |
-| B-04 | /deliveryman-earning-report-invoice/{id} | What Content-Type and charset does the PDF response use? Full question list in docs/backend-changes.md (B-04 questions) | The app saved decoded text as bytes, so a utf-8 charset corrupted the file (audit row 41) | D-00 | open. Since D-08 the app writes the raw bytes and checks the `%PDF-` signature, so the charset no longer matters to the app. Route, auth and parameters are still unverified |
+| B-04 | /deliveryman-earning-report-invoice/{id} | What Content-Type and charset does the PDF response use? Full question list in docs/backend-changes.md (B-04 questions) | The app saved decoded text as bytes, so a utf-8 charset corrupted the file (audit row 41) | D-00 | open. Since D-08 the app writes the raw bytes and checks the `%PDF-` signature, so the charset no longer matters to the app. Route, auth and parameters are still unverified. D-09 added upload-limit questions 7–11 (nginx and PHP limits, profile image rules, `order_proof` limits) to the same list |
 | B-05 | /api/v1/delivery-man/record-location-data | The screens file describes this as the ticker that runs while the rider is carrying an order, and it reads `order_id`. The app posts every 10 s whenever the rider is online and sends no `order_id`. Does the backend want location only while carrying an order, and with the `order_id`? | Rows with no order may be stored as junk history (follow-up of audit row 38). Question only: no app change in D-06 | D-06 | open |

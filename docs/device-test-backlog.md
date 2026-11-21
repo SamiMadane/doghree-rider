@@ -161,6 +161,27 @@ Also run the combined smoke pass (this batch touches orders and start-up). While
 
 **Unit tests only:** every withdraw error code, several codes in one `errors[]`, 401 and 410 for withdraw and delete (C-*, W1–W7, D1–D6); a PDF with a utf-8 charset byte for byte (B1); a 200 that is not a PDF (B2); a late page after a refresh, duplicate ids, an empty page, a missing `total_size` (P3–P9); keeping the last known values after a failed refresh (K1, K2).
 
+## D-09: uploads and profile (photo checks, profile save, optional delivery proof)
+
+- **Branch:** fix/d-09-uploads-profile
+- **Branch commit:** 226aba3
+- **Status:** pending (D-11)
+
+| # | Steps | Expected |
+|---|---|---|
+| 1 | Edit profile → change the photo (camera) → Save | One success message. The new photo shows. The spinner stops |
+| 2 | Edit profile → pick a gallery photo over 2 MB (a large panorama, if the crop keeps it big) | One "too large" message. The old photo stays |
+| 3 | Turn camera permission off in phone settings → Edit profile → camera. Then Order Details (picked up, photo section on) → add photo → camera | One permission message each time. No crash |
+| 4 | iPhone: add a HEIC proof photo from the gallery | Accepted (image_picker re-encodes it as JPEG) or refused with "format not supported". Never stored as a broken file in the admin panel |
+| 5 | With `dm_picture_upload_status` on, deliver an order with no photo | The photo section says it is optional. Delivered. One message |
+| 6 | Deliver an order with 2 proof photos | One message. Both photos are on the order in the admin panel |
+| 7 | Add a proof photo, turn airplane mode on, swipe deliver, turn airplane mode off within about 5 s | One message: delivered, delivered but photos not saved, or not confirmed yet. The admin panel shows one delivery only. Order Details shows the real status within 10 s |
+| 8 | Double-tap Save on Edit profile | One request, one message |
+
+**Device only:** the real HEIC behaviour of image_picker (step 4); permission prompts (step 3); the content type the server stores (steps 4 and 6). The smoke pass applies (orders and money).
+
+**Unit tests only:** 413 and the dropped-body 403 with the deliver-without-photos confirm, Yes and No, identical resend fields, a double Yes (D2, D2b, D2c, D2d, D10); a proof file gone from the cache (D1, D9); 5xx, statusCode 0 and 1 with the order still picked up, and a failed check (D5–D8); `order_proof_full_url` shapes (J1–J6); the null email and the profile save exception and double tap (R1, U1–U6); content-type labelling (M1–M3).
+
 ## Combined smoke pass (once, in D-11)
 
 | # | Step | Expected |
