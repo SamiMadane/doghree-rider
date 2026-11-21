@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:doghree_rider/api/api_client.dart';
+import 'package:doghree_rider/common/models/data_load.dart';
+import 'package:doghree_rider/common/models/load_failure.dart';
 import 'package:doghree_rider/features/notification/domain/models/notification_body_model.dart';
 import 'package:doghree_rider/features/chat/domain/models/conversation_model.dart';
 import 'package:doghree_rider/features/chat/domain/models/message_model.dart';
@@ -70,65 +72,135 @@ class ChatController extends GetxController implements GetxService {
     update();
   }
 
-  Future<void> getConversationList(int offset) async {
+  LoadFailure? _conversationFailure;
+
+  /// Why the conversation list could not be loaded, when there is no list
+  /// to show. Null while loading, after a success, or for a 401 (D-13).
+  LoadFailure? get conversationFailure => _conversationFailure;
+
+  LoadFailure? _messageFailure;
+
+  /// Why the messages could not be loaded, when there are none to show
+  /// (D-13).
+  LoadFailure? get messageFailure => _messageFailure;
+
+  /// Page 1 replaces the list and later pages append. A failed load keeps
+  /// the list on screen; the failure state shows only when there is no list
+  /// (D-13). The list is no longer cleared before a load: that showed an
+  /// endless spinner on a failed refresh, and page 2 read the cleared list
+  /// and threw. Returns false when the page failed, so a paginated list can
+  /// ask for it again on the next scroll.
+  Future<bool> getConversationList(int offset) async {
     _searchConversationModel = null;
-    _conversationModel = null;
-    ConversationsModel? conversationModel =
-        await chatServiceInterface.getConversationList(offset);
-    if (conversationModel != null) {
-      if (offset == 1) {
-        _conversationModel = conversationModel;
-      } else {
-        _conversationModel!.totalSize = conversationModel.totalSize;
-        _conversationModel!.offset = conversationModel.offset;
-        _conversationModel!.conversations!
-            .addAll(conversationModel.conversations!);
+    // No update() here: this runs from initState too. The screen's first
+    // build reads the cleared state.
+    if (_conversationModel == null) _conversationFailure = null;
+    bool ok = false;
+    try {
+      final DataLoad<ConversationsModel> load =
+          await chatServiceInterface.getConversationList(offset);
+      final ConversationsModel? page = load.data;
+      if (page != null) {
+        page.conversations ??= [];
+        if (offset == 1 || _conversationModel == null) {
+          _conversationModel = page;
+        } else {
+          _conversationModel!.totalSize = page.totalSize;
+          _conversationModel!.offset = page.offset;
+          (_conversationModel!.conversations ??= [])
+              .addAll(page.conversations!);
+        }
+        _conversationFailure = null;
+        ok = true;
+      } else if (_conversationModel == null) {
+        _conversationFailure = LoadFailures.fromStatus(load.statusCode);
       }
+    } catch (e) {
+      if (kDebugMode) debugPrint('conversation list failed: ${e.runtimeType}');
+      if (_conversationModel == null) {
+        _conversationFailure = LoadFailure.serverProblem;
+      }
+    } finally {
+      update();
     }
-    update();
+    return ok;
   }
 
-  Future<void> getMessages(int offset, NotificationBodyModel notificationBody,
+  /// Retry from the failure state: the spinner shows, then one request.
+  Future<void> retryConversationList() async {
+    _conversationFailure = null;
+    update();
+    await getConversationList(1);
+  }
+
+  /// Loads one page of messages. A failed refresh (after a send or a push)
+  /// keeps the messages on screen; the failure state shows only when there
+  /// are none (D-13). Returns false when the page failed.
+  Future<bool> getMessages(int offset, NotificationBodyModel notificationBody,
       User? user, int? conversationID,
       {bool firstLoad = false}) async {
     if (firstLoad) {
+      // No update() here: this runs from initState.
       _messageModel = null;
+      _messageFailure = null;
     }
-
-    MessageModel? messageModel = await chatServiceInterface.processGetMessage(
-        offset, notificationBody, conversationID);
-
-    if (messageModel != null) {
-      if (offset == 1) {
-        if (Get.find<ProfileController>().profileModel == null) {
-          await Get.find<ProfileController>().getProfile();
+    bool ok = false;
+    try {
+      final DataLoad<MessageModel> load = await chatServiceInterface
+          .processGetMessage(offset, notificationBody, conversationID);
+      final MessageModel? messageModel = load.data;
+      if (messageModel != null) {
+        if (offset == 1) {
+          final ProfileController profile = Get.find<ProfileController>();
+          if (profile.profileModel == null) {
+            await profile.getProfile();
+          }
+          // The rider's own data is read null-safe: a failed profile load
+          // must not throw after the messages arrived (D-13).
+          if (messageModel.conversation == null && user != null) {
+            messageModel.conversation = Conversation(
+                sender: User(
+                  id: profile.profileModel?.id,
+                  imageFullUrl: profile.profileModel?.imageFullUrl,
+                  fName: profile.profileModel?.fName,
+                  lName: profile.profileModel?.lName,
+                ),
+                receiver: user);
+          } else if (messageModel.conversation != null &&
+              messageModel.conversation!.receiverType == 'delivery_man') {
+            User? receiver = messageModel.conversation!.receiver;
+            messageModel.conversation!.receiver =
+                messageModel.conversation!.sender;
+            messageModel.conversation!.sender = receiver;
+          }
+          _messageModel = messageModel;
+        } else if (_messageModel != null) {
+          _messageModel!.totalSize = messageModel.totalSize;
+          _messageModel!.offset = messageModel.offset;
+          (_messageModel!.messages ??= [])
+              .addAll(messageModel.messages ?? []);
         }
-        _messageModel = messageModel;
-        if (_messageModel!.conversation == null && user != null) {
-          _messageModel!.conversation = Conversation(
-              sender: User(
-                id: Get.find<ProfileController>().profileModel!.id,
-                imageFullUrl:
-                    Get.find<ProfileController>().profileModel!.imageFullUrl,
-                fName: Get.find<ProfileController>().profileModel!.fName,
-                lName: Get.find<ProfileController>().profileModel!.lName,
-              ),
-              receiver: user);
-        } else if (_messageModel!.conversation != null &&
-            _messageModel!.conversation!.receiverType == 'delivery_man') {
-          User? receiver = _messageModel!.conversation!.receiver;
-          _messageModel!.conversation!.receiver =
-              _messageModel!.conversation!.sender;
-          _messageModel!.conversation!.sender = receiver;
-        }
-      } else {
-        _messageModel!.totalSize = messageModel.totalSize;
-        _messageModel!.offset = messageModel.offset;
-        _messageModel!.messages!.addAll(messageModel.messages!);
+        _messageFailure = null;
+        ok = true;
+      } else if (_messageModel == null) {
+        _messageFailure = LoadFailures.fromStatus(load.statusCode);
       }
+    } catch (e) {
+      if (kDebugMode) debugPrint('messages failed: ${e.runtimeType}');
+      if (_messageModel == null) _messageFailure = LoadFailure.serverProblem;
+    } finally {
+      _isLoading = false;
+      update();
     }
-    _isLoading = false;
+    return ok;
+  }
+
+  /// Retry from the failure state: the spinner shows, then one request.
+  Future<void> retryMessages(NotificationBodyModel notificationBody,
+      User? user, int? conversationID) async {
+    _messageFailure = null;
     update();
+    await getMessages(1, notificationBody, user, conversationID);
   }
 
   Future<bool> sendMessage(

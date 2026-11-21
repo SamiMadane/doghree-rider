@@ -1,5 +1,6 @@
 import 'package:image_picker/image_picker.dart';
 import 'package:doghree_rider/api/api_client.dart';
+import 'package:doghree_rider/common/models/data_load.dart';
 import 'package:doghree_rider/features/chat/domain/models/conversation_model.dart';
 import 'package:doghree_rider/features/chat/domain/models/message_model.dart';
 import 'package:doghree_rider/features/chat/domain/repositories/chat_repository_interface.dart';
@@ -12,8 +13,8 @@ class ChatService implements ChatServiceInterface {
   ChatService({required this.chatRepositoryInterface});
 
   @override
-  Future<ConversationsModel?> getConversationList(int offset) async {
-    return await chatRepositoryInterface.getConversationList(offset);
+  Future<DataLoad<ConversationsModel>> getConversationList(int offset) async {
+    return await chatRepositoryInterface.loadConversationList(offset);
   }
 
   @override
@@ -22,8 +23,8 @@ class ChatService implements ChatServiceInterface {
   }
 
   @override
-  Future<MessageModel?> getMessages(int offset, int? userId, String userType, int? conversationID) async {
-    return await chatRepositoryInterface.getMessages(offset, userId, userType, conversationID);
+  Future<DataLoad<MessageModel>> getMessages(int offset, int? userId, String userType, int? conversationID) async {
+    return await chatRepositoryInterface.loadMessages(offset, userId, userType, conversationID);
   }
 
   @override
@@ -32,14 +33,14 @@ class ChatService implements ChatServiceInterface {
   }
 
   @override
-  Future<MessageModel?> processGetMessage(int offset, NotificationBodyModel notificationBody, int? conversationID) async {
-    MessageModel? messageModel;
+  Future<DataLoad<MessageModel>> processGetMessage(int offset, NotificationBodyModel notificationBody, int? conversationID) async {
     if(notificationBody.customerId != null || notificationBody.type == AppConstants.user) {
-      messageModel = await getMessages(offset, notificationBody.customerId, AppConstants.user, conversationID);
+      return await getMessages(offset, notificationBody.customerId, AppConstants.user, conversationID);
     }else if(notificationBody.vendorId != null || notificationBody.type == AppConstants.vendor) {
-      messageModel = await getMessages(offset, notificationBody.vendorId, AppConstants.vendor, conversationID);
+      return await getMessages(offset, notificationBody.vendorId, AppConstants.vendor, conversationID);
     }
-    return messageModel;
+    // Neither a customer nor a store: no request can be made (D-13).
+    return const DataLoad<MessageModel>.failed(0);
   }
 
   @override

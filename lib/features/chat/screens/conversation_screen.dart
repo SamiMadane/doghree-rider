@@ -6,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:doghree_rider/common/widgets/custom_card.dart';
 import 'package:doghree_rider/common/widgets/empty_state_widget.dart';
+import 'package:doghree_rider/common/widgets/load_failed_widget.dart';
 import 'package:doghree_rider/features/chat/controllers/chat_controller.dart';
 import 'package:doghree_rider/features/notification/domain/models/notification_body_model.dart';
 import 'package:doghree_rider/features/chat/domain/models/conversation_model.dart';
@@ -136,7 +137,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                   ? conversation0.conversations!.isNotEmpty
                       ? RefreshIndicator(
                           onRefresh: () async {
-                            chatController.getConversationList(1);
+                            await chatController.getConversationList(1);
                           },
                           child: SingleChildScrollView(
                             controller: _scrollController,
@@ -225,7 +226,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                                 Row(children: [
                                                   ClipOval(
                                                     child: CustomImageWidget(
-                                                      height: 55, width: 55,
+                                                      height: Dimensions.w55,
+                                                      width: Dimensions.w55,
                                                       fit: BoxFit.cover,
                                                       image:
                                                           '${user != null ? user.imageFullUrl : ''}',
@@ -371,7 +373,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                         )
                       : Center(
                           child: SizedBox(
-                          height: 500,
+                          height: Dimensions.h500,
                           child: EmptyStateWidget(
                             imageScale: 1.2,
                             spacing: Dimensions.h20,
@@ -379,7 +381,15 @@ class _ConversationScreenState extends State<ConversationScreen> {
                             title: 'no_conversation_found'.tr,
                           ),
                         ))
-                  : const Center(child: CircularProgressIndicator()),
+                  : (chatController.conversationFailure != null &&
+                          chatController.searchConversationModel == null)
+                      // A failed first load: one state with Retry instead
+                      // of an endless spinner (D-13).
+                      ? LoadFailedWidget(
+                          failure: chatController.conversationFailure!,
+                          onRetry: chatController.retryConversationList,
+                        )
+                      : const Center(child: CircularProgressIndicator()),
             ),
           ]),
         );

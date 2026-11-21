@@ -86,6 +86,7 @@ class Dimensions {
   static double h260 = 260.h;
   static double h280 = 280.h;
   static double h300 = 300.h;
+  static double h500 = 500.h;
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   // 📐 Width (w) - للعروض والـ Padding الأفقي
@@ -116,6 +117,7 @@ class Dimensions {
   static double w45 = 45.w;
   static double w48 = 48.w;
   static double w50 = 50.w;
+  static double w55 = 55.w;
   static double w56 = 56.w;
   static double w60 = 60.w;
   static double w68 = 68.w;

@@ -7,6 +7,8 @@ import 'package:doghree_rider/util/styles.dart';
 
 class PaginatedListViewWidget extends StatefulWidget {
   final ScrollController scrollController;
+  /// Loads one page. Returning false (or throwing) means the page failed and
+  /// may be asked again; any other result is a success.
   final Function(int? offset) onPaginate;
   final int? totalSize;
   final int? offset;
@@ -43,20 +45,32 @@ class _PaginatedListViewWidgetState extends State<PaginatedListViewWidget> {
 
   /// The footer loader always stops, and nothing is set after the list is
   /// gone (leaving a chat while a page loads) (D-12, C6).
+  ///
+  /// A failed page (onPaginate returns false or throws) is forgotten, so the
+  /// next scroll asks for it again. There is no automatic retry, and no
+  /// request while one is in flight (`_isLoading`) (D-13).
   void _paginate() async {
     int pageSize = ((widget.totalSize ?? 0) / 10).ceil();
     if ((_offset ?? 1) < pageSize && !_offsetList.contains((_offset ?? 1) + 1)) {
+      final int requested = (_offset ?? 1) + 1;
 
       setState(() {
-        _offset = (_offset ?? 1) + 1;
-        _offsetList.add(_offset);
+        _offset = requested;
+        _offsetList.add(requested);
         _isLoading = true;
       });
+      bool failed = false;
       try {
-        await widget.onPaginate(_offset);
+        final dynamic result = await widget.onPaginate(requested);
+        failed = result == false;
       } catch (e) {
         if (kDebugMode) debugPrint('paginate failed: ${e.runtimeType}');
+        failed = true;
       } finally {
+        if (failed) {
+          _offsetList.remove(requested);
+          if (_offset == requested) _offset = requested - 1;
+        }
         if (mounted) {
           setState(() {
             _isLoading = false;
