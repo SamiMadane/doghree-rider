@@ -1,3 +1,4 @@
+import 'package:doghree_rider/common/models/list_load.dart';
 import 'package:doghree_rider/features/notification/domain/models/notification_model.dart';
 import 'package:doghree_rider/features/notification/domain/repositories/notification_repository_interface.dart';
 import 'package:doghree_rider/features/notification/domain/services/notification_service_interface.dart';
@@ -7,8 +8,8 @@ class NotificationService implements NotificationServiceInterface {
   NotificationService({required this.notificationRepositoryInterface});
 
   @override
-  Future<List<NotificationModel>?> getNotificationList() async {
-    return await notificationRepositoryInterface.getList();
+  Future<ListLoad<NotificationModel>> getNotificationList() async {
+    return await notificationRepositoryInterface.loadList();
   }
 
   // ✅ الجديد - Server-side

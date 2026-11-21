@@ -1,4 +1,6 @@
 import 'package:doghree_rider/api/api_client.dart';
+import 'package:doghree_rider/common/models/list_load.dart';
+import 'package:doghree_rider/features/order/domain/models/order_model.dart';
 import 'package:doghree_rider/features/order/domain/models/ignore_model.dart';
 import 'package:doghree_rider/features/order/domain/models/order_action_result.dart';
 import 'package:doghree_rider/features/order/domain/models/update_status_body_model.dart';
@@ -9,6 +11,7 @@ abstract class OrderRepositoryInterface implements RepositoryInterface {
   Future<dynamic> getCancelReasons();
   Future<dynamic> getCompletedOrderList(int offset);
   Future<dynamic> getLatestOrders();
+  Future<ListLoad<OrderModel>> loadCurrentOrders();
   Future<OrderActionResult<StatusOutcome>> updateOrderStatus(
       UpdateStatusBodyModel updateStatusBody,
       List<MultipartBody> proofAttachment);

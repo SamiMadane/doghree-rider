@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:doghree_rider/api/api_checker.dart';
 import 'package:doghree_rider/api/api_client.dart';
+import 'package:doghree_rider/common/models/list_load.dart';
 import 'package:doghree_rider/api/api_error_handler.dart';
 import 'package:doghree_rider/features/order/domain/models/ignore_model.dart';
 import 'package:doghree_rider/features/order/domain/models/order_action_result.dart';
@@ -92,12 +93,22 @@ class OrderRepository implements OrderRepositoryInterface {
   /// bad item is skipped (audit row 52). Note that a skipped running order is
   /// hidden from the rider (see progress.md, D-05 notes).
   @override
-  Future<List<OrderModel>?> getList() async {
-    final Response response =
-        await apiClient.getData(AppConstants.currentOrdersUri);
-    if (response.statusCode != 200) return null;
-    return JsonHelper.mapList(response.body, OrderModel.fromJson,
+  Future<List<OrderModel>?> getList() async => (await loadCurrentOrders()).list;
+
+  /// Silent (D-12): the screen decides whether to show one message
+  /// (FirstLoadNotice). A 401 still ends the session.
+  @override
+  Future<ListLoad<OrderModel>> loadCurrentOrders() async {
+    final Response response = await apiClient
+        .getData(AppConstants.currentOrdersUri, handleError: false);
+    ApiChecker.checkSession(response);
+    if (response.statusCode != 200) return ListLoad.failed(response);
+    final List<OrderModel>? list = JsonHelper.mapList(
+        response.body, OrderModel.fromJson,
         name: 'current-orders');
+    return list == null
+        ? ListLoad<OrderModel>(null, statusCode: 0)
+        : ListLoad<OrderModel>(list, statusCode: 200);
   }
 
   @override

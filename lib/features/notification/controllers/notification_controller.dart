@@ -1,7 +1,10 @@
 import 'package:doghree_rider/common/widgets/custom_snackbar_widget.dart';
 import 'package:doghree_rider/features/notification/domain/models/notification_body_model.dart';
 import 'package:doghree_rider/features/notification/domain/models/notification_model.dart';
+import 'package:doghree_rider/common/models/list_load.dart';
 import 'package:doghree_rider/helper/date_converter_helper.dart';
+import 'package:doghree_rider/helper/first_load_notice.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:doghree_rider/features/notification/domain/services/notification_service_interface.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
@@ -20,6 +23,11 @@ class NotificationController extends GetxController implements GetxService {
   bool get isLoading => _isLoading;
   bool _hideNotificationButton = false;
   bool get hideNotificationButton => _hideNotificationButton;
+
+  /// Every message of this controller goes through here. Production always
+  /// uses [showCustomSnackBar]; tests replace it only to count messages.
+  @visibleForTesting
+  void Function(String? message, {bool isError}) toast = showCustomSnackBar;
 
   
 
@@ -177,10 +185,25 @@ class NotificationController extends GetxController implements GetxService {
     }
   }
 
-  Future<void> getNotificationList([bool reload = false]) async {
-    if (_notificationList == null || reload) {
-      List<NotificationModel>? notificationList =
+  /// Silent load (D-12). With [announce], a failure while no list was ever
+  /// loaded shows exactly one message (FirstLoadNotice); with data on screen
+  /// it stays silent. Push and resume refreshes never announce.
+  Future<LoadAttempt> getNotificationList(
+      {bool reload = false, bool announce = false}) async {
+    final bool hadData = _notificationList != null;
+    if (hadData && !reload) {
+      return const LoadAttempt(ok: true, hadData: true);
+    }
+    LoadAttempt attempt;
+    try {
+      final ListLoad<NotificationModel> load =
           await notificationServiceInterface.getNotificationList();
+      final List<NotificationModel>? notificationList = load.list;
+      attempt = LoadAttempt(
+          ok: load.ok,
+          hadData: hadData,
+          statusCode: load.statusCode,
+          message: load.message);
       if (notificationList != null) {
         _notificationList = [];
         _notificationList!.addAll(notificationList);
@@ -195,8 +218,16 @@ class NotificationController extends GetxController implements GetxService {
         // ✅ حساب الإشعارات غير المقروءة من الـ Backend
         _updateHasNotification();
       }
+    } catch (e) {
+      if (kDebugMode) debugPrint('getNotificationList failed: ${e.runtimeType}');
+      attempt = LoadAttempt(ok: false, hadData: hadData, statusCode: 0);
     }
     update();
+    if (announce) {
+      final String? message = FirstLoadNotice.pick([attempt]);
+      if (message != null) toast(message);
+    }
+    return attempt;
   }
 
   /// ✅ حساب عدد الإشعارات غير المقروءة

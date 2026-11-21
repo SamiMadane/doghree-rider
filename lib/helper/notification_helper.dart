@@ -75,7 +75,7 @@ class NotificationHelper {
       if (kDebugMode) {
       }
       if (Get.isRegistered<NotificationController>()) {
-        Get.find<NotificationController>().getNotificationList(true);
+        Get.find<NotificationController>().getNotificationList(reload: true);
       }
 
       if (message.data['type'] == 'message' &&

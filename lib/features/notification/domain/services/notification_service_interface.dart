@@ -1,7 +1,8 @@
+import 'package:doghree_rider/common/models/list_load.dart';
 import 'package:doghree_rider/features/notification/domain/models/notification_model.dart';
 
 abstract class NotificationServiceInterface {
-  Future<List<NotificationModel>?> getNotificationList();
+  Future<ListLoad<NotificationModel>> getNotificationList();
 
   // ✅ الجديد - Server-side
   Future<bool> markNotificationAsRead(int notificationId);

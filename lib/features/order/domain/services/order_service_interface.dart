@@ -1,5 +1,6 @@
 import 'package:image_picker/image_picker.dart';
 import 'package:doghree_rider/api/api_client.dart';
+import 'package:doghree_rider/common/models/list_load.dart';
 import 'package:doghree_rider/features/order/domain/models/ignore_model.dart';
 import 'package:doghree_rider/features/order/domain/models/order_action_result.dart';
 import 'package:doghree_rider/features/order/domain/models/order_cancellation_body.dart';
@@ -11,7 +12,7 @@ abstract class OrderServiceInterface {
   Future<List<CancellationData>?> getCancelReasons();
   Future<OrderFetchResult> getOrderWithId(int? orderId);
   Future<PaginatedOrderModel?> getCompletedOrderList(int offset);
-  Future<List<OrderModel>?> getCurrentOrders();
+  Future<ListLoad<OrderModel>> getCurrentOrders();
   Future<List<OrderModel>?> getLatestOrders();
   Future<OrderActionResult<StatusOutcome>> updateOrderStatus(
       UpdateStatusBodyModel updateStatusBody,
