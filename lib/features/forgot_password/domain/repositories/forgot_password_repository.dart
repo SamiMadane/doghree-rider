@@ -3,7 +3,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:doghree_rider/api/api_client.dart';
 import 'package:doghree_rider/common/models/response_model.dart';
 import 'package:doghree_rider/features/profile/domain/models/profile_model.dart';
+import 'package:doghree_rider/helper/firebase_state.dart';
 import 'package:doghree_rider/util/app_constants.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:doghree_rider/features/forgot_password/domain/repositories/forgot_password_repository_interface.dart';
@@ -120,12 +122,16 @@ class ForgotPasswordRepository implements ForgotPasswordRepositoryInterface {
     return responseModel;
   }
 
+  /// The FCM token sent with forget-password. Empty when Firebase did not
+  /// start or FCM fails: the request still goes out (D-12).
   Future<String?> _saveDeviceToken() async {
-    String? deviceToken = '';
-    if (!GetPlatform.isWeb) {
-      deviceToken = (await FirebaseMessaging.instance.getToken())!;
+    if (GetPlatform.isWeb || !FirebaseState.ready) return '';
+    try {
+      return await FirebaseMessaging.instance.getToken() ?? '';
+    } catch (e) {
+      if (kDebugMode) debugPrint('FCM getToken failed: ${e.runtimeType}');
+      return '';
     }
-    return deviceToken;
   }
 
   @override

@@ -7,6 +7,7 @@ import 'package:doghree_rider/features/dashboard/widgets/dashboard_bottom_nav_wi
 import 'package:doghree_rider/features/dashboard/widgets/lottie_bottom_sheet_order_request.dart';
 import 'package:doghree_rider/features/order/controllers/order_controller.dart';
 import 'package:doghree_rider/features/profile/controllers/profile_controller.dart';
+import 'package:doghree_rider/helper/firebase_state.dart';
 import 'package:doghree_rider/helper/notification_router.dart';
 import 'package:doghree_rider/helper/order_ringing.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
@@ -62,7 +63,11 @@ class DashboardScreenState extends State<DashboardScreen> {
       Get.find<SessionChecker>().startSessionCheck();
     }
 
-    _stream = FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    // Without Firebase there is no push stream (D-12).
+    final Stream<RemoteMessage> pushes = FirebaseState.ready
+        ? FirebaseMessaging.onMessage
+        : const Stream<RemoteMessage>.empty();
+    _stream = pushes.listen((RemoteMessage message) {
       // Never throws: a missing or bad order_id is null (audit row 32).
       final ForegroundOrderPush push =
           ForegroundOrderPush.fromData(message.data);

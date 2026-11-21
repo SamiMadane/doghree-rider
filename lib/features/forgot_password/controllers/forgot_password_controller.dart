@@ -5,7 +5,9 @@ import 'package:doghree_rider/common/models/response_model.dart';
 import 'package:doghree_rider/common/widgets/custom_snackbar_widget.dart';
 import 'package:get/get.dart';
 import 'package:doghree_rider/features/forgot_password/domain/services/forgot_password_service_interface.dart';
+import 'package:doghree_rider/helper/firebase_state.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
+import 'package:flutter/foundation.dart';
 
 class ForgotPasswordController extends GetxController implements GetxService {
   final ForgotPasswordServiceInterface forgotPasswordServiceInterface;
@@ -74,9 +76,26 @@ class ForgotPasswordController extends GetxController implements GetxService {
   }
 
   Future<void> firebaseVerifyPhoneNumber(String phoneNumber, {bool canRoute = true}) async {
+    // Without Firebase there is no phone verification: one message, no
+    // loader left running (D-12).
+    if (!FirebaseState.ready) {
+      showCustomSnackBar('error_occurred'.tr);
+      return;
+    }
     _isLoading = true;
     update();
 
+    try {
+      await _verifyPhoneNumber(phoneNumber, canRoute);
+    } catch (e) {
+      if (kDebugMode) debugPrint('verifyPhoneNumber failed: ${e.runtimeType}');
+      _isLoading = false;
+      update();
+      showCustomSnackBar('error_occurred'.tr);
+    }
+  }
+
+  Future<void> _verifyPhoneNumber(String phoneNumber, bool canRoute) async {
     await FirebaseAuth.instance.verifyPhoneNumber(
       phoneNumber: phoneNumber,
       verificationCompleted: (PhoneAuthCredential credential) {},

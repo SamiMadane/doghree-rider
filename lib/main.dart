@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:doghree_rider/api/log_sanitizer.dart';
+import 'package:doghree_rider/common/widgets/startup_failed_app.dart';
 import 'package:doghree_rider/firebase_options.dart';
-import 'package:flutter/foundation.dart';
+import 'package:doghree_rider/helper/app_error_handler.dart';
+import 'package:doghree_rider/helper/firebase_state.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:doghree_rider/features/auth/controllers/auth_controller.dart';
@@ -32,31 +34,52 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 Future<void> main() async {
   setPathUrlStrategy();
   WidgetsFlutterBinding.ensureInitialized();
+  AppErrorHandler.install();
 
-  if (GetPlatform.isAndroid) {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-  } else {
-    await Firebase.initializeApp(); // iOS: بيقرأ GoogleService-Info.plist
+  // Not fatal: without Firebase the app still starts, only push is missing.
+  // Every Firebase call checks FirebaseState.ready (D-12).
+  try {
+    if (GetPlatform.isAndroid) {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+    } else {
+      await Firebase.initializeApp(); // iOS: بيقرأ GoogleService-Info.plist
+    }
+    FirebaseState.ready = true;
+  } catch (e, s) {
+    AppErrorHandler.report(e, s);
   }
 
-  Map<String, Map<String, String>> languages = await di.init();
+  // Fatal: nothing works without DI. Reported, then a fixed message instead
+  // of a frozen splash.
+  final Map<String, Map<String, String>> languages;
+  try {
+    languages = await di.init();
+  } catch (e, s) {
+    AppErrorHandler.report(e, s);
+    runApp(const StartupFailedApp());
+    return;
+  }
 
   NotificationBodyModel? body;
   try {
     if (GetPlatform.isMobile) {
-      final RemoteMessage? remoteMessage =
-          await FirebaseMessaging.instance.getInitialMessage();
-      if (remoteMessage != null) {
-        body = NotificationHelper.convertNotification(remoteMessage.data);
+      if (FirebaseState.ready) {
+        final RemoteMessage? remoteMessage =
+            await FirebaseMessaging.instance.getInitialMessage();
+        if (remoteMessage != null) {
+          body = NotificationHelper.convertNotification(remoteMessage.data);
+        }
       }
       await NotificationHelper.initialize(flutterLocalNotificationsPlugin);
-      FirebaseMessaging.onBackgroundMessage(myBackgroundMessageHandler);
+      if (FirebaseState.ready) {
+        FirebaseMessaging.onBackgroundMessage(myBackgroundMessageHandler);
+      }
     }
-} catch (e) {
-  if (kDebugMode) debugPrint('main failed: $e');
-}
+  } catch (e, s) {
+    AppErrorHandler.report(e, s);
+  }
 
   // Opening the app means the rider has seen the request: stop any ringing
   // left by a background push, then retire the old channel (audit rows 36,
@@ -65,7 +88,11 @@ Future<void> main() async {
   await OrderRinging.retireLegacyChannel();
   WidgetsBinding.instance.addObserver(OrderRingingObserver());
 
-  await DateConverterHelper.initLocaleDateFormatting();
+  try {
+    await DateConverterHelper.initLocaleDateFormatting();
+  } catch (e, s) {
+    AppErrorHandler.report(e, s);
+  }
   Get.put(LocationPermissionManager(), permanent: true);
 
   runApp(MyApp(languages: languages, body: body));

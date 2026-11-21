@@ -11,6 +11,8 @@ import 'package:doghree_rider/features/chat/controllers/chat_controller.dart';
 import 'package:doghree_rider/features/notification/controllers/notification_controller.dart';
 import 'package:doghree_rider/features/order/controllers/order_controller.dart';
 import 'package:doghree_rider/features/notification/domain/models/notification_body_model.dart';
+import 'package:doghree_rider/helper/app_error_handler.dart';
+import 'package:doghree_rider/helper/firebase_state.dart';
 import 'package:doghree_rider/helper/notification_router.dart';
 import 'package:doghree_rider/helper/order_ringing.dart';
 import 'package:doghree_rider/helper/route_helper.dart';
@@ -67,6 +69,8 @@ class NotificationHelper {
       return;
     });
     await createChannel(flutterLocalNotificationsPlugin);
+    // Without Firebase there is no push to listen to (D-12).
+    if (!FirebaseState.ready) return;
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (kDebugMode) {
       }
@@ -318,28 +322,34 @@ class NotificationHelper {
 
 @pragma('vm:entry-point')
 Future<dynamic> myBackgroundMessageHandler(RemoteMessage message) async {
-  await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform);
+  // Background isolate: nothing here may throw (D-12). A failure is logged
+  // (debug only, sanitized) and the push is dropped.
+  try {
+    await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform);
 
-  final String? type = message.data['type']?.toString();
-  final int? orderId = int.tryParse('${message.data['order_id'] ?? ''}');
+    final String? type = message.data['type']?.toString();
+    final int? orderId = int.tryParse('${message.data['order_id'] ?? ''}');
 
-  if (type == 'assign' || type == 'new_order' || type == 'order_request') {
-    FlutterForegroundTask.initCommunicationPort();
-    _initService();
-    await _startService(
-      orderId,
-      type == 'assign'
-          ? NotificationType.order
-          : NotificationType.order_request,
-    );
-  }    else if (GetPlatform.isAndroid && message.notification == null) {
-    // data-only: النظام ما بعرضه، فنعرضه إحنا
-    final fln = FlutterLocalNotificationsPlugin();
-    await fln.initialize(const InitializationSettings(
-        android: AndroidInitializationSettings('ic_notification')));
-    await NotificationHelper.createChannel(fln);
-    await NotificationHelper.showNotification(message, fln);
+    if (type == 'assign' || type == 'new_order' || type == 'order_request') {
+      FlutterForegroundTask.initCommunicationPort();
+      _initService();
+      await _startService(
+        orderId,
+        type == 'assign'
+            ? NotificationType.order
+            : NotificationType.order_request,
+      );
+    } else if (GetPlatform.isAndroid && message.notification == null) {
+      // data-only: النظام ما بعرضه، فنعرضه إحنا
+      final fln = FlutterLocalNotificationsPlugin();
+      await fln.initialize(const InitializationSettings(
+          android: AndroidInitializationSettings('ic_notification')));
+      await NotificationHelper.createChannel(fln);
+      await NotificationHelper.showNotification(message, fln);
+    }
+  } catch (e) {
+    AppErrorHandler.log('Background push failed: ${e.runtimeType}');
   }
 }
 
