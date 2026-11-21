@@ -185,7 +185,7 @@ Also run the combined smoke pass (this batch touches orders and start-up). While
 ## D-10: cleanup (dead code, DI, stray files, bottom nav sizes, withdraw and phone decisions)
 
 - **Branch:** fix/d-10-cleanup
-- **Branch commit:** 346c25a
+- **Branch commit:** 346c25a (code), 0723948 (manifest uses-feature)
 - **Status:** pending (D-11)
 
 | # | Steps | Expected |

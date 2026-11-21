@@ -14,7 +14,7 @@
 | D-07 | fix/d-07-notifications | Audit rows 6, 31, 32, 33, 34, 35, 54 | merged, device tests pending (D-11) | 2026-11-20 |
 | D-08 | fix/d-08-wallet | Audit rows 41, 42, 43, 44 | merged, device tests pending (D-11) | 2026-11-21 |
 | D-09 | fix/d-09-uploads-profile | Audit rows 45, 46, 47, 48, 49 | merged, device tests pending (D-11) | 2026-11-21 |
-| D-10 | fix/d-10-cleanup | Audit rows 40, 55, 56, 57, 58, 60 + D-10 candidates and owner decisions Q1-Q7 | implemented, awaiting closing (device tests in D-11) | |
+| D-10 | fix/d-10-cleanup | Audit rows 40, 55, 56, 57, 58, 60 + D-10 candidates and owner decisions Q1-Q7 | merged, device tests pending (D-11) | 2026-11-21 |
 | D-11 | (no code branch) | Final device pass: every pending backlog section, the smoke pass and the end-to-end order test (`docs/device-test-backlog.md`) | planned (after D-10) | |
 
 > **Branch state.** When D-03 started, `development` was level with `origin/development` (265bcfa): D-01 and D-02 were already pushed. The earlier note that D-03 would start ahead of origin was wrong. Device tests are deferred to D-11 (see CLAUDE.md, Batch workflow), and no release build is made from `development` until D-11 passes.
@@ -567,7 +567,7 @@
 - **Row 60:** the bottom nav moved, unchanged, to `lib/features/dashboard/widgets/dashboard_bottom_nav_widget.dart`. Its sizes come from `Dimensions` (`w16`, `h10`, new `h76`, `r24`, `r18`, `h6`). The children (`bottom_nav_item_widget`, `bottom_nav_road_indicator`) keep their raw sizes (note below).
 - **Candidates:**
   - Deleted `collect_money_delivery_sheet_widget.dart`, a byte-identical, never-imported copy of `confirm_delivery_sheet_widget.dart`.
-  - Removed the `camera` dependency (D-01 note). Lock diff: only `camera`, `camera_android_camerax`, `camera_avfoundation`, `camera_platform_interface`, `camera_web` and `stream_transform` (used only by camera) are gone, plus `args` direct dev → transitive (row 58). No version changed. `NSCameraUsageDescription` and the CAMERA permission stay. Merged debug manifest (`flutter build apk --debug` before and after): the permission lines are identical; the only differences are the plugin's `<uses-feature android:name="android.hardware.camera.any" />` (no `required` attribute, so it counted as required) and CameraX's `MetadataHolderService` entry, both gone. Google Play still infers a required camera from the CAMERA permission, so device filtering should be about the same. Check the Play Console device catalog at the next release.
+  - Removed the `camera` dependency (D-01 note). Lock diff: only `camera`, `camera_android_camerax`, `camera_avfoundation`, `camera_platform_interface`, `camera_web` and `stream_transform` (used only by camera) are gone, plus `args` direct dev → transitive (row 58). No version changed. `NSCameraUsageDescription` and the CAMERA permission stay. Merged debug manifest (`flutter build apk --debug` before and after): the permission lines are identical; the plugin's `<uses-feature android:name="android.hardware.camera.any" />` (no `required` attribute) was gone, so at closing it was declared in the app's `AndroidManifest.xml` exactly as the plugin had it (commit 0723948). Rebuilt and compared again: ignoring comments and element order, the only remaining difference is CameraX's `MetadataHolderService` entry.
   - Removed the unused `OrderDetailsScreen.orderIndex` and its 4 call-site arguments (D-04 note).
   - `image_picker_helper.dart` numbers (Q4): `ImageUploadRules.pickMaxDimension = 1600` and `pickJpegQuality = 85`, private constants for the native crop screen. Not `Dimensions`: they are output pixels and quality, and screen scaling would change the saved image size per phone.
 - **Owner decisions:**
@@ -593,6 +593,7 @@
   - G2 renders with the test font, so it checks the layout arithmetic only; the real nav check stays on a device (D-11).
   - **Covered by compile, analyze and the full suite only:** rows 40, 56, 57, 58, the duplicate widget, `camera`, `orderIndex`.
 - **Device:** **not run.** The steps are in `docs/device-test-backlog.md` (D-10, steps 1–8) and run in D-11.
+- **Status:** merged into `development` (2026-11-21), device tests pending (D-11). Rows 40, 55, 56, 57, 58, 60 are closed on the app side, with the D-10 candidates and owner decisions Q1, Q2, Q4, Q6, Q7. Still open: B-04 (with the upload-limit questions 7–11), the two Edit Profile bugs (avatar badge in nested `PositionedDirectional`; phone prefix with raw sizes and a fixed `+970`), the iOS proof picker without a camera option (Q3), the D-07 note that a cold start from a push skips `updateToken()`, and the proof picker's own `imageQuality: 70, maxWidth: 1600` (notes below).
 
 ### Notes (found during D-10, not fixed)
 - Edit Profile: the avatar badge sits in two nested `PositionedDirectional` (`update_profile_screen.dart`), which reports "Incorrect use of ParentDataWidget" in debug. The D-10 profile tests ignore that one report.
