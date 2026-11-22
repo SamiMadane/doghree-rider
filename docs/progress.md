@@ -16,7 +16,7 @@
 | D-09 | fix/d-09-uploads-profile | Audit rows 45, 46, 47, 48, 49 | merged, device tests pending (D-11) | 2026-11-21 |
 | D-10 | fix/d-10-cleanup | Audit rows 40, 55, 56, 57, 58, 60 + D-10 candidates and owner decisions Q1-Q7 | merged, device tests pending (D-11) | 2026-11-21 |
 | D-12 | fix/d-12-static-checks | Audit rows 61-75 (static sweep: safety net, start-up, failure texts, crash patterns, unused assets) | merged, device tests pending (D-11) | 2026-11-22 |
-| D-13 | fix/d-13-retry-states | Audit rows 78, 79, 80, 81 (Retry states, conversation paging, HTML page shape, Firebase OTP message) | implemented on the branch, not merged; device tests pending (D-11) | |
+| D-13 | fix/d-13-retry-states | Audit rows 78, 79, 80, 81 (Retry states, conversation paging, HTML page shape, Firebase OTP message) | merged, device tests pending (D-11) | 2026-11-22 |
 | D-11 | (no code branch) | Final device pass: every pending backlog section, the smoke pass and the end-to-end order test (`docs/device-test-backlog.md`) | planned (after D-10) | |
 
 > **Branch state.** When D-03 started, `development` was level with `origin/development` (265bcfa): D-01 and D-02 were already pushed. The earlier note that D-03 would start ahead of origin was wrong. Device tests are deferred to D-11 (see CLAUDE.md, Batch workflow), and no release build is made from `development` until D-11 passes.
@@ -709,7 +709,19 @@
   - **Fail on the old code at compile time only** (new API): `load_failed_widget_test` (L1-L9), `html_text_shape_test` (H4-H6).
   - **Guards** (pass on the old code): G1 (a 401 shows no failure state), G3 (search keeps its ApiChecker message), P3 (a loaded page moves on, no automatic retry), H1 (empty body), H2 (JSON `""`), H3 (JSON string).
 - **Device:** **not run.** Steps in `docs/device-test-backlog.md` (D-13) for D-11.
-- **Status:** implemented on `fix/d-13-retry-states`, not merged. Device tests pending (D-11).
+- **Status:** merged into `development` (2026-11-22), device tests pending (D-11). Rows 78, 79, 80 and 81 are closed on the app side.
+- **OWNER task:** fill the privacy policy and terms texts in the admin panel before store publishing. Both endpoints answer an empty string today, so the app shows an empty state; an empty privacy policy blocks store review. Claude Code does not change admin panel settings.
+- **Still open after D-13:**
+  - A dedicated "no content yet" key for the empty privacy and terms pages (they use `not_found` today), en and ar.
+  - The chat raw sizes: attachment-preview block (100, 28, 20, 1.5, 12) and the composer shadow (5, 2, -3); they need a visual check.
+  - A failed conversation search shows "No conversation found" under its one toast.
+  - `SplashFailure` and `LoadFailure` overlap; merge them later.
+  - **Image and GIF size batch:** measured at d72e23e: images 25.03 MB, GIFs 12.33 MB, native libraries 19.76 MB, APK 62.0 MB (D-12 Part B).
+  - **Translation rewrite:** includes the unused language keys.
+  - **B-04:** invoice PDF content type and the upload-limit questions (Open backend questions).
+  - The Edit Profile avatar badge in nested `PositionedDirectional` (D-10 note).
+  - The iOS proof picker is gallery only (D-10, Q3).
+  - The D-07 note: a cold start from a push skips `updateToken()` (review in D-11).
 
 ### Notes (found during D-13, not fixed)
 - **Admin panel:** the privacy policy and the terms are empty on the server (`""`). The app now shows an empty state, but the texts must be filled in the admin panel; an empty privacy policy blocks store publishing. This is an admin-panel task for the owner.

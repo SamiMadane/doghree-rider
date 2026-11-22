@@ -229,7 +229,7 @@ Also run the combined smoke pass (this batch touches orders and start-up). While
 ## D-13: Retry states (Conversations, Chat, Notifications, privacy and terms), Firebase OTP message
 
 - **Branch:** fix/d-13-retry-states
-- **Branch commits:** 5a1a0cb, 84174c5, 72f3c6c, cfc5896, 8e03b3c
+- **Branch commits:** 5a1a0cb, 84174c5, 72f3c6c, cfc5896, 8e03b3c (docs 8378447); merged into `development` 2026-11-22
 - **Status:** pending (D-11)
 
 | # | Steps | Expected |
