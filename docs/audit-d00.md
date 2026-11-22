@@ -91,6 +91,8 @@
 | 79 | lib/features/chat/controllers/chat_controller.dart:73-89 | `getConversationList` cleared the list before every load, then page 2 read the cleared list with `!` | Scrolling to page 2, a failed refresh or a push left an endless spinner; page 2 threw a Null check error | crash | unit | D-13 |
 | 80 | lib/features/html/controllers/html_controller.dart:11-22 | Any String body was shown as the page. A JSON string and raw HTML both arrive as a String | A captive Wi-Fi login page was shown as the privacy policy | wrong data | unit | D-13 |
 | 81 | lib/features/forgot_password/domain/repositories/forgot_password_repository.dart:82-98 | `verifyFirebaseOtp` used `handleError: true` and dropped the status; the screen showed nothing on failure | A 200 with an HTML body or an exception gave no message at all; the rate-limit timer never started | bad UX | unit | D-13 |
+| 82 | assets/image (25 illustrations, 4 map markers) | Illustration and marker PNGs far above their displayed size (up to 1254 px for a 50-95 dp box), 24.27 MB in total | APK size (images 25.03 MB of a 62.0 MB APK) | minor | unit + device | D-14 |
+| 83 | assets/animations/doghree_rider.gif, delivered_success.gif | GIFs not optimized (9.1 MB and 3.5 MB) | APK size (GIFs 12.33 MB) | minor | unit + device | open |
 
 ## Proposed batches
 
@@ -108,9 +110,12 @@
 | D-10 | fix/d-10-cleanup | DI duplicates, dead code, stray files, Dimensions in nav | 40, 55, 56, 57, 58, 60 |
 | D-12 | fix/d-12-static-checks | Safety net, start-up guards, failure texts, silent Home loads, crash patterns, unused assets | 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75 |
 | D-13 | fix/d-13-retry-states | Retry states after a failed first load, conversation paging, HTML page shape, Firebase OTP message | 78, 79, 80, 81 |
+| D-14 | fix/d-14-assets-size | Image asset size (offline lossless WebP, marker resize) | 82 (83 open) |
 
 Rows 9, 42 and 49 depend on backend answers (docs/progress.md, Open backend questions).
 
 Rows 61-78 were added by the D-12 static sweep (2026-11-21, read at cbe44a1). Rows 76 and 77 are open notes; row 78 is planned for D-13.
 
 Rows 79-81 were found while planning D-13 (2026-11-22, read at 48f13bf) and fixed in D-13 with the owner's agreement.
+
+Rows 82 and 83 were added for D-14 (2026-11-22, read at 6ea78fe) with the owner's agreement. Row 82 is fixed in D-14; row 83 waits for gifsicle (lossless re-pack only).
