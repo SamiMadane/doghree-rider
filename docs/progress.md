@@ -17,7 +17,7 @@
 | D-10 | fix/d-10-cleanup | Audit rows 40, 55, 56, 57, 58, 60 + D-10 candidates and owner decisions Q1-Q7 | merged, device tests pending (D-11) | 2026-11-21 |
 | D-12 | fix/d-12-static-checks | Audit rows 61-75 (static sweep: safety net, start-up, failure texts, crash patterns, unused assets) | merged, device tests pending (D-11) | 2026-11-22 |
 | D-13 | fix/d-13-retry-states | Audit rows 78, 79, 80, 81 (Retry states, conversation paging, HTML page shape, Firebase OTP message) | merged, device tests pending (D-11) | 2026-11-22 |
-| D-14 | fix/d-14-assets-size | Audit row 82 (illustration and marker images); row 83 (GIFs) left open | branch ready, not merged; device tests pending (D-11) | |
+| D-14 | fix/d-14-assets-size | Audit row 82 (illustration and marker images); row 83 (GIFs) left open | merged, device tests pending (D-11) | 2026-11-22 |
 | D-11 | (no code branch) | Final device pass: every pending backlog section, the smoke pass and the end-to-end order test (`docs/device-test-backlog.md`) | planned (after D-10) | |
 
 > **Branch state.** When D-03 started, `development` was level with `origin/development` (265bcfa): D-01 and D-02 were already pushed. The earlier note that D-03 would start ahead of origin was wrong. Device tests are deferred to D-11 (see CLAUDE.md, Batch workflow), and no release build is made from `development` until D-11 passes.
@@ -750,7 +750,17 @@
   - **Guards** (pass on the old code): T1a, T1b, T1c, T4, T2a, both T3. T1b first failed on the old code because of a test bug (the folder constants are directories); fixed before the run that counts.
 - **Build:** `flutter build apk --analyze-size --target-platform android-arm64`, once (907 s, exit 0). `app-release.apk` **45.3 MB** (47,483,464 bytes), was 62.0 MB (64,987,395 bytes) at D-12: 17,503,931 bytes less. By zip entry (compressed): images **8.34 MB** (was 25.03), GIFs 12.33 (same), native libraries 19.76 (same), other 2.54, dex 2.07, icons 0.10. Nothing from `build/` is tracked or staged.
 - **Device:** **not run.** Steps in `docs/device-test-backlog.md` (D-14) for D-11.
-- **Status:** branch ready, not merged; the merge waits for the owner's closing message. Device tests pending (D-11).
+- **Status:** merged into `development` (2026-11-22), device tests pending (D-11). Row 82 is closed on the app side; row 83 stays open.
+- **APK size milestone (arm64 release):** 62.0 MB -> **45.3 MB**; images 25.03 MB -> **8.34 MB** (compressed zip entries). GIFs (12.33 MB) and native libraries (19.76 MB) unchanged.
+- **Still open after D-14:**
+  - **Row 83:** GIF lossless re-pack (G1, `gifsicle -O3` with the full frame, duration, loop, disposal and transparency proof). Needs gifsicle on the machine. Optional; at most part of the 12.33 MB.
+  - **Row 76:** `ManagerAssets.languageBackground` points to the missing `language_bg.png` (no code navigates to `/language`). T1a allow-lists it by name.
+  - **Translation rewrite:** includes the unused language keys and a dedicated "no content yet" key for the empty privacy and terms pages (they use `not_found` today), en and ar.
+  - **B-04:** invoice PDF content type and the upload-limit questions (Open backend questions).
+  - The Edit Profile avatar badge in nested `PositionedDirectional` (D-10 note).
+  - The iOS proof picker is gallery only (D-10, Q3).
+  - The D-07 note: a cold start from a push skips `updateToken()` (review in D-11).
+  - **OWNER task:** fill the privacy policy and terms texts in the admin panel before store publishing (both endpoints answer `""` today; an empty privacy policy blocks store review). Claude Code does not change admin panel settings.
 
 ### Notes (found during D-14, not fixed)
 - **Row 83 (GIFs, 12.33 MB):** needs gifsicle on the machine. Plan G1 only: `gifsicle -O3` re-pack, kept only if every composited frame, the durations, the loop block, disposal and transparency are identical (T3 already guards the Flutter side).

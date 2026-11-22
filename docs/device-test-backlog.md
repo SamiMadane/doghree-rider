@@ -252,14 +252,16 @@ Also run the combined smoke pass (this batch touches orders and start-up). While
 ## D-14: image assets (lossless WebP, resized map markers)
 
 - **Branch:** fix/d-14-assets-size
-- **Branch commits:** 386b776 (docs commit follows)
+- **Branch commits:** 386b776 (docs d0eacaf and the closing commit); merged into `development` 2026-11-22
 - **Status:** pending (D-11)
 
-Every screen that shows a converted image. Each one once in light mode and once in dark mode. Expected everywhere: the image looks exactly as before (same size, same position, clean edges, no dark or white fringe), and nothing is blank.
+Every screen that shows a converted image (17 steps). Each one once in light mode and once in dark mode.
+
+**Highest priority: steps 1 (no_internet) and 16 (session_expired), in light and in dark.** These two keep their pixel size and are shown with no width or height, so their on-screen size comes from the image itself. Run them first. Expected everywhere: the image looks exactly as before (same size, same position, clean edges, no dark or white fringe), and nothing is blank.
 
 | # | Steps | Image(s) |
 |---|---|---|
-| 1 | Airplane mode on, cold start | no_internet |
+| 1 | **Highest priority.** Airplane mode on, cold start (light, then dark) | no_internet |
 | 2 | Home | doghree_coins (earnings card), doghree_parcels (orders card) |
 | 3 | Home, go offline (the confirm sheet) | dm_offline_icon |
 | 4 | Deny the location permission (the permission dialog) | location_access_icon |
@@ -274,7 +276,7 @@ Every screen that shows a converted image. Each one once in light mode and once 
 | 13 | Forgot password, set a new password (success sheet) | change_password |
 | 14 | Notifications with none; Conversations with none | no_notification; no_conversation |
 | 15 | Privacy policy and Terms (header, and the empty page while the admin texts are empty) | privacy_terms |
-| 16 | Session expired (log in on a second device, or have the account logged out) | session_expired |
+| 16 | **Highest priority.** Session expired: log in on a second device, or have the account logged out (light, then dark) | session_expired |
 | 17 | Only if the owner can set it: forced update and maintenance mode in the admin panel; a new registration | update, maintenance, application_submitted |
 
 **Device only:** how each image looks (steps 1-17), and the maplibre marker size in step 8 (40 dp wide, as before).
