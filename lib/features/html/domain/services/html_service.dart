@@ -1,4 +1,4 @@
-import 'package:get/get.dart';
+import 'package:doghree_rider/common/models/data_load.dart';
 import 'package:doghree_rider/features/html/domain/repositories/html_repository_interface.dart';
 import 'package:doghree_rider/features/html/domain/services/html_service_interface.dart';
 
@@ -7,7 +7,7 @@ class HtmlService implements HtmlServiceInterface {
   HtmlService({required this.htmlRepositoryInterface});
 
   @override
-  Future<Response> getHtmlText(bool isPrivacyPolicy) async {
+  Future<DataLoad<String>> getHtmlText(bool isPrivacyPolicy) async {
     return await htmlRepositoryInterface.getHtmlText(isPrivacyPolicy);
   }
 

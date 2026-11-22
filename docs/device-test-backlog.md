@@ -226,6 +226,29 @@ Also run the combined smoke pass (this batch touches orders and start-up). While
 
 **Unit tests only:** a 200 with an HTML body (chat, forgot password, cancel reasons, splash), a notification without `updated_at`, corrupt stored entries, an unknown or missing country, Firebase not ready, `StartupFailedApp`, and the error handler.
 
+## D-13: Retry states (Conversations, Chat, Notifications, privacy and terms), Firebase OTP message
+
+- **Branch:** fix/d-13-retry-states
+- **Branch commits:** 5a1a0cb, 84174c5, 72f3c6c, cfc5896, 8e03b3c (docs 8378447); merged into `development` 2026-11-22
+- **Status:** pending (D-11)
+
+| # | Steps | Expected |
+|---|---|---|
+| 1 | Airplane mode on, Profile, Conversations | "No Connection" with Retry, no toast. Network on, Retry once: the list loads |
+| 2 | With the list shown, airplane mode on, pull to refresh | The list stays, no message |
+| 3 | More than 10 conversations: scroll down | Older conversations are added below (the list never goes blank) |
+| 4 | Airplane mode on, open a chat | "No Connection" in the messages area, the composer below. Network on, Retry: messages load |
+| 5 | In a chat, airplane mode on, type a message and send | One message; the typed text stays |
+| 6 | Fresh start, airplane mode on as soon as the dashboard shows, open Notifications | "No Connection" with Retry, no toast |
+| 7 | Privacy policy and Terms with airplane mode on | "No Connection" with Retry. Online: the page opens (empty state while the admin texts are empty) |
+| 8 | Captive Wi-Fi (a hotel or cafe login page), if available, open Privacy policy | "Server problem", never the login page |
+| 9 | Forgot password with Firebase OTP: enter a wrong code | One message |
+| 10 | Double tap Retry quickly on any failure state | One spinner, one load, no error |
+
+**Device only:** the look of the failure state and the empty page, real scrolling for step 3, the rate-limit timer in step 9.
+
+**Unit tests only:** the 401 path (no failure state), a 200 with raw HTML when no captive Wi-Fi is available, a page that throws during paging, and the busy guard timing.
+
 ## Combined smoke pass (once, in D-11)
 
 | # | Step | Expected |

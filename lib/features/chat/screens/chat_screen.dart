@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:doghree_rider/common/widgets/custom_app_bar_widget.dart';
+import 'package:doghree_rider/common/widgets/load_failed_widget.dart';
 import 'package:doghree_rider/features/auth/controllers/auth_controller.dart';
 import 'package:doghree_rider/features/chat/controllers/chat_controller.dart';
 import 'package:doghree_rider/features/notification/domain/models/notification_body_model.dart';
@@ -171,8 +172,21 @@ class _ChatScreenState extends State<ChatScreen> {
                                       ),
                                     )
                                   : const SizedBox()
-                              : const Center(
-                                  child: CircularProgressIndicator()),
+                              : chatController.messageFailure != null
+                                  // A failed first load: one state with
+                                  // Retry instead of an endless spinner
+                                  // (D-13). The composer stays below.
+                                  ? LoadFailedWidget(
+                                      failure: chatController.messageFailure!,
+                                      onRetry: () =>
+                                          chatController.retryMessages(
+                                        widget.notificationBody!,
+                                        widget.user,
+                                        widget.conversationId,
+                                      ),
+                                    )
+                                  : const Center(
+                                      child: CircularProgressIndicator()),
                         ),
 
                         // قسم إدخال الرسائل (دائمًا ظاهر)
@@ -378,9 +392,11 @@ class _ChatScreenState extends State<ChatScreen> {
                                                         widget.conversationId,
                                                   )
                                                       .then((success) {
-                                                    _inputMessageController
-                                                        .clear();
+                                                    // A failed send keeps
+                                                    // the typed text (D-13).
                                                     if (success) {
+                                                      _inputMessageController
+                                                          .clear();
                                                       Future.delayed(
                                                           const Duration(
                                                               seconds: 2), () {

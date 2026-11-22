@@ -2,6 +2,7 @@ import 'package:doghree_rider/common/widgets/custom_snackbar_widget.dart';
 import 'package:doghree_rider/features/notification/domain/models/notification_body_model.dart';
 import 'package:doghree_rider/features/notification/domain/models/notification_model.dart';
 import 'package:doghree_rider/common/models/list_load.dart';
+import 'package:doghree_rider/common/models/load_failure.dart';
 import 'package:doghree_rider/helper/date_converter_helper.dart';
 import 'package:doghree_rider/helper/first_load_notice.dart';
 import 'package:flutter/foundation.dart';
@@ -193,12 +194,20 @@ class NotificationController extends GetxController implements GetxService {
   /// Silent load (D-12). With [announce], a failure while no list was ever
   /// loaded shows exactly one message (FirstLoadNotice); with data on screen
   /// it stays silent. Push and resume refreshes never announce.
+  LoadFailure? _listFailure;
+
+  /// Why the list could not be loaded, when there is no list to show. Null
+  /// while loading, after a success, or for a 401 (D-13).
+  LoadFailure? get listFailure => _listFailure;
+
   Future<LoadAttempt> getNotificationList(
       {bool reload = false, bool announce = false}) async {
     final bool hadData = _notificationList != null;
     if (hadData && !reload) {
       return const LoadAttempt(ok: true, hadData: true);
     }
+    // No update() here: the screen calls this from initState too.
+    if (!hadData) _listFailure = null;
     LoadAttempt attempt;
     try {
       final ListLoad<NotificationModel> load =
@@ -230,12 +239,22 @@ class NotificationController extends GetxController implements GetxService {
       if (kDebugMode) debugPrint('getNotificationList failed: ${e.runtimeType}');
       attempt = LoadAttempt(ok: false, hadData: hadData, statusCode: 0);
     }
+    _listFailure = _notificationList == null
+        ? LoadFailures.fromStatus(attempt.statusCode)
+        : null;
     update();
     if (announce) {
       final String? message = FirstLoadNotice.pick([attempt]);
       if (message != null) toast(message);
     }
     return attempt;
+  }
+
+  /// Retry from the failure state: the spinner shows, then one request.
+  Future<void> retryNotificationList() async {
+    _listFailure = null;
+    update();
+    await getNotificationList(reload: true);
   }
 
   /// ✅ حساب عدد الإشعارات غير المقروءة

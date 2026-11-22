@@ -1,6 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:doghree_rider/api/api_checker.dart';
 import 'package:doghree_rider/api/api_client.dart';
+import 'package:doghree_rider/common/models/data_load.dart';
 import 'package:doghree_rider/features/chat/domain/models/conversation_model.dart';
 import 'package:doghree_rider/features/chat/domain/models/message_model.dart';
 import 'package:doghree_rider/features/chat/domain/repositories/chat_repository_interface.dart';
@@ -12,16 +15,21 @@ class ChatRepository implements ChatRepositoryInterface {
   ChatRepository({required this.apiClient, required this.sharedPreferences});
 
   @override
-  Future<ConversationsModel?> getConversationList(int offset) async {
-    ConversationsModel? conversationModel;
-    Response response = await apiClient.getData(AppConstants.getConversationListUri,
-        query: {'offset': offset, 'limit': 10});
-    // Only a JSON object is parsed: a 200 with an HTML page (captive Wi-Fi)
-    // is a failure (null), not a TypeError (D-12, C1).
-    if(response.statusCode == 200 && response.body is Map<String, dynamic>) {
-      conversationModel = ConversationsModel.fromJson(response.body);
-    }
-    return conversationModel;
+  Future<ConversationsModel?> getConversationList(int offset) async =>
+      (await loadConversationList(offset)).data;
+
+  /// Silent (D-13): the screen shows its own failure state, so there is no
+  /// toast. A 401 still ends the session. Only a JSON object is parsed: a
+  /// 200 with an HTML page (captive Wi-Fi) is a failure, not a TypeError
+  /// (D-12, C1).
+  @override
+  Future<DataLoad<ConversationsModel>> loadConversationList(int offset) async {
+    final Response response = await apiClient.getData(
+        AppConstants.getConversationListUri,
+        query: {'offset': offset, 'limit': 10},
+        handleError: false);
+    ApiChecker.checkSession(response);
+    return _parse(response, ConversationsModel.fromJson);
   }
 
   @override
@@ -37,21 +45,39 @@ class ChatRepository implements ChatRepositoryInterface {
   }
 
   @override
-  Future<MessageModel?> getMessages(int offset, int? userId, String userType, int? conversationID) async {
-    MessageModel? messageModel;
+  Future<MessageModel?> getMessages(int offset, int? userId, String userType, int? conversationID) async =>
+      (await loadMessages(offset, userId, userType, conversationID)).data;
+
+  /// Silent (D-13), like [loadConversationList]: the first load shows the
+  /// screen's failure state, and the refreshes after a send or a push stay
+  /// quiet. The old check `body['messages'] != {}` was always true and threw
+  /// on a List body. Only a Map is parsed; an empty `messages` list still
+  /// gives a model, so a new conversation opens (audit row 54).
+  @override
+  Future<DataLoad<MessageModel>> loadMessages(int offset, int? userId, String userType, int? conversationID) async {
     final String idKey = conversationID != null
         ? 'conversation_id'
         : userType == AppConstants.user ? 'user_id' : 'vendor_id';
-    Response response = await apiClient.getData(AppConstants.getMessageListUri,
-        query: {idKey: conversationID ?? userId, 'offset': offset, 'limit': 10});
-    // The old check `body['messages'] != {}` was always true and threw on a
-    // List body. Only a Map is parsed; an empty `messages` list still gives a
-    // model, so a new conversation opens (audit row 54).
+    final Response response = await apiClient.getData(AppConstants.getMessageListUri,
+        query: {idKey: conversationID ?? userId, 'offset': offset, 'limit': 10},
+        handleError: false);
+    ApiChecker.checkSession(response);
+    return _parse(response, MessageModel.fromJson);
+  }
+
+  /// A 200 with a JSON object is parsed; a 200 with anything else, or a
+  /// model that cannot be read, is a failure with status 0.
+  static DataLoad<T> _parse<T>(
+      Response response, T Function(Map<String, dynamic> json) fromJson) {
+    if (response.statusCode != 200) return DataLoad<T>.failed(response.statusCode);
     final dynamic body = response.body;
-    if(response.statusCode == 200 && body is Map<String, dynamic>) {
-      messageModel = MessageModel.fromJson(body);
+    if (body is! Map<String, dynamic>) return DataLoad<T>.failed(0);
+    try {
+      return DataLoad<T>(fromJson(body), statusCode: 200);
+    } catch (e) {
+      if (kDebugMode) debugPrint('chat parse failed: ${e.runtimeType}');
+      return DataLoad<T>.failed(0);
     }
-    return messageModel;
   }
 
   @override

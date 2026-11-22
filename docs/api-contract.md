@@ -193,6 +193,16 @@ Endpoints as the rider app actually uses them. Fill one section per endpoint whe
 - Used in: `WalletRepository.downloadEarningInvoice` → `ApiClient.getBytes` (raw `bodyBytes`, silent, 60 s timeout, logs the byte length only), then `WalletController.downloadEarningInvoice`. The file is written only when it starts with `%PDF-`.
 - Error bodies are decoded leniently (UTF-8, malformed bytes allowed) for the server message.
 
+### GET /api/v1/privacy-policy and /api/v1/terms-and-conditions
+
+- Auth: public. Headers: `Accept: application/json`, `X-localization`.
+- Response 200 shape: the page HTML as a **JSON string**. Observed 2026-11-22: `application/json`, 2 bytes, body `""` for both (the texts are empty in the admin panel).
+- **Not in Screens R1-R7.** Postman has the requests only, with no saved response.
+- Used in: `HtmlRepository.getHtmlText` (`readHtmlText`), then `HtmlController.getHtmlText`.
+- Notes:
+  - An empty body, `""` or `null` is an empty page (success, empty state).
+  - A body that is not a JSON string (for example a captive Wi-Fi login page) is a failure, never shown as the page (D-13, row 80).
+
 ### Retired: store-transfer delivery fees
 
 - `GET /api/v1/delivery-man/store-transfer/delivery-fees` and `PUT .../store-transfer/delivery-fee-received` answer **410** `{ deprecated: true, replacement: "/api/v1/delivery-man/wallet", errors: [{ code: "endpoint_removed" }] }` (R5). The app calls neither of them. Never retry on a 410.
