@@ -249,6 +249,42 @@ Also run the combined smoke pass (this batch touches orders and start-up). While
 
 **Unit tests only:** the 401 path (no failure state), a 200 with raw HTML when no captive Wi-Fi is available, a page that throws during paging, and the busy guard timing.
 
+## D-14: image assets (lossless WebP, resized map markers)
+
+- **Branch:** fix/d-14-assets-size
+- **Branch commits:** 386b776 (docs d0eacaf and the closing commit); merged into `development` 2026-11-22
+- **Status:** pending (D-11)
+
+Every screen that shows a converted image (17 steps). Each one once in light mode and once in dark mode.
+
+**Highest priority: steps 1 (no_internet) and 16 (session_expired), in light and in dark.** These two keep their pixel size and are shown with no width or height, so their on-screen size comes from the image itself. Run them first. Expected everywhere: the image looks exactly as before (same size, same position, clean edges, no dark or white fringe), and nothing is blank.
+
+| # | Steps | Image(s) |
+|---|---|---|
+| 1 | **Highest priority.** Airplane mode on, cold start (light, then dark) | no_internet |
+| 2 | Home | doghree_coins (earnings card), doghree_parcels (orders card) |
+| 3 | Home, go offline (the confirm sheet) | dm_offline_icon |
+| 4 | Deny the location permission (the permission dialog) | location_access_icon |
+| 5 | Order requests tab with no request; My Orders with no order | no_order |
+| 6 | A running order: details while pending, then while processing | order_pending, order_preparing |
+| 7 | A parcel order: request card, details card, location cards | store |
+| 8 | Order details map preview; open the full map | customer_marker; your_marker, customer_marker, restaurant_marker (store order) or user_marker (parcel) |
+| 9 | Order details: the confirm dialog; the slide-to-confirm sheet | warning; confirmation_order |
+| 10 | Wallet | balance; empty_account (no payout account) |
+| 11 | Earnings: a delivered order row; no earnings; a filter with no result; airplane mode on, open earnings | earning_order; no_transaction (both empty states); earning_error |
+| 12 | Settings, Delete account | warning_delete_account |
+| 13 | Forgot password, set a new password (success sheet) | change_password |
+| 14 | Notifications with none; Conversations with none | no_notification; no_conversation |
+| 15 | Privacy policy and Terms (header, and the empty page while the admin texts are empty) | privacy_terms |
+| 16 | **Highest priority.** Session expired: log in on a second device, or have the account logged out (light, then dark) | session_expired |
+| 17 | Only if the owner can set it: forced update and maintenance mode in the admin panel; a new registration | update, maintenance, application_submitted |
+
+**Device only:** how each image looks (steps 1-17), and the maplibre marker size in step 8 (40 dp wide, as before).
+
+**Unit tests only:** every asset path exists, every raster decodes, each converted file is smaller and has the agreed pixel size, the GIFs keep frames, loop and timing (T1-T4). Step 17 is covered by the contact sheet only unless the owner sets those modes.
+
+The smoke pass applies: step 1 shows a start-up screen, and steps 6-11 show order and earnings screens. No order, money or start-up logic changed.
+
 ## Combined smoke pass (once, in D-11)
 
 | # | Step | Expected |

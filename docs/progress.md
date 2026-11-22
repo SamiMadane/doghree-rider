@@ -17,6 +17,7 @@
 | D-10 | fix/d-10-cleanup | Audit rows 40, 55, 56, 57, 58, 60 + D-10 candidates and owner decisions Q1-Q7 | merged, device tests pending (D-11) | 2026-11-21 |
 | D-12 | fix/d-12-static-checks | Audit rows 61-75 (static sweep: safety net, start-up, failure texts, crash patterns, unused assets) | merged, device tests pending (D-11) | 2026-11-22 |
 | D-13 | fix/d-13-retry-states | Audit rows 78, 79, 80, 81 (Retry states, conversation paging, HTML page shape, Firebase OTP message) | merged, device tests pending (D-11) | 2026-11-22 |
+| D-14 | fix/d-14-assets-size | Audit row 82 (illustration and marker images); row 83 (GIFs) left open | merged, device tests pending (D-11) | 2026-11-22 |
 | D-11 | (no code branch) | Final device pass: every pending backlog section, the smoke pass and the end-to-end order test (`docs/device-test-backlog.md`) | planned (after D-10) | |
 
 > **Branch state.** When D-03 started, `development` was level with `origin/development` (265bcfa): D-01 and D-02 were already pushed. The earlier note that D-03 would start ahead of origin was wrong. Device tests are deferred to D-11 (see CLAUDE.md, Batch workflow), and no release build is made from `development` until D-11 passes.
@@ -716,7 +717,7 @@
   - The chat raw sizes: attachment-preview block (100, 28, 20, 1.5, 12) and the composer shadow (5, 2, -3); they need a visual check.
   - A failed conversation search shows "No conversation found" under its one toast.
   - `SplashFailure` and `LoadFailure` overlap; merge them later.
-  - **Image and GIF size batch:** measured at d72e23e: images 25.03 MB, GIFs 12.33 MB, native libraries 19.76 MB, APK 62.0 MB (D-12 Part B).
+  - **Image and GIF size batch:** measured at d72e23e: images 25.03 MB, GIFs 12.33 MB, native libraries 19.76 MB, APK 62.0 MB (D-12 Part B). Images done in D-14; GIFs still open (row 83).
   - **Translation rewrite:** includes the unused language keys.
   - **B-04:** invoice PDF content type and the upload-limit questions (Open backend questions).
   - The Edit Profile avatar badge in nested `PositionedDirectional` (D-10 note).
@@ -731,6 +732,40 @@
 - Chat opened from a push with no `conversation` in the response and no `user`: the app bar reads `conversation!.receiver!` (not seen; same family as C12).
 - `SplashFailure` and `LoadFailure` overlap; they could be merged later.
 - `NoInternetScreen` (splash, My Orders, Order details) still checks connectivity before Retry and can show its own toast; unchanged in D-13.
+
+### D-14 (2026-11-22)
+- **Scope:** audit row 82 (oversized illustration and marker PNGs). A one-time offline conversion of asset files; the rider must see no change. Code change limited to 25 file extensions in `lib/util/manager_assets.dart`. Row 83 (GIFs) stays open.
+- **Owner answers:** 4x rule on a 480 dp phone (Q1); variant chosen per file, lossless by default, lossy only if invisible and approved (Q2); gifsicle installed by the owner, otherwise GIFs untouched (Q3); no GIF resize, G1 lossless re-pack only (Q4); new rows 82 and 83 (Q5); the conversion script stays out of the repo, the manifest is in the repo (Q6); `doghree_coins` and `doghree_parcels` are CAREFUL, not DO NOT TOUCH (Q7). Skip rule: a file saving under about 150 KB, or with any visible difference, stays unchanged.
+- **Method:** Pillow 13.0.0 with WebP (`python -m pip install --user pillow`), Lanczos resize (Pillow premultiplies RGBA). A contact sheet (scratchpad, not in the repo) showed each original and variant at the displayed size and at 400% on an alpha edge, on #FFFFFF, #1B1B1B (card colours) and a checkerboard, with real sizes. **Owner decision: the default variant for every file; no lossy q90 anywhere.**
+  - Target long side = ceil(4 x largest box x 1.28) for `Dimensions` sizes (k = 1 for raw numbers); never upscaled. Images shown with no size (`no_internet`, `session_expired`) and those whose 4x target is above the original keep their pixel size.
+  - 25 illustrations: lossless WebP, pixel-exact to their reference (PSNR infinite). 14 resized (dm_offline_icon, location_access_icon, warning, warning_delete_account, empty_account, earning_order, balance, order_preparing, order_pending, store, earning_error, confirmation_order, doghree_coins, doghree_parcels); 11 keep their pixel size (no_internet, session_expired, application_submitted, update, maintenance, privacy_terms, no_order, change_password, no_conversation, no_transaction, no_notification). Phone-view difference of the resized ones (both resampled to 3x the displayed size): 44-53 dB, alpha untouched.
+  - 4 map markers (your, restaurant, customer, user) stay PNG (bytes go to maplibre `addImage`) and are resized to 160 px wide, same path, no code change.
+  - Every file saves more than 150 KB (smallest: no_notification, 173 KB), so none was skipped. Measured total: 24.27 MB of PNG down to 7.58 MB (16.69 MB saved).
+  - Logos, splash, native splash, launcher icons, flags, placeholders, `map_placeholder` and SVGs were not touched.
+- **GIFs:** untouched. gifsicle was not installed when needed (not on PATH, not in the scoop or choco folders), so G1 did not run. Measured: `doghree_rider.gif` 794x530, 111 frames x 50 ms, loops forever; `delivered_success.gif` 800x800, 61 frames x 50 ms, no loop block (Flutter `repetitionCount` 0, plays once). Both are shown through `ReplayImage` (restart every 4 s). Row 83 stays open.
+- **Commits:** 386b776 images, `manager_assets.dart`, tests and manifest. No GIF commit.
+- **Tests:** 36 new, 489 total, 489 passed, 0 failed (baseline before D-14: 453). Analyze: 0 issues.
+  - Files: `test/assets/asset_paths_exist_test.dart` (T1a, T1b, T1c, T4), `converted_assets_test.dart` (T2a + 29 T2), `gif_behaviour_test.dart` (2 T3). Manifest `test/assets/asset_conversion.json`.
+  - **Fail on the old code:** the 29 T2 entries (run on the unconverted assets before the files were replaced: the converted file is missing, or the marker is larger than the agreed size).
+  - **Guards** (pass on the old code): T1a, T1b, T1c, T4, T2a, both T3. T1b first failed on the old code because of a test bug (the folder constants are directories); fixed before the run that counts.
+- **Build:** `flutter build apk --analyze-size --target-platform android-arm64`, once (907 s, exit 0). `app-release.apk` **45.3 MB** (47,483,464 bytes), was 62.0 MB (64,987,395 bytes) at D-12: 17,503,931 bytes less. By zip entry (compressed): images **8.34 MB** (was 25.03), GIFs 12.33 (same), native libraries 19.76 (same), other 2.54, dex 2.07, icons 0.10. Nothing from `build/` is tracked or staged.
+- **Device:** **not run.** Steps in `docs/device-test-backlog.md` (D-14) for D-11.
+- **Status:** merged into `development` (2026-11-22), device tests pending (D-11). Row 82 is closed on the app side; row 83 stays open.
+- **APK size milestone (arm64 release):** 62.0 MB -> **45.3 MB**; images 25.03 MB -> **8.34 MB** (compressed zip entries). GIFs (12.33 MB) and native libraries (19.76 MB) unchanged.
+- **Still open after D-14:**
+  - **Row 83:** GIF lossless re-pack (G1, `gifsicle -O3` with the full frame, duration, loop, disposal and transparency proof). Needs gifsicle on the machine. Optional; at most part of the 12.33 MB.
+  - **Row 76:** `ManagerAssets.languageBackground` points to the missing `language_bg.png` (no code navigates to `/language`). T1a allow-lists it by name.
+  - **Translation rewrite:** includes the unused language keys and a dedicated "no content yet" key for the empty privacy and terms pages (they use `not_found` today), en and ar.
+  - **B-04:** invoice PDF content type and the upload-limit questions (Open backend questions).
+  - The Edit Profile avatar badge in nested `PositionedDirectional` (D-10 note).
+  - The iOS proof picker is gallery only (D-10, Q3).
+  - The D-07 note: a cold start from a push skips `updateToken()` (review in D-11).
+  - **OWNER task:** fill the privacy policy and terms texts in the admin panel before store publishing (both endpoints answer `""` today; an empty privacy policy blocks store review). Claude Code does not change admin panel settings.
+
+### Notes (found during D-14, not fixed)
+- **Row 83 (GIFs, 12.33 MB):** needs gifsicle on the machine. Plan G1 only: `gifsicle -O3` re-pack, kept only if every composited frame, the durations, the loop block, disposal and transparency are identical (T3 already guards the Flutter side).
+- `ReplayImage` restarts `doghree_rider.gif` every 4 s, so its last 1.55 s (frames 80-110) are never shown. Behaviour unchanged.
+- `english.png`, `arabic.png`, `ps_flag.png`, the jpg placeholders and `map_placeholder.png` were left (small saving). `map_placeholder.png` (376x821) is already below 3x of its full-width display.
 
 ## Open backend questions
 

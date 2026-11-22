@@ -1,0 +1,441 @@
+{
+  "batch": "D-14",
+  "rule": "target long side = 4 x largest box at 480 dp; never upscaled; minLongPx = 3x floor",
+  "files": [
+    {
+      "original": "assets/image/dm_offline_icon.png",
+      "originalBytes": 1314634,
+      "originalPx": [
+        994,
+        1179
+      ],
+      "path": "assets/image/dm_offline_icon.webp",
+      "variant": "webp-lossless",
+      "px": [
+        202,
+        240
+      ],
+      "minLongPx": 180
+    },
+    {
+      "original": "assets/image/location_access_icon.png",
+      "originalBytes": 1157791,
+      "originalPx": [
+        1113,
+        1024
+      ],
+      "path": "assets/image/location_access_icon.webp",
+      "variant": "webp-lossless",
+      "px": [
+        280,
+        258
+      ],
+      "minLongPx": 210
+    },
+    {
+      "original": "assets/image/warning.png",
+      "originalBytes": 1136551,
+      "originalPx": [
+        1164,
+        1136
+      ],
+      "path": "assets/image/warning.webp",
+      "variant": "webp-lossless",
+      "px": [
+        200,
+        195
+      ],
+      "minLongPx": 150
+    },
+    {
+      "original": "assets/image/warning_delete_account.png",
+      "originalBytes": 1033655,
+      "originalPx": [
+        1068,
+        959
+      ],
+      "path": "assets/image/warning_delete_account.webp",
+      "variant": "webp-lossless",
+      "px": [
+        717,
+        644
+      ],
+      "minLongPx": 538
+    },
+    {
+      "original": "assets/image/empty_account.png",
+      "originalBytes": 992516,
+      "originalPx": [
+        1254,
+        1254
+      ],
+      "path": "assets/image/empty_account.webp",
+      "variant": "webp-lossless",
+      "px": [
+        330,
+        330
+      ],
+      "minLongPx": 248
+    },
+    {
+      "original": "assets/image/earning_order.png",
+      "originalBytes": 958331,
+      "originalPx": [
+        837,
+        1079
+      ],
+      "path": "assets/image/earning_order.webp",
+      "variant": "webp-lossless",
+      "px": [
+        207,
+        267
+      ],
+      "minLongPx": 201
+    },
+    {
+      "original": "assets/image/balance.png",
+      "originalBytes": 854905,
+      "originalPx": [
+        1136,
+        765
+      ],
+      "path": "assets/image/balance.webp",
+      "variant": "webp-lossless",
+      "px": [
+        487,
+        328
+      ],
+      "minLongPx": 366
+    },
+    {
+      "original": "assets/image/order_preparing.png",
+      "originalBytes": 804728,
+      "originalPx": [
+        1023,
+        959
+      ],
+      "path": "assets/image/order_preparing.webp",
+      "variant": "webp-lossless",
+      "px": [
+        287,
+        269
+      ],
+      "minLongPx": 216
+    },
+    {
+      "original": "assets/image/order_pending.png",
+      "originalBytes": 761799,
+      "originalPx": [
+        918,
+        933
+      ],
+      "path": "assets/image/order_pending.webp",
+      "variant": "webp-lossless",
+      "px": [
+        283,
+        287
+      ],
+      "minLongPx": 216
+    },
+    {
+      "original": "assets/image/store.png",
+      "originalBytes": 376288,
+      "originalPx": [
+        789,
+        752
+      ],
+      "path": "assets/image/store.webp",
+      "variant": "webp-lossless",
+      "px": [
+        256,
+        244
+      ],
+      "minLongPx": 192
+    },
+    {
+      "original": "assets/image/no_internet.png",
+      "originalBytes": 1944926,
+      "originalPx": [
+        1254,
+        1254
+      ],
+      "path": "assets/image/no_internet.webp",
+      "variant": "webp-lossless",
+      "px": [
+        1254,
+        1254
+      ],
+      "minLongPx": 1254
+    },
+    {
+      "original": "assets/image/session_expired.png",
+      "originalBytes": 1240971,
+      "originalPx": [
+        1136,
+        931
+      ],
+      "path": "assets/image/session_expired.webp",
+      "variant": "webp-lossless",
+      "px": [
+        1136,
+        931
+      ],
+      "minLongPx": 1136
+    },
+    {
+      "original": "assets/image/application_submitted.png",
+      "originalBytes": 910312,
+      "originalPx": [
+        1088,
+        875
+      ],
+      "path": "assets/image/application_submitted.webp",
+      "variant": "webp-lossless",
+      "px": [
+        1088,
+        875
+      ],
+      "minLongPx": 1088
+    },
+    {
+      "original": "assets/image/update.png",
+      "originalBytes": 869664,
+      "originalPx": [
+        934,
+        1111
+      ],
+      "path": "assets/image/update.webp",
+      "variant": "webp-lossless",
+      "px": [
+        934,
+        1111
+      ],
+      "minLongPx": 1111
+    },
+    {
+      "original": "assets/image/maintenance.png",
+      "originalBytes": 791445,
+      "originalPx": [
+        1079,
+        917
+      ],
+      "path": "assets/image/maintenance.webp",
+      "variant": "webp-lossless",
+      "px": [
+        1079,
+        917
+      ],
+      "minLongPx": 1079
+    },
+    {
+      "original": "assets/image/earning_error.png",
+      "originalBytes": 1009561,
+      "originalPx": [
+        1124,
+        1124
+      ],
+      "path": "assets/image/earning_error.webp",
+      "variant": "webp-lossless",
+      "px": [
+        973,
+        973
+      ],
+      "minLongPx": 730
+    },
+    {
+      "original": "assets/image/confirmation_order.png",
+      "originalBytes": 888590,
+      "originalPx": [
+        969,
+        935
+      ],
+      "path": "assets/image/confirmation_order.webp",
+      "variant": "webp-lossless",
+      "px": [
+        768,
+        741
+      ],
+      "minLongPx": 576
+    },
+    {
+      "original": "assets/image/doghree_coins.png",
+      "originalBytes": 851224,
+      "originalPx": [
+        942,
+        1008
+      ],
+      "path": "assets/image/doghree_coins.webp",
+      "variant": "webp-lossless",
+      "px": [
+        455,
+        487
+      ],
+      "minLongPx": 366
+    },
+    {
+      "original": "assets/image/doghree_parcels.png",
+      "originalBytes": 738566,
+      "originalPx": [
+        953,
+        828
+      ],
+      "path": "assets/image/doghree_parcels.webp",
+      "variant": "webp-lossless",
+      "px": [
+        487,
+        423
+      ],
+      "minLongPx": 366
+    },
+    {
+      "original": "assets/image/privacy_terms.png",
+      "originalBytes": 873452,
+      "originalPx": [
+        821,
+        920
+      ],
+      "path": "assets/image/privacy_terms.webp",
+      "variant": "webp-lossless",
+      "px": [
+        821,
+        920
+      ],
+      "minLongPx": 920
+    },
+    {
+      "original": "assets/image/no_order.png",
+      "originalBytes": 799630,
+      "originalPx": [
+        981,
+        1075
+      ],
+      "path": "assets/image/no_order.webp",
+      "variant": "webp-lossless",
+      "px": [
+        981,
+        1075
+      ],
+      "minLongPx": 1075
+    },
+    {
+      "original": "assets/image/change_password.png",
+      "originalBytes": 677067,
+      "originalPx": [
+        826,
+        945
+      ],
+      "path": "assets/image/change_password.webp",
+      "variant": "webp-lossless",
+      "px": [
+        826,
+        945
+      ],
+      "minLongPx": 945
+    },
+    {
+      "original": "assets/image/no_conversation.png",
+      "originalBytes": 675855,
+      "originalPx": [
+        883,
+        720
+      ],
+      "path": "assets/image/no_conversation.webp",
+      "variant": "webp-lossless",
+      "px": [
+        883,
+        720
+      ],
+      "minLongPx": 883
+    },
+    {
+      "original": "assets/image/no_transaction.png",
+      "originalBytes": 647845,
+      "originalPx": [
+        710,
+        883
+      ],
+      "path": "assets/image/no_transaction.webp",
+      "variant": "webp-lossless",
+      "px": [
+        710,
+        883
+      ],
+      "minLongPx": 883
+    },
+    {
+      "original": "assets/image/no_notification.png",
+      "originalBytes": 382765,
+      "originalPx": [
+        743,
+        869
+      ],
+      "path": "assets/image/no_notification.webp",
+      "variant": "webp-lossless",
+      "px": [
+        743,
+        869
+      ],
+      "minLongPx": 869
+    },
+    {
+      "original": "assets/image/your_marker.png",
+      "originalBytes": 936342,
+      "originalPx": [
+        907,
+        914
+      ],
+      "path": "assets/image/your_marker.png",
+      "variant": "png-resized",
+      "px": [
+        160,
+        161
+      ],
+      "minLongPx": 121
+    },
+    {
+      "original": "assets/image/restaurant_marker.png",
+      "originalBytes": 650181,
+      "originalPx": [
+        681,
+        1013
+      ],
+      "path": "assets/image/restaurant_marker.png",
+      "variant": "png-resized",
+      "px": [
+        160,
+        238
+      ],
+      "minLongPx": 179
+    },
+    {
+      "original": "assets/image/customer_marker.png",
+      "originalBytes": 599247,
+      "originalPx": [
+        703,
+        1068
+      ],
+      "path": "assets/image/customer_marker.png",
+      "variant": "png-resized",
+      "px": [
+        160,
+        243
+      ],
+      "minLongPx": 183
+    },
+    {
+      "original": "assets/image/user_marker.png",
+      "originalBytes": 566024,
+      "originalPx": [
+        662,
+        1045
+      ],
+      "path": "assets/image/user_marker.png",
+      "variant": "png-resized",
+      "px": [
+        160,
+        253
+      ],
+      "minLongPx": 190
+    }
+  ]
+}
