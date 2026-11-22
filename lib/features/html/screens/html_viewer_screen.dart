@@ -58,8 +58,8 @@ class _HtmlViewerScreenState extends State<HtmlViewerScreen> {
                           CustomImageWidget(
                             image: ManagerAssets.privacyTermsImage,
                             fit: BoxFit.cover,
-                            width: 50,
-                            height: 50,
+                            width: Dimensions.w50,
+                            height: Dimensions.w50,
                           ),
                           SizedBox(width: Dimensions.w12),
                           Expanded(
