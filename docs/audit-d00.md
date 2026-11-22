@@ -88,6 +88,9 @@
 | 76 | lib/features/language/screens/language_screen.dart:29 | `ManagerAssets.languageBackground` points to a missing file; no code navigates to `/language` | A broken image if the route is ever opened | minor | device | open |
 | 77 | lib/features/chat/screens/chat_screen.dart:49 | `widget.notificationBody!` | A crash only if a route builds ChatScreen without a body (not seen) | minor | unit | open |
 | 78 | Conversations, Chat, Notifications, HTML pages | A failed first load leaves an endless spinner (no Retry state) | Offline or server error: the rider waits forever | bad UX | device | D-13 |
+| 79 | lib/features/chat/controllers/chat_controller.dart:73-89 | `getConversationList` cleared the list before every load, then page 2 read the cleared list with `!` | Scrolling to page 2, a failed refresh or a push left an endless spinner; page 2 threw a Null check error | crash | unit | D-13 |
+| 80 | lib/features/html/controllers/html_controller.dart:11-22 | Any String body was shown as the page. A JSON string and raw HTML both arrive as a String | A captive Wi-Fi login page was shown as the privacy policy | wrong data | unit | D-13 |
+| 81 | lib/features/forgot_password/domain/repositories/forgot_password_repository.dart:82-98 | `verifyFirebaseOtp` used `handleError: true` and dropped the status; the screen showed nothing on failure | A 200 with an HTML body or an exception gave no message at all; the rate-limit timer never started | bad UX | unit | D-13 |
 
 ## Proposed batches
 
@@ -104,7 +107,10 @@
 | D-09 | fix/d-09-uploads-profile | Upload types and sizes, profile save, delivery proof policy | 45, 46, 47, 48, 49 |
 | D-10 | fix/d-10-cleanup | DI duplicates, dead code, stray files, Dimensions in nav | 40, 55, 56, 57, 58, 60 |
 | D-12 | fix/d-12-static-checks | Safety net, start-up guards, failure texts, silent Home loads, crash patterns, unused assets | 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75 |
+| D-13 | fix/d-13-retry-states | Retry states after a failed first load, conversation paging, HTML page shape, Firebase OTP message | 78, 79, 80, 81 |
 
 Rows 9, 42 and 49 depend on backend answers (docs/progress.md, Open backend questions).
 
 Rows 61-78 were added by the D-12 static sweep (2026-11-21, read at cbe44a1). Rows 76 and 77 are open notes; row 78 is planned for D-13.
+
+Rows 79-81 were found while planning D-13 (2026-11-22, read at 48f13bf) and fixed in D-13 with the owner's agreement.

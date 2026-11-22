@@ -16,7 +16,7 @@
 | D-09 | fix/d-09-uploads-profile | Audit rows 45, 46, 47, 48, 49 | merged, device tests pending (D-11) | 2026-11-21 |
 | D-10 | fix/d-10-cleanup | Audit rows 40, 55, 56, 57, 58, 60 + D-10 candidates and owner decisions Q1-Q7 | merged, device tests pending (D-11) | 2026-11-21 |
 | D-12 | fix/d-12-static-checks | Audit rows 61-75 (static sweep: safety net, start-up, failure texts, crash patterns, unused assets) | merged, device tests pending (D-11) | 2026-11-22 |
-| D-13 | (planned) | Audit row 78: Retry states for Conversations, Chat, Notifications and HTML pages | planned | |
+| D-13 | fix/d-13-retry-states | Audit rows 78, 79, 80, 81 (Retry states, conversation paging, HTML page shape, Firebase OTP message) | implemented on the branch, not merged; device tests pending (D-11) | |
 | D-11 | (no code branch) | Final device pass: every pending backlog section, the smoke pass and the end-to-end order test (`docs/device-test-backlog.md`) | planned (after D-10) | |
 
 > **Branch state.** When D-03 started, `development` was level with `origin/development` (265bcfa): D-01 and D-02 were already pushed. The earlier note that D-03 would start ahead of origin was wrong. Device tests are deferred to D-11 (see CLAUDE.md, Batch workflow), and no release build is made from `development` until D-11 passes.
@@ -641,10 +641,10 @@
 - **Device:** **not run.** Steps in `docs/device-test-backlog.md` (D-12) for D-11.
 - **Status:** merged into `development` (2026-11-22), device tests pending (D-11). Rows 61-75 are closed on the app side.
 - **Still open after D-12:**
-  - **D-13:** Retry states for Conversations, Chat, Notifications and HTML pages (row 78).
+  - **D-13:** Retry states for Conversations, Chat, Notifications and HTML pages (row 78): done in D-13.
   - **Image and GIF size batch:** measured at d72e23e: images 25.03 MB, GIFs 12.33 MB, native libraries 19.76 MB, APK 62.0 MB (Part B below).
   - **Translation rewrite:** includes the unused language keys (787 en / 787 ar; 325 never appear as a literal, some are server values passed to `.tr`).
-  - `verifyFirebaseOtp` keeps `handleError: true` while the controller shows its own message: a possible double message.
+  - `verifyFirebaseOtp`: closed by D-13 (row 81; no double message, but two silent failure paths).
   - **C11 (row 76):** the language screen's missing image (`languageBackground`).
   - Force-unwraps on config fields (`toggleDmRegistration!`, `demo!`).
   - **B-04:** invoice PDF content type and the upload-limit questions (Open backend questions).
@@ -672,6 +672,53 @@
 - Language keys: 787 en / 787 ar; 325 never appear as a literal (some are server values passed to `.tr`). No list made (owner answer Q7).
 - `android/$null` is a stray untracked file (a PowerShell redirect). Not tracked, not touched.
 - The D-10 note about the phone prefix sizes and fixed `+970` in `CustomTextFieldWidget` is closed by D-12 (N2).
+
+### D-13 (2026-11-22)
+- **Scope:** audit row 78 (endless spinners after a failed first load on Conversations, Chat, Notifications and the privacy and terms pages), plus rows 79, 80 and 81, approved with the plan. Owner answers: fix `verifyFirebaseOtp` (Q1); convert only the sizes in the blocks D-13 edits (Q2); an empty page uses the existing empty state (Q3); Material icons, no asset (Q4); new rows 79-81 (Q5).
+- **Shared pieces:**
+  - `LoadFailures.fromStatus` (`lib/common/models/load_failure.dart`): 1 is no internet, a 401 shows nothing (ApiChecker's session sheet owns it), anything else is a server problem.
+  - `LoadFailedWidget` (`lib/common/widgets/load_failed_widget.dart`): one compact state inside the screen with an icon, the existing keys (`no_connection`, `please_check_your_internet_and_try_again`, `server_problem`, `server_problem_try_again`, `retry`) and a Retry button. A busy guard sends one request per tap. No toast and no connectivity pre-check. **No new strings.**
+  - `DataLoad<T>` (`lib/common/models/data_load.dart`): one object plus its status code, the single-object counterpart of `ListLoad`.
+  - First loads are silent (`handleError: false` plus `ApiChecker.checkSession`), so the failure state replaces the toast. Retry clears the state, so the spinner shows while it runs.
+- **Commits:**
+  - 5a1a0cb `LoadFailure` and `LoadFailedWidget`.
+  - 84174c5 Conversations and Chat (rows 78, 79). The conversation list is no longer cleared before a load: a failed refresh keeps it, and page 2 appends. Messages read the rider profile null-safe. A failed send keeps the typed text. `PaginatedListViewWidget` forgets a failed page (onPaginate returns false or throws), so the next scroll asks again; no automatic retry, none in flight. Conversations pull-to-refresh now waits for the load. The conversation avatar 55x55 (`Dimensions.w55`) and empty-state height (`Dimensions.h500`) moved with this block.
+  - 72f3c6c Notifications and the privacy and terms pages (rows 78, 80). Notifications: the first open shows the failure state instead of one toast plus a spinner (`announce` dropped there). HTML: only a JSON string is a page. An empty body, `""` or `null` is an empty page (success, shown with `EmptyStateWidget` and the existing key `not_found`). Raw HTML is a server problem. The last good text of each page is kept when a reload fails.
+  - cfc5896 `verifyFirebaseOtp` works like `verifyToken` (row 81): `handleError: false`, status code in `ResponseModel`, and the screen runs `_handleRateLimit` and shows one message on every failure.
+  - 8e03b3c the privacy and terms header image 50x50 uses `Dimensions.w50`.
+- **verifyFirebaseOtp findings:** there was **no double message**. ApiChecker showed one toast for a non-200 and the screen showed nothing. The real defects were zero messages for a 200 with an HTML body or an exception, and no rate-limit timer (the status was lost).
+- **Observed shape:** `GET /api/v1/privacy-policy` and `/api/v1/terms-and-conditions` (public, one read-only request each, 2026-11-22) answered 200, `application/json`, 2 bytes: `bodyString` was `""`. Recorded in `docs/api-contract.md`.
+- **Tests:** 36 new, 453 total, 453 passed, 0 failed (baseline before D-13: 417). Analyze: 0 issues before every commit.
+  - Files: `load_failed_widget_test` 9, `paginated_list_retry_test` 3, `chat_retry_test` 11, `notification_html_retry_test` 9, `html_text_shape_test` 3, `firebase_otp_message_test` 1. Helper: `test/helpers/pump_phone.dart`.
+  - **Fail on the old code by behaviour** (a temporary `git worktree` at `development` 48f13bf with the new tests copied in, removed afterwards):
+
+    | Test | Old-code result |
+    |---|---|
+    | P1, P2 (failed page asked again) | Expected [2, 2], Actual [2, 3] |
+    | R1, R2, R3 (silent first loads) | `handleError` Expected false, Actual true |
+    | R4 (failed refresh keeps the list) | Expected not null, Actual null |
+    | R5 (page 2 appends) | Null check operator used on a null value |
+    | R6 (captive portal page) | Expected null, Actual the portal HTML |
+    | W1, W4, W5, W6 (offline first load) | 0 widgets with text `no_connection` (spinner) |
+    | W2 (server error) | 0 widgets with text `server_problem` |
+    | W3, W8 (Retry) | 0 widgets with text `retry` |
+    | W7 (empty page) | 0 widgets with text `not_found` (blank page) |
+    | S1 (failed send keeps text) | 0 widgets with text of the typed message (cleared) |
+    | V1 (Firebase OTP) | `handleError` Expected false, Actual true |
+
+  - **Fail on the old code at compile time only** (new API): `load_failed_widget_test` (L1-L9), `html_text_shape_test` (H4-H6).
+  - **Guards** (pass on the old code): G1 (a 401 shows no failure state), G3 (search keeps its ApiChecker message), P3 (a loaded page moves on, no automatic retry), H1 (empty body), H2 (JSON `""`), H3 (JSON string).
+- **Device:** **not run.** Steps in `docs/device-test-backlog.md` (D-13) for D-11.
+- **Status:** implemented on `fix/d-13-retry-states`, not merged. Device tests pending (D-11).
+
+### Notes (found during D-13, not fixed)
+- **Admin panel:** the privacy policy and the terms are empty on the server (`""`). The app now shows an empty state, but the texts must be filled in the admin panel; an empty privacy policy blocks store publishing. This is an admin-panel task for the owner.
+- **Raw sizes left (Q2):** `chat_screen` app bar avatar 40x40, composer shadow (5, 2, -3), attachment preview block (100, 28, 20, 1.5, 12); `notification_screen` 2 and Divider 1. They need a visual check.
+- **No generic "no data" key:** the empty page uses `not_found` ("Not Found" / "لم يتم العثور عليه"). A dedicated key would read better in a later translation pass.
+- A failed conversation search shows "No conversation found" under its one toast.
+- Chat opened from a push with no `conversation` in the response and no `user`: the app bar reads `conversation!.receiver!` (not seen; same family as C12).
+- `SplashFailure` and `LoadFailure` overlap; they could be merged later.
+- `NoInternetScreen` (splash, My Orders, Order details) still checks connectivity before Retry and can show its own toast; unchanged in D-13.
 
 ## Open backend questions
 
