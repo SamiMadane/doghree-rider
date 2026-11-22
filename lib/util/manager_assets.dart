@@ -14,33 +14,33 @@ class ManagerAssets {
   static const String logoDoghreeDark = '$imagePath/logo_doghree_dark.png';
   static const String splashAnimLight = '$imagePath/splash_anim_light.png';
   static const String splashanimDark = '$imagePath/splash_anim_dark.png';
-  static const String doghreeCoins = '$imagePath/doghree_coins.png';
+  static const String doghreeCoins = '$imagePath/doghree_coins.webp';
   static const String english = '$imagePath/english.png';
   static const String arabic = '$imagePath/arabic.png';
 
   static const String psFlag = '$imagePath/ps_flag.png';
-  static const String earningErrorImage = '$imagePath/earning_error.png';
+  static const String earningErrorImage = '$imagePath/earning_error.webp';
 
-  static const String changePasswordImage = '$imagePath/change_password.png';
+  static const String changePasswordImage = '$imagePath/change_password.webp';
   static const String confirmationOrderImage =
-      '$imagePath/confirmation_order.png';
-  static const String noTransactionImage = '$imagePath/no_transaction.png';
-  static const String noConversationImage = '$imagePath/no_conversation.png';
-  static const String doghreeParcelsImage = '$imagePath/doghree_parcels.png';
+      '$imagePath/confirmation_order.webp';
+  static const String noTransactionImage = '$imagePath/no_transaction.webp';
+  static const String noConversationImage = '$imagePath/no_conversation.webp';
+  static const String doghreeParcelsImage = '$imagePath/doghree_parcels.webp';
 
-  static const String noNotificationImage = '$imagePath/no_notification.png';
-  static const String noOrderImage = '$imagePath/no_order.png';
-  static const String privacyTermsImage = '$imagePath/privacy_terms.png';
+  static const String noNotificationImage = '$imagePath/no_notification.webp';
+  static const String noOrderImage = '$imagePath/no_order.webp';
+  static const String privacyTermsImage = '$imagePath/privacy_terms.webp';
 
   static const String restaurantMarker = '$imagePath/restaurant_marker.png';
 
-  static const String warning = '$imagePath/warning.png';
+  static const String warning = '$imagePath/warning.webp';
   static const String warningDeleteAccount =
-      '$imagePath/warning_delete_account.png';
+      '$imagePath/warning_delete_account.webp';
   static const String placeholder = '$imagePath/placeholder.jpg';
 
-  static const String update = '$imagePath/update.png';
-  static const String maintenance = '$imagePath/maintenance.png';
+  static const String update = '$imagePath/update.webp';
+  static const String maintenance = '$imagePath/maintenance.webp';
   static const String notificationPlaceholder =
       '$imagePath/notification_placeholder.jpg';
 
@@ -51,23 +51,23 @@ class ManagerAssets {
 
   static const String languageBackground = '$imagePath/language_bg.png';
 
-  static const String dmOfflineIcon = '$imagePath/dm_offline_icon.png';
+  static const String dmOfflineIcon = '$imagePath/dm_offline_icon.webp';
   static const String locationAccessIcon =
-      '$imagePath/location_access_icon.png';
+      '$imagePath/location_access_icon.webp';
 
   static const String applicationSubmittedImage =
-      '$imagePath/application_submitted.png';
+      '$imagePath/application_submitted.webp';
 
-  static const String storeImage = '$imagePath/store.png';
-  static const String balanceImage = '$imagePath/balance.png';
+  static const String storeImage = '$imagePath/store.webp';
+  static const String balanceImage = '$imagePath/balance.webp';
   static const String mapPlaceholderImage = '$imagePath/map_placeholder.png';
-  static const String orderPendingImage = '$imagePath/order_pending.png';
-  static const String orderPreparingImage = '$imagePath/order_preparing.png';
-  static const String earningOrderImage = '$imagePath/earning_order.png';
+  static const String orderPendingImage = '$imagePath/order_pending.webp';
+  static const String orderPreparingImage = '$imagePath/order_preparing.webp';
+  static const String earningOrderImage = '$imagePath/earning_order.webp';
 
-  static const String emptyAccountImage = '$imagePath/empty_account.png';
-  static const String sessionExpiredImage = '$imagePath/session_expired.png';
-  static const String noInternetImage = '$imagePath/no_internet.png';
+  static const String emptyAccountImage = '$imagePath/empty_account.webp';
+  static const String sessionExpiredImage = '$imagePath/session_expired.webp';
+  static const String noInternetImage = '$imagePath/no_internet.webp';
 
   // icons
   static const String arrowBackIcon = '$iconPath/arrow_left.svg';
