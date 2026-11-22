@@ -93,6 +93,15 @@
 | 81 | lib/features/forgot_password/domain/repositories/forgot_password_repository.dart:82-98 | `verifyFirebaseOtp` used `handleError: true` and dropped the status; the screen showed nothing on failure | A 200 with an HTML body or an exception gave no message at all; the rate-limit timer never started | bad UX | unit | D-13 |
 | 82 | assets/image (25 illustrations, 4 map markers) | Illustration and marker PNGs far above their displayed size (up to 1254 px for a 50-95 dp box), 24.27 MB in total | APK size (images 25.03 MB of a 62.0 MB APK) | minor | unit + device | D-14 |
 | 83 | assets/animations/doghree_rider.gif, delivered_success.gif | GIFs not optimized (9.1 MB and 3.5 MB) | APK size (GIFs 12.33 MB) | minor | unit + device | open |
+| 84 | lib/ (17 call sites, for example forgot_password/screens/verification_screen.dart:259, helper/validate_check.dart:25) | 17 keys referenced with `.tr` existed in neither language file | The rider saw raw key names, for example `resend` on the OTP button and `this_field_is_required` in form errors | bad UX | unit | D-15 |
+| 85 | order/widgets/history_order_widget.dart:144, chat/screens/conversation_screen.dart:217,264 | No key for the server values `refund_request_canceled` (order status) and `admin` (chat type) | The raw server value was shown | minor | unit | D-15 |
+| 86 | assets/language/ar.json, en.json | Literal or wrong Arabic (for example «التقطت», «يكتب», «قسط», «طلب النظام», «قبل دقائق» after a number) and English typos and grammar | Unprofessional or misleading texts; Arabic time and distance read backwards | bad UX | unit + device | D-15 |
+| 87 | lib/helper/location_permission_manager.dart:64-65 | The system location dialog is requested before any in-app disclosure; the in-app sheets come only after a denial | Google Play prominent-disclosure rule (disclosure must come first); pre-store blocker | bad UX | device | open |
+| 88 | ios/Runner/Info.plist:28-29 | Only `NSLocationWhenInUseUsageDescription`, English only, about restaurant coverage; no Always string | App Store review of location use; Arabic riders see English | bad UX | device | open |
+| 89 | lib/features/forgot_password/screens/verification_screen.dart:168 | With config `demo: true` the OTP screen shows «use 1234 as OTP» instead of the normal line | A real rider sees demo text if demo mode is on in production | wrong data | device | open (owner: demo off in production) |
+| 90 | lib/helper/notification_helper.dart:366,367,382,384; lib/helper/order_ringing.dart:54,56-57; chat_screen.dart:468; slider_button_widget.dart:154; dm_registration_step2.dart:210; api_client.dart:24 | 10 English-only hard-coded UI strings | An Arabic rider sees English (mostly the background ringing notification) | minor | device | open |
+| 91 | lib/features/auth/widgets/dm_registration_step2.dart:212 | The ID-number label is built as type + `number`, so Arabic cannot say «رقم جواز السفر» | Arabic label reads «جواز السفر (الرقم)» (D-15 stopgap) | minor | unit | open |
+| 92 | lib/features/profile/controllers/profile_controller.dart (location timer) | The disclosure says location is used even when the app is closed; not proven after the rider swipes the app away | The disclosure may not match the real behaviour | minor | device | open (D-11 check) |
 
 ## Proposed batches
 
@@ -111,6 +120,7 @@
 | D-12 | fix/d-12-static-checks | Safety net, start-up guards, failure texts, silent Home loads, crash patterns, unused assets | 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75 |
 | D-13 | fix/d-13-retry-states | Retry states after a failed first load, conversation paging, HTML page shape, Firebase OTP message | 78, 79, 80, 81 |
 | D-14 | fix/d-14-assets-size | Image asset size (offline lossless WebP, marker resize) | 82 (83 open) |
+| D-15 | fix/d-15-translations | Professional Arabic and English texts, missing keys, location disclosure wording | 84, 85, 86 (87-92 open) |
 
 Rows 9, 42 and 49 depend on backend answers (docs/progress.md, Open backend questions).
 
@@ -119,3 +129,5 @@ Rows 61-78 were added by the D-12 static sweep (2026-11-21, read at cbe44a1). Ro
 Rows 79-81 were found while planning D-13 (2026-11-22, read at 48f13bf) and fixed in D-13 with the owner's agreement.
 
 Rows 82 and 83 were added for D-14 (2026-11-22, read at 6ea78fe) with the owner's agreement. Row 82 is fixed in D-14; row 83 waits for gifsicle (lossless re-pack only).
+
+Rows 84-92 were found while planning D-15 (2026-11-22, read at 3cb1775). Rows 84-86 are fixed in D-15 (language files only). Rows 87, 88 and 92 are on the pre-store checklist (docs/progress.md); rows 89-91 are open notes.

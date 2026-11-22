@@ -285,6 +285,31 @@ Every screen that shows a converted image (17 steps). Each one once in light mod
 
 The smoke pass applies: step 1 shows a start-up screen, and steps 6-11 show order and earnings screens. No order, money or start-up logic changed.
 
+## D-15: translations (Arabic and English wording, missing keys, location disclosure)
+
+- **Branch:** fix/d-15-translations
+- **Branch commits:** 29d1fa8 (and the docs commit); not merged yet
+- **Status:** pending (D-11)
+
+Wording only: the screens and behaviour are the same as before.
+
+| # | Steps | Expected |
+|---|---|---|
+| 1 | Switch to Arabic. Open every main screen: Home, Order requests, My orders, an order's details, Profile, Settings, Wallet, Withdrawals, My earnings, Notifications, Conversations, a chat | New words (for example «متاح / غير متاح», «الزبون», «منتجات», «الإكراميات»), correct RTL layout, no raw key names |
+| 2 | Switch to English and repeat step 1 | Sentence case, "Rider", no raw key names |
+| 3 | On the smallest phone, in both languages: history status chips, password-rule chips (registration), earnings filter chips, bottom tabs, the order-request sheet title, the go-offline, logout, cancel-order and delete-account dialogs and their buttons | No overflow, no cut text. Longest new chips: «تم الاسترداد», «فشل الطلب», «تم التأكيد», "Ready for handover" |
+| 4 | Concatenated keys in context: an order request card (time «5 د» / «3 س» / «2 يوم» and distance «3.25 كم»); order details («3 منتجات», street, house and floor line, add-ons and variations, charge payer on a parcel); profile card days; sign-in «انضم بصفتك مندوب توصيل»; registration terms line and ID label «جواز السفر (الرقم)»; chat list with a deleted user «الزبون (حساب محذوف)»; a withdrawal sheet «إلى حساب: …» | Each sentence reads naturally in the right order, in Arabic and English |
+| 5 | Location disclosure: go online with location denied once (sheet A), then denied permanently (sheet B), then on Android "while using the app" only (sheet C). Read each sheet in both languages | The texts say what is collected, while online, even when the app is closed or not in use, and why. Sheet B fits or scrolls on the smallest phone |
+| 6 | With the rider online, put the app in the background, then swipe it away; check whether location updates keep arriving (server or admin map) | Write down the result (pre-store item S-3) |
+| 7 | Settings → Background notification, in both states. Then on the phone's own battery screen for the app, write down the exact option names | Step 3 says `Select "Optimized"` / `اختر "مُحسَّن"`; compare with the real option name on this phone |
+| 8 | Screens of the new keys: forgot password → OTP screen (the «إعادة الإرسال (00:30)» / "Resend (00:30)" button); an invalid number in forgot password; registration with empty and short fields (for example «هذا الحقل مطلوب», «يجب أن تتكون كلمة المرور من 8 أحرف على الأقل»); a payout account name with digits; long-press the earnings button on the Wallet app bar; an order with status refund_request_canceled if the backend can set one | Translated texts, never a raw key |
+
+**Device only:** steps 1-8 (layout, RTL, overflow, the real battery option name, background location after swipe-away).
+
+**Unit tests only:** valid JSON, no BOM, no duplicate keys, same key set and placeholders, no empty values, every static `.tr` key exists, composed-key spacing and word order, glossary, disclosure wording (T1-T8).
+
+The smoke pass applies (orders, money texts changed): accept an order, change its status, deliver with code and photo proof, open earnings.
+
 ## Combined smoke pass (once, in D-11)
 
 | # | Step | Expected |
