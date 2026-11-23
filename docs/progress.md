@@ -33,6 +33,20 @@
 | S-4 | Demo mode must be off in production: with config `demo: true` the forgot-password OTP screen shows "use 1234 as OTP" (`verification_screen.dart:168`). The owner confirms with the backend developer. | 89 | open (owner) |
 | S-5 | Privacy policy and terms texts must be filled in the admin panel (D-14 owner task). | - | open (owner) |
 
+## Release build notes
+
+Decisions from the read-only size report (2026-11-23).
+
+- **Store build:** build the store release with `flutter build appbundle` (all 3 ABIs). Never use `--target-platform android-arm64` for the store release: it excludes 32-bit (armeabi-v7a) phones.
+- **Sizes:** the D-14 measurement of 45.3 MB was an arm64-only APK. Expected download per device from an AAB: about 38.6 MB (arm64); about 33 MB plus the v7a `libapp` (armeabi-v7a).
+- **Distribution:** Play Store and App Store; APK only for testing. No Gradle ABI change; x86_64 is not needed in release.
+- **Notes only, no action:**
+  - Four generator PNGs (143 KB) are bundled because `pubspec.yaml` lists whole asset folders.
+  - `country_code_picker` translation JSONs (409 KB) are never loaded; package cost.
+  - `notification.wav` (369 KB) is used; an OGG version would need a device sound check.
+  - The last 1.55 s of `doghree_rider.gif` are never shown (4 s replay).
+  - `extractNativeLibs="true"` in the manifest; not changed.
+
 ## Batch log
 
 <!-- One section per batch: date, what changed, tests (new / total / failing on old code), analyze count, device steps and result. -->
