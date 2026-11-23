@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:doghree_rider/common/widgets/custom_button_widget.dart';
 import 'package:doghree_rider/util/dimensions.dart';
 import 'package:doghree_rider/util/styles.dart';
@@ -91,7 +90,11 @@ class ConfirmationBottomSheet extends StatelessWidget {
                     isBorder: true,
                     borderColor: cs.onSurface,
                     textColor: cs.onSurface,
-                    onPressed: onCancel ?? Get.back,
+                    // Without onCancel, close exactly this sheet. A bare
+                    // `Get.back` tear-off is a generic method; passed to the
+                    // `Function?` onPressed it is never instantiated and the
+                    // button's cast throws in build (audit row 93, D-16).
+                    onPressed: onCancel ?? () => Navigator.of(context).pop(),
                   ),
                 ),
                 SizedBox(width: Dimensions.w10),
