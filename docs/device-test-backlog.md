@@ -288,7 +288,7 @@ The smoke pass applies: step 1 shows a start-up screen, and steps 6-11 show orde
 ## D-15: translations (Arabic and English wording, missing keys, location disclosure)
 
 - **Branch:** fix/d-15-translations
-- **Branch commits:** 29d1fa8 (and the docs commit); not merged yet
+- **Branch commits:** 29d1fa8 (docs 696e8a5, eaca9a3 and the closing commit); merged into `development` 2026-11-23
 - **Status:** pending (D-11)
 
 Wording only: the screens and behaviour are the same as before.

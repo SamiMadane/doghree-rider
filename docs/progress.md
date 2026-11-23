@@ -18,7 +18,7 @@
 | D-12 | fix/d-12-static-checks | Audit rows 61-75 (static sweep: safety net, start-up, failure texts, crash patterns, unused assets) | merged, device tests pending (D-11) | 2026-11-22 |
 | D-13 | fix/d-13-retry-states | Audit rows 78, 79, 80, 81 (Retry states, conversation paging, HTML page shape, Firebase OTP message) | merged, device tests pending (D-11) | 2026-11-22 |
 | D-14 | fix/d-14-assets-size | Audit row 82 (illustration and marker images); row 83 (GIFs) left open | merged, device tests pending (D-11) | 2026-11-22 |
-| D-15 | fix/d-15-translations | Audit rows 84, 85, 86 (translations, missing keys, location disclosure wording); rows 87-92 open | committed on branch, not merged; device tests pending (D-11) | |
+| D-15 | fix/d-15-translations | Audit rows 84, 85, 86 (translations, missing keys, location disclosure wording); rows 87-92 open | merged, device tests pending (D-11) | 2026-11-23 |
 | D-11 | (no code branch) | Final device pass: every pending backlog section, the smoke pass and the end-to-end order test (`docs/device-test-backlog.md`) | planned (after D-10) | |
 
 > **Branch state.** When D-03 started, `development` was level with `origin/development` (265bcfa): D-01 and D-02 were already pushed. The earlier note that D-03 would start ahead of origin was wrong. Device tests are deferred to D-11 (see CLAUDE.md, Batch workflow), and no release build is made from `development` until D-11 passes.
@@ -798,12 +798,12 @@ Decisions from the read-only size report (2026-11-23).
 - **Owner answers (v1 questions):** Arabic time units after the number «د / س / يوم» (Q1); `km_away` «كم» (Q2); ID label «جواز السفر (الرقم)» for now (Q3, code fix later, row 91); `otp_verification` neutral «التحقق من الرمز» (Q4); `select_optimized` `Select "Optimized"` / `اختر "مُحسَّن"` (Q5: the sheet's steps are for turning background running off; turning it on uses the Android system dialog); `embedding_rate` «نسبة الإنجاز» / "Completion rate" (unused); deleted chat user «(حساب محذوف)» / "(deleted account)", rendered «الزبون (حساب محذوف)», no code fix; each file keeps its own key order (en and ar were already in different orders).
 - **Changes:** 310 existing values reworded (233 en, 197 ar). 19 keys appended at the end of both files in the same order: the 17 keys referenced with `.tr` but missing (row 84) and `refund_request_canceled`, `admin` (row 85). 808 keys per file. Placeholders, `\n`, leading and trailing spaces unchanged; the only colon change is `reminder` («:تذكير» → «تذكير:», approved). UTF-8 without BOM; index LF and working copy CRLF, as before.
 - **Location disclosure wording (owner-approved):** the shown keys on the three permission sheets (`location_required_to_go_online`, `you_need_to_allow_location_to_receive_orders`, `will_track_your_location_in_background`, `you_will_receive_orders_based_on_your_location`, `for_better_experience_allow_always`) now say what is collected, when (while online, even when the app is closed or not in use) and why (nearby orders, tracking deliveries). The order of events is a code issue: see the pre-store checklist (S-1).
-- **Commits:** 29d1fa8 translation files and test; docs in the following commit.
+- **Commits:** 29d1fa8 translation files and test; 696e8a5 docs; eaca9a3 release build notes; the closing commit.
 - **Tests:** 8 new (`test/assets/translations_test.dart`), 497 total, 497 passed, 0 failed (baseline before D-15: 489). Analyze: 0 issues. No allowlist.
   - **Fail on the old files** (run in a temporary worktree at 3cb1775 with only the new test copied in, then removed): T5 static `.tr` coverage (en missing 17 keys), T6 composed keys (`resend`, `can_not_launch`, `admin` missing; Arabic "ago" values), T7 glossary (for example `online` «متصل»), T8 disclosure wording.
   - **Guards** (pass on the old files too): T1 JSON, no BOM, no duplicate keys; T2 same key set; T3 same placeholders; T4 no empty values.
 - **Device:** **not run.** Steps in `docs/device-test-backlog.md` (D-15) for D-11.
-- **Status:** committed on `fix/d-15-translations`, not merged yet; device tests pending (D-11).
+- **Status:** merged into `development` (2026-11-23), device tests pending (D-11). Rows 84-86 are closed on the app side; rows 87-92, the PRE-STORE CHECKLIST (S-1 to S-5) and the owner tasks (privacy and terms texts in the admin panel, demo mode off in production) stay open.
 
 ### Notes (found during D-15, not fixed)
 - **Pre-store items** S-1 to S-4 (rows 87, 88, 92, 89): see the PRE-STORE CHECKLIST near the top of this file. Play and App Store review require a clear location disclosure.
