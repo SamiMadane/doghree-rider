@@ -19,7 +19,7 @@
 | D-13 | fix/d-13-retry-states | Audit rows 78, 79, 80, 81 (Retry states, conversation paging, HTML page shape, Firebase OTP message) | merged, device tests pending (D-11) | 2026-11-22 |
 | D-14 | fix/d-14-assets-size | Audit row 82 (illustration and marker images); row 83 (GIFs) left open | merged, device tests pending (D-11) | 2026-11-22 |
 | D-15 | fix/d-15-translations | Audit rows 84, 85, 86 (translations, missing keys, location disclosure wording); rows 87-92 open | merged, device tests pending (D-11) | 2026-11-23 |
-| D-16 | fix/d-16-request-card-paths | Audit rows 93-100 (confirm sheet Cancel, Order Details failure states, card dates and JSON shapes, ignore by id, deleted item line, push sheet lines, empty phone) | implemented, not merged; device tests pending (D-11) | |
+| D-16 | fix/d-16-request-card-paths | Audit rows 93-100 (confirm sheet Cancel, Order Details failure states, card dates and JSON shapes, ignore by id, deleted item line, push sheet lines, empty phone) | merged, device tests pending (D-11) | 2026-11-24 |
 | D-11 | (no code branch) | Final device pass: every pending backlog section, the smoke pass and the end-to-end order test (`docs/device-test-backlog.md`) | planned (after D-10) | |
 
 > **Branch state.** When D-03 started, `development` was level with `origin/development` (265bcfa): D-01 and D-02 were already pushed. The earlier note that D-03 would start ahead of origin was wrong. Device tests are deferred to D-11 (see CLAUDE.md, Batch workflow), and no release build is made from `development` until D-11 passes.
@@ -845,13 +845,13 @@ Decisions from the read-only size report (2026-11-23).
   - Row 99: `LottieBottomSheetOrderRequest` no longer calls `getOrderDetails`. Checked first: the sheet shows only `orderModel` (fee, tips), the id and the parcel chip; "view order" switches to tab 1 and "view details" opens Order Details, which loads its own lines.
   - Row 100: `contactPersonNumber` via `JsonHelper.asString` (null stays null), `zoneId` via `asInt`. `InfoCardSection` shows Call only for a non-blank number. Readers of `contactPersonNumber`: order_details_screen.dart (sender card on a parcel, customer card, receiver card on a parcel), all through `InfoCardSection.phone`, which holds the only `tel:` link in lib; `address_model.dart` (registration zone list, never dialled). `storePhone` goes through the same `phone` and follows the same rule.
 - **Translations:** 1 key added to both files; 809 keys each (`test/assets/translations_test.dart` passes).
-- **Commits:** 553a864 row 93 (sheet, harness, `confirm_sheet_buttons_test`); f7486d6 rows 94-100; the docs commit.
+- **Commits:** 553a864 row 93 (sheet, harness, `confirm_sheet_buttons_test`); f7486d6 rows 94-100; d08a57a docs; the closing commit.
 - **Tests:** baseline before D-16 497; after row 93 505; after rows 94-100 **532 total, 532 passed, 0 failed**. Analyze: 0 issues before each commit.
   - New: `test/features/order/confirm_sheet_buttons_test.dart` (S1-S8, real taps on Accept, Ignore, the slider, No and Yes), `test/features/order/request_card_paths_test.dart` (15), `test/features/order/request_parsing_test.dart` (10), `test/helper/json_helper_test.dart` J8-J9, harness `test/helpers/request_path_harness.dart`. Updated: T7 (no toast, `detailsFailure`) and R5 (`ignoreOrderById`) in `order_actions_controller_test.dart`.
   - **Fail on the old code** (temporary worktrees, then removed): at 8b46ce2 all of S1-S8 (`_TypeError` building `CustomButtonWidget`: the generic `Get.back` is not a `void Function()?`, plus a RenderFlex overflow of 99,482 px, 99,684 px on the slider). At 553a864: W6, W6b, W6c (`no_connection` shown), W7 (spinner), W7b (no `retry`), W8 (`FormatException: Trying to read   from 2026-11-20T10:00:00.000000Z at 11`), H1 (card missing), W9 and W9b (`RangeError (length): Invalid value: Only valid value is 0: 1`), W10 (Null check), P1 (`order_details_not_found` toast), C1 (Call shown), D1-D3 (FormatException), O1 (`type 'String' is not a subtype of type 'int?'`), O2 (`type 'String' is not a subtype of type 'Map<String, dynamic>'`), A1 (`'null'`), A2 (`FormatException: Invalid radix-10 number`).
   - **Guards** (pass on the old code too): W4, W10b, C2, D4, O3, A3. J8-J9 test the new `asBool`/`asMap` and cannot compile on the old code.
 - **Device:** **not run.** Steps in `docs/device-test-backlog.md` (D-16) for D-11.
-- **Status:** implemented on `fix/d-16-request-card-paths`, not merged. Waiting for the owner's closing message.
+- **Status:** merged into `development` (2026-11-24), device tests pending (D-11). Rows 93-100 are closed on the app side.
 
 ### Notes (found during D-16, not fixed)
 - `location_card_widget.dart:99`: the store name Row has no `Expanded`, so a long store name overflows (8.8 px in the test with raw key texts). Pre-existing.

@@ -313,7 +313,7 @@ The smoke pass applies (orders, money texts changed): accept an order, change it
 ## D-16: request cards and Order Details failure paths
 
 - **Branch:** fix/d-16-request-card-paths
-- **Branch commits:** 553a864 (row 93), f7486d6 (rows 94-100), docs commit
+- **Branch commits:** 553a864 (row 93), f7486d6 (rows 94-100), docs d08a57a and the closing commit; merged into `development` 2026-11-24
 - **Status:** pending (D-11)
 
 With valid data the screens look and behave as before. Debug build.
@@ -356,5 +356,6 @@ Runs after D-10. No release build is made from `development` until it passes.
 2. Run the combined smoke pass.
 3. End-to-end: the user app creates an order. The rider accepts it, picks it up and delivers it with a proof photo. The delivery appears in earnings.
 4. If a step fails, record the step, the batch and its commit here, and fix it before the pass is marked done.
+5. Check that the order amount shown on the request card and in Order Details equals the backend value (D-16 made number parsing tolerant: a malformed amount shows 0/empty instead of crashing; totals are never recomputed).
 
 **Status:** pending
