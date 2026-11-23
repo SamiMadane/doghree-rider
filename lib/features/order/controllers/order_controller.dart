@@ -14,6 +14,7 @@ import 'package:doghree_rider/features/order/domain/models/ignore_model.dart';
 import 'package:doghree_rider/features/order/domain/models/order_cancellation_body.dart';
 import 'package:doghree_rider/features/order/widgets/deliver_without_photos_dialog.dart';
 import 'package:doghree_rider/common/models/list_load.dart';
+import 'package:doghree_rider/common/models/load_failure.dart';
 import 'package:doghree_rider/helper/first_load_notice.dart';
 import 'package:doghree_rider/helper/image_upload_rules.dart';
 import 'package:doghree_rider/helper/order_ringing.dart';
@@ -262,22 +263,35 @@ class OrderController extends GetxController implements GetxService {
       _orderModel = null;
     }
     OrderFetch outcome = OrderFetch.failed;
+    LoadFailure? failure = LoadFailure.serverProblem;
     try {
       final OrderFetchResult result =
           await orderServiceInterface.getOrderWithId(orderId);
       outcome = result.outcome;
       if (outcome == OrderFetch.found && result.order != null) {
         _orderModel = result.order;
+        failure = null;
       } else if (outcome == OrderFetch.found) {
         outcome = OrderFetch.failed;
+      } else if (outcome == OrderFetch.notFound) {
+        failure = null;
+      } else {
+        failure = LoadFailures.fromStatus(result.statusCode);
       }
     } catch (e) {
       if (kDebugMode) debugPrint('getOrderWithId failed: ${e.runtimeType}');
       outcome = OrderFetch.failed;
     }
+    _orderFetchFailure = failure;
     update();
     return outcome;
   }
+
+  /// Why the last GET order failed (audit row 94): no internet, a server
+  /// problem (5xx, 403, HTML, a body that does not parse), or null after a
+  /// success, a not-found and a 401 (the session sheet is the message).
+  LoadFailure? _orderFetchFailure;
+  LoadFailure? get orderFetchFailure => _orderFetchFailure;
 
   /// Shows "no longer available" once per order. Returns false when it was
   /// already shown (for example by a failed status change).
@@ -727,33 +741,55 @@ class OrderController extends GetxController implements GetxService {
     getLatestOrders();
   }
 
-  /// Exactly one message when the lines fail to load (audit row 25). The
-  /// parcel branch also rebuilds the screen (audit row 28).
+  /// Why the order lines failed to load (audit row 95). Order Details shows
+  /// it as a Retry state, which is the one message (audit row 25): no toast.
+  /// Null while loading, after a success and after a 401 (session sheet).
+  LoadFailure? _detailsFailure;
+  LoadFailure? get detailsFailure => _detailsFailure;
+
+  int _detailsRequestId = 0;
+  int? _detailsInFlight;
+
+  /// Silent. The screen shows a loader while it runs (the failure is cleared
+  /// first) and the Retry state when it fails. One request per order at a
+  /// time; an answer for an older request is dropped. The parcel branch also
+  /// rebuilds the screen (audit row 28).
   Future<void> getOrderDetails(int? orderID, bool parcel) async {
     if (parcel) {
+      _detailsRequestId++;
+      _detailsInFlight = null;
+      _detailsFailure = null;
       _orderDetailsModel = [];
       update();
       return;
     }
+    if (_detailsInFlight == orderID && _orderDetailsModel == null) return;
+    final int requestId = ++_detailsRequestId;
+    _detailsInFlight = orderID;
     _orderDetailsModel = null;
+    _detailsFailure = null;
+    update();
+    LoadFailure? failure = LoadFailure.serverProblem;
+    List<OrderDetailsModel>? details;
     try {
       final OrderDetailsResult result =
           await orderServiceInterface.getOrderDetails(orderID);
       if (result.details != null) {
-        _orderDetailsModel = [...result.details!];
-      } else if (result.statusCode == 401) {
-        // ApiChecker already ended the session.
-      } else if (result.statusCode == 404) {
-        toast('order_details_not_found'.tr);
-      } else if (result.statusCode == 1) {
-        toast(_noInternetText);
+        details = [...result.details!];
+        failure = null;
       } else {
-        toast('failed_to_load_order_details'.tr);
+        failure = LoadFailures.fromStatus(result.statusCode);
       }
     } catch (e) {
-      toast('failed_to_load_order_details'.tr);
+      if (kDebugMode) debugPrint('getOrderDetails failed: ${e.runtimeType}');
+    } finally {
+      if (requestId == _detailsRequestId) {
+        _detailsInFlight = null;
+        _orderDetailsModel = details;
+        _detailsFailure = failure;
+        update();
+      }
     }
-    update();
   }
 
   /// Accepts by order id, never by list index (audit row 19), and never
@@ -825,11 +861,15 @@ class OrderController extends GetxController implements GetxService {
     update();
   }
 
-  void ignoreOrder(int index) {
+  /// Ignores by order id, never by list index (audit row 97): a poll may
+  /// change the list while the confirm sheet or the map screen is open.
+  void ignoreOrderById(int? orderId) {
     OrderRinging.stop();
-    _ignoredRequests.add(
-        IgnoreModel(id: _latestOrderList![index].id, time: DateTime.now()));
-    _latestOrderList!.removeAt(index);
+    if (orderId == null) return;
+    if (!_ignoredRequests.any((i) => i.id == orderId)) {
+      _ignoredRequests.add(IgnoreModel(id: orderId, time: DateTime.now()));
+    }
+    _latestOrderList?.removeWhere((o) => o.id == orderId);
     orderServiceInterface.setIgnoreList(_ignoredRequests);
     update();
   }

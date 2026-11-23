@@ -146,7 +146,8 @@ class InfoCardSection extends StatelessWidget {
           if (showButton)
             Row(
               children: [
-                if (phone != null && phone!.isNotEmpty)
+                // A null, empty or blank number has no Call (audit row 100).
+                if (phone?.trim().isNotEmpty ?? false)
                   Expanded(
                     child: CustomButtonWidget(
                       onPressed: () async {

@@ -310,6 +310,28 @@ Wording only: the screens and behaviour are the same as before.
 
 The smoke pass applies (orders, money texts changed): accept an order, change its status, deliver with code and photo proof, open earnings.
 
+## D-16: request cards and Order Details failure paths
+
+- **Branch:** fix/d-16-request-card-paths
+- **Branch commits:** 553a864 (row 93), f7486d6 (rows 94-100), docs d08a57a and the closing commit; merged into `development` 2026-11-24
+- **Status:** pending (D-11)
+
+With valid data the screens look and behave as before. Debug build.
+
+| # | Steps | Expected |
+|---|---|---|
+| 1 | Order requests tab: look at every card. Tap Accept, then **No, cancel**. Repeat with Ignore | Every card shows a time; nothing red or empty. No closes only the sheet; the card stays |
+| 2 | Tap a card body. Then View on map, then Back | The body opens nothing. The map opens; Back returns |
+| 3 | Accept a card | Order Details shows its lines: no endless spinner, no "No connection" |
+| 4 | With an Order Details open, receive a new-order push in the foreground | No "order details not found" toast; the open order keeps its own lines |
+| 5 | Accept a card, then turn on airplane mode within 1 s | The Retry state; turn airplane mode off, Retry loads the order |
+| 6 | Open the map card of the second request, wait 15 s for a poll, then Ignore and Yes | That same order disappears, no other |
+| 7 | Order Details of a parcel in handover: swipe the slider, then **No** | Only the sheet closes; the status does not change |
+
+**Unit tests only:** GET order 5xx, HTML and 401 (W6, W6b, W6c), order-details 500 and Retry in flight (W7, W7b), ISO and date-only dates and numbers as text (W8, H1, D1-D4, O1-O3), a deleted item (W10), a null or blank phone (A1-A3, C1-C2).
+
+The smoke pass applies (orders): accept an order, change its status, deliver with code and photo proof, open earnings.
+
 ## Combined smoke pass (once, in D-11)
 
 | # | Step | Expected |
@@ -334,5 +356,6 @@ Runs after D-10. No release build is made from `development` until it passes.
 2. Run the combined smoke pass.
 3. End-to-end: the user app creates an order. The rider accepts it, picks it up and delivers it with a proof photo. The delivery appears in earnings.
 4. If a step fails, record the step, the batch and its commit here, and fix it before the pass is marked done.
+5. Check that the order amount shown on the request card and in Order Details equals the backend value (D-16 made number parsing tolerant: a malformed amount shows 0/empty instead of crashing; totals are never recomputed).
 
 **Status:** pending

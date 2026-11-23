@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:doghree_rider/common/models/load_failure.dart';
 import 'package:doghree_rider/common/widgets/custom_app_bar_widget.dart';
+import 'package:doghree_rider/common/widgets/load_failed_widget.dart';
 import 'package:doghree_rider/common/widgets/custom_bottom_sheet_widget.dart';
 import 'package:doghree_rider/common/widgets/no_internet_screen.dart';
 import 'package:doghree_rider/features/chat/domain/models/conversation_model.dart';
@@ -270,7 +272,26 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                 final details = orderController.orderDetailsModel;
 
                 if (_loadFailed && order == null) {
-                  return NoInternetScreen(onRetry: _loadData);
+                  // The failure kind decides the text (audit row 94). A 401
+                  // has none: the session-expired sheet is the message.
+                  final LoadFailure? failure =
+                      orderController.orderFetchFailure;
+                  if (failure == null) return const SizedBox.shrink();
+                  return NoInternetScreen(
+                    onRetry: _loadData,
+                    serverProblem: failure == LoadFailure.serverProblem,
+                  );
+                }
+                // The lines failed: a Retry state, never an endless spinner
+                // (audit row 95). The 10 s poll does not touch the lines.
+                final LoadFailure? detailsFailure =
+                    orderController.detailsFailure;
+                if (order != null && details == null && detailsFailure != null) {
+                  return LoadFailedWidget(
+                    failure: detailsFailure,
+                    onRetry: () => orderController.getOrderDetails(
+                        widget.orderId, order.orderType == 'parcel'),
+                  );
                 }
                 if (order == null || details == null) {
                   return const Center(child: CircularProgressIndicator());

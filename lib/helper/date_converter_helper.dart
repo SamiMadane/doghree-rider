@@ -17,10 +17,21 @@ class DateConverterHelper {
         .format(dateTime);
   }
 
-  /// فرق الوقت بالنسبة للآن بشكل إنساني
+  /// Reads a server date and never throws (audit row 96, D-16). The usual
+  /// "yyyy-MM-dd HH:mm:ss" is read exactly as before; ISO 8601 and a bare
+  /// date are read too. Anything else gives null.
+  static DateTime? _tryParseServerDate(String value) {
+    try {
+      return DateFormat('yyyy-MM-dd HH:mm:ss').parse(value);
+    } catch (_) {
+      return DateTime.tryParse(value.trim())?.toLocal();
+    }
+  }
+
+  /// فرق الوقت بالنسبة للآن بشكل إنساني. Empty text for an unreadable date.
   static String timeAgo(String createdAt) {
-    final DateTime createdDate =
-        DateFormat('yyyy-MM-dd HH:mm:ss').parse(createdAt);
+    final DateTime? createdDate = _tryParseServerDate(createdAt);
+    if (createdDate == null) return '';
     final DateTime now = DateTime.now();
     final Duration diff = now.difference(createdDate);
 
@@ -52,18 +63,22 @@ class DateConverterHelper {
     return DateFormat(_timeFormatter(), locale).format(dateTime.toLocal());
   }
 
-  /// تحويل نص بصيغة yyyy-MM-dd HH:mm:ss إلى نص بالتاريخ المحلي
+  /// تحويل نص بصيغة yyyy-MM-dd HH:mm:ss إلى نص بالتاريخ المحلي.
+  /// Empty text for an unreadable date.
   static String dateTimeStringToDateTime(String dateTime) {
+    final DateTime? date = _tryParseServerDate(dateTime);
+    if (date == null) return '';
     final locale = Get.locale?.languageCode ?? 'en';
-    return DateFormat('dd MMM yyyy ${_timeFormatter()}', locale)
-        .format(DateFormat('yyyy-MM-dd HH:mm:ss').parse(dateTime));
+    return DateFormat('dd MMM yyyy ${_timeFormatter()}', locale).format(date);
   }
 
-  /// تحويل نص بصيغة yyyy-MM-dd HH:mm:ss إلى تاريخ فقط
+  /// تحويل نص بصيغة yyyy-MM-dd HH:mm:ss إلى تاريخ فقط.
+  /// Empty text for an unreadable date.
   static String dateTimeStringToDateOnly(String dateTime) {
+    final DateTime? date = _tryParseServerDate(dateTime);
+    if (date == null) return '';
     final locale = Get.locale?.languageCode ?? 'en';
-    return DateFormat('dd MMM yyyy', locale)
-        .format(DateFormat('yyyy-MM-dd HH:mm:ss').parse(dateTime));
+    return DateFormat('dd MMM yyyy', locale).format(date);
   }
 
   /// تحويل نص بصيغة yyyy-MM-dd HH:mm:ss إلى DateTime

@@ -1,4 +1,5 @@
 import 'package:doghree_rider/common/models/list_load.dart';
+import 'package:doghree_rider/common/models/load_failure.dart';
 import 'dart:async';
 import 'dart:io';
 
@@ -442,15 +443,23 @@ void main() {
   });
 
   group('order details (rows 25, 28)', () {
-    test('T7 a failure shows exactly one message', () async {
+    // D-16 (row 95): the Retry state on Order Details is now the one
+    // message, so the controller records the failure and shows no toast.
+    test('T7 a failure is recorded for the Retry state, with no toast',
+        () async {
       service.details = const OrderDetailsResult(null, 500);
       await controller.getOrderDetails(5, false);
-      expect(toasts, ['failed_to_load_order_details']);
+      expect(toasts, isEmpty);
+      expect(controller.detailsFailure, LoadFailure.serverProblem);
 
-      toasts.clear();
-      service.details = const OrderDetailsResult(null, 404);
+      service.details = const OrderDetailsResult(null, 1);
       await controller.getOrderDetails(5, false);
-      expect(toasts, ['order_details_not_found']);
+      expect(toasts, isEmpty);
+      expect(controller.detailsFailure, LoadFailure.noInternet);
+
+      service.details = const OrderDetailsResult(null, 401);
+      await controller.getOrderDetails(5, false);
+      expect(controller.detailsFailure, isNull);
     });
 
     test('T8 the parcel branch rebuilds the screen', () async {
@@ -494,7 +503,7 @@ void main() {
       service.latest = [_order(1), _order(2)];
       await controller.getLatestOrders();
       ringing.running = true;
-      controller.ignoreOrder(0);
+      controller.ignoreOrderById(1);
       await settle();
       expect(ringing.stopCalls, 1);
     });

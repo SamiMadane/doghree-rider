@@ -145,76 +145,83 @@ class OrderModel {
     this.prescriptionNote,
   });
 
+  /// Every field is read with [JsonHelper], so a number sent as text, a 1/0
+  /// flag or a nested value of the wrong type never drops the whole order
+  /// from a list (audit row 96, D-16). Valid values read exactly as before.
   OrderModel.fromJson(Map<String, dynamic> json) {
     id = JsonHelper.asInt(json['id']);
-    itemCampaignId = json['item_campaign_id'];
-    userId = json['user_id'];
-    orderAmount = json['order_amount']?.toDouble();
-    couponDiscountAmount = json['coupon_discount_amount']?.toDouble();
-    paymentStatus = json['payment_status'];
-    orderStatus = json['order_status'];
-    totalTaxAmount = json['total_tax_amount']?.toDouble();
-    paymentMethod = json['payment_method'];
-    transactionReference = json['transaction_reference'];
-    deliveryAddressId = json['delivery_address_id'];
-    deliveryManId = json['delivery_man_id'];
+    itemCampaignId = JsonHelper.asInt(json['item_campaign_id']);
+    userId = JsonHelper.asInt(json['user_id']);
+    orderAmount = JsonHelper.asDouble(json['order_amount']);
+    couponDiscountAmount = JsonHelper.asDouble(json['coupon_discount_amount']);
+    paymentStatus = JsonHelper.asString(json['payment_status']);
+    orderStatus = JsonHelper.asString(json['order_status']);
+    totalTaxAmount = JsonHelper.asDouble(json['total_tax_amount']);
+    paymentMethod = JsonHelper.asString(json['payment_method']);
+    transactionReference = JsonHelper.asString(json['transaction_reference']);
+    deliveryAddressId = JsonHelper.asInt(json['delivery_address_id']);
+    deliveryManId = JsonHelper.asInt(json['delivery_man_id']);
     orderType = JsonHelper.asString(json['order_type']);
-    storeId = json['store_id'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-    deliveryCharge = json['delivery_charge']?.toDouble();
-    originalDeliveryCharge = json['original_delivery_charge']?.toDouble();
-    scheduleAt = json['schedule_at'];
-    storeName = json['store_name'];
-    storeAddress = json['store_address'];
+    storeId = JsonHelper.asInt(json['store_id']);
+    createdAt = JsonHelper.asString(json['created_at']);
+    updatedAt = JsonHelper.asString(json['updated_at']);
+    deliveryCharge = JsonHelper.asDouble(json['delivery_charge']);
+    originalDeliveryCharge =
+        JsonHelper.asDouble(json['original_delivery_charge']);
+    scheduleAt = JsonHelper.asString(json['schedule_at']);
+    storeName = JsonHelper.asString(json['store_name']);
+    storeAddress = JsonHelper.asString(json['store_address']);
     // store_lat and store_lng arrive as strings, and every store_* key is
     // null for an order with no store (backend R2).
     storeLat = JsonHelper.asString(json['store_lat']);
     storeLng = JsonHelper.asString(json['store_lng']);
-    storeLogoFullUrl = json['store_logo_full_url'];
-    storePhone = json['store_phone'];
+    storeLogoFullUrl = JsonHelper.asString(json['store_logo_full_url']);
+    storePhone = JsonHelper.asString(json['store_phone']);
     detailsCount = JsonHelper.asInt(json['details_count']);
-    orderNote = json['order_note'];
-    chargePayer = json['charge_payer'];
+    orderNote = JsonHelper.asString(json['order_note']);
+    chargePayer = JsonHelper.asString(json['charge_payer']);
     moduleType = JsonHelper.asString(json['module_type']);
-    prescriptionOrder = json['prescription_order'];
+    prescriptionOrder = JsonHelper.asBool(json['prescription_order']);
     if (json['order_attachment_full_url'] != null) {
       orderAttachmentFullUrl =
           JsonHelper.stringList(json['order_attachment_full_url']);
     }
-    deliveryAddress = json['delivery_address'] != null
-        ? DeliveryAddress.fromJson(json['delivery_address'])
-        : null;
-    receiverDetails = json['receiver_details'] != null
-        ? DeliveryAddress.fromJson(json['receiver_details'])
-        : null;
-    parcelCategory = json['parcel_category'] != null
-        ? ParcelCategory.fromJson(json['parcel_category'])
-        : null;
-    customer =
-        json['customer'] != null ? Customer.fromJson(json['customer']) : null;
-    dmTips = json['dm_tips']?.toDouble();
-    cutlery = json['cutlery'];
-    unavailableItemNote = json['unavailable_item_note'];
-    deliveryInstruction = json['delivery_instruction'];
+    final Map<String, dynamic>? address =
+        JsonHelper.asMap(json['delivery_address']);
+    deliveryAddress = address != null ? DeliveryAddress.fromJson(address) : null;
+    final Map<String, dynamic>? receiver =
+        JsonHelper.asMap(json['receiver_details']);
+    receiverDetails =
+        receiver != null ? DeliveryAddress.fromJson(receiver) : null;
+    final Map<String, dynamic>? category =
+        JsonHelper.asMap(json['parcel_category']);
+    parcelCategory =
+        category != null ? ParcelCategory.fromJson(category) : null;
+    final Map<String, dynamic>? customerJson =
+        JsonHelper.asMap(json['customer']);
+    customer = customerJson != null ? Customer.fromJson(customerJson) : null;
+    dmTips = JsonHelper.asDouble(json['dm_tips']);
+    cutlery = JsonHelper.asBool(json['cutlery']);
+    unavailableItemNote = JsonHelper.asString(json['unavailable_item_note']);
+    deliveryInstruction = JsonHelper.asString(json['delivery_instruction']);
     if (json['order_proof_full_url'] != null) {
       orderProofFullUrl = JsonHelper.stringList(json['order_proof_full_url']);
     }
     payments = JsonHelper.mapList(json['payments'], Payments.fromJson,
         name: 'payments');
-    storeDiscountAmount = json['store_discount_amount']?.toDouble();
+    storeDiscountAmount = JsonHelper.asDouble(json['store_discount_amount']);
     taxStatus = json['tax_status'] == 'included' ? true : false;
-    additionalCharge = json['additional_charge']?.toDouble() ?? 0;
-    isGuest = json['is_guest'];
+    additionalCharge = JsonHelper.asDouble(json['additional_charge']) ?? 0;
+    isGuest = JsonHelper.asBool(json['is_guest']);
     flashAdminDiscountAmount =
-        json['flash_admin_discount_amount']?.toDouble() ?? 0;
+        JsonHelper.asDouble(json['flash_admin_discount_amount']) ?? 0;
     flashStoreDiscountAmount =
-        json['flash_store_discount_amount']?.toDouble() ?? 0;
-    extraPackagingAmount = json['extra_packaging_amount']?.toDouble();
-    referrerBonusAmount = json['ref_bonus_amount']?.toDouble();
-    storeBusinessModel = json['store_business_model'];
-    storeChatPermission = json['chat_permission'];
-    prescriptionNote = json['prescription_note'];
+        JsonHelper.asDouble(json['flash_store_discount_amount']) ?? 0;
+    extraPackagingAmount = JsonHelper.asDouble(json['extra_packaging_amount']);
+    referrerBonusAmount = JsonHelper.asDouble(json['ref_bonus_amount']);
+    storeBusinessModel = JsonHelper.asString(json['store_business_model']);
+    storeChatPermission = JsonHelper.asInt(json['chat_permission']);
+    prescriptionNote = JsonHelper.asString(json['prescription_note']);
   }
 
   Map<String, dynamic> toJson() {
@@ -319,22 +326,22 @@ class DeliveryAddress {
   });
 
   DeliveryAddress.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    addressType = json['address_type'];
-    contactPersonNumber = json['contact_person_number'].toString();
-    address = json['address'];
+    id = JsonHelper.asInt(json['id']);
+    addressType = JsonHelper.asString(json['address_type']);
+    // A missing number stays null, never the text "null", so no Call button
+    // dials it (audit row 100, D-16). A number sent as a number is its text.
+    contactPersonNumber = JsonHelper.asString(json['contact_person_number']);
+    address = JsonHelper.asString(json['address']);
     latitude = json['latitude'].toString();
     longitude = json['longitude'].toString();
-    userId = json['user_id'];
-    contactPersonName = json['contact_person_name'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-    zoneId = json['zone_id'] != null && json['zone_id'] != 'null'
-        ? int.parse(json['zone_id'].toString())
-        : null;
-    streetNumber = json['road'];
-    house = json['house'];
-    floor = json['floor'];
+    userId = JsonHelper.asInt(json['user_id']);
+    contactPersonName = JsonHelper.asString(json['contact_person_name']);
+    createdAt = JsonHelper.asString(json['created_at']);
+    updatedAt = JsonHelper.asString(json['updated_at']);
+    zoneId = JsonHelper.asInt(json['zone_id']);
+    streetNumber = JsonHelper.asString(json['road']);
+    house = JsonHelper.asString(json['house']);
+    floor = JsonHelper.asString(json['floor']);
   }
 
   Map<String, dynamic> toJson() {
@@ -380,15 +387,15 @@ class Customer {
   });
 
   Customer.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    fName = json['f_name'];
-    lName = json['l_name'];
-    phone = json['phone'];
-    email = json['email'];
-    imageFullUrl = json['image_full_url'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-    cmFirebaseToken = json['cm_firebase_token'];
+    id = JsonHelper.asInt(json['id']);
+    fName = JsonHelper.asString(json['f_name']);
+    lName = JsonHelper.asString(json['l_name']);
+    phone = JsonHelper.asString(json['phone']);
+    email = JsonHelper.asString(json['email']);
+    imageFullUrl = JsonHelper.asString(json['image_full_url']);
+    createdAt = JsonHelper.asString(json['created_at']);
+    updatedAt = JsonHelper.asString(json['updated_at']);
+    cmFirebaseToken = JsonHelper.asString(json['cm_firebase_token']);
   }
 
   Map<String, dynamic> toJson() {
@@ -424,12 +431,12 @@ class ParcelCategory {
   });
 
   ParcelCategory.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    imageFullUrl = json['image_full_url'];
-    name = json['name'];
-    description = json['description'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
+    id = JsonHelper.asInt(json['id']);
+    imageFullUrl = JsonHelper.asString(json['image_full_url']);
+    name = JsonHelper.asString(json['name']);
+    description = JsonHelper.asString(json['description']);
+    createdAt = JsonHelper.asString(json['created_at']);
+    updatedAt = JsonHelper.asString(json['updated_at']);
   }
 
   Map<String, dynamic> toJson() {

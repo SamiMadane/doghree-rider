@@ -96,4 +96,24 @@ void main() {
         (j) => j['id'] as int);
     expect(logs, isEmpty);
   });
+
+  test('J8 asBool reads bools, 1/0 and their texts (D-16)', () {
+    expect(JsonHelper.asBool(true), isTrue);
+    expect(JsonHelper.asBool(false), isFalse);
+    expect(JsonHelper.asBool(1), isTrue);
+    expect(JsonHelper.asBool(0), isFalse);
+    expect(JsonHelper.asBool('1'), isTrue);
+    expect(JsonHelper.asBool(' false '), isFalse);
+    expect(JsonHelper.asBool('TRUE'), isTrue);
+    expect(JsonHelper.asBool(2), isNull);
+    expect(JsonHelper.asBool('yes'), isNull);
+    expect(JsonHelper.asBool(null), isNull);
+  });
+
+  test('J9 asMap keeps objects and drops every other value (D-16)', () {
+    expect(JsonHelper.asMap(<dynamic, dynamic>{'a': 1}), {'a': 1});
+    expect(JsonHelper.asMap('x'), isNull);
+    expect(JsonHelper.asMap(<int>[]), isNull);
+    expect(JsonHelper.asMap(null), isNull);
+  });
 }
