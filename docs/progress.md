@@ -19,6 +19,7 @@
 | D-13 | fix/d-13-retry-states | Audit rows 78, 79, 80, 81 (Retry states, conversation paging, HTML page shape, Firebase OTP message) | merged, device tests pending (D-11) | 2026-11-22 |
 | D-14 | fix/d-14-assets-size | Audit row 82 (illustration and marker images); row 83 (GIFs) left open | merged, device tests pending (D-11) | 2026-11-22 |
 | D-15 | fix/d-15-translations | Audit rows 84, 85, 86 (translations, missing keys, location disclosure wording); rows 87-92 open | merged, device tests pending (D-11) | 2026-11-23 |
+| D-16 | fix/d-16-request-card-paths | Audit rows 93-100 (confirm sheet Cancel, Order Details failure states, card dates and JSON shapes, ignore by id, deleted item line, push sheet lines, empty phone) | implemented, not merged; device tests pending (D-11) | |
 | D-11 | (no code branch) | Final device pass: every pending backlog section, the smoke pass and the end-to-end order test (`docs/device-test-backlog.md`) | planned (after D-10) | |
 
 > **Branch state.** When D-03 started, `development` was level with `origin/development` (265bcfa): D-01 and D-02 were already pushed. The earlier note that D-03 would start ahead of origin was wrong. Device tests are deferred to D-11 (see CLAUDE.md, Batch workflow), and no release build is made from `development` until D-11 passes.
@@ -813,6 +814,54 @@ Decisions from the read-only size report (2026-11-23).
 - **Four of the 19 new keys are unreachable today:** `view_more` (desktop layout only) and `please_exchange_more_then`, `points`, `you_do_not_have_enough_point_to_exchange` (`ValidateCheck.loyaltyCheck` is never called). Added so the coverage test needs no allowlist.
 - Arabic counted nouns after a number (`items`, `days`, for example «120 أيام») are grammatically off for 1, 2 and 11+. The time units are now short and safe.
 - Still open from the D-14 list: a dedicated "no content yet" key for the empty privacy and terms pages (they use `not_found`, now «غير موجود» / "Not found").
+
+### D-16 (2026-11-23)
+- **Scope:** audit rows 93-100. Started as a read-only check of the remembered "error screen" when a request on the Order requests tab is tapped. A UI-driven matrix (one test file run in temporary worktrees at 9cd37ad, ca2e0c2, ae49802 and 8b46ce2) proved the D-04 and D-05 fixes and found a crash present at every commit: the Accept and Ignore confirm sheets could not build their Cancel button (row 93). Rows 93 and 99 were added at the owner's request.
+- **Matrix (before D-16):**
+
+  | Test | 9cd37ad | ca2e0c2 (D-04) | ae49802 (D-05) | 8b46ce2 (HEAD) |
+  |---|---|---|---|---|
+  | W0 confirm sheet builds | fail | fail | fail | fail |
+  | W1 card body opens nothing | pass | pass | pass | pass |
+  | W2 accept, no running list | fail: Null check (order_controller.dart:409) | pass | pass | pass |
+  | W3 GET order with `module_type` null | fail: `type 'Null' is not a subtype of type 'Map<String, dynamic>'` | fail (same) | pass | pass |
+  | W4 GET order offline | fail: screen popped | pass | pass | pass |
+  | W5 accept 404 removes that card | fail: `[101, 102]` | pass | pass | pass |
+  | W6 GET order 500 | fail | fail: `no_connection` | fail (same) | fail (same) |
+  | W7 order-details 500 | fail | fail: spinner | fail (same) | fail (same) |
+  | W8 ISO `created_at` | fail: `FormatException ... at 11` | fail (same) | fail (same) | fail (same) |
+  | W9 ignore after a poll | fail: `RangeError (length)` | fail (same) | fail (same) | fail (same) |
+  | W10 `item_details` null | fail: Null check | fail (same) | fail (same) | fail (same) |
+
+  W1-W5 passed at HEAD only because the matrix called the sheet's `onAccept` directly; with real taps they fail through W0 (see code-traps).
+- **Owner decisions:** row 93 in D-16 and first, as its own commit; close only the sheet when there is no `onCancel`, and on the money-flow slider only the closing changes. Key `item_no_longer_available` ("Item no longer available" / «المنتج لم يعد متاحاً»). Row 99: verify first, then remove the call. Row 100: Call hidden for a null, empty or blank number at every reader. Row 95: a loader while Retry is in flight, one request per tap, a second failure returns to Retry. Row 94: a 401 test with the session-expired sheet. The data shapes are not documented, so dates may be "yyyy-MM-dd HH:mm:ss" or ISO 8601, and numbers int, double or string (owner answer).
+- **Changes:**
+  - Row 93: `ConfirmationBottomSheet` Cancel is `onCancel ?? () => Navigator.of(context).pop()`. Users that reach the default: list card Accept and Ignore, map card Accept and Ignore, `OrderSliderButton` confirm. Users with their own `onCancel` (settings x2, legal section, wallet account) and `CustomConfirmationBottomSheet` are unchanged.
+  - Row 94: `OrderController.orderFetchFailure` (from `LoadFailures.fromStatus`; a 200 that is not an order is a server problem). Order Details shows `NoInternetScreen(serverProblem: ...)`; offline looks as before; a 401 shows nothing under the session sheet.
+  - Row 95: `getOrderDetails` is silent (no toast) and keeps `detailsFailure`. It clears the failure and rebuilds first (loader), allows one request per order at a time and drops a stale answer. Order Details shows `LoadFailedWidget` with Retry. The poll touches only the order.
+  - Row 96: `DateConverterHelper` reads the usual format exactly as before, then ISO 8601 or a bare date, otherwise empty text (`timeAgo`, `dateTimeStringToDateOnly`, `dateTimeStringToDateTime`). `OrderModel`, `DeliveryAddress`, `Customer` and `ParcelCategory` read every field through `JsonHelper` (new `asBool`, `asMap`), so a number as text or a 1/0 flag no longer drops the card from the list. Valid values read the same (guard O3).
+  - Row 97: `ignoreOrderById` replaces `ignoreOrder(index)`; the list card and the map card pass `orderModel.id`.
+  - Row 98: `OrderItemWidget` has no forced reads. A deleted item shows the new key with its price and quantity; a null price shows no price text.
+  - Row 99: `LottieBottomSheetOrderRequest` no longer calls `getOrderDetails`. Checked first: the sheet shows only `orderModel` (fee, tips), the id and the parcel chip; "view order" switches to tab 1 and "view details" opens Order Details, which loads its own lines.
+  - Row 100: `contactPersonNumber` via `JsonHelper.asString` (null stays null), `zoneId` via `asInt`. `InfoCardSection` shows Call only for a non-blank number. Readers of `contactPersonNumber`: order_details_screen.dart (sender card on a parcel, customer card, receiver card on a parcel), all through `InfoCardSection.phone`, which holds the only `tel:` link in lib; `address_model.dart` (registration zone list, never dialled). `storePhone` goes through the same `phone` and follows the same rule.
+- **Translations:** 1 key added to both files; 809 keys each (`test/assets/translations_test.dart` passes).
+- **Commits:** 553a864 row 93 (sheet, harness, `confirm_sheet_buttons_test`); f7486d6 rows 94-100; the docs commit.
+- **Tests:** baseline before D-16 497; after row 93 505; after rows 94-100 **532 total, 532 passed, 0 failed**. Analyze: 0 issues before each commit.
+  - New: `test/features/order/confirm_sheet_buttons_test.dart` (S1-S8, real taps on Accept, Ignore, the slider, No and Yes), `test/features/order/request_card_paths_test.dart` (15), `test/features/order/request_parsing_test.dart` (10), `test/helper/json_helper_test.dart` J8-J9, harness `test/helpers/request_path_harness.dart`. Updated: T7 (no toast, `detailsFailure`) and R5 (`ignoreOrderById`) in `order_actions_controller_test.dart`.
+  - **Fail on the old code** (temporary worktrees, then removed): at 8b46ce2 all of S1-S8 (`_TypeError` building `CustomButtonWidget`: the generic `Get.back` is not a `void Function()?`, plus a RenderFlex overflow of 99,482 px, 99,684 px on the slider). At 553a864: W6, W6b, W6c (`no_connection` shown), W7 (spinner), W7b (no `retry`), W8 (`FormatException: Trying to read   from 2026-11-20T10:00:00.000000Z at 11`), H1 (card missing), W9 and W9b (`RangeError (length): Invalid value: Only valid value is 0: 1`), W10 (Null check), P1 (`order_details_not_found` toast), C1 (Call shown), D1-D3 (FormatException), O1 (`type 'String' is not a subtype of type 'int?'`), O2 (`type 'String' is not a subtype of type 'Map<String, dynamic>'`), A1 (`'null'`), A2 (`FormatException: Invalid radix-10 number`).
+  - **Guards** (pass on the old code too): W4, W10b, C2, D4, O3, A3. J8-J9 test the new `asBool`/`asMap` and cannot compile on the old code.
+- **Device:** **not run.** Steps in `docs/device-test-backlog.md` (D-16) for D-11.
+- **Status:** implemented on `fix/d-16-request-card-paths`, not merged. Waiting for the owner's closing message.
+
+### Notes (found during D-16, not fixed)
+- `location_card_widget.dart:99`: the store name Row has no `Expanded`, so a long store name overflows (8.8 px in the test with raw key texts). Pre-existing.
+- The push request sheet still calls `getOrderWithId` for the pushed order, which clears the shared `orderModel` of an open Order Details for another order until its next poll (spinner up to 10 s).
+- `OrderRequestWidget`, `LocationCardWidget` and `OrderLocationScreen` keep their `index` parameter; ignore no longer uses it. Removing it is a later cleanup.
+- `order_requset_widget.dart` keeps raw sizes (30, 40, 60, 25): the owner asked for no visual change in D-16.
+- `OrderDetailsModel.fromJson` still reads `price`, `quantity` and the variation fields raw: a line with a number as text is skipped by `mapList`, so it is hidden from the items list.
+- Other strict date readers remain (notification list `dateTimeStringToDate`, `convertTodayYesterdayDate`, `convertTimeDifference`; chat `isoStringToLocalTimeOnly`; earnings `utcToDateTime`).
+- `DeliveryAddress.latitude` and `longitude` still use `.toString()` (a null becomes "null"; `parsePoint` rejects it).
+- The keys `order_details_not_found` and `failed_to_load_order_details` are no longer used in lib (kept).
 
 ## Open backend questions
 

@@ -102,6 +102,14 @@
 | 90 | lib/helper/notification_helper.dart:366,367,382,384; lib/helper/order_ringing.dart:54,56-57; chat_screen.dart:468; slider_button_widget.dart:154; dm_registration_step2.dart:210; api_client.dart:24 | 10 English-only hard-coded UI strings | An Arabic rider sees English (mostly the background ringing notification) | minor | device | open |
 | 91 | lib/features/auth/widgets/dm_registration_step2.dart:212 | The ID-number label is built as type + `number`, so Arabic cannot say «رقم جواز السفر» | Arabic label reads «جواز السفر (الرقم)» (D-15 stopgap) | minor | unit | open |
 | 92 | lib/features/profile/controllers/profile_controller.dart (location timer) | The disclosure says location is used even when the app is closed; not proven after the rider swipes the app away | The disclosure may not match the real behaviour | minor | device | open (D-11 check) |
+| 93 | lib/common/widgets/confirmation_bottom_sheet.dart:94 | Cancel used `onCancel ?? Get.back`. `Get.back` is generic (get 4.6.6); passed to the `Function?` `onPressed` it is never instantiated, so `onPressed as void Function()?` in `CustomButtonWidget` throws in build | The Accept and Ignore confirm sheets (list card, map card) and the Order Details slider confirm showed a red error (debug), a grey block (release before D-12) or no Cancel button (after D-12); in debug the overflow pushed Yes off screen | crash | unit + device | D-16 |
+| 94 | lib/features/order/screens/order_details_screen.dart:272-274 | Any failed GET order showed `NoInternetScreen` with its offline text | A 5xx, 403, an HTML page or a parse failure said "No connection" | bad UX | unit | D-16 |
+| 95 | lib/features/order/controllers/order_controller.dart:732-757; order_details_screen.dart:275-277 | A failed order-details load left the lines null with only a toast | An endless spinner with no Retry | bad UX | unit + device | D-16 |
+| 96 | lib/helper/date_converter_helper.dart:21-23; order/widgets/order_requset_widget.dart:94-96; order/domain/models/order_model.dart:148-218 | `timeAgo` parsed only "yyyy-MM-dd HH:mm:ss" inside the card build; `OrderModel.fromJson` read numbers and flags raw | An ISO, date-only or empty `created_at` threw in the card build; a number sent as text dropped the whole order from the list (`mapList` skips it) | crash | unit | D-16 |
+| 97 | lib/features/order/controllers/order_controller.dart:828-835; order_requset_widget.dart:310; location_card_widget.dart:248 | Ignore worked by list index, captured when the sheet or the map screen opened | A poll in between ignored another order or threw `RangeError` | wrong data | unit + device | D-16 |
+| 98 | lib/features/order/widgets/order_item_widget.dart:37-147 | Forced `!` on `item_details`, name, price, discount, quantity and variations | A line whose item was deleted crashed the items sheet | crash | unit | D-16 |
+| 99 | lib/features/dashboard/widgets/lottie_bottom_sheet_order_request.dart:70-71 | The push request sheet called `getOrderDetails` for an order not yet the rider's | A "details not found" toast, or the open Order Details showing another order's lines | wrong data | unit + device | D-16 |
+| 100 | lib/features/order/domain/models/order_model.dart:324; order/widgets/info_card_section.dart:149 | `contact_person_number` null became the text "null"; Call showed for any non-empty text | Call shown for a missing number, dialling `tel:null` | minor | unit | D-16 |
 
 ## Proposed batches
 
@@ -121,6 +129,7 @@
 | D-13 | fix/d-13-retry-states | Retry states after a failed first load, conversation paging, HTML page shape, Firebase OTP message | 78, 79, 80, 81 |
 | D-14 | fix/d-14-assets-size | Image asset size (offline lossless WebP, marker resize) | 82 (83 open) |
 | D-15 | fix/d-15-translations | Professional Arabic and English texts, missing keys, location disclosure wording | 84, 85, 86 (87-92 open) |
+| D-16 | fix/d-16-request-card-paths | Request cards and Order Details failure paths (confirm sheet, failure states, dates and JSON shapes, ignore by id, deleted items, push sheet, empty phone) | 93, 94, 95, 96, 97, 98, 99, 100 |
 
 Rows 9, 42 and 49 depend on backend answers (docs/progress.md, Open backend questions).
 
@@ -131,3 +140,5 @@ Rows 79-81 were found while planning D-13 (2026-11-22, read at 48f13bf) and fixe
 Rows 82 and 83 were added for D-14 (2026-11-22, read at 6ea78fe) with the owner's agreement. Row 82 is fixed in D-14; row 83 waits for gifsicle (lossless re-pack only).
 
 Rows 84-92 were found while planning D-15 (2026-11-22, read at 3cb1775). Rows 84-86 are fixed in D-15 (language files only). Rows 87, 88 and 92 are on the pre-store checklist (docs/progress.md); rows 89-91 are open notes.
+
+Rows 93-100 were found while checking the Order requests path for D-16 (2026-11-23, read at 8b46ce2) and fixed in D-16. Rows 93 and 99 were added at the owner's request.
