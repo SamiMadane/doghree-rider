@@ -245,7 +245,7 @@ class LocationCardWidget extends StatelessWidget {
                               if (Get.isSnackbarOpen) {
                                 Get.back();
                               }
-                              orderController.ignoreOrder(index);
+                              orderController.ignoreOrderById(orderModel.id);
                               Get.back();
                               showCustomSnackBar('order_ignored'.tr,
                                   isError: false);

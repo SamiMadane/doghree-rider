@@ -33,27 +33,42 @@ class OrderItemWidget extends StatelessWidget {
           '$addOnText${(addOnText.isEmpty) ? '' : ', '}${addOn.name} (${addOn.quantity})';
     }
 
+    // Null-safe throughout (audit row 98, D-16): a line whose item was
+    // deleted (item_details null) or with missing fields still shows its
+    // price and quantity, so the list matches the billed total.
+    final ItemDetails? item = orderDetails.itemDetails;
+    final List<Variations> variations = orderDetails.variation ?? [];
+    final List<FoodVariation> foodVariations = orderDetails.foodVariation ?? [];
+    final List<ChoiceOptions> choiceOptions = item?.choiceOptions ?? [];
+    final List<Variations> itemVariations = item?.variations ?? [];
+
     String variationText = '';
-    if (orderDetails.variation!.isNotEmpty) {
-      List<String> types = orderDetails.variation![0].type!.split('-');
-      if (types.length == orderDetails.itemDetails!.choiceOptions!.length) {
+    if (variations.isNotEmpty) {
+      final List<String> types = (variations[0].type ?? '').split('-');
+      if (types.length == choiceOptions.length) {
         for (int i = 0; i < types.length; i++) {
           variationText +=
-              '${i == 0 ? '' : ' ,'}${orderDetails.itemDetails!.choiceOptions![i].title} - ${types[i]}';
+              '${i == 0 ? '' : ' ,'}${choiceOptions[i].title} - ${types[i]}';
         }
       } else {
-        variationText = orderDetails.itemDetails!.variations![0].type!;
+        variationText =
+            itemVariations.isNotEmpty ? itemVariations[0].type ?? '' : '';
       }
-    } else if (orderDetails.foodVariation!.isNotEmpty) {
-      for (var varObj in orderDetails.foodVariation!) {
+    } else if (foodVariations.isNotEmpty) {
+      for (var varObj in foodVariations) {
+        final values = varObj.variationValues ?? [];
         variationText += '${variationText.isEmpty ? '' : ' ,'}${varObj.name}(';
-        for (int i = 0; i < varObj.variationValues!.length; i++) {
-          variationText +=
-              '${i == 0 ? '' : ' ,'}${varObj.variationValues![i].level}';
+        for (int i = 0; i < values.length; i++) {
+          variationText += '${i == 0 ? '' : ' ,'}${values[i].level}';
         }
         variationText += ')';
       }
     }
+
+    final String? imageUrl = item?.imageFullUrl;
+    final double? price = orderDetails.price;
+    final double discount = orderDetails.discountOnItem ?? 0;
+    final int quantity = orderDetails.quantity ?? 0;
 
     final EdgeInsetsGeometry extrasPadding = EdgeInsetsDirectional.only(
       start: Dimensions.w60,
@@ -65,7 +80,7 @@ class OrderItemWidget extends StatelessWidget {
       children: [
         Row(
           children: [
-            if (orderDetails.itemDetails!.imageFullUrl != null)
+            if (imageUrl != null)
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(Dimensions.r8),
@@ -77,39 +92,37 @@ class OrderItemWidget extends StatelessWidget {
                     height: Dimensions.w70,
                     width: Dimensions.w70,
                     fit: BoxFit.cover,
-                    image: '${orderDetails.itemDetails!.imageFullUrl}',
+                    image: imageUrl,
                   ),
                 ),
               ),
-            SizedBox(
-                width: orderDetails.itemDetails!.imageFullUrl != null
-                    ? Dimensions.w12
-                    : 0),
+            SizedBox(width: imageUrl != null ? Dimensions.w12 : 0),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    orderDetails.itemDetails!.name!,
+                    item?.name ?? 'item_no_longer_available'.tr,
                     style: textSemiBold().copyWith(
                         fontSize: Dimensions.fs14, color: scheme.onSurface),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                   SizedBox(height: Dimensions.h4),
-                  if (((moduleConfig.unit ?? false) &&
-                          orderDetails.itemDetails!.unitType != null) ||
-                      ((splash.configModel?.toggleVegNonVeg ?? false) &&
-                          (moduleConfig.vegNonVeg ?? false))) ...[
+                  if (item != null &&
+                      (((moduleConfig.unit ?? false) &&
+                              item.unitType != null) ||
+                          ((splash.configModel?.toggleVegNonVeg ?? false) &&
+                              (moduleConfig.vegNonVeg ?? false)))) ...[
                     _MetaTag(
                       label: (moduleConfig.unit ?? false)
-                          ? orderDetails.itemDetails!.unitType ?? ''
-                          : orderDetails.itemDetails!.veg == 0
+                          ? item.unitType ?? ''
+                          : item.veg == 0
                               ? 'non_veg'.tr
                               : 'veg'.tr,
                       dotColor: (moduleConfig.unit ?? false)
                           ? null
-                          : (orderDetails.itemDetails!.veg == 0
+                          : (item.veg == 0
                               ? scheme.error
                               : ManagerColors.success),
                     ),
@@ -117,17 +130,17 @@ class OrderItemWidget extends StatelessWidget {
                   ],
                   Row(
                     children: [
-                      Text(
-                        PriceConverterHelper.convertPrice(orderDetails.price! -
-                            (orderDetails.discountOnItem!)),
-                        style: textSemiBold().copyWith(
-                          fontSize: Dimensions.fs14,
+                      if (price != null)
+                        Text(
+                          PriceConverterHelper.convertPrice(price - discount),
+                          style: textSemiBold().copyWith(
+                            fontSize: Dimensions.fs14,
+                          ),
                         ),
-                      ),
-                      if (orderDetails.discountOnItem! > 0) ...[
+                      if (price != null && discount > 0) ...[
                         SizedBox(width: Dimensions.w8),
                         Text(
-                          PriceConverterHelper.convertPrice(orderDetails.price),
+                          PriceConverterHelper.convertPrice(price),
                           style: textMedium().copyWith(
                             decoration: TextDecoration.lineThrough,
                             fontSize: Dimensions.fs12,
@@ -144,7 +157,7 @@ class OrderItemWidget extends StatelessWidget {
                           borderRadius: BorderRadius.circular(Dimensions.r50),
                         ),
                         child: Text(
-                          '${orderDetails.quantity} ${orderDetails.quantity! > 1 ? 'items'.tr : 'item'.tr}',
+                          '$quantity ${quantity > 1 ? 'items'.tr : 'item'.tr}',
                           style: textBold().copyWith(
                               fontSize: Dimensions.fs12,
                               color: scheme.onPrimaryContainer),

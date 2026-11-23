@@ -67,8 +67,9 @@ class _LottieBottomSheetOrderRequestState
 
     _startAlarm();
     _slideController.forward();
-    Get.find<OrderController>()
-        .getOrderDetails(widget.orderId, widget.isParcel);
+    // No order-details call here: the sheet never shows the lines, the
+    // order is not yet this rider's, and the shared lines belong to an open
+    // Order Details (audit row 99, D-16).
   }
 
   @override

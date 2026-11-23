@@ -766,6 +766,7 @@
   "application_submitted": "Application submitted",
   "application_received_message": "We received your application. We'll review it and contact you soon",
   "order_no_longer_available": "This order is no longer available",
+  "item_no_longer_available": "Item no longer available",
   "order_status_changed": "This order has changed. It has been refreshed",
   "order_not_delivered_retry": "The order was not delivered. Please try again",
   "otp_not_matched": "The delivery code is wrong. Check it with the customer",

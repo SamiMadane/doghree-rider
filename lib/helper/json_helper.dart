@@ -37,6 +37,27 @@ class JsonHelper {
     return null;
   }
 
+  /// A bool, 1/0, or the texts "true"/"false"/"1"/"0". Anything else is null.
+  static bool? asBool(dynamic value) {
+    if (value is bool) return value;
+    if (value is num) return value == 1 ? true : (value == 0 ? false : null);
+    if (value is String) {
+      switch (value.trim().toLowerCase()) {
+        case 'true':
+        case '1':
+          return true;
+        case 'false':
+        case '0':
+          return false;
+      }
+    }
+    return null;
+  }
+
+  /// A JSON object as a typed Map, or null for any other value.
+  static Map<String, dynamic>? asMap(dynamic value) =>
+      value is Map ? Map<String, dynamic>.from(value) : null;
+
   /// A list of strings. A missing or wrong value gives an empty list, null
   /// items are dropped and other items are written as text.
   static List<String> stringList(dynamic value) {

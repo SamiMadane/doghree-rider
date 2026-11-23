@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:doghree_rider/api/api_client.dart';
@@ -87,12 +88,28 @@ class FakeTransportApi extends ApiClient {
         handleError);
   }
 
+  /// While a path has a gate, its GET requests wait there: a request in
+  /// flight. [started] counts them when they are sent, before the gate.
+  final Map<String, Completer<void>> gates = {};
+  final Map<String, int> started = {};
+
+  void hold(String uri) => gates[uri.split('?').first] = Completer<void>();
+
+  void release(String uri) => gates.remove(uri.split('?').first)?.complete();
+
+  int sent(String uri) => started[uri.split('?').first] ?? 0;
+
   @override
   Future<Response> getData(String uri,
-          {Map<String, dynamic>? query,
-          Map<String, String>? headers,
-          bool handleError = true}) async =>
-      _answer('GET', uri, query, handleError);
+      {Map<String, dynamic>? query,
+      Map<String, String>? headers,
+      bool handleError = true}) async {
+    final String path = uri.split('?').first;
+    started[path] = (started[path] ?? 0) + 1;
+    final Completer<void>? gate = gates[path];
+    if (gate != null) await gate.future;
+    return _answer('GET', uri, query, handleError);
+  }
 
   @override
   Future<Response> postData(String uri, dynamic body,
