@@ -18,9 +18,34 @@
 | D-12 | fix/d-12-static-checks | Audit rows 61-75 (static sweep: safety net, start-up, failure texts, crash patterns, unused assets) | merged, device tests pending (D-11) | 2026-11-22 |
 | D-13 | fix/d-13-retry-states | Audit rows 78, 79, 80, 81 (Retry states, conversation paging, HTML page shape, Firebase OTP message) | merged, device tests pending (D-11) | 2026-11-22 |
 | D-14 | fix/d-14-assets-size | Audit row 82 (illustration and marker images); row 83 (GIFs) left open | merged, device tests pending (D-11) | 2026-11-22 |
+| D-15 | fix/d-15-translations | Audit rows 84, 85, 86 (translations, missing keys, location disclosure wording); rows 87-92 open | merged, device tests pending (D-11) | 2026-11-23 |
 | D-11 | (no code branch) | Final device pass: every pending backlog section, the smoke pass and the end-to-end order test (`docs/device-test-backlog.md`) | planned (after D-10) | |
 
 > **Branch state.** When D-03 started, `development` was level with `origin/development` (265bcfa): D-01 and D-02 were already pushed. The earlier note that D-03 would start ahead of origin was wrong. Device tests are deferred to D-11 (see CLAUDE.md, Batch workflow), and no release build is made from `development` until D-11 passes.
+
+## PRE-STORE CHECKLIST (must be done before Play / App Store submission)
+
+| # | Item | Audit row | Status |
+|---|---|---|---|
+| S-1 | The Android system location dialog appears before any in-app disclosure (`location_permission_manager.dart:64-65`). Play's prominent-disclosure rule needs the in-app disclosure first: show the D-15 disclosure sheet before the first `requestPermission` and before asking for "all the time". Code change. | 87 | open |
+| S-2 | iOS `Info.plist` has only an English `NSLocationWhenInUseUsageDescription` about restaurant coverage and no Always string. Add proper Arabic and English usage strings (when in use and always). | 88 | open |
+| S-3 | Verify on a device that location recording continues after the rider swipes the app away, so the D-15 wording "even when the app is closed or not in use" is true. If it stops, change the text or the code. | 92 | open (D-11 step) |
+| S-4 | Demo mode must be off in production: with config `demo: true` the forgot-password OTP screen shows "use 1234 as OTP" (`verification_screen.dart:168`). The owner confirms with the backend developer. | 89 | open (owner) |
+| S-5 | Privacy policy and terms texts must be filled in the admin panel (D-14 owner task). | - | open (owner) |
+
+## Release build notes
+
+Decisions from the read-only size report (2026-11-23).
+
+- **Store build:** build the store release with `flutter build appbundle` (all 3 ABIs). Never use `--target-platform android-arm64` for the store release: it excludes 32-bit (armeabi-v7a) phones.
+- **Sizes:** the D-14 measurement of 45.3 MB was an arm64-only APK. Expected download per device from an AAB: about 38.6 MB (arm64); about 33 MB plus the v7a `libapp` (armeabi-v7a).
+- **Distribution:** Play Store and App Store; APK only for testing. No Gradle ABI change; x86_64 is not needed in release.
+- **Notes only, no action:**
+  - Four generator PNGs (143 KB) are bundled because `pubspec.yaml` lists whole asset folders.
+  - `country_code_picker` translation JSONs (409 KB) are never loaded; package cost.
+  - `notification.wav` (369 KB) is used; an OGG version would need a device sound check.
+  - The last 1.55 s of `doghree_rider.gif` are never shown (4 s replay).
+  - `extractNativeLibs="true"` in the manifest; not changed.
 
 ## Batch log
 
@@ -766,6 +791,28 @@
 - **Row 83 (GIFs, 12.33 MB):** needs gifsicle on the machine. Plan G1 only: `gifsicle -O3` re-pack, kept only if every composited frame, the durations, the loop block, disposal and transparency are identical (T3 already guards the Flutter side).
 - `ReplayImage` restarts `doghree_rider.gif` every 4 s, so its last 1.55 s (frames 80-110) are never shown. Behaviour unchanged.
 - `english.png`, `arabic.png`, `ps_flag.png`, the jpg placeholders and `map_placeholder.png` were left (small saving). `map_placeholder.png` (376x821) is already below 3x of its full-width display.
+
+### D-15 (2026-11-22)
+- **Scope:** audit rows 84, 85, 86. Rewrite of `assets/language/ar.json` and `en.json` (wording only, no Dart code change, no behaviour change), the missing keys, and the location disclosure wording. Reviewed by the owner on two review sheets (v1 and v2) before anything was applied.
+- **Glossary (owner decisions):** simplified Modern Standard Arabic, no dialect; customer «الزبون»; delivery man «مندوب التوصيل»; rider online/offline «متاح» / «غير متاح» (internet texts keep «الاتصال بالإنترنت»); tips «إكرامية / إكراميات»; item(s) «منتج / منتجات»; «رمز التحقق» for sign-in and recovery, «رمز التسليم» for the delivery code; statuses processing «قيد التحضير», handover «جاهز للتسليم», picked_up «تم الاستلام», returned «مُرتجع», refunded «تم الاسترداد», canceled «تم الإلغاء», accepted «تم القبول», confirmed «تم التأكيد», failed «فشل الطلب»; «كلمة المرور» everywhere. English: sentence case, grammar and typo fixes, "Rider" instead of "Delivery man".
+- **Owner answers (v1 questions):** Arabic time units after the number «د / س / يوم» (Q1); `km_away` «كم» (Q2); ID label «جواز السفر (الرقم)» for now (Q3, code fix later, row 91); `otp_verification` neutral «التحقق من الرمز» (Q4); `select_optimized` `Select "Optimized"` / `اختر "مُحسَّن"` (Q5: the sheet's steps are for turning background running off; turning it on uses the Android system dialog); `embedding_rate` «نسبة الإنجاز» / "Completion rate" (unused); deleted chat user «(حساب محذوف)» / "(deleted account)", rendered «الزبون (حساب محذوف)», no code fix; each file keeps its own key order (en and ar were already in different orders).
+- **Changes:** 310 existing values reworded (233 en, 197 ar). 19 keys appended at the end of both files in the same order: the 17 keys referenced with `.tr` but missing (row 84) and `refund_request_canceled`, `admin` (row 85). 808 keys per file. Placeholders, `\n`, leading and trailing spaces unchanged; the only colon change is `reminder` («:تذكير» → «تذكير:», approved). UTF-8 without BOM; index LF and working copy CRLF, as before.
+- **Location disclosure wording (owner-approved):** the shown keys on the three permission sheets (`location_required_to_go_online`, `you_need_to_allow_location_to_receive_orders`, `will_track_your_location_in_background`, `you_will_receive_orders_based_on_your_location`, `for_better_experience_allow_always`) now say what is collected, when (while online, even when the app is closed or not in use) and why (nearby orders, tracking deliveries). The order of events is a code issue: see the pre-store checklist (S-1).
+- **Commits:** 29d1fa8 translation files and test; 696e8a5 docs; eaca9a3 release build notes; the closing commit.
+- **Tests:** 8 new (`test/assets/translations_test.dart`), 497 total, 497 passed, 0 failed (baseline before D-15: 489). Analyze: 0 issues. No allowlist.
+  - **Fail on the old files** (run in a temporary worktree at 3cb1775 with only the new test copied in, then removed): T5 static `.tr` coverage (en missing 17 keys), T6 composed keys (`resend`, `can_not_launch`, `admin` missing; Arabic "ago" values), T7 glossary (for example `online` «متصل»), T8 disclosure wording.
+  - **Guards** (pass on the old files too): T1 JSON, no BOM, no duplicate keys; T2 same key set; T3 same placeholders; T4 no empty values.
+- **Device:** **not run.** Steps in `docs/device-test-backlog.md` (D-15) for D-11.
+- **Status:** merged into `development` (2026-11-23), device tests pending (D-11). Rows 84-86 are closed on the app side; rows 87-92, the PRE-STORE CHECKLIST (S-1 to S-5) and the owner tasks (privacy and terms texts in the admin panel, demo mode off in production) stay open.
+
+### Notes (found during D-15, not fixed)
+- **Pre-store items** S-1 to S-4 (rows 87, 88, 92, 89): see the PRE-STORE CHECKLIST near the top of this file. Play and App Store review require a clear location disclosure.
+- **Row 90:** 10 English-only hard-coded UI strings reach an Arabic rider: the 6 foreground-service notification texts (`notification_helper.dart:366, 367, 382, 384`, `order_ringing.dart:54, 56-57`; the background isolate has no GetX translations, D-06), «Not Login» (`chat_screen.dart:468`), «Button is disabled» (`slider_button_widget.dart:154`), the hint «Ex: xxx-xxxx-xxxxx» (`dm_registration_step2.dart:210`), `noInternetMessage` (`api_client.dart:24`). A later small batch. The 21 bilingual pairs in `error_message.dart` and `startup_failed_app.dart` already follow the language.
+- **Row 91:** the ID-number label (`dm_registration_step2.dart:212`) is type + `number`; Arabic needs «رقم + type». A later small code fix.
+- **Unused keys:** 349 keys are not shown anywhere (no literal and no dynamic use). They were left unchanged except `reminder` and `embedding_rate` (owner request). 106 of them are the distribution/humanitarian set (beneficiaries, shifts, tasks, data packages, final report): no screen or route exists. `this_app_collects_location_data`, `you_denied` and `you_denied_forever` are unused too. None was deleted.
+- **Four of the 19 new keys are unreachable today:** `view_more` (desktop layout only) and `please_exchange_more_then`, `points`, `you_do_not_have_enough_point_to_exchange` (`ValidateCheck.loyaltyCheck` is never called). Added so the coverage test needs no allowlist.
+- Arabic counted nouns after a number (`items`, `days`, for example «120 أيام») are grammatically off for 1, 2 and 11+. The time units are now short and safe.
+- Still open from the D-14 list: a dedicated "no content yet" key for the empty privacy and terms pages (they use `not_found`, now «غير موجود» / "Not found").
 
 ## Open backend questions
 
